@@ -1,0 +1,41 @@
+name: ♻️ 리팩토링
+description: 코드 정리 또는 구조 개선 시 사용합니다.
+title: "♻️ Refactor: "
+labels: ["refactor"]
+body:
+  - type: textarea
+    id: refactor-reason
+    attributes:
+      label: 🤔 리팩토링 이유
+      placeholder: ex) LangGraph 노드에서 RAG 호출과 LLM 호출이 한 노드에 섞여있어 단일 책임 원칙 위반
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: 📦 리팩토링 범위
+      placeholder: ex) RetrieveTracksNode, GraphState 스키마, src/tracktory/agent/nodes/
+    validations:
+      required: true
+
+  - type: textarea
+    id: tasks
+    attributes:
+      label: ✅ 완료 조건
+      value: |
+        - [ ]
+      placeholder: |
+        - [ ] 노드 분리 (검색 / 생성)
+        - [ ] State 스키마 업데이트
+        - [ ] 기존 테스트 통과 확인
+    validations:
+      required: true
+
+  - type: textarea
+    id: effect
+    attributes:
+      label: 💥 기대 효과
+      placeholder: ex) 노드별 테스트 용이성 증가, 부작용 격리 강화
+    validations:
+      required: false

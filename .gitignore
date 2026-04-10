@@ -1,0 +1,31 @@
+# Environment
+.env
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Data
+data/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+
+# OMC
+.omc/
+
+# docs
+docs/
+
+# Claude Code — personal context & tooling (CLAUDE.md is tracked)
+CLAUDE.local.md
+.claude/

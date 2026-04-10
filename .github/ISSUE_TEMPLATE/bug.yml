@@ -1,0 +1,40 @@
+name: 🐛 버그 수정
+description: 발견한 버그를 수정할 때 사용합니다.
+title: "🐛 Fix: "
+labels: ["fix"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 🔍 문제 상황
+      placeholder: 어떤 문제가 발생했나요?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 🔄 재현 단계
+      value: |
+        1.
+        2.
+        3.
+      placeholder: |
+        1. FastAPI 서버 실행 (`uv run uvicorn ...`)
+        2. /recommend 엔드포인트 호출
+        3. LangGraph 그래프의 retrieve_tracks 노드에서 예외 발생
+    validations:
+      required: false
+
+  - type: textarea
+    id: fix
+    attributes:
+      label: ✅ 완료 조건
+      value: |
+        - [ ]
+      placeholder: |
+        - [ ] 버그 원인 파악
+        - [ ] 수정 구현
+        - [ ] 재현 시나리오 테스트 추가
+    validations:
+      required: true
