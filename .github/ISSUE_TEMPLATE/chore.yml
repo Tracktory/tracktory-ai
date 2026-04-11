@@ -1,0 +1,32 @@
+name: 🛠️ 유지보수 / 설정
+description: 빌드·설정·의존성 갱신 등 기능과 직접 관련 없는 유지보수 작업에 사용합니다.
+title: "🛠️ Chore: "
+labels: ["chore"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: 📌 작업 목적
+      placeholder: ex) pyproject.toml 의존성 갱신, GitHub Actions 워크플로 설정, .env.example 업데이트
+    validations:
+      required: true
+
+  - type: textarea
+    id: reason
+    attributes:
+      label: 🤔 배경
+      placeholder: 왜 이 작업이 필요한가요?
+    validations:
+      required: false
+
+  - type: textarea
+    id: tasks
+    attributes:
+      label: ✅ 완료 조건
+      value: |
+        - [ ]
+      placeholder: |
+        - [ ] 설정 파일 수정
+        - [ ] 실행 검증
+    validations:
+      required: true

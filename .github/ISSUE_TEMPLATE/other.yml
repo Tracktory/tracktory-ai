@@ -1,32 +1,12 @@
-name: 🍀 기타 작업
-description: 분류되지 않는 기타 작업(빌드, 설정, 의존성 등)을 관리할 때 사용합니다.
-title: "🍀 Chore: "
-labels: ["chore"]
+name: 🍀 기타
+description: feat / fix / refactor / docs / chore 어디에도 해당하지 않는 기타 이슈를 자유롭게 등록합니다.
+title: "🍀 Other: "
+labels: ["other"]
 body:
   - type: textarea
-    id: description
+    id: content
     attributes:
-      label: 📌 작업 목적
-      placeholder: ex) pyproject.toml 의존성 갱신, GitHub Actions 워크플로 설정, .env.example 업데이트
-    validations:
-      required: true
-
-  - type: textarea
-    id: reason
-    attributes:
-      label: 🤔 배경
-      placeholder: 왜 이 작업이 필요한가요?
-    validations:
-      required: false
-
-  - type: textarea
-    id: tasks
-    attributes:
-      label: ✅ 완료 조건
-      value: |
-        - [ ]
-      placeholder: |
-        - [ ] 설정 파일 수정
-        - [ ] 실행 검증
+      label: 📌 내용
+      placeholder: 이슈 내용을 자유롭게 작성해주세요.
     validations:
       required: true
