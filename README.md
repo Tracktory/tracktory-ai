@@ -1,5 +1,7 @@
 # tracktory-ai
 
+> 전체 프로젝트 개요: [**Tracktory/tracktory**](https://github.com/Tracktory/tracktory)
+
 한성대 학생 대상 **AI 직무·트랙·학습 로드맵 추천 시스템**의 AI 서비스 레이어.
 **LangGraph + FastAPI** 기반으로 메인 백엔드(Spring Boot)와 연동됩니다.
 
