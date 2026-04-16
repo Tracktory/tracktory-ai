@@ -8,6 +8,8 @@
 @README.md
 @CONTRIBUTING.md
 
+전체 프로젝트 맥락(아키텍처, 서브레포 관계): [Tracktory/tracktory](https://github.com/Tracktory/tracktory)
+
 ## 아키텍처 철학
 
 이 프로젝트는 "잘 돌아가는 LLM 스크립트"가 아니라 **유지보수 가능한 추천 파이프라인**을 목표로 합니다. 코드를 추가·수정할 때 다음 원칙을 지켜주세요:
