@@ -8,7 +8,7 @@
 
 > 전체 프로젝트 개요: [**Tracktory/tracktory**](https://github.com/Tracktory/tracktory)
 
-**원하는 꿈은 있지만 학교에서 무엇을 해야 하는지 모르는 학생들을 위한 AI 추천 시스템.**
+**전공과 직무를 선택하고 싶지만, 아직 무엇을 좋아하고 어떤 길을 가야 할지 모르는 학생들을 위한 AI 학습경로 가이드.**
 
 학생의 관심사·흥미·가치관을 입력받아 적합한 **직무를 발견**하고, 그에 맞는 **트랙 조합을 추천**하며, **학기별 수강 로드맵**까지 자연어로 설명합니다.
 
@@ -24,8 +24,8 @@
 |:---:|:---:|:---:|:---:|
 | **이재원** (팀장) | **정종진** | **박성훈** | **전종현** |
 | 추천 시스템 설계 | 트랙 시너지 점수 알고리즘 | 데이터 처리 + 프론트엔드 | 논문 + 임베딩/RAG 최적화 |
-| LangGraph 파이프라인 | 직무-역량 매핑 | 크롤링·전처리·임베딩 | RAGFlow 파이프라인 |
-| Spring Boot ↔ FastAPI 통합 | | React Native | |
+| LangGraph 파이프라인·전처리 | 직무-역량 매핑 | 크롤링·전처리 | RAGFlow 파이프라인·임베딩 |
+| Spring Boot ↔ FastAPI 통합 | Spring Boot ↔ FastAPI 통합 | React Native | Spring Boot |
 | [@jwon0523](https://github.com/jwon0523) | [@ThreeeJ](https://github.com/ThreeeJ) | [@parkseonghun598](https://github.com/parkseonghun598) | [@J2H3233](https://github.com/J2H3233) |
 
 </div>
