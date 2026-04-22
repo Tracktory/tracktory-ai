@@ -25,7 +25,15 @@
 | 타입 체커 | `mypy` | `uv run mypy src` |
 | 테스트 | `pytest` | `uv run pytest` |
 
-### 커밋 전 루틴
+### 커밋 전 루틴 (pre-commit)
+
+최초 1회 설치:
+
+```bash
+uv run pre-commit install
+```
+
+설치 후에는 `git commit` 시 ruff + mypy가 **자동 실행**됩니다. 수동 실행이 필요하면:
 
 ```bash
 uv run ruff format .
@@ -355,5 +363,6 @@ def test_retrieve_tracks_returns_top_k(mocker):
 
 | 버전 | 날짜 | 변경자 | 변경 내용 |
 |---|---|---|---|
+| 0.3 | 2026-04-19 | 이재원 | §1 pre-commit 설치 단계 추가. |
 | 0.2 | 2026-04-13 | 이재원 | §2 브랜치 네이밍·이슈/PR 제목 규칙 추가. PR 제목 `[Type]` 브래킷 형식 도입. squash merge 원칙 명시. |
 | 0.1 | 2026-04-10 | 이재원 | 초안. ruff + mypy + LangGraph 규칙 확정. |
