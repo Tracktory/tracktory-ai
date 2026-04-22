@@ -25,8 +25,6 @@ from __future__ import annotations
 
 import re
 
-from .categories import IT_JOB_CATEGORIES
-
 # ---------------------------------------------------------------------------
 # 1. 정규화 맵 (변형 -> 정규 이름)
 # ---------------------------------------------------------------------------
@@ -57,13 +55,11 @@ NORMALIZATION_MAP: dict[str, str] = {
     "javascript": "JavaScript",
     "ES6": "JavaScript",
     "ES2024": "JavaScript",
-
     # -- 프론트엔드 도구 --
     "Tailwind": "Tailwind CSS",
     "tailwindcss": "Tailwind CSS",
     "Material UI": "MUI",
     "MobX": "MobX",
-
     # -- Java / JVM 계열 --
     "자바": "Java",
     "코틀린": "Kotlin",
@@ -73,7 +69,6 @@ NORMALIZATION_MAP: dict[str, str] = {
     "스프링부트": "Spring Boot",
     "Golang": "Go",
     "golang": "Go",
-
     # -- Python 계열 --
     "파이썬": "Python",
     "python3": "Python",
@@ -87,17 +82,14 @@ NORMALIZATION_MAP: dict[str, str] = {
     "파이토치": "PyTorch",
     "케라스": "Keras",
     "장고": "Django",
-
     # -- C 계열 --
     "씨샵": "C#",
     "씨쁠쁠": "C++",
     "Objective C": "Objective-C",
-
     # -- .NET 계열 --
     "dotnet": ".NET",
     "ASP.NET": ".NET",
     "asp.net": ".NET",
-
     # -- 데이터베이스 --
     "Postgres": "PostgreSQL",
     "postgres": "PostgreSQL",
@@ -110,7 +102,6 @@ NORMALIZATION_MAP: dict[str, str] = {
     "ElasticSearch": "Elasticsearch",
     "MSSQL": "MS-SQL",
     "MS SQL": "MS-SQL",
-
     # -- 클라우드 / 인프라 --
     "도커": "Docker",
     "docker": "Docker",
@@ -122,7 +113,6 @@ NORMALIZATION_MAP: dict[str, str] = {
     "젠킨스": "Jenkins",
     "GitHub Actions": "GitHub Actions",
     "GitLab CI": "GitLab CI",
-
     # -- 데이터/ML --
     "머신러닝": "Machine Learning",
     "딥러닝": "Deep Learning",
@@ -132,14 +122,12 @@ NORMALIZATION_MAP: dict[str, str] = {
     "데이터파이프라인": "Data Pipeline",
     "데이터웨어하우스": "Data Warehouse",
     "랭체인": "LangChain",
-
     # -- 모바일 --
     "안드로이드": "Android",
     "Jetpack Compose": "Jetpack Compose",
     "React Native": "React Native",
     "리액트네이티브": "React Native",
     "플러터": "Flutter",
-
     # -- 기타 --
     "마이크로서비스": "MSA",
     "Microservice": "MSA",
@@ -182,7 +170,6 @@ _RAW_TECH_KEYWORDS: list[tuple[str, str]] = [
     (r"Socket\.io", "Socket.io"),
     (r"Scikit[\-\s]?learn|sklearn", "scikit-learn"),
     (r"Objective[\-\s]?C", "Objective-C"),
-
     # ── 언어 (혼동 방지 패턴) ──────────────────────────────────────────────
     (r"TypeScript", "TypeScript"),
     (r"JavaScript", "JavaScript"),
@@ -210,7 +197,6 @@ _RAW_TECH_KEYWORDS: list[tuple[str, str]] = [
     (r"Haskell", "Haskell"),
     (r"HLSL", "HLSL"),
     (r"GLSL", "GLSL"),
-
     # ── 프론트엔드 ─────────────────────────────────────────────────────────
     (r"Angular(?!JS)", "Angular"),
     (r"AngularJS", "AngularJS"),
@@ -234,7 +220,6 @@ _RAW_TECH_KEYWORDS: list[tuple[str, str]] = [
     (r"Apollo", "Apollo"),
     (r"Storybook", "Storybook"),
     (r"Bootstrap", "Bootstrap"),
-
     # ── 백엔드 프레임워크 ──────────────────────────────────────────────────
     (r"Express(?:\.js)?", "Express"),
     (r"NestJS", "NestJS"),
@@ -251,7 +236,6 @@ _RAW_TECH_KEYWORDS: list[tuple[str, str]] = [
     (r"MyBatis", "MyBatis"),
     (r"Maven", "Maven"),
     (r"Gradle", "Gradle"),
-
     # ── 데이터베이스 ───────────────────────────────────────────────────────
     (r"PostgreSQL|Postgres", "PostgreSQL"),
     (r"MySQL", "MySQL"),
@@ -271,12 +255,10 @@ _RAW_TECH_KEYWORDS: list[tuple[str, str]] = [
     (r"MS[\-\s]?SQL|MSSQL", "MS-SQL"),
     (r"Snowflake", "Snowflake"),
     (r"BigQuery", "BigQuery"),
-
     # ── 메시지 큐 / 스트리밍 ────────────────────────────────────────────────
     (r"Kafka", "Kafka"),
     (r"RabbitMQ", "RabbitMQ"),
     (r"ActiveMQ", "ActiveMQ"),
-
     # ── 클라우드 ───────────────────────────────────────────────────────────
     (r"AWS", "AWS"),
     (r"GCP", "GCP"),
@@ -287,7 +269,6 @@ _RAW_TECH_KEYWORDS: list[tuple[str, str]] = [
     (r"EKS", "EKS"),
     (r"ECS", "ECS"),
     (r"RDS", "RDS"),
-
     # ── 컨테이너 / IaC / CI/CD ─────────────────────────────────────────────
     (r"Docker", "Docker"),
     (r"Kubernetes|K8s", "Kubernetes"),
@@ -306,7 +287,6 @@ _RAW_TECH_KEYWORDS: list[tuple[str, str]] = [
     (r"CentOS", "CentOS"),
     (r"Prometheus", "Prometheus"),
     (r"Grafana", "Grafana"),
-
     # ── 데이터 엔지니어링 / ML ─────────────────────────────────────────────
     (r"Hadoop", "Hadoop"),
     (r"(?:Apache\s*)?Spark|PySpark", "Spark"),
@@ -346,14 +326,12 @@ _RAW_TECH_KEYWORDS: list[tuple[str, str]] = [
     (r"Delta\s*Lake", "Delta Lake"),
     (r"SageMaker", "SageMaker"),
     (r"Vertex\s*AI", "Vertex AI"),
-
     # ── 모바일 ─────────────────────────────────────────────────────────────
     (r"Android", "Android"),
     (r"iOS", "iOS"),
     (r"Flutter", "Flutter"),
     (r"Xamarin", "Xamarin"),
     (r"CocoaPods", "CocoaPods"),
-
     # ── 보안 ───────────────────────────────────────────────────────────────
     (r"SIEM", "SIEM"),
     (r"SOAR", "SOAR"),
@@ -371,7 +349,6 @@ _RAW_TECH_KEYWORDS: list[tuple[str, str]] = [
     (r"Nmap", "Nmap"),
     (r"SonarQube", "SonarQube"),
     (r"Snyk", "Snyk"),
-
     # ── 테스팅 ─────────────────────────────────────────────────────────────
     (r"Jest", "Jest"),
     (r"Cypress", "Cypress"),
@@ -380,7 +357,6 @@ _RAW_TECH_KEYWORDS: list[tuple[str, str]] = [
     (r"Selenium", "Selenium"),
     (r"JUnit", "JUnit"),
     (r"pytest", "pytest"),
-
     # ── 협업 / 도구 ────────────────────────────────────────────────────────
     (r"Git(?!Hub|Lab|(?:[A-Za-z]))", "Git"),
     (r"GitHub(?!\s*Actions)", "GitHub"),
@@ -390,7 +366,6 @@ _RAW_TECH_KEYWORDS: list[tuple[str, str]] = [
     (r"Confluence", "Confluence"),
     (r"Notion", "Notion"),
     (r"Perforce", "Perforce"),
-
     # ── 방법론 / 아키텍처 ──────────────────────────────────────────────────
     (r"Agile", "Agile"),
     (r"Scrum", "Scrum"),
@@ -398,7 +373,6 @@ _RAW_TECH_KEYWORDS: list[tuple[str, str]] = [
     (r"MSA", "MSA"),
     (r"WebSocket", "WebSocket"),
     (r"OpenAPI|Swagger", "OpenAPI"),
-
     # ── 게임 ───────────────────────────────────────────────────────────────
     (r"Unity", "Unity"),
     (r"Blender", "Blender"),
@@ -406,7 +380,6 @@ _RAW_TECH_KEYWORDS: list[tuple[str, str]] = [
     (r"ARCore", "ARCore"),
     (r"ARKit", "ARKit"),
     (r"OpenXR", "OpenXR"),
-
     # ── 한국어 기술 명칭 ───────────────────────────────────────────────────
     (r"자바(?!스크립트)", "Java"),
     (r"자바스크립트", "JavaScript"),
@@ -453,9 +426,15 @@ _JOB_CATEGORY_PATTERNS: list[tuple[re.Pattern[str], str]] = [
     # More specific patterns (higher priority)
     (re.compile(r"프롬프트\s*엔지니어|prompt\s*engineer", re.IGNORECASE), "AI/ML"),
     (re.compile(r"LLM|GPT|생성\s*AI|generative\s*AI", re.IGNORECASE), "AI/ML"),
-    (re.compile(r"애널리틱스\s*엔지니어|analytics\s*engineer|BI\s*엔지니어", re.IGNORECASE), "데이터분석"),
+    (
+        re.compile(r"애널리틱스\s*엔지니어|analytics\s*engineer|BI\s*엔지니어", re.IGNORECASE),
+        "데이터분석",
+    ),
     (re.compile(r"데이터\s*플랫폼|data\s*platform", re.IGNORECASE), "데이터엔지니어"),
-    (re.compile(r"IT\s*엔지니어|시스템\s*엔지니어|Server\s*Admin|시스템\s*관리", re.IGNORECASE), "DevOps/인프라"),
+    (
+        re.compile(r"IT\s*엔지니어|시스템\s*엔지니어|Server\s*Admin|시스템\s*관리", re.IGNORECASE),
+        "DevOps/인프라",
+    ),
     (re.compile(r"FW\s*개발|펌웨어|firmware|임베디드|embedded", re.IGNORECASE), "임베디드"),
     (re.compile(r"풀\s*스택|full[\-\s]?stack", re.IGNORECASE), "풀스택"),
     (re.compile(r"VueJS|Vue\.?js|React\s+개발|프론트\s*개발", re.IGNORECASE), "프론트엔드"),
@@ -464,11 +443,22 @@ _JOB_CATEGORY_PATTERNS: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"프론트엔드|frontend|front[\-\s]?end|UI\s*개발", re.IGNORECASE), "프론트엔드"),
     (re.compile(r"백엔드|backend|back[\-\s]?end|서버\s*개발", re.IGNORECASE), "백엔드"),
     (re.compile(r"풀스택|fullstack|full[\-\s]?stack", re.IGNORECASE), "풀스택"),
-    (re.compile(r"AI|인공지능|머신러닝|딥러닝|ML\s*엔지니어|NLP|컴퓨터\s*비전", re.IGNORECASE), "AI/ML"),
-    (re.compile(r"데이터\s*엔지니어|data\s*engineer|ETL|데이터\s*파이프라인", re.IGNORECASE), "데이터엔지니어"),
+    (
+        re.compile(r"AI|인공지능|머신러닝|딥러닝|ML\s*엔지니어|NLP|컴퓨터\s*비전", re.IGNORECASE),
+        "AI/ML",
+    ),
+    (
+        re.compile(r"데이터\s*엔지니어|data\s*engineer|ETL|데이터\s*파이프라인", re.IGNORECASE),
+        "데이터엔지니어",
+    ),
     (re.compile(r"데이터\s*분석|data\s*analy|BI\s*분석", re.IGNORECASE), "데이터분석"),
     (re.compile(r"데이터\s*사이언|data\s*scien", re.IGNORECASE), "데이터사이언스"),
-    (re.compile(r"DevOps|데브옵스|SRE|인프라|클라우드\s*엔지니어|platform\s*engineer", re.IGNORECASE), "DevOps/인프라"),
+    (
+        re.compile(
+            r"DevOps|데브옵스|SRE|인프라|클라우드\s*엔지니어|platform\s*engineer", re.IGNORECASE
+        ),
+        "DevOps/인프라",
+    ),
     (re.compile(r"보안|security|시큐리티|침투|모의해킹|SOC", re.IGNORECASE), "보안"),
     (re.compile(r"안드로이드|android|iOS|모바일|mobile|앱\s*개발", re.IGNORECASE), "모바일"),
     (re.compile(r"게임|game|unity|unreal", re.IGNORECASE), "게임"),
@@ -481,6 +471,7 @@ _JOB_CATEGORY_PATTERNS: list[tuple[re.Pattern[str], str]] = [
 # ---------------------------------------------------------------------------
 # 4. 공개 함수
 # ---------------------------------------------------------------------------
+
 
 def extract_tech_keywords(text: str) -> list[str]:
     """

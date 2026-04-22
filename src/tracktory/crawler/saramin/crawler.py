@@ -5,26 +5,27 @@
 사람인 Open API를 호출하여 IT 직군 채용공고를 수집하고,
 각 공고 상세 페이지에서 기술 스택 키워드를 추출한다.
 """
+
 from __future__ import annotations
 
 import logging
 import time
 import xml.etree.ElementTree as ET
-from datetime import datetime
 
-import requests
+import requests  # type: ignore[import-untyped]
 from bs4 import BeautifulSoup
 
+from tracktory.common.models import CrawlResult, JobPosting
+from tracktory.common.tech_keywords import extract_tech_keywords
 from tracktory.crawler.config import config
 from tracktory.crawler.logging_setup import setup_logging
-from tracktory.common.models import CrawlResult, JobPosting
 from tracktory.crawler.retry import retry
 from tracktory.crawler.storage import (
     get_output_path,
     load_collected_ids,
     save_jobs_csv,
 )
-from tracktory.common.tech_keywords import extract_tech_keywords
+
 from .parser import get_total_count, parse_job_list
 
 logger = logging.getLogger("crawling.saramin.crawler")
@@ -74,9 +75,7 @@ class SaraminCrawler:
         config.validate()
         self.api_key: str = ""
         self.api_call_count: int = 0
-        self._warn_threshold: int = int(
-            config.SARAMIN_MAX_DAILY_CALLS * _API_WARN_THRESHOLD_RATIO
-        )
+        self._warn_threshold: int = int(config.SARAMIN_MAX_DAILY_CALLS * _API_WARN_THRESHOLD_RATIO)
 
     def crawl(
         self,
@@ -122,9 +121,7 @@ class SaraminCrawler:
         # 기수집 ID 로드 (재개 지원)
         csv_path = get_output_path("saramin")
         collected_ids = load_collected_ids("saramin", csv_path)
-        self.logger.info(
-            "기수집 공고 %d건 로드 완료 (중복 건너뜀 대상)", len(collected_ids)
-        )
+        self.logger.info("기수집 공고 %d건 로드 완료 (중복 건너뜀 대상)", len(collected_ids))
 
         all_jobs: list[JobPosting] = []
         total_skipped: int = 0
@@ -159,9 +156,7 @@ class SaraminCrawler:
                 page_jobs = parse_job_list(xml_root, keyword)
 
                 if not page_jobs:
-                    self.logger.info(
-                        "[%s] 더 이상 결과 없음 (start=%d)", keyword, start
-                    )
+                    self.logger.info("[%s] 더 이상 결과 없음 (start=%d)", keyword, start)
                     break
 
                 self.logger.info(
@@ -196,25 +191,19 @@ class SaraminCrawler:
                 if start >= total:
                     break
 
-            self.logger.info(
-                "키워드 [%s] 수집 완료: %d건", keyword, len(keyword_jobs)
-            )
+            self.logger.info("키워드 [%s] 수집 완료: %d건", keyword, len(keyword_jobs))
             all_jobs.extend(keyword_jobs)
 
         # 상세 페이지에서 기술 스택 추출
         if not skip_detail and all_jobs:
-            self.logger.info(
-                "상세 페이지 기술 스택 추출 시작 (%d건)", len(all_jobs)
-            )
+            self.logger.info("상세 페이지 기술 스택 추출 시작 (%d건)", len(all_jobs))
             for idx, job in enumerate(all_jobs, 1):
                 if not job.url:
                     continue
                 tech_stacks = self._fetch_detail_tech_stacks(job.url)
                 job.tech_stacks = tech_stacks
                 if idx % 10 == 0:
-                    self.logger.info(
-                        "상세 페이지 진행: %d/%d", idx, len(all_jobs)
-                    )
+                    self.logger.info("상세 페이지 진행: %d/%d", idx, len(all_jobs))
 
         # 미저장분 최종 저장
         if unsaved_jobs:
@@ -224,9 +213,7 @@ class SaraminCrawler:
         # 상세 페이지 방문 후 tech_stacks가 갱신되었으면 전체 다시 저장
         if not skip_detail and all_jobs:
             save_jobs_csv(all_jobs, csv_path, append=False)
-            self.logger.info(
-                "기술 스택 포함 전체 저장: %d건 -> %s", len(all_jobs), csv_path
-            )
+            self.logger.info("기술 스택 포함 전체 저장: %d건 -> %s", len(all_jobs), csv_path)
 
         elapsed = time.time() - start_time
         result = CrawlResult(
@@ -270,9 +257,7 @@ class SaraminCrawler:
             config.SARAMIN_RESULTS_PER_PAGE,
         )
 
-        response = requests.get(
-            config.SARAMIN_API_URL, params=params, timeout=15
-        )
+        response = requests.get(config.SARAMIN_API_URL, params=params, timeout=15)
         response.raise_for_status()
 
         # API 호출 카운터 갱신
@@ -344,9 +329,7 @@ class SaraminCrawler:
             self.logger.warning("상세 페이지 접근 실패 (%s): %s", url[:80], exc)
             return []
         except Exception as exc:
-            self.logger.warning(
-                "상세 페이지 파싱 실패 (%s): %s", url[:80], exc
-            )
+            self.logger.warning("상세 페이지 파싱 실패 (%s): %s", url[:80], exc)
             return []
 
     def _create_dummy_jobs(self) -> list[JobPosting]:
@@ -391,9 +374,7 @@ class SaraminCrawler:
             },
         ]
 
-        return [
-            JobPosting(source="saramin", **data) for data in dummy_data
-        ]
+        return [JobPosting(source="saramin", **data) for data in dummy_data]  # type: ignore[arg-type]
 
     def _is_api_exhausted(self) -> bool:
         """일일 API 호출 한도에 도달했는지 확인한다.

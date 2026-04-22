@@ -7,7 +7,9 @@ from pathlib import Path
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Merge multiple wanted crawl JSON files with deduplication.")
+    parser = argparse.ArgumentParser(
+        description="Merge multiple wanted crawl JSON files with deduplication."
+    )
     parser.add_argument(
         "--inputs",
         nargs="+",
@@ -67,7 +69,9 @@ def merge(records, verbose):
             incoming_at = record.get("collected_at", "")
             if incoming_at > existing_at:
                 if verbose:
-                    print(f"  [dedup] source_id={sid}: replacing {existing_at!r} -> {incoming_at!r}")
+                    print(
+                        f"  [dedup] source_id={sid}: replacing {existing_at!r} -> {incoming_at!r}"
+                    )
                 seen[sid] = record
     return seen
 

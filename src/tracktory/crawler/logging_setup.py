@@ -3,10 +3,11 @@
 - 콘솔 + 파일 핸들러
 - --verbose 모드 지원
 """
+
 import logging
 import sys
 from datetime import datetime
-from pathlib import Path
+
 from tracktory.crawler.config import config
 
 
@@ -29,8 +30,7 @@ def setup_logging(name: str = "crawling", verbose: bool = False) -> logging.Logg
     logger.setLevel(level)
 
     formatter = logging.Formatter(
-        "%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S"
+        "%(asctime)s [%(levelname)s] %(name)s: %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
     )
 
     # Console handler

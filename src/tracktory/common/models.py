@@ -1,8 +1,10 @@
 """
 통합 데이터 모델 - 사람인/원티드 공통 스키마
 """
+
 from datetime import datetime
 from typing import Any
+
 from pydantic import BaseModel, Field
 
 

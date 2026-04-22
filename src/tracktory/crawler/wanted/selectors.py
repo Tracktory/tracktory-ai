@@ -54,6 +54,7 @@ SECTION_HEADERS: dict[str, str] = {
 # 내부 헬퍼 함수
 # ---------------------------------------------------------------------------
 
+
 async def _safe_text(page: Page, selectors: list[str]) -> str:
     """여러 CSS 셀렉터를 순서대로 시도하여 첫 번째 매칭 요소의 텍스트를 반환한다.
 
@@ -114,7 +115,7 @@ async def _get_next_data(page: Page) -> dict[str, Any] | None:
             }
         """)
         if raw:
-            return json.loads(raw)
+            return json.loads(raw)  # type: ignore[no-any-return]
     except Exception:
         pass
     return None
@@ -136,17 +137,25 @@ def _find_detail_html(data: Any, depth: int = 0) -> str | None:
         return None
 
     detail_keys = {
-        "detail", "description", "jobDetail", "job_detail",
-        "content", "body", "position_detail",
+        "detail",
+        "description",
+        "jobDetail",
+        "job_detail",
+        "content",
+        "body",
+        "position_detail",
     }
 
     if isinstance(data, dict):
         # 직접 키 매칭
         for key, value in data.items():
-            if key.lower() in detail_keys and isinstance(value, str) and len(value) > 100:
-                # HTML 태그가 포함된 긴 문자열이면 상세 콘텐츠로 판단
-                if "<" in value or "주요업무" in value or "자격요건" in value:
-                    return value
+            if (
+                key.lower() in detail_keys
+                and isinstance(value, str)
+                and len(value) > 100
+                and ("<" in value or "주요업무" in value or "자격요건" in value)
+            ):
+                return value
         # 재귀 탐색
         for value in data.values():
             result = _find_detail_html(value, depth + 1)
@@ -220,10 +229,7 @@ def _parse_sections_from_html(html: str) -> dict[str, str]:
     for i, (pos, key, kw) in enumerate(unique_positions):
         # 키워드 이후부터 다음 섹션 시작 전까지
         start = pos + len(kw)
-        if i + 1 < len(unique_positions):
-            end = unique_positions[i + 1][0]
-        else:
-            end = len(html)
+        end = unique_positions[i + 1][0] if i + 1 < len(unique_positions) else len(html)
 
         section_html = html[start:end]
         text = strip_tags(section_html).strip()
@@ -250,8 +256,13 @@ def _find_experience_in_json(data: Any, depth: int = 0) -> str | None:
         return None
 
     experience_keys = {
-        "experience", "experience_level", "career", "experienceLevel",
-        "experience_type", "career_type", "position_experience",
+        "experience",
+        "experience_level",
+        "career",
+        "experienceLevel",
+        "experience_type",
+        "career_type",
+        "position_experience",
     }
 
     if isinstance(data, dict):
@@ -263,7 +274,7 @@ def _find_experience_in_json(data: Any, depth: int = 0) -> str | None:
                     # e.g., {"name": "신입", "id": 1}
                     name = value.get("name") or value.get("title") or value.get("label", "")
                     if name and isinstance(name, str):
-                        return name.strip()
+                        return name.strip()  # type: ignore[no-any-return]
                 elif isinstance(value, int):
                     # e.g., experience_level: 1 -> "신입"
                     level_map = {0: "경력무관", 1: "신입", 2: "경력"}
@@ -299,8 +310,14 @@ def _extract_from_next_data(data: Any, depth: int = 0) -> list[str]:
 
     tags: list[str] = []
     skill_keys = {
-        "skill", "skills", "tag", "tags", "tech", "techs",
-        "skill_tags", "skillTags",
+        "skill",
+        "skills",
+        "tag",
+        "tags",
+        "tech",
+        "techs",
+        "skill_tags",
+        "skillTags",
     }
 
     if isinstance(data, dict):
@@ -311,11 +328,7 @@ def _extract_from_next_data(data: Any, depth: int = 0) -> list[str]:
                         if isinstance(item, str) and item.strip():
                             tags.append(item.strip())
                         elif isinstance(item, dict):
-                            name = (
-                                item.get("name")
-                                or item.get("title")
-                                or item.get("keyword", "")
-                            )
+                            name = item.get("name") or item.get("title") or item.get("keyword", "")
                             if name and isinstance(name, str):
                                 tags.append(name.strip())
             else:
@@ -330,6 +343,7 @@ def _extract_from_next_data(data: Any, depth: int = 0) -> list[str]:
 # ---------------------------------------------------------------------------
 # 공개 추출 함수
 # ---------------------------------------------------------------------------
+
 
 async def extract_skill_tags(page: Page) -> list[str]:
     """원티드 채용공고 페이지에서 기술스택 태그를 추출한다.
@@ -625,12 +639,15 @@ async def extract_company_name(page: Page) -> str:
     Returns:
         회사명 문자열. 추출 실패 시 빈 문자열.
     """
-    return await _safe_text(page, [
-        "a[class*='CompanyName']",
-        "a[class*='company_name']",
-        "[class*='company-name']",
-        "header a",
-    ])
+    return await _safe_text(
+        page,
+        [
+            "a[class*='CompanyName']",
+            "a[class*='company_name']",
+            "[class*='company-name']",
+            "header a",
+        ],
+    )
 
 
 async def extract_job_title(page: Page) -> str:
@@ -644,13 +661,16 @@ async def extract_job_title(page: Page) -> str:
     Returns:
         공고 제목 문자열. 추출 실패 시 빈 문자열.
     """
-    return await _safe_text(page, [
-        "h1[class*='JobHeader']",
-        "h2[class*='JobHeader']",
-        "[class*='position-name']",
-        "[class*='job-title']",
-        "h1",
-    ])
+    return await _safe_text(
+        page,
+        [
+            "h1[class*='JobHeader']",
+            "h2[class*='JobHeader']",
+            "[class*='position-name']",
+            "[class*='job-title']",
+            "h1",
+        ],
+    )
 
 
 async def extract_location(page: Page) -> str:
@@ -662,11 +682,14 @@ async def extract_location(page: Page) -> str:
     Returns:
         근무지 문자열. 추출 실패 시 빈 문자열.
     """
-    return await _safe_text(page, [
-        "[class*='location']",
-        "[class*='Location']",
-        "span[class*='address']",
-    ])
+    return await _safe_text(
+        page,
+        [
+            "[class*='location']",
+            "[class*='Location']",
+            "span[class*='address']",
+        ],
+    )
 
 
 async def extract_deadline(page: Page) -> str:
@@ -678,11 +701,14 @@ async def extract_deadline(page: Page) -> str:
     Returns:
         마감일 문자열. 추출 실패 시 빈 문자열.
     """
-    return await _safe_text(page, [
-        "[class*='deadline']",
-        "[class*='Deadline']",
-        "[class*='expire']",
-    ])
+    return await _safe_text(
+        page,
+        [
+            "[class*='deadline']",
+            "[class*='Deadline']",
+            "[class*='expire']",
+        ],
+    )
 
 
 async def extract_experience(page: Page) -> str:

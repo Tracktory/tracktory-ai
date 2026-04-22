@@ -3,8 +3,9 @@
 - .env에서 환경변수 로드
 - 프로젝트 경로 해석
 """
-import os
+
 from pathlib import Path
+
 from dotenv import load_dotenv
 
 # Project root = 4 levels up: common -> tracktory -> src -> root

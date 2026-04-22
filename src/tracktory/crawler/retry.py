@@ -2,12 +2,14 @@
 재시도 데코레이터 - 지수 백오프 + 지터
 동기/비동기 모두 지원
 """
+
 import asyncio
 import functools
 import logging
 import random
 import time
-from typing import Any, Callable, Type
+from collections.abc import Callable
+from typing import Any
 
 logger = logging.getLogger("crawling.retry")
 
@@ -18,7 +20,7 @@ def retry(
     max_attempts: int = 3,
     base_delay: float = 1.0,
     max_delay: float = 30.0,
-    exceptions: tuple[Type[Exception], ...] = (Exception,),
+    exceptions: tuple[type[Exception], ...] = (Exception,),
 ) -> Any:
     """동기 함수에 지수 백오프 재시도 로직을 적용하는 데코레이터.
 
@@ -60,7 +62,7 @@ def retry(
                             exc,
                         )
                         raise
-                    delay = min(base_delay * (2 ** attempt) + random.random(), max_delay)
+                    delay = min(base_delay * (2**attempt) + random.random(), max_delay)
                     logger.warning(
                         "[retry] '%s' 시도 %d/%d 실패 | 오류: %s | %.2f초 후 재시도",
                         fn.__name__,
@@ -89,7 +91,7 @@ def async_retry(
     max_attempts: int = 3,
     base_delay: float = 1.0,
     max_delay: float = 30.0,
-    exceptions: tuple[Type[Exception], ...] = (Exception,),
+    exceptions: tuple[type[Exception], ...] = (Exception,),
 ) -> Any:
     """비동기 함수에 지수 백오프 재시도 로직을 적용하는 데코레이터.
 
@@ -131,7 +133,7 @@ def async_retry(
                             exc,
                         )
                         raise
-                    delay = min(base_delay * (2 ** attempt) + random.random(), max_delay)
+                    delay = min(base_delay * (2**attempt) + random.random(), max_delay)
                     logger.warning(
                         "[async_retry] '%s' 시도 %d/%d 실패 | 오류: %s | %.2f초 후 재시도",
                         fn.__name__,
