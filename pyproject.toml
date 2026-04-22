@@ -21,6 +21,7 @@ packages = ["src/tracktory"]
 [dependency-groups]
 dev = [
     "mypy>=1.20.0",
+    "pre-commit>=4.6.0",
     "ruff>=0.15.10",
 ]
 
