@@ -3,8 +3,8 @@
 import argparse
 import asyncio
 
-from tracktory.crawler.wanted.crawler import WantedCrawler
 from tracktory.crawler.config import config
+from tracktory.crawler.wanted.crawler import WantedCrawler
 
 
 def main():
@@ -13,32 +13,40 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
-        "--categories", nargs="+", default=None,
+        "--categories",
+        nargs="+",
+        default=None,
         help="수집할 카테고리 목록 (공백 구분). 미지정 시 전체 카테고리.",
     )
     parser.add_argument(
-        "--max-per-category", type=int,
+        "--max-per-category",
+        type=int,
         default=config.WANTED_DEFAULT_PER_CATEGORY,
         help=f"카테고리당 최대 수집 건수 (기본: {config.WANTED_DEFAULT_PER_CATEGORY})",
     )
     parser.add_argument(
-        "--dry-run", action="store_true",
+        "--dry-run",
+        action="store_true",
         help="URL 수집만 확인 (상세 크롤링 수행 안 함)",
     )
     parser.add_argument(
-        "--no-headless", action="store_true",
+        "--no-headless",
+        action="store_true",
         help="브라우저 표시 (디버깅용)",
     )
     parser.add_argument(
-        "--verbose", action="store_true",
+        "--verbose",
+        action="store_true",
         help="상세 로그 출력",
     )
     parser.add_argument(
-        "--no-resume", action="store_true",
+        "--no-resume",
+        action="store_true",
         help="resume 비활성화 (진행 상태 무시, 처음부터 수집)",
     )
     parser.add_argument(
-        "--list-categories", action="store_true",
+        "--list-categories",
+        action="store_true",
         help="사용 가능한 카테고리 목록 출력 후 종료",
     )
     args = parser.parse_args()
@@ -67,6 +75,7 @@ def main():
     if args.no_resume:
         import tempfile
         from pathlib import Path
+
         progress_path = Path(tempfile.mkdtemp()) / "no_resume_progress.json"
 
     results = asyncio.run(

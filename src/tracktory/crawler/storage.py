@@ -1,6 +1,7 @@
 """
 통합 저장 모듈 - CSV/JSON 출력 및 재개(resume) 추적
 """
+
 import csv
 import json
 from datetime import datetime
@@ -167,7 +168,7 @@ def load_category_progress(path: Path) -> dict:
         if not path.exists():
             return {}
         with path.open("r", encoding="utf-8") as fh:
-            return json.load(fh)
+            return json.load(fh)  # type: ignore[no-any-return]
     except Exception:
         return {}
 

@@ -28,12 +28,19 @@ from pathlib import Path
 from playwright.async_api import (
     Page,
     async_playwright,
+)
+from playwright.async_api import (
     TimeoutError as PlaywrightTimeoutError,
 )
 
+from tracktory.common.models import CrawlResult, JobPosting
+from tracktory.common.tech_keywords import (
+    classify_job_category,
+    extract_tech_keywords,
+    normalize_tech_tags,
+)
 from tracktory.crawler.config import config
 from tracktory.crawler.logging_setup import setup_logging
-from tracktory.common.models import CrawlResult, JobPosting
 from tracktory.crawler.retry import async_retry
 from tracktory.crawler.storage import (
     get_category_output_path,
@@ -44,11 +51,7 @@ from tracktory.crawler.storage import (
     save_jobs_csv,
     save_jobs_json,
 )
-from tracktory.common.tech_keywords import (
-    classify_job_category,
-    extract_tech_keywords,
-    normalize_tech_tags,
-)
+
 from .selectors import (
     extract_company_info,
     extract_company_name,
@@ -174,9 +177,7 @@ class WantedCrawler:
                         pending_urls.append(url)
 
                 if total_skipped > 0:
-                    self._logger.info(
-                        "%d개 URL 재크롤링 스킵 (이미 수집됨)", total_skipped
-                    )
+                    self._logger.info("%d개 URL 재크롤링 스킵 (이미 수집됨)", total_skipped)
                 self._logger.info("크롤링 예정: %d개", len(pending_urls))
 
                 if not pending_urls:
@@ -196,9 +197,7 @@ class WantedCrawler:
                 batch: list[JobPosting] = []
 
                 for idx, url in enumerate(pending_urls, start=1):
-                    self._logger.info(
-                        "[%d/%d] 크롤링 중: %s", idx, len(pending_urls), url
-                    )
+                    self._logger.info("[%d/%d] 크롤링 중: %s", idx, len(pending_urls), url)
 
                     job = await self._extract_job_detail(detail_page, url)
 
@@ -228,9 +227,7 @@ class WantedCrawler:
 
                     # 서버 부하 방지 딜레이
                     if idx < len(pending_urls):
-                        delay = random.uniform(
-                            config.WANTED_DELAY_MIN, config.WANTED_DELAY_MAX
-                        )
+                        delay = random.uniform(config.WANTED_DELAY_MIN, config.WANTED_DELAY_MAX)
                         self._logger.debug("  딜레이 %.1f초 대기 중...", delay)
                         await asyncio.sleep(delay)
 
@@ -314,9 +311,7 @@ class WantedCrawler:
                 batch: list[JobPosting] = []
 
                 for idx, url in enumerate(urls, start=1):
-                    self._logger.info(
-                        "[%d/%d] 재크롤링 중: %s", idx, len(urls), url
-                    )
+                    self._logger.info("[%d/%d] 재크롤링 중: %s", idx, len(urls), url)
 
                     job = await self._extract_job_detail(detail_page, url)
 
@@ -346,9 +341,7 @@ class WantedCrawler:
 
                     # 서버 부하 방지 딜레이
                     if idx < len(urls):
-                        delay = random.uniform(
-                            config.WANTED_DELAY_MIN, config.WANTED_DELAY_MAX
-                        )
+                        delay = random.uniform(config.WANTED_DELAY_MIN, config.WANTED_DELAY_MAX)
                         self._logger.debug("  딜레이 %.1f초 대기 중...", delay)
                         await asyncio.sleep(delay)
 
@@ -411,9 +404,7 @@ class WantedCrawler:
             # Validate requested categories
             invalid = [c for c in categories if c not in category_tags]
             if invalid:
-                self._logger.warning(
-                    "알 수 없는 카테고리 (건너뜀): %s", ", ".join(invalid)
-                )
+                self._logger.warning("알 수 없는 카테고리 (건너뜀): %s", ", ".join(invalid))
             target_categories = [c for c in categories if c in category_tags]
         else:
             target_categories = list(category_tags.keys())
@@ -467,8 +458,11 @@ class WantedCrawler:
                     separator = "=" * 60
                     self._logger.info(
                         "\n%s\n[카테고리 %d/%d] %s 수집 시작\n%s",
-                        separator, cat_idx, len(target_categories),
-                        category, separator,
+                        separator,
+                        cat_idx,
+                        len(target_categories),
+                        category,
+                        separator,
                     )
 
                     # Resume check
@@ -476,7 +470,8 @@ class WantedCrawler:
                     if cat_progress.get("status") == "done":
                         self._logger.info(
                             "  %s: 이미 완료됨 (수집 %d건). 건너뜁니다.",
-                            category, cat_progress.get("collected", 0),
+                            category,
+                            cat_progress.get("collected", 0),
                         )
                         results[category] = CrawlResult(
                             source="wanted",
@@ -498,9 +493,7 @@ class WantedCrawler:
                     seen_urls: set[str] = set()
 
                     for tag_id in tag_ids:
-                        list_url = config.WANTED_CATEGORY_LIST_URL_TEMPLATE.format(
-                            tag_id=tag_id
-                        )
+                        list_url = config.WANTED_CATEGORY_LIST_URL_TEMPLATE.format(tag_id=tag_id)
                         urls = await self._collect_job_urls_from(
                             list_page, list_url, max_per_category
                         )
@@ -509,20 +502,21 @@ class WantedCrawler:
                                 seen_urls.add(url)
                                 all_urls.append(url)
 
-                    self._logger.info(
-                        "  %s: URL %d개 수집 완료", category, len(all_urls)
-                    )
+                    self._logger.info("  %s: URL %d개 수집 완료", category, len(all_urls))
 
                     # Filter already collected
                     pending_urls = [
-                        url for url in all_urls
+                        url
+                        for url in all_urls
                         if self._extract_source_id(url) not in global_collected_ids
                     ]
                     skipped = len(all_urls) - len(pending_urls)
                     if skipped > 0:
                         self._logger.info(
                             "  %s: %d개 중복 제거, %d개 크롤링 예정",
-                            category, skipped, len(pending_urls),
+                            category,
+                            skipped,
+                            len(pending_urls),
                         )
 
                     # Update progress
@@ -538,7 +532,9 @@ class WantedCrawler:
                     if dry_run:
                         self._logger.info(
                             "  [DRY RUN] %s: URL %d개 (중복 제거 후 %d개)",
-                            category, len(all_urls), len(pending_urls),
+                            category,
+                            len(all_urls),
+                            len(pending_urls),
                         )
                         progress[category]["status"] = "dry_run"
                         save_category_progress(progress, progress_path)
@@ -560,7 +556,10 @@ class WantedCrawler:
                     for idx, url in enumerate(pending_urls, start=1):
                         self._logger.info(
                             "  [%s %d/%d] 크롤링 중: %s",
-                            category, idx, len(pending_urls), url,
+                            category,
+                            idx,
+                            len(pending_urls),
+                            url,
                         )
 
                         job = await self._extract_job_detail(detail_page, url)
@@ -571,7 +570,9 @@ class WantedCrawler:
                             global_collected_ids.add(job.source_id)
                             self._logger.info(
                                 "    완료: [%s] %s -- %s (태그 %d개)",
-                                job.category, job.company, job.title,
+                                job.category,
+                                job.company,
+                                job.title,
                                 len(job.tech_stacks),
                             )
                         else:
@@ -583,7 +584,8 @@ class WantedCrawler:
                             save_jobs_csv(batch, csv_path, append=True)
                             self._logger.info(
                                 "    >> %d건 중간 저장 (누적: %d건)",
-                                len(batch), len(cat_jobs),
+                                len(batch),
+                                len(cat_jobs),
                             )
                             batch.clear()
 
@@ -593,9 +595,7 @@ class WantedCrawler:
 
                         # Delay between requests
                         if idx < len(pending_urls):
-                            delay = random.uniform(
-                                config.WANTED_DELAY_MIN, config.WANTED_DELAY_MAX
-                            )
+                            delay = random.uniform(config.WANTED_DELAY_MIN, config.WANTED_DELAY_MAX)
                             await asyncio.sleep(delay)
 
                     # Save remaining batch
@@ -628,7 +628,10 @@ class WantedCrawler:
 
                     self._logger.info(
                         "  %s 완료: 수집 %d건, 실패 %d건, 소요 %.1f초",
-                        category, len(cat_jobs), cat_failed, cat_duration,
+                        category,
+                        len(cat_jobs),
+                        cat_failed,
+                        cat_duration,
                     )
 
                 await list_page.close()
@@ -646,14 +649,15 @@ class WantedCrawler:
             "\n=== 카테고리별 크롤링 완료 ===\n"
             "  총 카테고리: %d개\n  총 수집: %d건\n  총 실패: %d건\n"
             "  총 소요시간: %.1f초",
-            len(results), total_collected, total_failed, total_duration,
+            len(results),
+            total_collected,
+            total_failed,
+            total_duration,
         )
 
         return results
 
-    async def _collect_job_urls(
-        self, page: Page, max_jobs: int
-    ) -> list[str]:
+    async def _collect_job_urls(self, page: Page, max_jobs: int) -> list[str]:
         """목록 페이지에서 무한 스크롤을 통해 채용공고 URL을 수집한다.
 
         원티드는 스크롤 시 XHR로 추가 카드를 렌더링하는 React SPA이므로
@@ -667,9 +671,7 @@ class WantedCrawler:
             수집된 채용공고 URL 리스트.
         """
         self._logger.info("목록 페이지 로딩 중: %s", config.WANTED_JOB_LIST_URL)
-        await self._navigate_with_retry(
-            page, config.WANTED_JOB_LIST_URL
-        )
+        await self._navigate_with_retry(page, config.WANTED_JOB_LIST_URL)
         await page.wait_for_timeout(3000)
 
         job_urls: list[str] = []
@@ -723,9 +725,7 @@ class WantedCrawler:
         self._logger.info("총 %d개 채용공고 URL 수집 완료", len(job_urls))
         return job_urls[:max_jobs]
 
-    async def _collect_job_urls_from(
-        self, page: Page, list_url: str, max_jobs: int
-    ) -> list[str]:
+    async def _collect_job_urls_from(self, page: Page, list_url: str, max_jobs: int) -> list[str]:
         """주어진 목록 URL에서 무한 스크롤로 채용공고 URL을 수집한다.
 
         Args:
@@ -789,9 +789,7 @@ class WantedCrawler:
         self._logger.info("총 %d개 채용공고 URL 수집 완료", len(job_urls))
         return job_urls[:max_jobs]
 
-    async def _extract_job_detail(
-        self, page: Page, url: str
-    ) -> JobPosting | None:
+    async def _extract_job_detail(self, page: Page, url: str) -> JobPosting | None:
         """채용공고 상세 페이지에서 구조화된 정보를 추출한다.
 
         페이지 네비게이션, 데이터 추출, JobPosting 모델 생성까지

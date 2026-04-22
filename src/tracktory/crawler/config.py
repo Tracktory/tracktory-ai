@@ -3,11 +3,12 @@
 - 크롤러 전용 설정 (API 키, 딜레이, URL 등)
 - 공통 설정은 tracktory.common.config에서 가져옴
 """
+
 import os
 from pathlib import Path
 
-from tracktory.common.config import config as common_config
 from tracktory.common.categories import IT_JOB_CATEGORIES, WANTED_CATEGORY_TAGS
+from tracktory.common.config import config as common_config
 
 
 class CrawlingConfig:

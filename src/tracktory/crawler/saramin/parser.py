@@ -5,11 +5,11 @@
 사람인 Open API가 반환하는 XML 응답을 파싱하여
 JobPosting 객체 리스트로 변환한다.
 """
+
 from __future__ import annotations
 
 import logging
 import xml.etree.ElementTree as ET
-from datetime import datetime
 
 from tracktory.common.models import JobPosting
 from tracktory.common.tech_keywords import classify_job_category

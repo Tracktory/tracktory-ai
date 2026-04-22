@@ -20,14 +20,14 @@ from pathlib import Path
 
 from tracktory.common.tech_keywords import classify_job_category
 
-
 # ---------------------------------------------------------------------------
 # I/O helpers
 # ---------------------------------------------------------------------------
 
+
 def load_raw_json(path: str) -> list[dict]:
     """Load raw JSON array from *path* and return as a list of dicts."""
-    return json.loads(Path(path).read_text(encoding="utf-8"))
+    return json.loads(Path(path).read_text(encoding="utf-8"))  # type: ignore[no-any-return]
 
 
 def save_processed(data: list[dict], path: str) -> None:
@@ -43,6 +43,7 @@ def save_processed(data: list[dict], path: str) -> None:
 # ---------------------------------------------------------------------------
 # Bullet cleanup (A2)
 # ---------------------------------------------------------------------------
+
 
 def clean_bullet_text(text: str) -> str:
     """Normalise bullet / numbered list formatting in *text*.
@@ -90,6 +91,7 @@ def clean_bullet_text(text: str) -> str:
 # Category reclassification
 # ---------------------------------------------------------------------------
 
+
 def reclassify_category(record: dict) -> str:
     """Return a (possibly improved) category for *record*.
 
@@ -100,7 +102,7 @@ def reclassify_category(record: dict) -> str:
     """
     current = record.get("category", "기타")
     if current != "기타":
-        return current
+        return current  # type: ignore[no-any-return]
 
     title = record.get("title", "")
     extra = record.get("extra") or {}
@@ -153,17 +155,31 @@ def _preprocess_record(record: dict) -> tuple[dict, bool, int, bool]:
     # --- category reclassification ---
     # reclassify_category reads from rec (which already has updated extra)
     new_category = reclassify_category(rec)
-    category_reclassified = (rec.get("category") == "기타" and new_category != "기타")
+    category_reclassified = rec.get("category") == "기타" and new_category != "기타"
     rec["category"] = new_category
 
     return rec, bullet_cleaned, null_count, category_reclassified
 
 
 _CSV_COLUMNS = [
-    "source", "source_id", "company", "title", "category",
-    "tech_stacks", "location", "salary", "url", "experience",
-    "collected_at", "responsibilities", "requirements",
-    "preferred", "benefits", "deadline", "company_id", "industry_name",
+    "source",
+    "source_id",
+    "company",
+    "title",
+    "category",
+    "tech_stacks",
+    "location",
+    "salary",
+    "url",
+    "experience",
+    "collected_at",
+    "responsibilities",
+    "requirements",
+    "preferred",
+    "benefits",
+    "deadline",
+    "company_id",
+    "industry_name",
 ]
 
 
@@ -192,10 +208,20 @@ def _save_csv(data: list[dict], path: Path) -> None:
 def main() -> None:
     """CLI entry point: load → clean → save → print statistics."""
     parser = argparse.ArgumentParser(description="Preprocess wanted job data")
-    parser.add_argument("--input", "-i", type=str, default=None,
-                        help="Input JSON file path. Default: auto-detect latest in data/raw/")
-    parser.add_argument("--output", "-o", type=str, default=None,
-                        help="Output JSON file path. Default: data/processed/wanted_cleaned.json")
+    parser.add_argument(
+        "--input",
+        "-i",
+        type=str,
+        default=None,
+        help="Input JSON file path. Default: auto-detect latest in data/raw/",
+    )
+    parser.add_argument(
+        "--output",
+        "-o",
+        type=str,
+        default=None,
+        help="Output JSON file path. Default: data/processed/wanted_cleaned.json",
+    )
     args = parser.parse_args()
 
     project_root = Path(__file__).resolve().parents[3]
@@ -204,7 +230,9 @@ def main() -> None:
         raw_path = Path(args.input)
     else:
         raw_dir = project_root / "data" / "raw"
-        candidates = sorted(raw_dir.glob("wanted_*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+        candidates = sorted(
+            raw_dir.glob("wanted_*.json"), key=lambda p: p.stat().st_mtime, reverse=True
+        )
         if not candidates:
             print("Error: No wanted_*.json files found in data/raw/")
             sys.exit(1)
