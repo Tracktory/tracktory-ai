@@ -52,14 +52,24 @@ tracktory-ai/
 ├── src/tracktory/
 │   ├── common/             # 도메인 모델, 카테고리 분류, 기술 키워드
 │   ├── crawler/            # 채용공고 크롤러 (원티드, 사람인)
-│   │   ├── wanted/         #   원티드 크롤러 (주력)
-│   │   ├── saramin/        #   사람인 크롤러 (초기 스캐폴드)
-│   │   └── preprocessing/  #   원시 데이터 → 정제 데이터
+│   │   ├── wanted/         # 원티드 크롤러 (주력)
+│   │   ├── saramin/        # 사람인 크롤러 (초기 스캐폴드)
+│   │   └── preprocessing/  # 채용공고 원시 데이터 → 정제 데이터
+│   ├── rag/                # RAGFlow 전처리·적재·검색 (한성대 학사 데이터)
+│   │   ├── preprocessing/  # data/raw/hansung/* → RAGFlow 적재용 청크 텍스트
+│   │   └── client.py       # RAGFlow SDK wrapper — graph/ 노드가 주입받아 사용
 │   ├── graph/              # (예정) LangGraph State, 노드, 엣지
 │   ├── prompts/            # (예정) 프롬프트 템플릿
 │   └── api/                # (예정) FastAPI 라우터
 ├── scripts/                # 유틸 스크립트 (크롤링 실행, 데이터 병합)
 ├── tests/                  # 단위/통합 테스트
+├── data/                   # 데이터 (gitignore — 팀 채널로 동기화)
+│   ├── raw/                # 원본 수집 데이터 (한성대 학사, 원티드 채용공고)
+│   │   └── hansung/        # 한성대 학사 (트랙·강의·강의계획서)
+│   ├── processed/          # 전처리·정제 결과
+│   ├── eval/               # 평가용 골드셋 (쿼리셋 등)
+│   │   └── queryset/
+│   └── _legacy/            # 현 파이프라인 미사용, 참조 보존용
 ├── pyproject.toml          # 의존성 + ruff/mypy/pytest 설정
 ├── CONTRIBUTING.md         # 개발 규칙 (커밋·코드·테스트 컨벤션)
 └── CLAUDE.md               # Claude Code 세션용 프로젝트 컨텍스트
