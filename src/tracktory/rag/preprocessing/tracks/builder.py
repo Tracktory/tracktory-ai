@@ -5,15 +5,15 @@ import os
 from typing import Any
 
 _SECTION_ORDER: list[tuple[str, str]] = [
-    ("소개",         "소개"),
-    ("교육목표",     "교육목표"),
-    ("양성인력",     "목표 양성 인력"),
-    ("진로",         "졸업 후 진로"),
-    ("역량",         "전공역량"),
-    ("연계트랙",     "연계트랙"),
-    ("필수교과목",   "필수 교과목"),
-    ("자격증",       "관련 자격증"),
-    ("산학협력",     "산학협력업체"),
+    ("소개", "소개"),
+    ("교육목표", "교육목표"),
+    ("양성인력", "목표 양성 인력"),
+    ("진로", "졸업 후 진로"),
+    ("역량", "전공역량"),
+    ("연계트랙", "연계트랙"),
+    ("필수교과목", "필수 교과목"),
+    ("자격증", "관련 자격증"),
+    ("산학협력", "산학협력업체"),
     ("관련홈페이지", "관련 홈페이지"),
 ]
 
@@ -78,12 +78,14 @@ def build_all(
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(doc_text)
 
-        results.append({
-            "track": track_name,
-            "college": college_info.get("college"),
-            "department": college_info.get("department"),
-            "sections": {k: v for k, v in sections.items() if v},
-        })
+        results.append(
+            {
+                "track": track_name,
+                "college": college_info.get("college"),
+                "department": college_info.get("department"),
+                "sections": {k: v for k, v in sections.items() if v},
+            }
+        )
 
     master_path = os.path.join(output_dir, "..", "tracks_master.json")
     with open(master_path, "w", encoding="utf-8") as f:

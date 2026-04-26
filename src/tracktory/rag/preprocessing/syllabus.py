@@ -11,10 +11,19 @@ import re
 
 import pandas as pd
 
-_SECTION_HEADERS: frozenset[str] = frozenset({
-    "수업정보", "교수정보", "인재상", "교수학습방법",
-    "수업유형", "역량성취기준", "성적평가", "수업계획", "주차별 수업계획",
-})
+_SECTION_HEADERS: frozenset[str] = frozenset(
+    {
+        "수업정보",
+        "교수정보",
+        "인재상",
+        "교수학습방법",
+        "수업유형",
+        "역량성취기준",
+        "성적평가",
+        "수업계획",
+        "주차별 수업계획",
+    }
+)
 
 _SKIP_SECTIONS: frozenset[str] = frozenset({"인재상", "교수학습방법", "수업유형", "성적평가"})
 
@@ -76,7 +85,7 @@ def _parse_syllabus(text: str) -> dict[str, str | list[str]]:
             continue
         for key in ("교과목개요", "수업목표", "선수과목", "주교재"):
             if line.startswith(key):
-                result[key] = line[len(key):].strip()
+                result[key] = line[len(key) :].strip()
                 break
 
     weeks_data: list[tuple[int, list[str]]] = []
@@ -114,7 +123,8 @@ def _parse_syllabus(text: str) -> dict[str, str | list[str]]:
             topic = " ".join(topic_parts).strip()
         else:
             topic_lines = [
-                line for line in week_lines
+                line
+                for line in week_lines
                 if not _WEEK_NOISE_RE.match(line) and not line.startswith("PBL")
             ]
             topic = "\n".join(topic_lines).strip()

@@ -10,13 +10,13 @@ import pandas as pd
 from tracktory.rag.preprocessing.tracks.builder import load_college_map
 
 _CATEGORY_LABEL: dict[str, str] = {
-    "전기":       "전공기초",
-    "전선":       "전공선택",
-    "전필":       "전공필수",
+    "전기": "전공기초",
+    "전선": "전공선택",
+    "전필": "전공필수",
     "전선(상호)": "전공선택(상호인정)",
-    "교필":       "교양필수",
-    "선필교":     "선택필수교양",
-    "일교":       "일반교양",
+    "교필": "교양필수",
+    "선필교": "선택필수교양",
+    "일교": "일반교양",
 }
 
 

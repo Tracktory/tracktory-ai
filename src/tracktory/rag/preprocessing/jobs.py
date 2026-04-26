@@ -114,12 +114,14 @@ def build_jobs_from_csv(csv_path: str, output_dir: str) -> list[dict[str, str]]:
         with open(os.path.join(output_dir, filename), "w", encoding="utf-8") as f:
             f.write(doc)
 
-        results.append({
-            "source": source,
-            "source_id": source_id,
-            "title": data["title"],
-            "company": data["company"],
-        })
+        results.append(
+            {
+                "source": source,
+                "source_id": source_id,
+                "title": data["title"],
+                "company": data["company"],
+            }
+        )
 
     return results
 
@@ -154,11 +156,13 @@ def build_jobs_from_postings(jobs: list[JobPosting], output_dir: str) -> list[di
         with open(os.path.join(output_dir, filename), "w", encoding="utf-8") as f:
             f.write(doc)
 
-        results.append({
-            "source": job.source,
-            "source_id": job.source_id,
-            "title": job.title,
-            "company": job.company,
-        })
+        results.append(
+            {
+                "source": job.source,
+                "source_id": job.source_id,
+                "title": job.title,
+                "company": job.company,
+            }
+        )
 
     return results
