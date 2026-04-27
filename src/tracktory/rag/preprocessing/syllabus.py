@@ -36,7 +36,7 @@ _WEEKLY_TABLE_HEADER = "주차 보강시 예정일 강의주제 및 내용 강�
 
 
 def _parse_syllabus(text: str) -> dict[str, str | list[str]]:
-    """강의계획서 원문 텍스트를 필드별 dict으로 파싱한다."""
+    """섹션 구분자가 과목마다 불일치해 정규식 파싱 필요. 섹션 분리 후 필드별 dict 추출."""
     lines = [line.strip() for line in text.split("\n") if line.strip()]
 
     sections: dict[str, list[str]] = {}
@@ -140,7 +140,6 @@ def _parse_syllabus(text: str) -> dict[str, str | list[str]]:
 
 
 def _build_document(course_code: str, parsed: dict[str, str | list[str]]) -> str:
-    """파싱 결과를 RAG 문서 텍스트로 변환한다."""
     course_name = parsed.get("과목명", course_code)
     professor = parsed.get("교수", "")
     affiliation = parsed.get("소속", "")
@@ -198,7 +197,7 @@ def build_syllabi(
     syllabus_csv: str,
     output_dir: str,
 ) -> tuple[list[dict[str, str]], list[str]]:
-    """강의계획서 CSV에서 과목별 txt 파일을 생성한다."""
+    """일부 텍스트 파싱 실패해도 전체 중단 방지 필요. 과목명 추출 실패 시 skipped 분리 처리."""
     os.makedirs(output_dir, exist_ok=True)
     df = pd.read_csv(syllabus_csv, encoding="utf-8")
 

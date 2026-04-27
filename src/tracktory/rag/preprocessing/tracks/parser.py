@@ -100,7 +100,6 @@ for _sec, _headers in _SECTION_HEADERS.items():
 
 
 def _classify(line: str) -> str | None:
-    """줄이 섹션 헤더면 섹션 key를 반환하고, 아니면 None을 반환한다."""
     if line in _HEADER_TO_SECTION:
         return _HEADER_TO_SECTION[line]
     if (
@@ -115,7 +114,7 @@ def _classify(line: str) -> str | None:
 
 
 def parse(lines: list[str]) -> dict[str, str]:
-    """정제된 줄 리스트를 섹션별 텍스트 dict으로 변환한다."""
+    """섹션 헤더 표기가 트랙마다 달라 정규화 필요. 통일된 키로 매핑한 섹션 dict 반환."""
     sections: dict[str, list[str]] = {k: [] for k in _SECTION_HEADERS}
     current_sec = "소개"
 

@@ -19,7 +19,7 @@ _SECTION_ORDER: list[tuple[str, str]] = [
 
 
 def load_college_map(json_path: str) -> dict[str, dict[str, str]]:
-    """한성대_트랙구조.json에서 트랙명 → {college, department} 매핑을 로드한다."""
+    """트랙명만으로 소속 대학·학부 알 수 없어 RAG 문서 헤더 구성에 별도 JSON 필요. 트랙 → 소속 매핑 로드."""
     with open(json_path, encoding="utf-8") as f:
         data: list[dict[str, Any]] = json.load(f)
     mapping: dict[str, dict[str, str]] = {}
@@ -40,7 +40,7 @@ def build_document(
     sections: dict[str, str],
     college_info: dict[str, str],
 ) -> str:
-    """섹션 dict를 RAG 문서 텍스트로 변환한다. 컨텍스트 헤더가 첫 줄에 위치한다."""
+    """RAG 청크가 잘려 나와도 어느 트랙인지 알 수 있어야 해 헤더 필요. 첫 줄에 트랙·대학·학부 컨텍스트 헤더 포함하여 문서 생성."""
     college = college_info.get("college", "한성대학교")
     department = college_info.get("department", "")
 
@@ -65,7 +65,7 @@ def build_all(
     college_map: dict[str, dict[str, str]],
     output_dir: str,
 ) -> list[dict[str, Any]]:
-    """모든 트랙에 대해 txt 파일을 생성하고 검토용 master JSON을 출력한다."""
+    """txt 수백 개 생성 후 파싱 결과 일괄 검토 필요. 전 트랙 txt 생성 + tracks_master.json 출력."""
     os.makedirs(output_dir, exist_ok=True)
     results: list[dict[str, Any]] = []
 

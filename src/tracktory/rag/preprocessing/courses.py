@@ -21,7 +21,7 @@ _CATEGORY_LABEL: dict[str, str] = {
 
 
 def build_courses(track_csv: str, college_json: str, output_dir: str) -> list[dict[str, str | int]]:
-    """트랙별 교과목 목록 txt 파일을 생성한다."""
+    """이수 가능 시점 정보를 RAG에 포함해야 학년별 질문 대응 가능. 학년·학기별로 구조화하여 교과목 txt 생성."""
     os.makedirs(output_dir, exist_ok=True)
 
     df = pd.read_csv(track_csv, encoding="utf-8")

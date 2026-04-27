@@ -104,7 +104,7 @@ def _is_footer(line: str) -> bool:
 
 
 def _find_content_start(lines: list[str], track_name: str) -> int:
-    """실제 콘텐츠가 시작되는 인덱스 반환."""
+    """트랙 페이지마다 본문 시작 위치가 달라 탐지 로직 필요. 본문 시작 인덱스 반환."""
     edu_idx: int | None = None
     for i, line in enumerate(lines):
         if line == "교육과정소개":
@@ -136,7 +136,7 @@ def _find_content_start(lines: list[str], track_name: str) -> int:
 
 
 def clean(raw_text: str, track_name: str) -> list[str]:
-    """Raw 텍스트에서 웹 UI 노이즈를 제거한 줄 리스트를 반환한다."""
+    """nav/footer 텍스트가 RAG 검색 노이즈로 작동. 본문 범위를 찾아 불필요한 줄 제거 후 반환."""
     lines = [line.strip() for line in raw_text.split("\n") if line.strip()]
 
     end = len(lines)

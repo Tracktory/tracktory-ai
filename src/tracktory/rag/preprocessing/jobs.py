@@ -16,14 +16,13 @@ from tracktory.common.models import JobPosting
 
 
 def _val(v: Any) -> str:
-    """pandas NaN이면 빈 문자열, 아니면 문자열로 변환한다."""
     if pd.isna(v):
         return ""
     return str(v).strip()
 
 
 def _build_job_document(data: dict[str, str]) -> str:
-    """공고 데이터 dict를 RAG 문서 텍스트로 변환한다."""
+    """CSV·JobPosting 두 입력 경로가 동일 포맷 공유해야 해 분리. 공통 dict를 RAG 문서 텍스트로 변환."""
     title = data.get("title", "")
     company = data.get("company", "")
     category = data.get("category", "")
@@ -82,7 +81,7 @@ def _build_job_document(data: dict[str, str]) -> str:
 
 
 def build_jobs_from_csv(csv_path: str, output_dir: str) -> list[dict[str, str]]:
-    """CSV 파일에서 공고별 txt 파일을 생성한다."""
+    """배치 전처리용. 크롤링 결과 CSV를 한 번에 RAG 문서로 변환."""
     os.makedirs(output_dir, exist_ok=True)
     df = pd.read_csv(csv_path, encoding="utf-8")
 
@@ -127,7 +126,7 @@ def build_jobs_from_csv(csv_path: str, output_dir: str) -> list[dict[str, str]]:
 
 
 def build_jobs_from_postings(jobs: list[JobPosting], output_dir: str) -> list[dict[str, str]]:
-    """JobPosting 리스트에서 공고별 txt 파일을 생성한다."""
+    """크롤러 직접 연계용. 실시간 수집된 JobPosting 객체를 즉시 RAG 문서로 변환."""
     os.makedirs(output_dir, exist_ok=True)
 
     results: list[dict[str, str]] = []

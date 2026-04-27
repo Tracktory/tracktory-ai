@@ -6,6 +6,7 @@ data/raw/hansung/ 아래 CSV들을 읽어 data/processed/rag/ 에 RAGFlow 적재
     uv run python -m tracktory.rag.preprocessing.pipeline
 """
 
+import logging
 import os
 from pathlib import Path
 from typing import Any
@@ -20,6 +21,8 @@ from tracktory.rag.preprocessing.tracks.builder import build_all, load_college_m
 from tracktory.rag.preprocessing.tracks.cleaner import clean
 from tracktory.rag.preprocessing.tracks.parser import parse
 
+logger = logging.getLogger(__name__)
+
 _DIRECTORY_PAGE_SIGNALS: list[str] = ["대학_트랙", "대학전체", "공유하기", "팝업존"]
 
 
@@ -28,7 +31,7 @@ def process_tracks(
     college_json: str,
     output_dir: str,
 ) -> tuple[list[dict[str, Any]], list[tuple[str, str]]]:
-    """트랙 소개 파이프라인: clean → parse → build.
+    """크롤링 결과에 대학 전체 목록 페이지가 섞여 스킵 처리 필요. clean → parse → build 3단계 + 유효하지 않은 row 제거.
 
     Args:
         track_csv: 한성대_트랙정보.csv 경로.
@@ -73,7 +76,7 @@ def run_all(
     raw_dir: Path | None = None,
     output_dir: Path | None = None,
 ) -> None:
-    """네 가지 데이터(트랙·강의·강의계획서·채용공고) 전처리를 순서대로 실행한다.
+    """경로 설정과 4개 파이프라인 순서를 하나의 진입점에서 처리하기 위함. CommonConfig 기반 경로로 트랙·강의·강의계획서·채용공고 순 실행.
 
     Args:
         raw_dir: 원본 CSV 디렉터리. 기본값은 data/raw/hansung/.
@@ -84,46 +87,46 @@ def run_all(
     college_json = str(raw / "한성대_트랙구조.json")
 
     # ── 1. 트랙 소개 ───────────────────────────────────────────────────────────
-    print("[1/4] 트랙 소개 처리 중...")
+    logger.info("[1/4] 트랙 소개 처리 중...")
     results, skipped = process_tracks(
         track_csv=str(raw / "한성대_트랙정보.csv"),
         college_json=college_json,
         output_dir=str(out / "tracks"),
     )
-    print(f"  → tracks/ ({len(results)}개 / 스킵: {len(skipped)}개)")
+    logger.info("  → tracks/ (%d개 / 스킵: %d개)", len(results), len(skipped))
     for name, reason in skipped:
-        print(f"    [SKIP] {name}: {reason}")
+        logger.info("    [SKIP] %s: %s", name, reason)
 
     # ── 2. 강의정보 ────────────────────────────────────────────────────────────
-    print("[2/4] 강의정보 (교과목 목록) 처리 중...")
+    logger.info("[2/4] 강의정보 (교과목 목록) 처리 중...")
     course_results = build_courses(
         track_csv=str(raw / "한성대_강의정보.csv"),
         college_json=college_json,
         output_dir=str(out / "courses"),
     )
-    print(f"  → courses/ ({len(course_results)}개)")
+    logger.info("  → courses/ (%d개)", len(course_results))
 
     # ── 3. 강의계획서 ──────────────────────────────────────────────────────────
-    print("[3/4] 강의계획서 처리 중...")
+    logger.info("[3/4] 강의계획서 처리 중...")
     syl_results, syl_skipped = build_syllabi(
         syllabus_csv=str(raw / "한성대_강의계획서.csv"),
         output_dir=str(out / "syllabi"),
     )
-    print(f"  → syllabi/ ({len(syl_results)}개 / 스킵: {len(syl_skipped)}개)")
+    logger.info("  → syllabi/ (%d개 / 스킵: %d개)", len(syl_results), len(syl_skipped))
 
     # ── 4. 채용공고 ────────────────────────────────────────────────────────────
     jobs_csv = str(CommonConfig.DATA_PROCESSED_DIR / "wanted_cleaned.csv")
     if os.path.exists(jobs_csv):
-        print("[4/4] 채용공고 처리 중...")
+        logger.info("[4/4] 채용공고 처리 중...")
         job_results = build_jobs_from_csv(
             csv_path=jobs_csv,
             output_dir=str(out / "jobs"),
         )
-        print(f"  → jobs/ ({len(job_results)}개)")
+        logger.info("  → jobs/ (%d개)", len(job_results))
     else:
-        print(f"[4/4] 채용공고 건너뜀 — 파일 없음: {jobs_csv}")
+        logger.info("[4/4] 채용공고 건너뜀 — 파일 없음: %s", jobs_csv)
 
-    print("\n[완료] 전체 전처리 파이프라인 완료")
+    logger.info("[완료] 전체 전처리 파이프라인 완료")
 
 
 if __name__ == "__main__":
