@@ -19,7 +19,13 @@ _SECTION_ORDER: list[tuple[str, str]] = [
 
 
 def load_college_map(json_path: str) -> dict[str, dict[str, str]]:
-    """트랙명만으로 소속 대학·학부 알 수 없어 RAG 문서 헤더 구성에 별도 JSON 필요. 트랙 → 소속 매핑 로드."""
+    """트랙명만으로 소속 대학·학부 알 수 없어 RAG 문서 헤더 구성에 별도 JSON 필요. 트랙 → 소속 매핑 로드.
+
+    JSON 부재 시 빈 dict 반환. 다운스트림 ``build_document`` 가
+    ``college_info.get("college", "한성대학교")`` 로 fallback 처리하므로 한성대학교 헤더로 진행.
+    """
+    if not os.path.exists(json_path):
+        return {}
     with open(json_path, encoding="utf-8") as f:
         data: list[dict[str, Any]] = json.load(f)
     mapping: dict[str, dict[str, str]] = {}
