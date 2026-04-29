@@ -34,8 +34,8 @@ def process_tracks(
     """크롤링 결과에 대학 전체 목록 페이지가 섞여 스킵 처리 필요. clean → parse → build 3단계 + 유효하지 않은 row 제거.
 
     Args:
-        track_csv: 한성대_트랙정보.csv 경로.
-        college_json: 한성대_트랙구조.json 경로.
+        track_csv: tracks.csv 경로.
+        college_json: track_structure.json 경로 (부재 시 college_map 빈 dict로 fallback).
         output_dir: txt 파일 출력 디렉터리.
 
     Returns:
@@ -84,12 +84,12 @@ def run_all(
     """
     raw = raw_dir or CommonConfig.DATA_RAW_DIR / "hansung"
     out = output_dir or CommonConfig.DATA_PROCESSED_DIR / "rag"
-    college_json = str(raw / "한성대_트랙구조.json")
+    college_json = str(raw / "track_structure.json")
 
     # ── 1. 트랙 소개 ───────────────────────────────────────────────────────────
     logger.info("[1/4] 트랙 소개 처리 중...")
     results, skipped = process_tracks(
-        track_csv=str(raw / "한성대_트랙정보.csv"),
+        track_csv=str(raw / "tracks.csv"),
         college_json=college_json,
         output_dir=str(out / "tracks"),
     )
@@ -100,7 +100,7 @@ def run_all(
     # ── 2. 강의정보 ────────────────────────────────────────────────────────────
     logger.info("[2/4] 강의정보 (교과목 목록) 처리 중...")
     course_results = build_courses(
-        track_csv=str(raw / "한성대_강의정보.csv"),
+        track_csv=str(raw / "courses.csv"),
         college_json=college_json,
         output_dir=str(out / "courses"),
     )
@@ -109,7 +109,7 @@ def run_all(
     # ── 3. 강의계획서 ──────────────────────────────────────────────────────────
     logger.info("[3/4] 강의계획서 처리 중...")
     syl_results, syl_skipped = build_syllabi(
-        syllabus_csv=str(raw / "한성대_강의계획서.csv"),
+        syllabus_csv=str(raw / "syllabi.csv"),
         output_dir=str(out / "syllabi"),
     )
     logger.info("  → syllabi/ (%d개 / 스킵: %d개)", len(syl_results), len(syl_skipped))
