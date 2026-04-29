@@ -23,8 +23,8 @@
 | <img src="https://github.com/jwon0523.png" width="120"> | <img src="https://github.com/ThreeeJ.png" width="120"> | <img src="https://github.com/parkseonghun598.png" width="120"> | <img src="https://github.com/J2H3233.png" width="120"> |
 |:---:|:---:|:---:|:---:|
 | **이재원** (팀장) | **정종진** | **박성훈** | **전종현** |
-| 추천 시스템 설계 | 트랙 시너지 점수 알고리즘 | 데이터 처리 + 프론트엔드 | 논문 + 임베딩/RAG 최적화 |
-| LangGraph 파이프라인·전처리 | 직무-역량 매핑 | 크롤링·전처리 | RAGFlow 파이프라인·임베딩 |
+| 추천 시스템 + 트랙 시너지 알고리즘 | 챗봇 에이전트 | 데이터 처리 + 프론트엔드 | 논문 + 임베딩/RAG 최적화 |
+| LangGraph 추천 파이프라인 | LangGraph 챗봇 노드 + 직무-역량 매핑 | 크롤링·전처리 | RAGFlow 파이프라인·임베딩 |
 | Spring Boot ↔ FastAPI 통합 | Spring Boot ↔ FastAPI 통합 | React Native | Spring Boot |
 | [@jwon0523](https://github.com/jwon0523) | [@ThreeeJ](https://github.com/ThreeeJ) | [@parkseonghun598](https://github.com/parkseonghun598) | [@J2H3233](https://github.com/J2H3233) |
 
