@@ -1,0 +1,56 @@
+# N4 Track Synergy Node — 가중치 및 임계값 외부화 설정
+#
+# 본 파일은 N4 노드의 시너지 계산·다양성 측정·슬롯 분류에 사용되는
+# 모든 가중치와 임계값을 코드 외부에 분리합니다. 가중치 ablation
+# (실험적 가중치 변경) 시 코드 수정 없이 본 파일만 갱신하면 됩니다.
+#
+# 설계 명세: docs/design/n4-track-synergy.md
+# 임베딩 설정: docs/adr/0001-single-embedding-boundary.md (별도 embedding.yaml)
+
+# ── 시너지 점수 가중치 (Stage 1) ─────────────────────────────────────
+# synergy = clip(w_comp·comp + w_cov·cov − w_red·red, 0, 1)
+#
+# 직관 할당 근거:
+#   - coverage(직무 도달도) 가장 중요 → 0.5
+#   - complementarity(상호 보완성) 다음 → 0.3
+#   - redundancy(학습 중복) 페널티 → 0.2
+weights:
+  complementarity: 0.3
+  coverage: 0.5
+  redundancy: 0.2
+
+# ── sim_4tier 가중치 (Stage 4 MMR 다양성 측정) ───────────────────────
+# sim_4tier = w_college·same_T1 + w_department·same_T2
+#           + w_major·same_T3 + w_course_overlap·overlap_ratio
+#           + w_meta·cos(meta_a, meta_b)
+#
+# 단조 제약: w_college >= w_department >= w_major
+#   (상위 tier 가 더 강한 신호)
+# w_meta 는 tier 외 별도 축 (도메인/서사 거리)
+similarity:
+  w_college: 0.4
+  w_department: 0.3
+  w_major: 0.2
+  w_course_overlap: 0.1
+  w_meta: 0.05
+
+# ── MMR 파라미터 (Stage 4) ───────────────────────────────────────────
+# next = argmax_i [ λ · synergy(i) − (1−λ) · max sim_4tier(i, j) ]
+#
+# λ 직관 할당: 0.6 (synergy 약간 우선)
+mmr:
+  lambda: 0.6
+
+# ── Slot Reservation (Stage 2 + 3 + 4) ──────────────────────────────
+# 보조 추천 5개 중 1개를 cross-college 전용으로 예약
+# slot 1~2 = primary (synergy 상위 2개)
+# slot 3   = cross-college (T1 cross + min_cross_synergy 만족)
+# slot 4~7 = MMR (primary + slot3 exclude)
+#
+# min_cross_synergy 직관 할당: 0.3 (synergy [0,1] 의 하위 1/3 컷)
+# T1→T2 fallback 시 임계값 동일 유지 (변경 시 별도 ablation)
+slots:
+  primary_count: 2
+  secondary_count: 5
+  cross_college_reserved: 1
+  min_cross_synergy: 0.3
