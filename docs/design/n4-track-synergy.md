@@ -1,4 +1,4 @@
-# N4 Track Synergy Node — Architecture Design
+# Track Synergy Node — Architecture Design
 
 | 항목 | 내용 |
 |---|---|
@@ -7,15 +7,15 @@
 | **Last Updated** | 2026-04-29 |
 | **Audience** | tracktory-ai 팀 (구현·리뷰), 향후 ADR 승격 시 reviewer |
 
-> 본 문서는 N4 트랙 시너지 노드의 **구현 명세** 입니다. 정책 결정의 근거(왜 이 알고리즘인가)는 ADR 디렉토리(`../adr/`)와 본 문서 본문에 inline 으로 보존됩니다. 코드 작성 착수 전, 이 문서를 1차 신뢰 소스로 사용합니다.
+> 본 문서는 **트랙 시너지 노드** 의 **구현 명세** 입니다. 정책 결정의 근거(왜 이 알고리즘인가)는 ADR 디렉토리(`../adr/`)와 본 문서 본문에 inline 으로 보존됩니다. 코드 작성 착수 전, 이 문서를 1차 신뢰 소스로 사용합니다.
 
 ---
 
 ## 1. Overview
 
-N4 는 Online 추천 파이프라인에서 **트랙 조합 추천**을 담당하는 LangGraph 노드입니다. 직무 매칭 노드(N3)에서 넘어온 직무 후보 3~5개를 입력으로 받아, 학생에게 추천할 **주 추천 2개(primary) + 보조 추천 5개(secondary)** 를 출력합니다.
+트랙 시너지 노드는 Online 추천 파이프라인에서 **트랙 조합 추천**을 담당하는 LangGraph 노드입니다. 직무 매칭 노드에서 넘어온 직무 후보 3~5개를 입력으로 받아, 학생에게 추천할 **주 추천 2개(primary) + 보조 추천 5개(secondary)** 를 출력합니다.
 
-### 1.1 N4 가 풀어야 할 문제
+### 1.1 본 노드가 풀어야 할 문제
 
 한성대 전면 트랙제(47개 트랙)에서 두 트랙 조합의 가능한 수는 1,081개입니다. 학생이 자신의 관심사·직무에 맞춰 이를 모두 비교 평가하는 것은 불가능하므로, 다음 3가지 알고리즘 요소가 결합된 추천이 필요합니다.
 
@@ -35,24 +35,24 @@ N4 는 Online 추천 파이프라인에서 **트랙 조합 추천**을 담당하
 
 ### 1.3 단일 임베딩 공간 의존성
 
-본 노드의 트랙 메타 임베딩은 ADR-0001(`docs/adr/0001-single-embedding-boundary.md`)에서 정의한 **단일 임베딩 설정**을 사용합니다. 다른 노드(N2 Profile Embedding, N3 Job Matching)와 동일한 모델·차원·정규화 설정을 공유해야 코사인 유사도 비교가 의미를 가집니다.
+본 노드의 트랙 메타 임베딩은 ADR-0001(`docs/adr/0001-single-embedding-boundary.md`)에서 정의한 **단일 임베딩 설정**을 사용합니다. 추천 파이프라인의 다른 임베딩 위치(프로필 임베딩 노드, 직무 매칭 노드, Offline 임베딩 생성)와 동일한 모델·차원·정규화 설정을 공유해야 코사인 유사도 비교가 의미를 가집니다.
 
 ---
 
 ## 2. Input / Output Interface
 
-N4 는 LangGraph 의 `GraphState` 를 입력으로 받아 부분 상태를 반환합니다 (`def n4_track_synergy(state: GraphState) -> dict`). State 필드는 다음과 같이 분리됩니다.
+본 노드는 LangGraph 의 `GraphState` 를 입력으로 받아 부분 상태를 반환합니다 (`def __call__(self, state: GraphState) -> dict`). State 필드는 다음과 같이 분리됩니다.
 
-### 2.1 Input — N3 / N2 / N1 로부터 받는 State 필드
+### 2.1 Input — 선행 노드로부터 받는 State 필드
 
 | 필드 | 타입 | 출처 | 설명 |
 |---|---|---|---|
-| `job_candidates` | `list[JobCandidate]` | N3 (Job Matching) | 직무 후보 3~5개 (직무명, 채용공고 기술스택, 역량 태그) |
-| `profile_vector` | `list[float]` | N2 (Profile Embedding) | 사용자 프로필 임베딩. 본 노드에서는 직접 사용하지 않으나 fallback 추천 안전장치로 참조 가능 |
-| `current_tracks` | `list[str]` | N1 (Input Normalization) | 2학년+ 사용자의 이수 트랙 ID. 1학년은 `[]` |
-| `college_id` | `str` | N1 | 사용자 소속 단과대 ID. 기능명세 HM-001 의 "1트랙은 주전공 소속 트랙 필수" 제약 적용 |
+| `job_candidates` | `list[JobCandidate]` | 직무 매칭 노드 | 직무 후보 3~5개 (직무명, 채용공고 기술스택, 역량 태그) |
+| `profile_vector` | `list[float]` | 프로필 임베딩 노드 | 사용자 프로필 임베딩. 본 노드에서는 직접 사용하지 않으나 fallback 추천 안전장치로 참조 가능 |
+| `current_tracks` | `list[str]` | 입력 정규화 노드 | 2학년 이상 사용자의 이수 트랙 ID. 1학년은 빈 리스트 |
+| `college_id` | `str` | 입력 정규화 노드 | 사용자 소속 단과대 ID. 기능명세상의 1트랙 주전공 제약(주 추천 두 조합 중 하나는 반드시 사용자의 단과대 소속 트랙을 포함) 적용을 위한 입력 |
 
-### 2.2 Output — N4 가 State 에 추가하는 필드
+### 2.2 Output — 본 노드가 State 에 추가하는 필드
 
 | 필드 | 타입 | 설명 |
 |---|---|---|
@@ -61,7 +61,7 @@ N4 는 LangGraph 의 `GraphState` 를 입력으로 받아 부분 상태를 반�
 | `slot3_fallback_triggered` | `bool` | cross-college 슬롯 fallback 발생 여부 |
 | `slot3_fallback_level` | `Literal["T2", "MMR"] \| None` | fallback 단계 (`None` = fallback 없음, `T2` = 학부 cross-dept 로 relax, `MMR` = cross-dept 도 0 → MMR 흘림) |
 
-LangGraph 의 "부분 상태 반환" 원칙에 따라 N4 는 N3 이전 필드를 수정하지 않고 위 4개 필드만 새로 추가합니다.
+LangGraph 의 "부분 상태 반환" 원칙에 따라 본 노드는 선행 노드의 필드를 수정하지 않고 위 4개 필드만 새로 추가합니다.
 
 ---
 
@@ -87,7 +87,7 @@ class Track(BaseModel):
     # 트랙 메타 임베딩 (ADR-0001 단일 임베딩 공간 사용)
     meta_embedding: list[float]
 
-    # 트랙 소개 원문 (N6 LLM 자연어 설명 컨텍스트로 전달)
+    # 트랙 소개 원문 (LLM 설명 노드에 컨텍스트로 전달)
     meta_text: str
 ```
 
@@ -95,19 +95,19 @@ class Track(BaseModel):
 
 **과목 overlap (T4)**: 두 트랙이 학습 내용을 얼마나 공유하는지 계산하기 위한 입력. `course_ids` 의 교집합/합집합 비율로 산출.
 
-### 3.2 JobCandidate — N3 직무 매칭 결과
+### 3.2 JobCandidate — 직무 매칭 결과
 
 ```python
 class JobCandidate(BaseModel):
-    """N3 직무 매칭 결과 단건."""
+    """직무 매칭 노드의 결과 단건."""
 
     job_name: str
     tech_stacks: list[str]      # 채용공고 기술스택 (시너지 점수의 coverage 항 입력)
     competency_tags: list[str]  # 역량 태그 (시너지 점수의 complementarity 항 입력)
-    match_score: float          # N3 의 코사인 유사도 (참조용)
+    match_score: float          # 직무 매칭 노드의 코사인 유사도 (참조용)
 ```
 
-**NCS 데이터 미활용**: 본 프로젝트는 NCS 직무역량 데이터 수집을 미활용 결정했습니다(2026-04-04). 따라서 직무 역량 표현은 `tech_stacks`(채용공고 기술스택) + `competency_tags`(채용공고에서 추출한 역량 태그) 만 사용합니다. 향후 NCS 수집 시 합집합으로 확장 가능.
+**NCS 데이터 미활용**: 본 프로젝트는 NCS 직무역량 데이터 수집을 미활용 결정했습니다. 따라서 직무 역량 표현은 `tech_stacks`(채용공고 기술스택) + `competency_tags`(채용공고에서 추출한 역량 태그) 만 사용합니다. 향후 NCS 수집 시 합집합으로 확장 가능.
 
 ### 3.3 TrackCombo — 트랙 조합 단위
 
@@ -119,7 +119,7 @@ class TrackCombo(BaseModel):
     track_b: Track
 ```
 
-**1학년 vs 2학년+ 분기**: `track_a` 는 항상 사용자의 단과대 소속 트랙(`track_a.college_id == user.college_id`) 으로 제한합니다. 이는 기능명세상의 "1트랙은 주전공 소속 트랙 필수" 제약과 정합합니다. 1학년(`current_tracks == []`)은 `track_a` 후보가 단과대 전체 트랙, 2학년+ 는 `current_tracks[0]` 으로 고정됩니다. 이 제약은 후보 생성 단계(§4 Stage 0)에서 filtering 으로 구현하며, `TrackCombo` 모델 자체는 제약을 인코딩하지 않습니다(정책-메커니즘 분리).
+**1학년 vs 2학년 이상 분기**: `track_a` 는 항상 사용자의 단과대 소속 트랙(`track_a.college_id == user.college_id`) 으로 제한합니다. 이는 기능명세상의 1트랙 주전공 제약과 정합합니다. 1학년(`current_tracks == []`)은 `track_a` 후보가 단과대 전체 트랙, 2학년 이상은 `current_tracks[0]` 으로 고정됩니다. 이 제약은 후보 생성 단계(§4 Stage 0)에서 filtering 으로 구현하며, `TrackCombo` 모델 자체는 제약을 인코딩하지 않습니다(정책-메커니즘 분리).
 
 ### 3.4 RankedCombo — 시너지 점수 + 슬롯 분류 부착 단위
 
@@ -142,9 +142,9 @@ class RankedCombo(BaseModel):
 
 ---
 
-## 4. Pipeline Stages — Slot Reservation Pattern 4
+## 4. Pipeline Stages — Slot Reservation Pattern
 
-N4 의 알고리즘은 다음 6단계로 구성됩니다. 각 단계는 단일 책임을 가지며, I/O 는 마지막 단계(진입점)에만 집중됩니다.
+본 노드의 알고리즘은 다음 6단계로 구성됩니다. 각 단계는 단일 책임을 가지며, I/O 는 마지막 단계(진입점)에만 집중됩니다.
 
 ### Stage 0 — 후보 생성 (순수 계산)
 
@@ -156,10 +156,10 @@ function: generate_track_combos(
 ) -> list[TrackCombo]
 ```
 
-- 전체 트랙 목록(O4 그래프에서 로드)에서 유효한 2-조합 생성
+- 전체 트랙 목록(Offline 그래프에서 로드)에서 유효한 2-조합 생성
 - 1트랙 주전공 제약 적용: `track_a.college_id == user_college_id`
 - 1학년(`current_tracks == []`): `track_a` 후보는 사용자 단과대 전체 트랙
-- 2학년+: `track_a = current_tracks[0]` 고정
+- 2학년 이상: `track_a = current_tracks[0]` 고정
 - **I/O 없음 — 순수 계산** (테스트에서 mock 불필요)
 
 ### Stage 1 — 시너지 점수 계산 (순수 계산)
@@ -189,7 +189,7 @@ synergy(track_a, track_b | jobs)
 | `job_coverage` | 직무 후보 채용공고 기술스택 중 두 트랙 합집합으로 커버되는 비율 | 추천 직무 도달도 |
 | `redundancy` | 두 트랙의 과목 overlap 비율 (T4) | 학습 내용 중복 정도 (페널티) |
 
-**가중치 초기값** (직관 할당, S2 ablation 대상):
+**가중치 초기값** (직관 할당, ablation 대상):
 
 - `w_comp = 0.3`, `w_cov = 0.5`, `w_red = 0.2`
 - 직관: 직무 도달도(cov) 가장 중요 → 보완성(comp) 다음 → 중복(red) 페널티
@@ -248,7 +248,7 @@ def is_cross_college(combo: TrackCombo, primary: list[RankedCombo]) -> bool:
 
 **`is_cross_dept` (T2 fallback 용)**: 위 함수에서 `college_id` 를 `department_id` 로 치환한 형태.
 
-**`min_cross_synergy: 0.3` 외부화**: `src/tracktory/config/synergy.yaml` 에서 주입. 초기값 0.3 은 "synergy 정의역 [0,1] 의 하위 1/3 컷" 직관 할당. S2 ablation 대상.
+**`min_cross_synergy: 0.3` 외부화**: `src/tracktory/config/synergy.yaml` 에서 주입. 초기값 0.3 은 "synergy 정의역 [0,1] 의 하위 1/3 컷" 직관 할당. ablation 대상.
 
 **Fallback 로깅 (이 단계에서만 허용되는 side effect)**:
 
@@ -316,7 +316,7 @@ sim_4tier(combo_a, combo_b)
 
 **`w_meta · cos(meta_a, meta_b)` 의 부호 일관성**: cos 가 높으면 sim 이 높음 → MMR 의 다양성 항이 cos 가 낮은(즉, 도메인 거리가 먼) 조합을 선호 → cross-domain 조합이 자연스럽게 선택됨. 트랙 메타 다양성을 시너지 식 외부 보너스로 가산하는 대안도 검토했으나, 시너지 식이 단순한 3항 형태로 유지되고 부호 반전 없이 sim 방향성이 일관되는 본 통합 방식을 선택.
 
-**가중치 초기값** (S2 ablation 대상):
+**가중치 초기값** (ablation 대상):
 
 - `w_college = 0.4`, `w_department = 0.3`, `w_major = 0.2`, `w_overlap = 0.1`, `w_meta = 0.05`
 - `λ = 0.6` (synergy vs diversity 균형, 약간 synergy 쪽으로)
@@ -325,10 +325,10 @@ sim_4tier(combo_a, combo_b)
 
 - **I/O 없음 — 순수 계산** (트랙 메타 임베딩은 `Track` 모델에 이미 포함)
 
-### Stage 5 — N4 노드 진입점 (I/O 격리)
+### Stage 5 — 노드 진입점 (I/O 격리)
 
 ```python
-class N4TrackSynergyNode:
+class TrackSynergyNode:
     def __init__(
         self,
         rag_client: RagFlowClient,
@@ -392,7 +392,7 @@ class N4TrackSynergyNode:
 | `select_primary` | 없음 | 슬롯 1~2 |
 | `select_cross_college_slot` | `logger.info` only | 슬롯 3 + T2 fallback |
 | `apply_mmr` | 없음 | 슬롯 4~7 |
-| `n4_track_synergy` (`__call__`) | RAG + embedding loader | I/O 진입점 격리 |
+| `TrackSynergyNode.__call__` | RAG + embedding loader | I/O 진입점 격리 |
 
 ---
 
@@ -403,13 +403,13 @@ class N4TrackSynergyNode:
 LangGraph 노드는 클래스로 구현하되 LLM/RAG 클라이언트를 **생성자 주입** 으로 받습니다. 전역 import 금지.
 
 ```python
-n4_node = N4TrackSynergyNode(
+synergy_node = TrackSynergyNode(
     rag_client=ragflow_client,
     embedding_loader=embedding_loader,
     synergy_config=load_synergy_config("src/tracktory/config/synergy.yaml"),
 )
 
-graph.add_node("n4_track_synergy", n4_node)
+graph.add_node("track_synergy", synergy_node)
 ```
 
 테스트 시 mock 객체 주입으로 RAG/embedding 호출을 차단합니다.
@@ -429,7 +429,7 @@ graph.add_node("n4_track_synergy", n4_node)
 
 ```
 src/tracktory/config/
-├── synergy.yaml      # 본 노드의 가중치·임계값 (본 PR에서 스켈레톤 생성)
+├── synergy.yaml      # 본 노드의 가중치·임계값 (본 PR 에서 스켈레톤 생성)
 └── embedding.yaml    # ADR-0001 단일 임베딩 설정 (별도 후속 작업)
 ```
 
@@ -469,7 +469,7 @@ slots:
   min_cross_synergy: 0.3
 ```
 
-**`SynergyConfig` Pydantic 모델** (Phase C 코드 작성 시 생성):
+**`SynergyConfig` Pydantic 모델** (코드 작성 시 생성):
 
 ```python
 class WeightsConfig(BaseModel):
@@ -506,7 +506,7 @@ class SynergyConfig(BaseModel):
 
 `CONTRIBUTING.md §5` 의 테스트 규약을 따릅니다. 단위 → 통합 → edge case 순서.
 
-### 7.1 단위 테스트 (`tests/unit/graph/test_n4_*.py`)
+### 7.1 단위 테스트 (`tests/unit/graph/test_track_synergy_*.py`)
 
 | 테스트 | 대상 | 검증 |
 |---|---|---|
@@ -523,20 +523,20 @@ class SynergyConfig(BaseModel):
 | `test_apply_mmr_excludes_primary` | `apply_mmr` | primary 가 MMR 후보군에서 제외 |
 | `test_apply_mmr_lambda_zero` | `apply_mmr` | λ=0 → 순수 다양성, sim 최대 후보부터 회피 |
 | `test_apply_mmr_lambda_one` | `apply_mmr` | λ=1 → 순수 시너지, 점수 순위와 일치 |
-| `test_generate_combos_hm001_constraint` | `generate_track_combos` | track_a.college_id == user_college_id 항상 True |
+| `test_generate_combos_freshman_constraint` | `generate_track_combos` | track_a.college_id == user_college_id 항상 True |
 | `test_generate_combos_freshman` | `generate_track_combos` | current_tracks=[] → track_a 후보 복수 |
 | `test_generate_combos_2nd_year` | `generate_track_combos` | current_tracks=[fixed_id] → track_a 가 fixed_id 로 고정 |
 
 순수 함수는 mock 불필요. `select_cross_college_slot` 만 logger mock.
 
-### 7.2 통합 테스트 (`tests/integration/test_n4_flow.py`)
+### 7.2 통합 테스트 (`tests/integration/test_track_synergy_flow.py`)
 
 ```python
 @pytest.mark.integration
-def test_n4_full_flow_mock_rag(mocker):
+def test_track_synergy_full_flow_mock_rag(mocker):
     mock_rag = mocker.Mock()
     mock_rag.fetch_all_tracks_with_meta.return_value = build_test_tracks()  # 20개
-    node = N4TrackSynergyNode(
+    node = TrackSynergyNode(
         rag_client=mock_rag,
         embedding_loader=MockEmbed(),
         synergy_config=load_test_config(),
@@ -590,25 +590,25 @@ def test_n4_full_flow_mock_rag(mocker):
 - [ ] 본 문서의 시너지 식 / sim_4tier 식 / 슬롯 수와 `synergy.yaml` 의 가중치·임계값 키 1:1 정합 확인 (수동)
 - [ ] pre-commit 훅 통과 (ruff format / ruff check / mypy / pytest — 본 PR 은 마크다운+yaml 만이라 mypy/pytest 영향 없음)
 
-### 9.2 Phase C (코드 작성) 착수 전 완료 기준
+### 9.2 코드 작성 착수 전 완료 기준
 
 - [ ] 본 PR merge
-- [ ] 후속 이슈에서 Phase C 작업 진행:
+- [ ] 후속 이슈에서 코드 작성 작업 진행:
   - [ ] `pyproject.toml` 의존성 추가 (`uv add langgraph langchain-core pyyaml numpy`)
   - [ ] `src/tracktory/graph/state.py` (GraphState TypedDict)
   - [ ] `src/tracktory/graph/models.py` (Track / JobCandidate / TrackCombo / RankedCombo / SynergyConfig)
-  - [ ] `src/tracktory/graph/nodes/n4_synergy.py` (Stage 0~5 구현)
+  - [ ] `src/tracktory/graph/nodes/track_synergy.py` (Stage 0~5 구현)
   - [ ] `src/tracktory/graph/edges.py` (조건부 엣지)
   - [ ] `src/tracktory/config/embedding.yaml` (ADR-0001 구현)
-  - [ ] `tests/unit/graph/test_n4_*.py` (§7.1 항목)
-  - [ ] `tests/integration/test_n4_flow.py` (§7.2)
+  - [ ] `tests/unit/graph/test_track_synergy_*.py` (§7.1 항목)
+  - [ ] `tests/integration/test_track_synergy_flow.py` (§7.2)
   - [ ] 커밋 전: `ruff format` → `ruff check --fix` → `mypy src` → `pytest`
 
 ### 9.3 ADR 승격 후보
 
 본 노드의 핵심 설계가 변경 없이 1+ 스프린트를 통과하면 ADR 승격을 검토합니다 (ADR README 의 승격 트리거 정합).
 
-- N4 트랙 시너지 알고리즘 (Slot Reservation Pattern 4 + sim_4tier 통합 + MMR)
+- 트랙 시너지 알고리즘 (Slot Reservation Pattern + sim_4tier 통합 + MMR)
 - 4-tier hierarchy 정의 (T1 단과대 / T2 학부 / T3 전공 / T4 트랙)
 - MMR 다양성 알고리즘 (`lambda` 초기값 + ablation 결과)
 
@@ -618,4 +618,4 @@ def test_n4_full_flow_mock_rag(mocker):
 
 | 버전 | 일자 | 작성자 | 변경 내용 |
 |---|---|---|---|
-| 0.1 | 2026-04-29 | 이재원 | 최초 작성. N4 노드 코드 작성 직전 단계의 설계 명세. Slot Reservation Pattern 4 + sim_4tier 5항(트랙 메타 cos 통합) + MMR 통합 구조. `synergy.yaml` 외부화 스키마 명시. CLAUDE.md 5 원칙 매핑 + Pydantic 검증 패턴 명시. 단위·통합·edge case 테스트 전략 17건. |
+| 0.1 | 2026-04-29 | 이재원 | 최초 작성. 트랙 시너지 노드의 구현 명세. Slot Reservation Pattern + sim_4tier 5항(트랙 메타 cos 통합) + MMR 의 6단계 구조. `synergy.yaml` 외부화 스키마 명시. CLAUDE.md 5 원칙 매핑 + Pydantic 검증 패턴 명시. 단위·통합·edge case 테스트 전략 17건. |
