@@ -1,0 +1,18 @@
+# tracktory embedding 단일 boundary (D-04)
+#
+# O3 (Offline embedding) · O4 (GraphRAG) · N2 (profile embed) · N3 (job match)
+# 모든 노드가 본 파일의 모델·차원·정규화 설정을 공유한다.
+# 다른 모델/차원 사용 시 cosine 유사도가 서로 다른 공간 비교가 되어 무의미.
+# 변경 시 docs/decisions/pipeline-design.md D-04 + R-04 근거 검토 필수.
+
+model:
+  provider: openai
+  name: text-embedding-3-small
+  dim: 1536
+
+# embedding 출력 후처리
+normalize: true     # cosine similarity 전제 — unit vector 강제
+batch_size: 64      # Offline (O3) 적재 시에만 의미 있음
+
+# 실행 환경에서 API 키를 읽을 환경 변수 이름
+api_key_env: OPENAI_API_KEY

@@ -1,0 +1,11 @@
+# N2 Template 직렬화 규칙 (D-03)
+#
+# 카테고리형 프로필 입력을 결정론적 자연어 문장으로 변환한다.
+# LLM 미사용 — 동일 입력은 항상 동일 출력 (S1 파이프라인 비교의 통제 조건).
+# 변경 시 version 갱신 + docs/decisions/pipeline-design.md § 5.1 cross-link.
+version: "0.1"
+
+# Python str.format 호환 패턴
+# 사용 가능 placeholder: interests · dev_interests · work_values
+pattern: |
+  {interests} 분야에 관심이 많고, {dev_interests} 개발에 흥미가 있으며 {work_values} 가치를 중시하는 학생입니다.
