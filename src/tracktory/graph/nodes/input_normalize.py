@@ -54,15 +54,17 @@ class NormalizedProfile(BaseModel):
 
     @field_validator("current_tracks")
     @classmethod
-    def _tracks_zero_or_two(cls, v: list[str]) -> list[str]:
-        # 1학년은 0 개, 2학년+ 는 정확히 2 개 (주전공 트랙 · 보조 트랙).
-        if len(v) not in (0, 2):
+    def _tracks_zero_or_two(cls, tracks: list[str]) -> list[str]:
+        if len(tracks) not in (0, 2):
             raise ValueError("current_tracks must be empty (1학년) or exactly 2 (2학년+)")
-        return v
+        return tracks
 
 
 def normalize_input(state: GraphState) -> dict[str, Any]:
-    """``raw_input`` 을 ``NormalizedProfile`` 로 정규화한다.
+    """외부 비신뢰 입력 검증을 그래프 입구 한 곳에 격리하기 위한 노드.
+
+    검증 실패는 그래프를 깨뜨리지 않고 ``errors`` 로 흘려, 후속 노드가
+    ``normalized_profile`` 부재만 확인하면 안전하게 동작한다.
 
     Args:
         state: ``raw_input`` 키가 온보딩 화면의 원시 입력을 담아야 한다.
