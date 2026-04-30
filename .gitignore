@@ -23,8 +23,10 @@ logs/
 # OMC
 .omc/
 
-# docs
-docs/
+# docs (track only ADR subdirectory)
+docs/*
+!docs/adr/
+!docs/adr/**
 
 # Claude Code — personal context & tooling (CLAUDE.md is tracked)
 CLAUDE.local.md
