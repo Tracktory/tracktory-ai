@@ -73,7 +73,7 @@ async def _safe_text(page: Page, selectors: list[str]) -> str:
             if el:
                 text = await el.inner_text()
                 if text and text.strip():
-                    return text.strip()  # type: ignore[no-any-return]
+                    return text.strip()
         except Exception:
             continue
     return ""
