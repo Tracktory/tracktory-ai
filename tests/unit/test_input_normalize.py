@@ -1,6 +1,6 @@
-"""입력 정규화 노드 단위 테스트.
+"""normalize_input 의 성공·실패 계약을 검증한다.
 
-normalize_input 의 성공·실패 계약만 검증한다. Pydantic 내부 동작은 검증 대상 X.
+Pydantic 내부 동작은 검증 대상 X.
 """
 
 from tracktory.graph.nodes.input_normalize import NormalizedProfile, normalize_input

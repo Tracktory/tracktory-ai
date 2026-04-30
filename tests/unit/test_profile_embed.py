@@ -1,6 +1,6 @@
-"""프로필 임베딩 노드 단위 테스트.
+"""ProfileEmbedNode 의 계약을 검증한다.
 
-EmbeddingClient 를 MagicMock 으로 대체하여 네트워크 호출 없이 노드 계약을 검증한다.
+EmbeddingClient 를 MagicMock 으로 대체하여 네트워크 호출 없이 검증한다.
 """
 
 from unittest.mock import MagicMock
