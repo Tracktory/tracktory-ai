@@ -7,6 +7,7 @@
 from pathlib import Path
 
 from dotenv import load_dotenv
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Project root = 4 levels up: common -> tracktory -> src -> root
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
@@ -28,4 +29,14 @@ class CommonConfig:
         self.LOG_DIR.mkdir(parents=True, exist_ok=True)
 
 
+class Settings(BaseSettings):
+    ragflow_api_key: str
+    ragflow_base_url: str
+    ragflow_dataset_id: str
+    ragflow_reranker_id: str
+
+    model_config = SettingsConfigDict(env_file=".env")
+
+
 config = CommonConfig()
+settings = Settings()
