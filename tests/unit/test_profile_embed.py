@@ -5,7 +5,7 @@ EmbeddingClient 를 MagicMock 으로 대체하여 네트워크 호출 없이 노
 
 from unittest.mock import MagicMock
 
-from tracktory.graph.nodes.n2_profile_embed import EmbeddingClient, ProfileEmbedNode
+from tracktory.graph.nodes.profile_embed import EmbeddingClient, ProfileEmbedNode
 
 
 def _valid_normalized() -> dict[str, object]:

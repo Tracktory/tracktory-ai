@@ -3,13 +3,13 @@
 정규화된 사용자 프로필을 자연어 문장으로 변환한 뒤 임베딩 벡터로 인코딩한다.
 
 LLM 직렬화는 동일 입력에서도 출력이 달라질 수 있어 파이프라인 비교 실험의
-통제 조건을 깨뜨린다. 그 대신 ``n2_template.yaml`` 의 결정론적 패턴을 사용한다.
+통제 조건을 깨뜨린다. 그 대신 ``profile_embed_template.yaml`` 의 결정론적 패턴을 사용한다.
 
 임베딩 호출은 ``EmbeddingClient`` Protocol 로 추상화하여 구체 구현(RAGFlow /
 OpenAI 등)을 인프라 레이어로 분리한다 — CONTRIBUTING.md § 4.4 의존성 주입 규약.
 
 처리 흐름:
-    1. ``n2_template.yaml`` 의 결정론적 패턴으로 자연어 문장 합성.
+    1. ``profile_embed_template.yaml`` 의 결정론적 패턴으로 자연어 문장 합성.
     2. ``embedding.yaml`` 모델로 단일 벡터 생성 (오프라인 임베딩 단계·직무 매칭
        노드와 동일한 임베딩 공간을 공유 — ADR-0001).
     3. ``completed_courses`` 는 의미 임베딩에 포함하지 않는다. 이수 과목은 이후
@@ -23,7 +23,9 @@ import yaml
 
 from tracktory.graph.state import GraphState
 
-_DEFAULT_TEMPLATE_PATH = Path(__file__).resolve().parents[2] / "config" / "n2_template.yaml"
+_DEFAULT_TEMPLATE_PATH = (
+    Path(__file__).resolve().parents[2] / "config" / "profile_embed_template.yaml"
+)
 
 
 class EmbeddingClient(Protocol):
