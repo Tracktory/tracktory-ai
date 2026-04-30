@@ -1,0 +1,18 @@
+# tracktory embedding 단일 boundary (ADR-0001)
+#
+# 오프라인 임베딩(크롤링 데이터 적재·GraphRAG) · 온라인 임베딩(프로필 임베딩·직무 매칭)
+# 모든 단계가 본 파일의 모델·차원·정규화 설정을 공유한다.
+# 단계마다 다른 모델/차원을 쓰면 cosine 유사도 비교가 서로 다른 공간에서 이루어져 무의미.
+# 변경 시 ADR-0001(docs/adr/0001-single-embedding-boundary.md) 근거 검토 필수.
+
+model:
+  provider: openai
+  name: text-embedding-3-small
+  dim: 1536
+
+# embedding 출력 후처리
+normalize: true     # cosine similarity 전제 — unit vector 강제
+batch_size: 64      # 오프라인 데이터 적재 시에만 의미 있음
+
+# 실행 환경에서 API 키를 읽을 환경 변수 이름
+api_key_env: OPENAI_API_KEY

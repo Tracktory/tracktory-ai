@@ -1,0 +1,11 @@
+# 프로필 임베딩 Template 직렬화 규칙
+#
+# 카테고리형 프로필 입력을 결정론적 자연어 문장으로 변환한다.
+# LLM 미사용 — 동일 입력은 항상 동일 출력. 파이프라인 비교 실험의 통제 조건이 되므로
+# 이 파일을 수정하면 임베딩 재생성이 필요하다. 변경 시 version 갱신 필수.
+version: "0.1"
+
+# Python str.format 호환 패턴
+# 사용 가능 placeholder: interests · dev_interests · work_values
+pattern: |
+  {interests} 분야에 관심이 많고, {dev_interests} 개발에 흥미가 있으며 {work_values} 가치를 중시하는 학생입니다.
