@@ -1,14 +1,16 @@
-"""N1 — 사용자 온보딩 입력 정규화 노드.
+"""입력 정규화 노드 — 사용자 온보딩 원시 입력 검증 및 정규화.
 
-기능명세 ON-001 ~ ON-012 의 원시 입력을 후속 노드 (N2 ~ N5) 가 사용하는
-정규화 프로필로 변환한다. **단일 책임**: 입력 검증 + 정규화. I/O 없음.
+온보딩 화면(입학년도·소속·트랙·관심사·흥미 개발 분야·취업 선호도 등)의 원시 입력을
+후속 노드가 공통으로 사용하는 정규화 프로필로 변환한다.
+**단일 책임**: 입력 검증 + 정규화. 외부 I/O 없음.
 
-관련 결정:
-    D-02: 백엔드 스키마 = functional-spec 권위.
-    D-06: ``completed_courses`` 는 N2 임베딩 입력에 포함하지 않고 본 단계에서
-          정규화만 수행. 이후 N5 선수과목 필터에서만 사용.
-    D-08 degenerate: 1학년 (트랙 미선택) 은 ``current_tracks = []`` 로
-          표현되어 N4 가 "조합 신규 추천 모드" 로 분기한다.
+설계 메모:
+    - 백엔드(Spring Boot)가 전달하는 스키마와 1:1로 맞춘다.
+    - ``completed_courses`` 는 의미 임베딩 입력에 포함하지 않고 정규화만 수행한다.
+      이수 과목은 선수과목 충족 여부 확인 등 집합 연산에만 사용되므로 임베딩
+      공간에 넣으면 관심사·흥미 의미를 희석한다.
+    - 1학년(트랙 미선택)은 ``current_tracks = []`` 로 표현된다. 이후 트랙 시너지
+      노드가 빈 리스트를 받으면 "조합 신규 추천 모드"로 동작한다.
 """
 
 from typing import Any, Literal
@@ -24,21 +26,20 @@ WorkValue = Literal["돈", "워라벨", "복지", "명예", "안정성", "성장
 
 
 class NormalizedProfile(BaseModel):
-    """정규화된 사용자 프로필 (N1 의 출력 스키마).
+    """정규화된 사용자 프로필 — 입력 정규화 노드의 출력 스키마.
 
     Attributes:
-        admission_year: ON-001 입학년도.
-        college: ON-003 / 005 단과대명 (예: "IT공과대학").
-        department: ON-003 / 005 학부명 (예: "컴퓨터공학부").
-        current_tracks: ON-006 현재 선택 트랙. 1학년은 빈 리스트, 2학년+ 는
-            정확히 2 개 (1트랙 · 2트랙).
-        interests: ON-007 관심사 (14 개 카테고리 중 1 ~ 5 개).
-        dev_interests: ON-011 흥미 개발 분야 (1 ~ 3 개).
-        work_values: ON-009 취업 시 중요 가치 (≤ 3 개).
-        company_types: ON-008 회사 유형 (≥ 1 개).
-        ncs_studied: ON-011-1 공부해본 분야의 NCS 분류 코드 리스트 (선택).
-        completed_courses: ON-012 이수 과목명. **N2 임베딩 입력 X (D-06)**,
-            N5 선수과목 필터에서만 사용.
+        admission_year: 입학년도.
+        college: 단과대명 (예: "IT공과대학").
+        department: 학부명 (예: "컴퓨터공학부").
+        current_tracks: 현재 선택 트랙. 1학년은 빈 리스트, 2학년+ 는 정확히 2 개 (주전공 트랙 · 보조 트랙).
+        interests: 관심사 (14 개 카테고리 중 1 ~ 5 개).
+        dev_interests: 흥미 개발 분야 (1 ~ 3 개).
+        work_values: 취업 시 중요 가치 (≤ 3 개).
+        company_types: 선호 회사 유형 (≥ 1 개).
+        ncs_studied: 공부해본 분야의 NCS 분류 코드 리스트 (선택).
+        completed_courses: 이수 과목명. 의미 임베딩 입력에 포함하지 않으며
+            선수과목 필터 단계에서만 사용한다.
     """
 
     admission_year: int = Field(..., ge=2000, le=2030)
@@ -55,7 +56,7 @@ class NormalizedProfile(BaseModel):
     @field_validator("current_tracks")
     @classmethod
     def _tracks_zero_or_two(cls, v: list[str]) -> list[str]:
-        # ON-006: 1학년은 0 개, 2학년+ 는 정확히 2 개 (1트랙 · 2트랙).
+        # 1학년은 0 개, 2학년+ 는 정확히 2 개 (주전공 트랙 · 보조 트랙).
         if len(v) not in (0, 2):
             raise ValueError("current_tracks must be empty (1학년) or exactly 2 (2학년+)")
         return v
@@ -65,7 +66,7 @@ def normalize_input(state: GraphState) -> dict[str, Any]:
     """``raw_input`` 을 ``NormalizedProfile`` 로 정규화한다.
 
     Args:
-        state: ``raw_input`` 키가 ON-001 ~ ON-012 의 원시 입력을 담아야 한다.
+        state: ``raw_input`` 키가 온보딩 화면의 원시 입력을 담아야 한다.
 
     Returns:
         성공 시 ``{"normalized_profile": <dict>, "trace": ["N1:ok"]}``.

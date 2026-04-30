@@ -2,7 +2,7 @@
 
 CONTRIBUTING.md § 4.1 규약에 따라 필드를 세 부류로 분리한다.
 
-- 입력 (불변): N1 의 ``raw_input`` 등 노드가 갱신하지 않는 값.
+- 입력 (불변): 입력 정규화 노드의 ``raw_input`` 등 이후 노드가 갱신하지 않는 값.
 - 누적 (Annotated reducer): 여러 노드가 append 하는 값 (``errors``, ``trace``).
 - 갱신 (overwrite): 단일 노드가 결과를 채우는 값.
 
@@ -26,9 +26,9 @@ class GraphState(TypedDict, total=False):
     필드 그룹:
         입력:
             user_id, raw_input
-        N1 출력:
+        입력 정규화 노드 출력:
             normalized_profile (dict 형태로 NormalizedProfile.model_dump 결과)
-        N2 출력:
+        프로필 임베딩 노드 출력:
             profile_text, profile_vector
         누적:
             errors, trace
@@ -38,10 +38,10 @@ class GraphState(TypedDict, total=False):
     user_id: str
     raw_input: dict[str, Any]
 
-    # --- N1 출력 (이후 노드 read-only) ---
+    # --- 입력 정규화 노드 출력 (이후 노드 read-only) ---
     normalized_profile: dict[str, Any] | None
 
-    # --- N2 출력 ---
+    # --- 프로필 임베딩 노드 출력 ---
     profile_text: str | None
     profile_vector: list[float] | None
 

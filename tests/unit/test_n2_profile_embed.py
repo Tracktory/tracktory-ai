@@ -1,4 +1,4 @@
-"""N2 프로필 임베딩 노드 단위 테스트.
+"""프로필 임베딩 노드 단위 테스트.
 
 EmbeddingClient 를 MagicMock 으로 대체하여 네트워크 호출 없이 노드 계약을 검증한다.
 """
@@ -24,7 +24,7 @@ def _valid_normalized() -> dict[str, object]:
 
 
 def test_embed_skips_when_normalized_profile_missing() -> None:
-    """normalized_profile 이 없으면 N2:skip 트레이스를 반환하고 embed 를 호출하지 않는다."""
+    """normalized_profile 이 없으면 skip 트레이스를 반환하고 embed 를 호출하지 않는다."""
     client = MagicMock(spec=EmbeddingClient)
     client.embed.return_value = [0.0]
     node = ProfileEmbedNode(embedding_client=client)
@@ -51,7 +51,7 @@ def test_embed_invokes_client_and_returns_vector() -> None:
 
 
 def test_embed_uses_template_pattern_deterministically() -> None:
-    """동일 입력에 대해 두 번 호출해도 profile_text 가 동일하다 (D-03 결정론성)."""
+    """동일 입력에 대해 두 번 호출해도 profile_text 가 동일하다 (Template 직렬화 결정론성)."""
     client = MagicMock(spec=EmbeddingClient)
     client.embed.return_value = [0.0]
     node = ProfileEmbedNode(embedding_client=client)
@@ -64,7 +64,7 @@ def test_embed_uses_template_pattern_deterministically() -> None:
 
 
 def test_embed_excludes_completed_courses_from_text() -> None:
-    """completed_courses 는 profile_text 에 포함되지 않는다 (D-06 임베딩 bypass)."""
+    """completed_courses 는 profile_text 에 포함되지 않는다 (이수 과목은 임베딩 대상 X)."""
     client = MagicMock(spec=EmbeddingClient)
     client.embed.return_value = [0.0]
     node = ProfileEmbedNode(embedding_client=client)

@@ -1,4 +1,4 @@
-"""N1 입력 정규화 노드 단위 테스트.
+"""입력 정규화 노드 단위 테스트.
 
 normalize_input 의 성공·실패 계약만 검증한다. Pydantic 내부 동작은 검증 대상 X.
 """
@@ -31,7 +31,7 @@ def test_normalize_returns_dict_when_valid() -> None:
 
 
 def test_normalize_accepts_zero_tracks_for_freshman() -> None:
-    """1학년 케이스: current_tracks=[] 는 D-08 degenerate 로 정상 통과한다."""
+    """1학년 케이스: current_tracks=[] (트랙 미선택) 는 정상 통과한다."""
     raw = _valid_raw()
     raw["current_tracks"] = []
     result = normalize_input({"raw_input": raw})
