@@ -29,7 +29,7 @@ def test_embed_skips_when_normalized_profile_missing() -> None:
     client.embed.return_value = [0.0]
     node = ProfileEmbedNode(embedding_client=client)
     result = node({})
-    assert result["trace"] == ["N2:skip"]
+    assert result["trace"] == ["profile_embed:skip"]
     assert len(result["errors"]) >= 1
     assert "profile_text" not in result
     assert "profile_vector" not in result
@@ -45,7 +45,7 @@ def test_embed_invokes_client_and_returns_vector() -> None:
     result = node({"normalized_profile": _valid_normalized()})
     assert isinstance(result["profile_text"], str) and result["profile_text"]
     assert result["profile_vector"] is sentinel_vector
-    assert result["trace"] == ["N2:ok"]
+    assert result["trace"] == ["profile_embed:ok"]
     assert client.embed.call_count == 1
     assert client.embed.call_args.args[0] == result["profile_text"]
 

@@ -70,14 +70,17 @@ def normalize_input(state: GraphState) -> dict[str, Any]:
         state: ``raw_input`` 키가 온보딩 화면의 원시 입력을 담아야 한다.
 
     Returns:
-        성공 시 ``{"normalized_profile": <dict>, "trace": ["N1:ok"]}``.
-        Pydantic 검증 실패 시 ``{"errors": [...], "trace": ["N1:fail"]}``
+        성공 시 ``{"normalized_profile": <dict>, "trace": ["input_normalize:ok"]}``.
+        Pydantic 검증 실패 시 ``{"errors": [...], "trace": ["input_normalize:fail"]}``
         — ``normalized_profile`` 은 미설정 (이후 노드가 ``None`` 으로 인지).
     """
     raw = state.get("raw_input") or {}
     try:
         profile = NormalizedProfile.model_validate(raw)
     except ValidationError as e:
-        return {"errors": [f"N1 normalization failed: {e}"], "trace": ["N1:fail"]}
+        return {
+            "errors": [f"input normalization failed: {e}"],
+            "trace": ["input_normalize:fail"],
+        }
 
-    return {"normalized_profile": profile.model_dump(), "trace": ["N1:ok"]}
+    return {"normalized_profile": profile.model_dump(), "trace": ["input_normalize:ok"]}

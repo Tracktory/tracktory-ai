@@ -27,7 +27,7 @@ def test_normalize_returns_dict_when_valid() -> None:
     result = normalize_input({"raw_input": raw})
     expected = NormalizedProfile.model_validate(raw).model_dump()
     assert result["normalized_profile"] == expected
-    assert result["trace"] == ["N1:ok"]
+    assert result["trace"] == ["input_normalize:ok"]
 
 
 def test_normalize_accepts_zero_tracks_for_freshman() -> None:
@@ -35,7 +35,7 @@ def test_normalize_accepts_zero_tracks_for_freshman() -> None:
     raw = _valid_raw()
     raw["current_tracks"] = []
     result = normalize_input({"raw_input": raw})
-    assert result["trace"] == ["N1:ok"]
+    assert result["trace"] == ["input_normalize:ok"]
     assert result["normalized_profile"]["current_tracks"] == []
 
 
@@ -44,7 +44,7 @@ def test_normalize_accepts_two_tracks_for_upperclass() -> None:
     raw = _valid_raw()
     raw["current_tracks"] = ["빅데이터트랙", "한국어교육트랙"]
     result = normalize_input({"raw_input": raw})
-    assert result["trace"] == ["N1:ok"]
+    assert result["trace"] == ["input_normalize:ok"]
     assert len(result["normalized_profile"]["current_tracks"]) == 2
 
 
@@ -54,7 +54,7 @@ def test_normalize_rejects_one_track() -> None:
     raw["current_tracks"] = ["빅데이터트랙"]
     result = normalize_input({"raw_input": raw})
     assert "normalized_profile" not in result
-    assert result["trace"] == ["N1:fail"]
+    assert result["trace"] == ["input_normalize:fail"]
     assert len(result["errors"]) >= 1
 
 
@@ -64,7 +64,7 @@ def test_normalize_rejects_three_tracks() -> None:
     raw["current_tracks"] = ["A", "B", "C"]
     result = normalize_input({"raw_input": raw})
     assert "normalized_profile" not in result
-    assert result["trace"] == ["N1:fail"]
+    assert result["trace"] == ["input_normalize:fail"]
     assert len(result["errors"]) >= 1
 
 
@@ -74,7 +74,7 @@ def test_normalize_rejects_missing_required_field() -> None:
     del raw["interests"]
     result = normalize_input({"raw_input": raw})
     assert "normalized_profile" not in result
-    assert result["trace"] == ["N1:fail"]
+    assert result["trace"] == ["input_normalize:fail"]
     assert len(result["errors"]) >= 1
 
 
@@ -84,5 +84,5 @@ def test_normalize_rejects_six_interests() -> None:
     raw["interests"] = ["A", "B", "C", "D", "E", "F"]
     result = normalize_input({"raw_input": raw})
     assert "normalized_profile" not in result
-    assert result["trace"] == ["N1:fail"]
+    assert result["trace"] == ["input_normalize:fail"]
     assert len(result["errors"]) >= 1
