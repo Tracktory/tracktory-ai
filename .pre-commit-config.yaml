@@ -13,3 +13,5 @@ repos:
         files: ^src/
         additional_dependencies:
           - pydantic>=2.12.5
+          - types-pyyaml>=6.0.12.20260408
+          - playwright>=1.58.0
