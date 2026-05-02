@@ -29,6 +29,8 @@ class GraphState(TypedDict, total=False):
             normalized_profile (dict 형태로 NormalizedProfile.model_dump 결과)
         임베딩 출력:
             profile_text, profile_vector
+        직무 매칭 출력:
+            job_candidates (dict 리스트 형태로 JobCandidate.model_dump 결과)
         트랙 시너지 출력:
             primary_combos, secondary_combos, slot3_fallback_triggered,
             slot3_fallback_level
@@ -46,6 +48,9 @@ class GraphState(TypedDict, total=False):
     # --- 임베딩 출력 ---
     profile_text: str | None
     profile_vector: list[float] | None
+
+    # --- 직무 매칭 출력 ---
+    job_candidates: list[dict[str, Any]] | None
 
     # --- 트랙 시너지 출력 (overwrite) ---
     primary_combos: list[dict[str, Any]] | None
