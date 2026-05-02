@@ -36,6 +36,6 @@
 ## 후속 ADR 후보
 
 - 트랙 시너지 알고리즘 — Slot Reservation Pattern (Hard Constraint + MMR)
-- 4-tier hierarchy 정의 (T1 단과대 / T2 학부 / T3 전공 / T4 트랙)
+- 4-tier hierarchy 정의 (T1 단과대 / T2 학부 / T3 트랙 / T4 과목 overlap)
 - MMR 다양성 알고리즘 (lambda 초기값 + ablation 결과)
 - 한국어 임베딩 모델 채택 (BGE-M3 등 — 현재 ADR-0001 scope creep 방지로 분리)

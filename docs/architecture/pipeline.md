@@ -182,7 +182,7 @@ GraphRAG 기반 관계 그래프 + 벡터 인덱스. Offline 배치가 적재하
 | 직무 매칭 top-k | default 3, UI "더 보기" 클릭 시 +2 (총 5) |
 | 직무 임베딩 unit | 채용공고 묶음 → LLM 요약 → 직무당 단일 벡터. 학기 1회 배치 (~$5 / 100직무) |
 | 직무 매칭 fallback 임계값 | 코사인 < 0.3 시 카테고리 사전 매핑(`category_to_jobs.yaml`) 으로 대체 |
-| 다양성 알고리즘 | MMR + 4-tier 계층 (단과대 → 학부 → 전공 → 트랙) + cross-college 슬롯 1개 예약 |
+| 다양성 알고리즘 | MMR + 4-tier 계층 (단과대 → 학부 → 트랙 → 과목 overlap) + cross-college 슬롯 1개 예약 |
 | 학습 로드맵 4단계 | 기초 → 핵심 → 응용 → 산학. 선수과목 제약 위배 0 강제 |
 | 데이터 소스 | 한성대 강의계획서 47트랙 (전체) + 원티드 채용공고 |
 
@@ -193,7 +193,7 @@ GraphRAG 기반 관계 그래프 + 벡터 인덱스. Offline 배치가 적재하
 본 문서가 다루지 않는 안정화 대기 결정은 [ADR README](../adr/README.md) 의 "후속 ADR 후보" 섹션에서 추적합니다. 1+ 스프린트 변경 없이 통과하면 ADR 로 승격을 검토합니다.
 
 - 트랙 시너지 알고리즘 — Slot Reservation Pattern (Hard Constraint + MMR)
-- 4-tier hierarchy 정의 (T1 단과대 / T2 학부 / T3 전공 / T4 트랙)
+- 4-tier hierarchy 정의 (T1 단과대 / T2 학부 / T3 트랙 / T4 과목 overlap)
 - MMR 다양성 알고리즘 (lambda 초기값 + ablation 결과)
 - 한국어 임베딩 모델 채택 (BGE-M3 등 — 현재 ADR-0001 scope creep 방지로 분리)
 

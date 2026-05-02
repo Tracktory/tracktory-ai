@@ -192,7 +192,7 @@ next = argmax_{i ∉ selected} [
 본 노드의 핵심 설계가 변경 없이 1+ 스프린트를 통과하면 ADR 디렉토리(`docs/adr/`) 로 승격을 검토합니다. 승격 1순위 후보:
 
 - 트랙 시너지 알고리즘 — Slot Reservation Pattern (Hard Constraint + MMR) 구조 자체
-- 4-tier hierarchy 정의 (T1 단과대 / T2 학부 / T3 전공 / T4 트랙)
+- 4-tier hierarchy 정의 (T1 단과대 / T2 학부 / T3 트랙 / T4 과목 overlap)
 - MMR 다양성 알고리즘 (`λ` 초기값 + ablation 결과 누적 후)
 - sim_4tier 의 트랙 메타 cos 통합 (`w_meta` 가중치 ablation 정착 후)
 
