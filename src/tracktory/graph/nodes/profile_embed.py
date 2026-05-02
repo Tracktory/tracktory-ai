@@ -57,8 +57,8 @@ class ProfileEmbedNode:
         profile = state.get("normalized_profile")
         if not profile:
             return {
-                "errors": ["N2 skipped: normalized_profile is missing"],
-                "trace": ["N2:skip"],
+                "errors": ["profile_embed skipped: normalized_profile is missing"],
+                "trace": ["profile_embed:skip"],
             }
 
         text = _serialize_profile(profile, self._template)
@@ -66,7 +66,7 @@ class ProfileEmbedNode:
         return {
             "profile_text": text,
             "profile_vector": vector,
-            "trace": ["N2:ok"],
+            "trace": ["profile_embed:ok"],
         }
 
 

@@ -28,6 +28,7 @@ docs/*
 !docs/adr/
 !docs/adr/**
 
-# Claude Code — personal context & tooling (CLAUDE.md is tracked)
+# Claude Code — local-only context (CLAUDE.md and .claude/settings.json are tracked)
 CLAUDE.local.md
-.claude/
+.claude/*
+!.claude/settings.json

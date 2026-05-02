@@ -24,7 +24,7 @@
 
 PR이 다음 요구 사항을 충족하는지 확인해주세요.
 
-- [ ] 커밋 메시지가 [CONTRIBUTING.md의 커밋 메시지 규칙](../CONTRIBUTING.md#2-커밋-메시지-규칙)을 따릅니다 (소문자 타입: `feat:`, `fix:`, `refactor:` ...)
+- [ ] 커밋 메시지가 [CONTRIBUTING.md의 커밋 메시지 규칙](../CONTRIBUTING.md#2-커밋-메시지-규칙)을 따릅니다.
 - [ ] 커밋 전 루틴을 실행했습니다
   - [ ] `uv run ruff format .`
   - [ ] `uv run ruff check . --fix`

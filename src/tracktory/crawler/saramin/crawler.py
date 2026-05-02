@@ -12,7 +12,7 @@ import logging
 import time
 import xml.etree.ElementTree as ET
 
-import requests  # type: ignore[import-untyped]
+import requests
 from bs4 import BeautifulSoup
 
 from tracktory.common.models import CrawlResult, JobPosting
@@ -243,7 +243,7 @@ class SaraminCrawler:
         Returns:
             파싱된 XML 루트 엘리먼트. 실패 시 None.
         """
-        params = {
+        params: dict[str, str | int] = {
             "access-key": self.api_key,
             "keywords": keyword,
             "count": config.SARAMIN_RESULTS_PER_PAGE,
