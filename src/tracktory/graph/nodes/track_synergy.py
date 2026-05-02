@@ -98,25 +98,25 @@ def _generate_combos(
     self-pair (``track_a == track_b``) 는 제외하며, 두 트랙 ID 의 정렬된 조합으로
     dedup 한다.
     """
-    by_id = {t.track_id: t for t in tracks}
+    by_id = {track.track_id: track for track in tracks}
 
     if current_tracks:
         primary_pool: list[Track] = [by_id[tid] for tid in current_tracks if tid in by_id]
     else:
-        primary_pool = [t for t in tracks if t.college_id == user_college_id]
+        primary_pool = [track for track in tracks if track.college_id == user_college_id]
 
     seen: set[str] = set()
     combos: list[TrackCombo] = []
-    for a in primary_pool:
-        for b in tracks:
-            if a.track_id == b.track_id:
+    for primary_track in primary_pool:
+        for partner in tracks:
+            if primary_track.track_id == partner.track_id:
                 continue
-            ids_sorted = sorted([a.track_id, b.track_id])
+            ids_sorted = sorted([primary_track.track_id, partner.track_id])
             key = "::".join(ids_sorted)
             if key in seen:
                 continue
             seen.add(key)
-            combos.append(TrackCombo(track_a=a, track_b=b, combo_key=key))
+            combos.append(TrackCombo(track_a=primary_track, track_b=partner, combo_key=key))
     return combos
 
 
@@ -127,19 +127,19 @@ def _generate_combos(
 
 def _complementarity(combo: TrackCombo) -> float:
     """두 트랙의 비중복 역량 합집합 / 전체 역량 풀 비율 (Jaccard distance)."""
-    a = set(combo.track_a.competencies)
-    b = set(combo.track_b.competencies)
-    union = a | b
+    comp_a = set(combo.track_a.competencies)
+    comp_b = set(combo.track_b.competencies)
+    union = comp_a | comp_b
     if not union:
         return 0.0
-    return len(a ^ b) / len(union)
+    return len(comp_a ^ comp_b) / len(union)
 
 
 def _job_coverage(combo: TrackCombo, jobs: list[JobCandidate]) -> float:
     """직무 후보의 채용공고 기술스택 중 두 트랙 합집합으로 커버되는 비율."""
     job_stacks: set[str] = set()
-    for j in jobs:
-        job_stacks.update(j.tech_stacks)
+    for job in jobs:
+        job_stacks.update(job.tech_stacks)
     if not job_stacks:
         return 0.0
     track_stacks = set(combo.track_a.tech_stacks) | set(combo.track_b.tech_stacks)
@@ -148,12 +148,12 @@ def _job_coverage(combo: TrackCombo, jobs: list[JobCandidate]) -> float:
 
 def _redundancy(combo: TrackCombo) -> float:
     """두 트랙의 과목 중복도 (Jaccard similarity)."""
-    a = set(combo.track_a.course_ids)
-    b = set(combo.track_b.course_ids)
-    union = a | b
+    courses_a = set(combo.track_a.course_ids)
+    courses_b = set(combo.track_b.course_ids)
+    union = courses_a | courses_b
     if not union:
         return 0.0
-    return len(a & b) / len(union)
+    return len(courses_a & courses_b) / len(union)
 
 
 def _synergy_score(
@@ -181,28 +181,36 @@ def _select_primary(scored: list[_ScoredCombo], k: int) -> list[RankedCombo]:
     1트랙 주전공 제약은 ``_generate_combos`` 단계에서 이미 적용되어 있으므로
     여기서는 단순 top-k. 동점 시 ``combo_key`` 알파벳 순으로 deterministic 결정.
     """
-    top = sorted(scored, key=lambda s: (-s.synergy_score, s.combo.combo_key))[:k]
+    top = sorted(scored, key=lambda cand: (-cand.synergy_score, cand.combo.combo_key))[:k]
     return [
         RankedCombo(
-            combo=s.combo,
-            synergy_score=s.synergy_score,
+            combo=cand.combo,
+            synergy_score=cand.synergy_score,
             slot_type="primary",
             rank=i + 1,
         )
-        for i, s in enumerate(top)
+        for i, cand in enumerate(top)
     ]
 
 
 def _is_cross_college(combo: TrackCombo, primary: list[RankedCombo]) -> bool:
     """combo 의 두 트랙 중 최소 한 개의 단과대가 primary 에 없는 경우 True."""
-    primary_colleges = {t.college_id for r in primary for t in (r.combo.track_a, r.combo.track_b)}
+    primary_colleges = {
+        track.college_id
+        for ranked in primary
+        for track in (ranked.combo.track_a, ranked.combo.track_b)
+    }
     combo_colleges = {combo.track_a.college_id, combo.track_b.college_id}
     return bool(combo_colleges - primary_colleges)
 
 
 def _is_cross_department(combo: TrackCombo, primary: list[RankedCombo]) -> bool:
     """학부 단위 (T2) cross 판정 — T1 fallback 시 사용."""
-    primary_depts = {t.department_id for r in primary for t in (r.combo.track_a, r.combo.track_b)}
+    primary_depts = {
+        track.department_id
+        for ranked in primary
+        for track in (ranked.combo.track_a, ranked.combo.track_b)
+    }
     combo_depts = {combo.track_a.department_id, combo.track_b.department_id}
     return bool(combo_depts - primary_depts)
 
@@ -223,14 +231,14 @@ def _select_cross_college_slot(
     """
     primary_keys = {r.combo.combo_key for r in primary}
     eligible = [
-        s
-        for s in scored
-        if s.combo.combo_key not in primary_keys and s.synergy_score >= min_cross_synergy
+        cand
+        for cand in scored
+        if cand.combo.combo_key not in primary_keys and cand.synergy_score >= min_cross_synergy
     ]
 
-    t1 = [s for s in eligible if _is_cross_college(s.combo, primary)]
+    t1 = [cand for cand in eligible if _is_cross_college(cand.combo, primary)]
     if t1:
-        winner = sorted(t1, key=lambda s: (-s.synergy_score, s.combo.combo_key))[0]
+        winner = sorted(t1, key=lambda cand: (-cand.synergy_score, cand.combo.combo_key))[0]
         return (
             RankedCombo(
                 combo=winner.combo,
@@ -241,9 +249,9 @@ def _select_cross_college_slot(
             None,
         )
 
-    t2 = [s for s in eligible if _is_cross_department(s.combo, primary)]
+    t2 = [cand for cand in eligible if _is_cross_department(cand.combo, primary)]
     if t2:
-        winner = sorted(t2, key=lambda s: (-s.synergy_score, s.combo.combo_key))[0]
+        winner = sorted(t2, key=lambda cand: (-cand.synergy_score, cand.combo.combo_key))[0]
         return (
             RankedCombo(
                 combo=winner.combo,
@@ -262,21 +270,21 @@ def _select_cross_college_slot(
 # ---------------------------------------------------------------------------
 
 
-def _has_shared_attr(a: TrackCombo, b: TrackCombo, attr: str) -> float:
+def _has_shared_attr(combo_a: TrackCombo, combo_b: TrackCombo, attr: str) -> float:
     """두 조합의 트랙 attr 집합에 공통 원소가 있으면 1.0, 없으면 0.0."""
-    a_set = {getattr(a.track_a, attr), getattr(a.track_b, attr)}
-    b_set = {getattr(b.track_a, attr), getattr(b.track_b, attr)}
-    return 1.0 if a_set & b_set else 0.0
+    attrs_a = {getattr(combo_a.track_a, attr), getattr(combo_a.track_b, attr)}
+    attrs_b = {getattr(combo_b.track_a, attr), getattr(combo_b.track_b, attr)}
+    return 1.0 if attrs_a & attrs_b else 0.0
 
 
-def _course_overlap_ratio(a: TrackCombo, b: TrackCombo) -> float:
+def _course_overlap_ratio(combo_a: TrackCombo, combo_b: TrackCombo) -> float:
     """두 조합의 모든 과목 합집합 대비 교집합 비율."""
-    a_courses = set(a.track_a.course_ids) | set(a.track_b.course_ids)
-    b_courses = set(b.track_a.course_ids) | set(b.track_b.course_ids)
-    union = a_courses | b_courses
+    courses_a = set(combo_a.track_a.course_ids) | set(combo_a.track_b.course_ids)
+    courses_b = set(combo_b.track_a.course_ids) | set(combo_b.track_b.course_ids)
+    union = courses_a | courses_b
     if not union:
         return 0.0
-    return len(a_courses & b_courses) / len(union)
+    return len(courses_a & courses_b) / len(union)
 
 
 def _combo_meta_vector(combo: TrackCombo) -> np.ndarray | None:
@@ -284,43 +292,43 @@ def _combo_meta_vector(combo: TrackCombo) -> np.ndarray | None:
 
     벡터 부재·dim 불일치 시 ``None`` 반환 (cosine 0 으로 처리).
     """
-    a = combo.track_a.meta_vector
-    b = combo.track_b.meta_vector
-    if not a or not b:
+    raw_a = combo.track_a.meta_vector
+    raw_b = combo.track_b.meta_vector
+    if not raw_a or not raw_b:
         return None
-    va = np.asarray(a, dtype=float)
-    vb = np.asarray(b, dtype=float)
-    if va.shape != vb.shape:
+    vec_a = np.asarray(raw_a, dtype=float)
+    vec_b = np.asarray(raw_b, dtype=float)
+    if vec_a.shape != vec_b.shape:
         return None
-    mean: np.ndarray = (va + vb) / 2.0
+    mean: np.ndarray = (vec_a + vec_b) / 2.0
     return mean
 
 
-def _meta_cosine(a: TrackCombo, b: TrackCombo) -> float:
+def _meta_cosine(combo_a: TrackCombo, combo_b: TrackCombo) -> float:
     """두 조합의 대표 메타 벡터 사이 코사인 유사도.
 
     트랙 메타 벡터는 단일 임베딩 boundary (ADR-0001) 에서 L2 normalized 상태로
     적재된다. 평균 후에는 norm 이 변할 수 있어 안전하게 재 normalize 한다.
     """
-    va = _combo_meta_vector(a)
-    vb = _combo_meta_vector(b)
-    if va is None or vb is None:
+    vec_a = _combo_meta_vector(combo_a)
+    vec_b = _combo_meta_vector(combo_b)
+    if vec_a is None or vec_b is None:
         return 0.0
-    norm_a = float(np.linalg.norm(va))
-    norm_b = float(np.linalg.norm(vb))
+    norm_a = float(np.linalg.norm(vec_a))
+    norm_b = float(np.linalg.norm(vec_b))
     if norm_a == 0.0 or norm_b == 0.0:
         return 0.0
-    return float(np.dot(va, vb) / (norm_a * norm_b))
+    return float(np.dot(vec_a, vec_b) / (norm_a * norm_b))
 
 
-def _sim_4tier(a: TrackCombo, b: TrackCombo, sim_cfg: SimilarityConfig) -> float:
+def _sim_4tier(combo_a: TrackCombo, combo_b: TrackCombo, sim_cfg: SimilarityConfig) -> float:
     """4-tier hierarchy 일치도 + 과목 중복도 + 메타 cos 의 5항 가중합."""
     return (
-        sim_cfg.w_college * _has_shared_attr(a, b, "college_id")
-        + sim_cfg.w_department * _has_shared_attr(a, b, "department_id")
-        + sim_cfg.w_major * _has_shared_attr(a, b, "major_id")
-        + sim_cfg.w_course_overlap * _course_overlap_ratio(a, b)
-        + sim_cfg.w_meta * _meta_cosine(a, b)
+        sim_cfg.w_college * _has_shared_attr(combo_a, combo_b, "college_id")
+        + sim_cfg.w_department * _has_shared_attr(combo_a, combo_b, "department_id")
+        + sim_cfg.w_major * _has_shared_attr(combo_a, combo_b, "major_id")
+        + sim_cfg.w_course_overlap * _course_overlap_ratio(combo_a, combo_b)
+        + sim_cfg.w_meta * _meta_cosine(combo_a, combo_b)
     )
 
 
@@ -342,7 +350,7 @@ def _mmr_select(
     동점 시 ``combo_key`` 알파벳 순으로 deterministic 선택.
     """
     selected_keys = {r.combo.combo_key for r in selected}
-    pool = [s for s in candidates if s.combo.combo_key not in selected_keys]
+    pool = [cand for cand in candidates if cand.combo.combo_key not in selected_keys]
     selected_combos: list[TrackCombo] = [r.combo for r in selected]
 
     chosen: list[RankedCombo] = []
@@ -350,13 +358,16 @@ def _mmr_select(
 
     while pool and len(chosen) < n:
 
-        def _mmr_score(s: _ScoredCombo, sels: list[TrackCombo] = selected_combos) -> float:
-            if not sels:
-                return lambda_ * s.synergy_score
-            max_sim = max(_sim_4tier(s.combo, sel, sim_cfg) for sel in sels)
-            return lambda_ * s.synergy_score - (1.0 - lambda_) * max_sim
+        def _mmr_score(
+            cand: _ScoredCombo,
+            previously_selected: list[TrackCombo] = selected_combos,
+        ) -> float:
+            if not previously_selected:
+                return lambda_ * cand.synergy_score
+            max_sim = max(_sim_4tier(cand.combo, prev, sim_cfg) for prev in previously_selected)
+            return lambda_ * cand.synergy_score - (1.0 - lambda_) * max_sim
 
-        winner = sorted(pool, key=lambda s: (-_mmr_score(s), s.combo.combo_key))[0]
+        winner = sorted(pool, key=lambda cand: (-_mmr_score(cand), cand.combo.combo_key))[0]
         chosen.append(
             RankedCombo(
                 combo=winner.combo,
