@@ -10,7 +10,7 @@ Living Document — Stable as of 2026-05-02
 
 ## 1. Purpose
 
-본 문서는 tracktory-ai 의 추천 파이프라인이 어떻게 구성되어 있는지 한눈에 보여주는 entry point 입니다. 노드 단위 책임·두 축 실행 흐름·공유 리소스·핵심 원칙을 정리하며, 결정 근거(왜 X 가 아닌가) 는 [ADR](../adr/) 로 분리됩니다. 트랙 조합 추천 단계의 인터페이스·알고리즘 합의는 [Track Synergy Design Doc](../design/n4-track-synergy.md) 에 별도 정리되어 있습니다.
+본 문서는 tracktory-ai 의 추천 파이프라인이 어떻게 구성되어 있는지 한눈에 보여주는 entry point 입니다. 노드 단위 책임·두 축 실행 흐름·공유 리소스·핵심 원칙을 정리하며, 결정 근거(왜 X 가 아닌가) 는 [ADR](../adr/) 로 분리됩니다. 트랙 조합 추천 단계의 인터페이스·알고리즘 합의는 [Track Synergy Design Doc](../design/track-synergy.md) 에 별도 정리되어 있습니다.
 
 **문서 역할 분리**
 
@@ -204,7 +204,7 @@ GraphRAG 기반 관계 그래프 + 벡터 인덱스. Offline 배치가 적재하
 ### 내부 (팀 공유 자산)
 
 - [ADR-0001 Single Embedding Boundary](../adr/0001-single-embedding-boundary.md) — 단일 임베딩 boundary 결정 근거
-- [Track Synergy Design Doc](../design/n4-track-synergy.md) — 트랙 조합 추천 단계 인터페이스·알고리즘
+- [Track Synergy Design Doc](../design/track-synergy.md) — 트랙 조합 추천 단계 인터페이스·알고리즘
 - [`CLAUDE.md`](../../CLAUDE.md) — 아키텍처 철학 5개 원칙
 - [`CONTRIBUTING.md`](../../CONTRIBUTING.md) — LangGraph 코딩 규약
 

@@ -61,12 +61,12 @@ LangGraph 의 "부분 상태 반환" 원칙에 따라 본 노드는 선행 노�
 
 본 노드가 다루는 도메인 개념. 정확한 필드 / 타입은 코드 작성 시 결정.
 
-- **Track** — 한성대 단일 트랙 메타데이터. 4-tier hierarchy 식별자(`college_id` / `department_id` / `major_id` / `course_ids`) + 트랙 메타 텍스트 + 임베딩 벡터.
+- **Track** — 한성대 단일 트랙 메타데이터. 4-tier hierarchy 식별자(`college_id` / `department_id` / `track_id` / `course_ids`) + 트랙 메타 텍스트 + 임베딩 벡터.
 - **JobCandidate** — 직무 매칭 노드의 결과 단건. 직무명 + 채용공고 기술스택 + 역량 태그 + 매칭 점수.
 - **TrackCombo** — 두 `Track` 의 조합 단위.
 - **RankedCombo** — `TrackCombo` 에 시너지 점수 + 슬롯 분류(`primary` / `cross_college` / `mmr`) + 순위가 부착된 단위. 노드 출력 단위.
 
-**`major_id == department_id` degenerate**: 한성대 일부 학과(AI응용학과, 융합보안학과 등)는 단일 트랙만 운영. 이 경우 `major_id` 를 `department_id` 와 동일하게 두면 동일 모델로 표현 가능.
+**`track_id == department_id` degenerate**: 한성대 일부 학과(AI응용학과, 융합보안학과 등)는 단일 트랙만 운영. 이 경우 `track_id` 를 `department_id` 와 동일하게 두면 동일 모델로 표현 가능.
 
 ---
 
@@ -114,7 +114,7 @@ synergy(track_a, track_b | jobs)
 sim_4tier(combo_a, combo_b)
   = w_college    · same_T1(a, b)
   + w_department · same_T2(a, b)
-  + w_major      · same_T3(a, b)
+  + w_track      · same_T3(a, b)
   + w_overlap    · overlap_ratio(a, b)
   + w_meta       · cos(meta_a, meta_b)
 ```
@@ -125,9 +125,9 @@ sim_4tier(combo_a, combo_b)
 | `overlap_ratio` | T4 과목 overlap 비율 |
 | `cos(meta_a, meta_b)` | 트랙 메타 텍스트 임베딩의 코사인 유사도 — **도메인/서사 거리** |
 
-**가중치 단조 제약**: `w_college ≥ w_department ≥ w_major` (상위 tier 가 더 강한 신호). `w_meta` 는 별도 축이며 tier 제약 외.
+**가중치 단조 제약**: `w_college ≥ w_department ≥ w_track` (상위 tier 가 더 강한 신호). `w_meta` 는 별도 축이며 tier 제약 외.
 
-**가중치 초기값** (ablation 대상): `w_college = 0.4`, `w_department = 0.3`, `w_major = 0.2`, `w_overlap = 0.1`, `w_meta = 0.05`.
+**가중치 초기값** (ablation 대상): `w_college = 0.4`, `w_department = 0.3`, `w_track = 0.2`, `w_overlap = 0.1`, `w_meta = 0.05`.
 
 **`w_meta · cos` 의 부호 일관성**: cos 가 높으면 sim 이 높음 → MMR 의 다양성 항이 cos 가 낮은(도메인 거리가 먼) 조합을 선호 → cross-domain 조합이 자연스럽게 선택됨. 시너지 식 외부 보너스로 가산하는 대안도 검토했으나, 시너지 식이 단순 3항으로 유지되고 부호 반전 없이 sim 방향성이 일관되는 본 통합 방식을 선택.
 
@@ -167,7 +167,7 @@ next = argmax_{i ∉ selected} [
 | 블록 | 항목 |
 |---|---|
 | `weights` | 시너지 식의 `complementarity` / `coverage` / `redundancy` |
-| `similarity` | sim_4tier 의 `w_college` / `w_department` / `w_major` / `w_course_overlap` / `w_meta` |
+| `similarity` | sim_4tier 의 `w_college` / `w_department` / `w_track` / `w_course_overlap` / `w_meta` |
 | `mmr` | `lambda` |
 | `slots` | `primary_count` / `secondary_count` / `cross_college_reserved` / `min_cross_synergy` |
 
