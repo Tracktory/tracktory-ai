@@ -5,12 +5,18 @@ description = "AI-powered career recommendation system - data crawling, agent, a
 requires-python = ">=3.13"
 dependencies = [
     "beautifulsoup4>=4.14.3",
+    "fastapi>=0.136.1",
+    "langchain>=1.2.16",
+    "langchain-openai>=1.2.1",
+    "langgraph>=1.1.10",
     "pandas>=2.0.0",
     "playwright>=1.58.0",
     "pydantic>=2.12.5",
+    "pydantic-settings>=2.14.0",
     "python-dotenv>=1.2.2",
     "pyyaml>=6.0.3",
     "requests>=2.32.5",
+    "uvicorn>=0.46.0",
 ]
 
 [build-system]
