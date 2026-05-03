@@ -21,8 +21,8 @@ from collections import defaultdict
 from pathlib import Path
 
 _ROOT = Path(__file__).resolve().parents[4]
-_SYLLABI_DIR = _ROOT / "data" / "output" / "syllabi"
-_OUT_DIR = _ROOT / "data" / "output" / "syllabi_rename"
+_SYLLABI_DIR = _ROOT / "data" / "processed" / "rag" / "output" / "syllabi"
+_OUT_DIR = _ROOT / "data" / "processed" / "rag" / "output" / "syllabi_rename"
 
 
 def _extract_course_name(text: str) -> str:

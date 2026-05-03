@@ -18,8 +18,8 @@ import sys
 from pathlib import Path
 
 _ROOT = Path(__file__).resolve().parents[4]
-_SRC_DIR = _ROOT / "data" / "output" / "syllabi_rename"
-_OUT_DIR = _ROOT / "data" / "output" / "syllabi_clean"
+_SRC_DIR = _ROOT / "data" / "processed" / "rag" / "output" / "syllabi_rename"
+_OUT_DIR = _ROOT / "data" / "processed" / "rag" / "output" / "syllabi_clean"
 _LOG_FILE = _ROOT / "logs" / "prereq_raw.log"
 
 # 괄호 제거·공백 제거·소문자 변환 후 정확 일치로 null 판정하는 값 집합

@@ -34,8 +34,8 @@ from collections import defaultdict
 from pathlib import Path
 
 _ROOT = Path(__file__).resolve().parents[4]
-_SYLLABI_CLEAN_DIR = _ROOT / "data" / "output" / "syllabi_clean"
-_COURSES_CSV = _ROOT / "data" / "courses.csv"
+_SYLLABI_CLEAN_DIR = _ROOT / "data" / "processed" / "rag" / "output" / "syllabi_clean"
+_COURSES_CSV = _ROOT / "data" / "raw" / "hansung" / "courses.csv"
 _ALIAS_MAP_PATH = _ROOT / "data" / "processed" / "prereq_alias.json"
 _OUT_PATH = _ROOT / "data" / "processed" / "prerequisites.json"
 
