@@ -31,7 +31,7 @@ def test_sim_4tier_full_match_returns_max_weighted_sum(
     expected = (
         cfg.similarity.w_college
         + cfg.similarity.w_department
-        + cfg.similarity.w_major
+        + cfg.similarity.w_track
         + cfg.similarity.w_meta * 1.0
     )
     assert sim == pytest.approx(expected, abs=1e-9)
@@ -40,7 +40,7 @@ def test_sim_4tier_full_match_returns_max_weighted_sum(
 def test_sim_4tier_monotone_constraint_violation_raises(make_synergy_config) -> None:
     """w_college < w_department 같은 단조 제약 위배는 ValidationError 로 fail-fast."""
     with pytest.raises(ValidationError):
-        make_synergy_config(similarity={"w_college": 0.1, "w_department": 0.5, "w_major": 0.05})
+        make_synergy_config(similarity={"w_college": 0.1, "w_department": 0.5, "w_track": 0.05})
 
 
 def test_sim_4tier_handles_degenerate_major_id_equal_department(

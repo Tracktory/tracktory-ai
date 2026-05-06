@@ -130,7 +130,7 @@ def make_synergy_config() -> Callable[..., SynergyConfig]:
             "similarity": {
                 "w_college": 0.4,
                 "w_department": 0.3,
-                "w_major": 0.2,
+                "w_track": 0.2,
                 "w_course_overlap": 0.1,
                 "w_meta": 0.05,
             },

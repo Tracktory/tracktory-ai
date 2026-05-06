@@ -83,7 +83,7 @@ def _normalized_profile(college: str = "C1") -> dict[str, Any]:
 
 def _state(college: str = "C1") -> dict[str, Any]:
     return {
-        "job_candidates": [
+        "recommended_jobs": [
             {
                 "job_id": "j1",
                 "job_name": "Backend",

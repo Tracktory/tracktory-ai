@@ -137,34 +137,34 @@ class WeightsConfig(BaseModel):
 class SimilarityConfig(BaseModel):
     """``sim_4tier`` 5항 가중치.
 
-    ``sim_4tier = w_college · same_T1 + w_department · same_T2 + w_major · same_T3``
+    ``sim_4tier = w_college · same_T1 + w_department · same_T2 + w_track · same_T3``
     ``+ w_course_overlap · overlap_ratio + w_meta · cos(meta_a, meta_b)``.
 
-    상위 tier 가 더 강한 신호여야 하므로 ``w_college >= w_department >= w_major`` 의
+    상위 tier 가 더 강한 신호여야 하므로 ``w_college >= w_department >= w_track`` 의
     단조 제약을 모델 검증으로 강제한다. ``w_meta`` 는 tier 외 별도 축
     (도메인·서사 거리) 이라 단조 제약 대상이 아니다.
 
     Attributes:
         w_college: T1 가중치.
         w_department: T2 가중치.
-        w_major: T3 가중치.
+        w_track: T3 가중치.
         w_course_overlap: T4 과목 중복도 가중치.
         w_meta: 트랙 메타 텍스트 임베딩 cosine 유사도 가중치.
     """
 
     w_college: float = Field(..., ge=0.0, le=1.0)
     w_department: float = Field(..., ge=0.0, le=1.0)
-    w_major: float = Field(..., ge=0.0, le=1.0)
+    w_track: float = Field(..., ge=0.0, le=1.0)
     w_course_overlap: float = Field(..., ge=0.0, le=1.0)
     w_meta: float = Field(..., ge=0.0, le=1.0)
 
     @model_validator(mode="after")
     def _enforce_tier_monotone(self) -> Self:
-        if not (self.w_college >= self.w_department >= self.w_major):
+        if not (self.w_college >= self.w_department >= self.w_track):
             raise ValueError(
                 "tier weights must be monotone non-increasing: "
                 f"w_college ({self.w_college}) >= w_department ({self.w_department}) "
-                f">= w_major ({self.w_major})"
+                f">= w_track ({self.w_track})"
             )
         return self
 

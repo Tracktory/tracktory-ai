@@ -5,7 +5,7 @@
 조절한다.
 
 처리 흐름 (6단계):
-    1. 입력 검증 — ``job_candidates`` / ``normalized_profile`` 부재 시 skip.
+    1. 입력 검증 — ``recommended_jobs`` / ``normalized_profile`` 부재 시 skip.
     2. 트랙 전체 로드 (외부 I/O — 진입점 단 1곳).
     3. 후보 조합 생성 — 1트랙 주전공 제약 적용.
     4. 각 조합에 시너지 점수 매기기 — 외부화 가중치, ``[0, 1]`` clip.
@@ -326,7 +326,7 @@ def _sim_4tier(combo_a: TrackCombo, combo_b: TrackCombo, sim_cfg: SimilarityConf
     return (
         sim_cfg.w_college * _has_shared_attr(combo_a, combo_b, "college_id")
         + sim_cfg.w_department * _has_shared_attr(combo_a, combo_b, "department_id")
-        + sim_cfg.w_major * _has_shared_attr(combo_a, combo_b, "major_id")
+        + sim_cfg.w_track * _has_shared_attr(combo_a, combo_b, "major_id")
         + sim_cfg.w_course_overlap * _course_overlap_ratio(combo_a, combo_b)
         + sim_cfg.w_meta * _meta_cosine(combo_a, combo_b)
     )
@@ -405,11 +405,11 @@ class TrackSynergyNode:
 
     def __call__(self, state: GraphState) -> dict[str, Any]:
         # 단계 1: 입력 검증
-        job_candidates_raw: list[dict[str, Any]] | None = state.get("job_candidates")
+        recommended_jobs_raw: list[dict[str, Any]] | None = state.get("recommended_jobs")
         normalized: dict[str, Any] | None = state.get("normalized_profile")
-        if not job_candidates_raw or not normalized:
+        if not recommended_jobs_raw or not normalized:
             return {
-                "errors": ["track_synergy skipped: job_candidates or normalized_profile missing"],
+                "errors": ["track_synergy skipped: recommended_jobs or normalized_profile missing"],
                 "trace": ["track_synergy:skip"],
             }
 
@@ -421,7 +421,7 @@ class TrackSynergyNode:
             }
 
         current_tracks = normalized.get("current_tracks") or []
-        jobs = [JobCandidate.model_validate(j) for j in job_candidates_raw]
+        jobs = [JobCandidate.model_validate(j) for j in recommended_jobs_raw]
 
         # 단계 2: 트랙 전체 로드 (외부 I/O — 진입점 단 1곳)
         tracks = self._repo.list_all()

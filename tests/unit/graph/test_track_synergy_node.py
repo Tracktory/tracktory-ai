@@ -41,7 +41,7 @@ def _normalized_profile(college: str = "C1", current_tracks: list[str] | None = 
     }
 
 
-def test_node_skips_when_job_candidates_missing(real_synergy_yaml_path) -> None:
+def test_node_skips_when_recommended_jobs_missing(real_synergy_yaml_path) -> None:
     node, _ = _build_node(tracks=[], real_synergy_yaml_path=real_synergy_yaml_path)
     result = node({"normalized_profile": _normalized_profile()})
     assert result["trace"] == ["track_synergy:skip"]
@@ -50,7 +50,7 @@ def test_node_skips_when_job_candidates_missing(real_synergy_yaml_path) -> None:
 
 def test_node_skips_when_normalized_profile_missing(real_synergy_yaml_path) -> None:
     node, _ = _build_node(tracks=[], real_synergy_yaml_path=real_synergy_yaml_path)
-    result = node({"job_candidates": [{"job_id": "j1", "job_name": "x", "match_score": 0.5}]})
+    result = node({"recommended_jobs": [{"job_id": "j1", "job_name": "x", "match_score": 0.5}]})
     assert result["trace"] == ["track_synergy:skip"]
 
 
@@ -60,7 +60,7 @@ def test_node_skips_when_college_missing(real_synergy_yaml_path) -> None:
     del profile["college"]
     result = node(
         {
-            "job_candidates": [{"job_id": "j1", "job_name": "x", "match_score": 0.5}],
+            "recommended_jobs": [{"job_id": "j1", "job_name": "x", "match_score": 0.5}],
             "normalized_profile": profile,
         }
     )
@@ -99,7 +99,7 @@ def test_node_returns_seven_combos_when_data_complete(make_track, real_synergy_y
 
     result = node(
         {
-            "job_candidates": [
+            "recommended_jobs": [
                 {
                     "job_id": "j1",
                     "job_name": "Backend",
@@ -153,7 +153,7 @@ def test_node_logger_info_called_once_on_t2_fallback(
     with caplog.at_level(logging.INFO, logger="tracktory.graph.nodes.track_synergy"):
         result = node(
             {
-                "job_candidates": [
+                "recommended_jobs": [
                     {
                         "job_id": "j1",
                         "job_name": "Backend",
@@ -207,7 +207,7 @@ def test_node_no_logger_info_on_normal_path(make_track, real_synergy_yaml_path, 
     with caplog.at_level(logging.INFO, logger="tracktory.graph.nodes.track_synergy"):
         result = node(
             {
-                "job_candidates": [
+                "recommended_jobs": [
                     {
                         "job_id": "j1",
                         "job_name": "Backend",
