@@ -31,11 +31,11 @@
 
 | # | Title | Status | Date | Summary |
 |---|-------|--------|------|---------|
-| [0001](./0001-single-embedding-boundary.md) | Single Embedding Boundary (단일 임베딩 설정) | Accepted | 2026-04-26 | Offline 임베딩·그래프 단계와 Online 프로필·직무 매칭 단계가 공유하는 단일 `embedding.yaml` 보장. 코사인 유사도가 항상 동일한 임베딩 공간에서 비교됨. |
+| [0001](./0001-single-embedding-boundary.md) | Single Embedding Boundary (단일 임베딩 설정) | Accepted | 2026-04-26 | 추천 파이프라인 다섯 위치(Offline 임베딩 생성 / GraphRAG 구축 / 프로필 임베딩 / 직무 매칭 / 트랙 메타 다양성)가 공유하는 단일 `embedding.yaml` 보장. 코사인 유사도가 항상 동일한 임베딩 공간에서 비교됨. |
 
 ## 후속 ADR 후보
 
-- 트랙 시너지 알고리즘 — Slot Reservation + MMR 다양성 (Hard Constraint)
-- 4-tier hierarchy 정의 (T1 단과대 / T2 학부 / T3 전공 / T4 트랙)
+- 트랙 시너지 알고리즘 — Slot Reservation Pattern (Hard Constraint + MMR)
+- 4-tier hierarchy 정의 (T1 단과대 / T2 학부 / T3 트랙 / T4 과목 overlap)
 - MMR 다양성 알고리즘 (lambda 초기값 + ablation 결과)
 - 한국어 임베딩 모델 채택 (BGE-M3 등 — 현재 ADR-0001 scope creep 방지로 분리)

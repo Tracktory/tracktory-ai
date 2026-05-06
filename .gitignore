@@ -23,10 +23,14 @@ logs/
 # OMC
 .omc/
 
-# docs (track only ADR subdirectory)
+# docs (track ADR / design / architecture as team-shared assets)
 docs/*
 !docs/adr/
 !docs/adr/**
+!docs/architecture/
+!docs/architecture/**
+!docs/design/
+!docs/design/**
 
 # Claude Code — local-only context (CLAUDE.md and .claude/settings.json are tracked)
 CLAUDE.local.md

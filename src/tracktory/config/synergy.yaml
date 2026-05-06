@@ -20,16 +20,16 @@ weights:
 
 # ── sim_4tier 가중치 (Stage 4 MMR 다양성 측정) ───────────────────────
 # sim_4tier = w_college·same_T1 + w_department·same_T2
-#           + w_major·same_T3 + w_course_overlap·overlap_ratio
+#           + w_track·same_T3 + w_course_overlap·overlap_ratio
 #           + w_meta·cos(meta_a, meta_b)
 #
-# 단조 제약: w_college >= w_department >= w_major
+# 단조 제약: w_college >= w_department >= w_track
 #   (상위 tier 가 더 강한 신호)
 # w_meta 는 tier 외 별도 축 (도메인/서사 거리)
 similarity:
   w_college: 0.4
   w_department: 0.3
-  w_major: 0.2
+  w_track: 0.2
   w_course_overlap: 0.1
   w_meta: 0.05
 

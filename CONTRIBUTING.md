@@ -24,6 +24,7 @@
 | 린터 | `ruff check` | `uv run ruff check .` (자동 수정: `--fix`) |
 | 타입 체커 | `mypy` | `uv run mypy src` |
 | 테스트 | `pytest` | `uv run pytest` |
+| Lock 검증 | `uv lock --check` | `uv lock --check` |
 
 ### 커밋 전 루틴 (pre-commit)
 
@@ -40,6 +41,7 @@ uv run ruff format .
 uv run ruff check . --fix
 uv run mypy src
 uv run pytest
+uv lock --check
 ```
 
 ### 핵심 수치 (변경 시 `pyproject.toml`도 같이 수정)
@@ -363,6 +365,7 @@ def test_retrieve_tracks_returns_top_k(mocker):
 
 | 버전 | 날짜 | 변경자 | 변경 내용 |
 |---|---|---|---|
+| 0.4 | 2026-05-05 | 이재원 | §1 도구 체인·수동 실행 명령에 `uv lock --check` 추가. pre-commit 자동 검증 + `.gitattributes` `merge=binary` 와 함께 `uv.lock` 손상 차단. |
 | 0.3 | 2026-04-19 | 이재원 | §1 pre-commit 설치 단계 추가. |
 | 0.2 | 2026-04-13 | 이재원 | §2 브랜치 네이밍·이슈/PR 제목 규칙 추가. PR 제목 `[Type]` 브래킷 형식 도입. squash merge 원칙 명시. |
 | 0.1 | 2026-04-10 | 이재원 | 초안. ruff + mypy + LangGraph 규칙 확정. |
