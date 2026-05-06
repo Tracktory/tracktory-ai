@@ -15,10 +15,12 @@ import pytest
 
 from tracktory.graph.models import (
     JobCandidate,
+    JobMatchingConfig,
     SynergyConfig,
     Track,
     TrackCombo,
 )
+from tracktory.rag.job_index import InMemoryJobIndex, Job
 
 _DEFAULT_DIM = 1536
 
@@ -159,3 +161,73 @@ def make_synergy_config() -> Callable[..., SynergyConfig]:
 def real_synergy_yaml_path() -> Path:
     """실제 ``src/tracktory/config/synergy.yaml`` 의 경로 — 정합 sanity check 용."""
     return Path(__file__).resolve().parents[3] / "src" / "tracktory" / "config" / "synergy.yaml"
+
+
+@pytest.fixture
+def real_category_mapping_path() -> Path:
+    """실제 ``src/tracktory/config/category_to_jobs.yaml`` 의 경로."""
+    return (
+        Path(__file__).resolve().parents[3]
+        / "src"
+        / "tracktory"
+        / "config"
+        / "category_to_jobs.yaml"
+    )
+
+
+@pytest.fixture
+def make_job_data() -> Callable[..., Job]:
+    """``Job`` 도메인 factory — 직무 매칭 노드 fixture 용.
+
+    ``vector_seed`` 가 주어지면 deterministic L2 normalized 벡터를 채운다.
+    """
+
+    def _factory(
+        job_id: str,
+        *,
+        job_name: str | None = None,
+        tech_stacks: list[str] | None = None,
+        competency_tags: list[str] | None = None,
+        vector_seed: int | None = None,
+    ) -> Job:
+        return Job(
+            job_id=job_id,
+            job_name=job_name or job_id,
+            job_vector=_make_meta_vector(vector_seed),
+            tech_stacks=tech_stacks or [],
+            competency_tags=competency_tags or [],
+        )
+
+    return _factory
+
+
+@pytest.fixture
+def make_in_memory_job_index() -> Callable[[list[Job]], InMemoryJobIndex]:
+    """``InMemoryJobIndex`` 단순 wrapper factory."""
+
+    def _factory(jobs: list[Job]) -> InMemoryJobIndex:
+        return InMemoryJobIndex(jobs=jobs)
+
+    return _factory
+
+
+@pytest.fixture
+def make_job_matching_config() -> Callable[..., JobMatchingConfig]:
+    """``JobMatchingConfig`` factory — 기본값에 partial override.
+
+    실 yaml 을 거치지 않고 in-memory 에서 검증하고 싶을 때 사용.
+    """
+
+    def _factory(
+        *,
+        top_k: dict[str, int] | None = None,
+        min_job_similarity: float = 0.3,
+    ) -> JobMatchingConfig:
+        base_top_k = {"default": 3, "expanded": 5}
+        if top_k:
+            base_top_k.update(top_k)
+        return JobMatchingConfig.model_validate(
+            {"top_k": base_top_k, "min_job_similarity": min_job_similarity}
+        )
+
+    return _factory

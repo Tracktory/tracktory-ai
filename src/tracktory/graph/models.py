@@ -1,12 +1,13 @@
-"""트랙 시너지 노드의 도메인 모델.
+"""트랙 시너지 노드 + 직무 매칭 노드의 공통 도메인 모델.
 
-5 종 Pydantic 모델:
+7 종 Pydantic 모델:
 
 - ``Track`` — 한성대 단일 트랙 메타데이터 (4-tier hierarchy + 메타 텍스트·벡터).
 - ``JobCandidate`` — 직무 매칭 노드의 결과 단건.
 - ``TrackCombo`` — 두 트랙의 조합 단위.
 - ``RankedCombo`` — ``TrackCombo`` 에 시너지 점수·슬롯 분류·순위가 부착된 단위.
-- ``SynergyConfig`` — ``synergy.yaml`` 의 외부화 설정 1:1 매핑 (4 nested config + 단조 제약).
+- ``SynergyConfig`` — ``synergy.yaml`` 의 시너지 외부화 설정 (4 nested config + 단조 제약).
+- ``JobMatchingConfig`` — ``synergy.yaml`` 의 ``job_matching`` 섹션 외부화 매핑.
 """
 
 from __future__ import annotations
@@ -55,15 +56,23 @@ class Track(BaseModel):
 class JobCandidate(BaseModel):
     """직무 매칭 노드의 결과 단건.
 
-    본 모델의 ``tech_stacks`` 가 두 트랙 조합의 직무 도달도 (job coverage) 계산의
-    분모로 사용된다.
+    ``tech_stacks`` 는 후속 트랙 시너지 계산의 직무 도달도 (job coverage)
+    분모로 흐른다. ``similarity`` 와 ``match_score`` 는 같은 값 (코사인 유사도
+    또는 fallback 시 0.0) 으로 채워지며, 두 필드 동시 보존은 다운스트림
+    노드가 어느 키를 참조해도 동일하게 동작하도록 보장한다.
 
     Attributes:
         job_id: 직무 식별자.
         job_name: 사용자 표시용 직무명.
         tech_stacks: 채용공고 기술스택.
         competency_tags: 직무가 요구하는 역량 태그.
-        match_score: 직무 매칭 노드가 산출한 사용자-직무 적합도 ([0, 1]).
+        match_score: 사용자-직무 적합도 ([0, 1]). 다운스트림 트랙 시너지
+            노드와의 호환을 유지한다.
+        similarity: 직무 매칭 노드가 채우는 코사인 유사도 또는 fallback 시
+            0.0 ([0, 1]).
+        fallback_used: True 이면 카테고리 사전 매핑 fallback 으로 채택된
+            후보. LLM 설명 단계가 사용자에게 캐비잇 메시지를 추가할 때
+            본 플래그를 본다.
     """
 
     job_id: str = Field(..., min_length=1)
@@ -71,6 +80,8 @@ class JobCandidate(BaseModel):
     tech_stacks: list[str] = Field(default_factory=list)
     competency_tags: list[str] = Field(default_factory=list)
     match_score: float = Field(..., ge=0.0, le=1.0)
+    similarity: float = Field(default=0.0, ge=0.0, le=1.0)
+    fallback_used: bool = False
 
 
 class TrackCombo(BaseModel):
@@ -233,3 +244,59 @@ class SynergyConfig(BaseModel):
         if not isinstance(raw, dict):
             raise ValueError(f"Synergy config file {path} must define a top-level mapping")
         return cls.model_validate(raw)
+
+
+# ---------------------------------------------------------------------------
+# JobMatchingConfig — synergy.yaml 의 job_matching 섹션 외부화 매핑
+# ---------------------------------------------------------------------------
+
+
+class JobMatchingTopKConfig(BaseModel):
+    """직무 매칭 노드의 top-k 정책.
+
+    Attributes:
+        default: 기본 응답 후보 수 (첫 화면 노출용).
+        expanded: 사용자가 "더 보기" 를 요청했을 때의 후보 수.
+    """
+
+    default: int = Field(..., ge=1)
+    expanded: int = Field(..., ge=1)
+
+
+class JobMatchingConfig(BaseModel):
+    """``synergy.yaml`` 의 ``job_matching`` 섹션 1:1 매핑.
+
+    트랙 시너지와 같은 yaml 파일을 공유하여 가중치·임계값 외부화 단위를
+    단순화한다. 본 클래스는 그 중 ``job_matching`` 매핑만 추출한다.
+
+    Attributes:
+        top_k: 응답 후보 수 정책.
+        min_job_similarity: 코사인 유사도 하위 컷. max similarity 가 이 값
+            미만이면 카테고리 사전 매핑 fallback 으로 전환된다.
+    """
+
+    top_k: JobMatchingTopKConfig
+    min_job_similarity: float = Field(..., ge=0.0, le=1.0)
+
+    @classmethod
+    def load_from_yaml(cls, path: Path) -> Self:
+        """yaml 파일에서 ``JobMatchingConfig`` 를 로드한다.
+
+        Args:
+            path: ``synergy.yaml`` 의 경로.
+
+        Returns:
+            검증된 ``JobMatchingConfig`` 인스턴스.
+
+        Raises:
+            ValueError: yaml 이 mapping 이 아니거나 ``job_matching`` 키가
+                없거나 mapping 이 아닐 때.
+        """
+        with path.open("r", encoding="utf-8") as f:
+            raw = yaml.safe_load(f)
+        if not isinstance(raw, dict):
+            raise ValueError(f"Synergy config file {path} must define a top-level mapping")
+        section = raw.get("job_matching")
+        if not isinstance(section, dict):
+            raise ValueError(f"Synergy config file {path} must contain a 'job_matching' mapping")
+        return cls.model_validate(section)
