@@ -9,6 +9,7 @@ dependencies = [
     "langchain>=1.2.16",
     "langchain-openai>=1.2.1",
     "langgraph>=1.1.10",
+    "numpy>=2.0",
     "pandas>=2.0.0",
     "playwright>=1.58.0",
     "pydantic>=2.12.5",
@@ -112,3 +113,6 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_functions = ["test_*"]
 addopts = "-ra --strict-markers"
+markers = [
+    "integration: 외부 I/O 또는 다단계 노드 통합 테스트 (CI 기본 실행 제외)",
+]

@@ -13,7 +13,7 @@ list 끼리 ``+`` 는 새 list 를 반환하므로 reducer 의미와 정합하�
 """
 
 from operator import add
-from typing import Annotated, Any, TypedDict
+from typing import Annotated, Any, Literal, TypedDict
 
 
 class GraphState(TypedDict, total=False):
@@ -31,6 +31,9 @@ class GraphState(TypedDict, total=False):
             profile_text, profile_vector
         직무 추천 출력:
             recommended_jobs (직무 매칭 노드의 결과 dict 리스트)
+        트랙 시너지 출력:
+            primary_combos, secondary_combos, slot3_fallback_triggered,
+            slot3_fallback_level
         누적:
             errors, trace
     """
@@ -48,6 +51,12 @@ class GraphState(TypedDict, total=False):
 
     # --- 직무 추천 출력 ---
     recommended_jobs: list[dict[str, Any]] | None
+
+    # --- 트랙 시너지 출력 (overwrite) ---
+    primary_combos: list[dict[str, Any]] | None
+    secondary_combos: list[dict[str, Any]] | None
+    slot3_fallback_triggered: bool | None
+    slot3_fallback_level: Literal["T2", "MMR"] | None
 
     # --- 누적 (reducer = list concatenation) ---
     errors: Annotated[list[str], add]
