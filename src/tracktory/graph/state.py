@@ -29,6 +29,8 @@ class GraphState(TypedDict, total=False):
             normalized_profile (dict 형태로 NormalizedProfile.model_dump 결과)
         임베딩 출력:
             profile_text, profile_vector
+        직무 추천 출력:
+            recommended_jobs (직무 매칭 노드의 결과 dict 리스트)
         누적:
             errors, trace
     """
@@ -43,6 +45,9 @@ class GraphState(TypedDict, total=False):
     # --- 임베딩 출력 ---
     profile_text: str | None
     profile_vector: list[float] | None
+
+    # --- 직무 추천 출력 ---
+    recommended_jobs: list[dict[str, Any]] | None
 
     # --- 누적 (reducer = list concatenation) ---
     errors: Annotated[list[str], add]
