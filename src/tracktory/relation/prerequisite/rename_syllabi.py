@@ -15,10 +15,13 @@ data/output/syllabi_rename/ 에 복사한다. 원본 파일은 그대로 유지�
 
 from __future__ import annotations
 
+import logging
 import re
 import sys
 from collections import defaultdict
 from pathlib import Path
+
+logger = logging.getLogger("prereq.rename")
 
 _ROOT = Path(__file__).resolve().parents[4]
 _SYLLABI_DIR = _ROOT / "data" / "processed" / "rag" / "output" / "syllabi"
@@ -46,18 +49,22 @@ def _original_suffix(stem: str) -> str:
 
 
 def main() -> None:
-    print(f"탐색 경로: {_SYLLABI_DIR}")
+    from tracktory.relation.prerequisite.logging_setup import setup_logging
+
+    setup_logging("prereq")
+
+    logger.info("탐색 경로: %s", _SYLLABI_DIR)
     if not _SYLLABI_DIR.exists():
-        print("오류: 디렉터리가 존재하지 않습니다.")
+        logger.error("디렉터리가 존재하지 않습니다.")
         sys.exit(1)
 
     txt_files = sorted(
         p for p in _SYLLABI_DIR.glob("*.txt")
         if p.name.startswith("강의계획서_")
     )
-    print(f"발견된 파일: {len(txt_files)}개\n")
+    logger.info("발견된 파일: %d개", len(txt_files))
     if not txt_files:
-        print("파일 없음 — 경로를 확인하세요.")
+        logger.error("파일 없음 — 경로를 확인하세요.")
         sys.exit(1)
 
     course_files: dict[str, list[tuple[Path, str]]] = defaultdict(list)
@@ -102,24 +109,24 @@ def main() -> None:
     new_names = [dst for _, dst in rename_plan]
     if len(new_names) != len(set(new_names)):
         duplicates = [n for n in new_names if new_names.count(n) > 1]
-        print("오류: 새 파일명 충돌 발생:")
+        logger.error("새 파일명 충돌 발생:")
         for d in set(duplicates):
-            print(f"  {d.name}")
+            logger.error("  %s", d.name)
         sys.exit(1)
 
     multi = sum(1 for _, entries in course_files.items() if len(entries) > 1)
-    print(f"총 {len(rename_plan)}개 파일 / 중복 과목 {multi}개\n")
+    logger.info("총 %d개 파일 / 중복 과목 %d개", len(rename_plan), multi)
 
     if unnamed:
-        print(f"과목명 추출 실패 {len(unnamed)}개 (변경 안 함):")
+        logger.warning("과목명 추출 실패 %d개 (변경 안 함):", len(unnamed))
         for p in unnamed:
-            print(f"  {p.name}")
+            logger.warning("  %s", p.name)
 
     _OUT_DIR.mkdir(parents=True, exist_ok=True)
     for src, dst in rename_plan:
         dst.write_bytes(src.read_bytes())
 
-    print(f"완료: {len(rename_plan)}개 파일 → {_OUT_DIR}")
+    logger.info("완료: %d개 파일 → %s", len(rename_plan), _OUT_DIR)
 
 
 if __name__ == "__main__":

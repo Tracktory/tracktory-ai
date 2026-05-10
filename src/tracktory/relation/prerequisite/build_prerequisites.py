@@ -29,9 +29,12 @@ from __future__ import annotations
 
 import csv
 import json
+import logging
 import re
 from collections import defaultdict
 from pathlib import Path
+
+logger = logging.getLogger("prereq.build")
 
 _ROOT = Path(__file__).resolve().parents[4]
 _SYLLABI_CLEAN_DIR = _ROOT / "data" / "processed" / "rag" / "output" / "syllabi_clean"
@@ -155,7 +158,7 @@ def build_prerequisites(
             raw_alias = json.load(f)
         alias_map = {_normalize(k): v for k, v in raw_alias.items()}
     else:
-        print(f"[경고] prereq_alias.json 없음 — 정확 매칭만 수행 ({alias_map_path})")
+        logger.warning("prereq_alias.json 없음 — 정확 매칭만 수행 (%s)", alias_map_path)
 
     syllabi_map = _load_syllabi_map(syllabi_clean_dir)
     result: dict[str, list[str]] = {}
@@ -221,23 +224,26 @@ def validate_prerequisites(graph: dict[str, list[str]]) -> bool:
             dfs(course, [course])
 
     if errors:
-        print(f"\n[검증 실패] {len(errors)}건")
+        logger.error("[검증 실패] %d건", len(errors))
         for e in errors:
-            print(f"  ✗ {e}")
+            logger.error("  ✗ %s", e)
         return False
 
-    print("\n[검증 통과] 자기 자신 참조 및 순환참조 없음")
+    logger.info("[검증 통과] 자기 자신 참조 및 순환참조 없음")
     return True
 
 
 if __name__ == "__main__":
+    from tracktory.relation.prerequisite.logging_setup import setup_logging
+
+    setup_logging("prereq")
     result = build_prerequisites()
     validate_prerequisites(result)
 
     has_prereq = sum(1 for v in result.values() if v)
     total_edges = sum(len(v) for v in result.values())
-    print(f"\n완료: {_OUT_PATH}")
-    print(f"전체 과목 수     : {len(result)}개")
-    print(f"선수과목 있음    : {has_prereq}개")
-    print(f"선수과목 없음    : {len(result) - has_prereq}개")
-    print(f"선수과목 관계 수 : {total_edges}개")
+    logger.info("완료: %s", _OUT_PATH)
+    logger.info("전체 과목 수     : %d개", len(result))
+    logger.info("선수과목 있음    : %d개", has_prereq)
+    logger.info("선수과목 없음    : %d개", len(result) - has_prereq)
+    logger.info("선수과목 관계 수 : %d개", total_edges)

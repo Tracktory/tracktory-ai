@@ -13,9 +13,12 @@ data/output/syllabi_clean/ 에 복사한다. 원본 파일은 그대로 유지�
 
 from __future__ import annotations
 
+import logging
 import re
 import sys
 from pathlib import Path
+
+logger = logging.getLogger("prereq.normalize")
 
 _ROOT = Path(__file__).resolve().parents[4]
 _SRC_DIR = _ROOT / "data" / "processed" / "rag" / "output" / "syllabi_rename"
@@ -118,16 +121,20 @@ def _process_text(text: str) -> str:
 
 
 def main() -> None:
+    from tracktory.relation.prerequisite.logging_setup import setup_logging
+
+    setup_logging("prereq")
+
     if not _SRC_DIR.exists():
-        print(f"오류: {_SRC_DIR} 가 존재하지 않습니다.")
+        logger.error("%s 가 존재하지 않습니다.", _SRC_DIR)
         sys.exit(1)
 
     txt_files = sorted(_SRC_DIR.glob("*.txt"))
-    print(f"탐색 경로: {_SRC_DIR}")
-    print(f"발견된 파일: {len(txt_files)}개\n")
+    logger.info("탐색 경로: %s", _SRC_DIR)
+    logger.info("발견된 파일: %d개", len(txt_files))
 
     if not txt_files:
-        print("파일 없음 — 경로를 확인하세요.")
+        logger.error("파일 없음 — 경로를 확인하세요.")
         sys.exit(1)
 
     null_count = 0
@@ -173,11 +180,11 @@ def main() -> None:
             f.write(f"[{course}]\n")
             f.write(f"  {raw}\n\n")
 
-    print("처리 결과:")
-    print(f"  선수과목 있음  : {has_prereq_count}개")
-    print(f"  선수과목 null  : {null_count}개")
-    print(f"\n완료: {len(txt_files)}개 파일 → {_OUT_DIR}")
-    print(f"로그  : {_LOG_FILE}")
+    logger.info("처리 결과:")
+    logger.info("  선수과목 있음  : %d개", has_prereq_count)
+    logger.info("  선수과목 null  : %d개", null_count)
+    logger.info("완료: %d개 파일 → %s", len(txt_files), _OUT_DIR)
+    logger.info("로그  : %s", _LOG_FILE)
 
 
 if __name__ == "__main__":
