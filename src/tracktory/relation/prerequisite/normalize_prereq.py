@@ -173,7 +173,7 @@ def main() -> None:
             f.write(f"[{course}]\n")
             f.write(f"  {raw}\n\n")
 
-    print(f"처리 결과:")
+    print("처리 결과:")
     print(f"  선수과목 있음  : {has_prereq_count}개")
     print(f"  선수과목 null  : {null_count}개")
     print(f"\n완료: {len(txt_files)}개 파일 → {_OUT_DIR}")

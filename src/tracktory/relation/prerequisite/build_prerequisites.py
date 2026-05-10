@@ -226,7 +226,7 @@ def validate_prerequisites(graph: dict[str, list[str]]) -> bool:
             print(f"  ✗ {e}")
         return False
 
-    print(f"\n[검증 통과] 자기 자신 참조 및 순환참조 없음")
+    print("\n[검증 통과] 자기 자신 참조 및 순환참조 없음")
     return True
 
 
