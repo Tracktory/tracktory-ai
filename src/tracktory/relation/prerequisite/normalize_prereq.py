@@ -86,7 +86,7 @@ def _normalize_prereq_value(raw: str) -> str:
     return without_paren if without_paren else "null"
 
 
-def _process_text(text: str) -> str:
+def _process_text(text: str) -> tuple[str, bool]:
     """txt 텍스트에서 선수과목 라인을 정규화한다.
 
     선수과목 라인이 없으면 파일 끝에 '선수과목: null' 라인을 추가한다.
@@ -95,7 +95,8 @@ def _process_text(text: str) -> str:
         text: 강의계획서 전체 텍스트.
 
     Returns:
-        선수과목 라인이 정규화된 텍스트.
+        (정규화된 텍스트, 선수과목 라인이 없어 null 을 새로 추가했는지 여부).
+        후자는 호출자가 강의계획서 형식이 예기치 않게 바뀌었는지 감지하기 위한 신호.
     """
     lines = text.splitlines(keepends=True)
     result_lines: list[str] = []
@@ -112,12 +113,13 @@ def _process_text(text: str) -> str:
         else:
             result_lines.append(line)
 
-    if not prereq_found:
+    appended_null = not prereq_found
+    if appended_null:
         if result_lines and not result_lines[-1].endswith("\n"):
             result_lines.append("\n")
         result_lines.append("선수과목: null\n")
 
-    return "".join(result_lines)
+    return "".join(result_lines), appended_null
 
 
 def main() -> None:
@@ -139,6 +141,7 @@ def main() -> None:
 
     null_count = 0
     has_prereq_count = 0
+    appended_null_count = 0
     prereq_log: list[tuple[str, str]] = []
 
     _OUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -149,7 +152,10 @@ def main() -> None:
         except UnicodeDecodeError:
             text = txt_file.read_text(encoding="utf-8-sig")
 
-        processed = _process_text(text)
+        processed, appended_null = _process_text(text)
+        if appended_null:
+            appended_null_count += 1
+            logger.debug("선수과목 라인 없음 — null 추가: %s", txt_file.name)
 
         # 과목명 추출
         course_name = ""
@@ -181,8 +187,9 @@ def main() -> None:
             f.write(f"  {raw}\n\n")
 
     logger.info("처리 결과:")
-    logger.info("  선수과목 있음  : %d개", has_prereq_count)
-    logger.info("  선수과목 null  : %d개", null_count)
+    logger.info("  선수과목 있음           : %d개", has_prereq_count)
+    logger.info("  선수과목 null          : %d개", null_count)
+    logger.info("  └ 라인 없어 null 추가  : %d개", appended_null_count)
     logger.info("완료: %d개 파일 → %s", len(txt_files), _OUT_DIR)
     logger.info("로그  : %s", _LOG_FILE)
 
