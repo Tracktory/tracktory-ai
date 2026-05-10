@@ -48,24 +48,34 @@ def _original_suffix(stem: str) -> str:
     return code[-1] if code else ""
 
 
-def main() -> None:
-    from tracktory.relation.prerequisite.logging_setup import setup_logging
+def rename_syllabi(
+    syllabi_dir: Path = _SYLLABI_DIR,
+    out_dir: Path = _OUT_DIR,
+) -> int:
+    """강의계획서 txt 파일을 과목명 기반 파일명으로 변경한다.
 
-    setup_logging("prereq")
+    Args:
+        syllabi_dir: 입력 디렉터리.
+        out_dir: 출력 디렉터리.
 
-    logger.info("탐색 경로: %s", _SYLLABI_DIR)
-    if not _SYLLABI_DIR.exists():
-        logger.error("디렉터리가 존재하지 않습니다.")
-        sys.exit(1)
+    Returns:
+        새로 쓴 파일 수.
+
+    Raises:
+        FileNotFoundError: 입력 디렉터리가 없거나 *.txt 파일이 없을 때.
+        ValueError: rename plan 에서 새 파일명 충돌이 발생할 때.
+    """
+    logger.info("탐색 경로: %s", syllabi_dir)
+    if not syllabi_dir.exists():
+        raise FileNotFoundError(f"디렉터리가 존재하지 않습니다: {syllabi_dir}")
 
     txt_files = sorted(
-        p for p in _SYLLABI_DIR.glob("*.txt")
+        p for p in syllabi_dir.glob("*.txt")
         if p.name.startswith("강의계획서_")
     )
     logger.info("발견된 파일: %d개", len(txt_files))
     if not txt_files:
-        logger.error("파일 없음 — 경로를 확인하세요.")
-        sys.exit(1)
+        raise FileNotFoundError(f"파일 없음: {syllabi_dir}")
 
     course_files: dict[str, list[tuple[Path, str]]] = defaultdict(list)
     unnamed: list[Path] = []
@@ -88,7 +98,7 @@ def main() -> None:
     for course_name, entries in course_files.items():
         safe = _safe_filename(course_name)
         if len(entries) == 1:
-            rename_plan.append((entries[0][0], _OUT_DIR / f"강의계획서_{safe}.txt"))
+            rename_plan.append((entries[0][0], out_dir / f"강의계획서_{safe}.txt"))
         else:
             suffixes = [s for _, s in entries]
             suffix_unique = len(suffixes) == len(set(suffixes))
@@ -104,7 +114,7 @@ def main() -> None:
                         if count == 1
                         else f"강의계획서_{safe}_{suffix}{count}.txt"
                     )
-                rename_plan.append((path, _OUT_DIR / new_name))
+                rename_plan.append((path, out_dir / new_name))
 
     new_names = [dst for _, dst in rename_plan]
     if len(new_names) != len(set(new_names)):
@@ -112,7 +122,7 @@ def main() -> None:
         logger.error("새 파일명 충돌 발생:")
         for d in set(duplicates):
             logger.error("  %s", d.name)
-        sys.exit(1)
+        raise ValueError(f"파일명 충돌 {len(set(duplicates))}건")
 
     multi = sum(1 for _, entries in course_files.items() if len(entries) > 1)
     logger.info("총 %d개 파일 / 중복 과목 %d개", len(rename_plan), multi)
@@ -122,11 +132,24 @@ def main() -> None:
         for p in unnamed:
             logger.warning("  %s", p.name)
 
-    _OUT_DIR.mkdir(parents=True, exist_ok=True)
+    out_dir.mkdir(parents=True, exist_ok=True)
     for src, dst in rename_plan:
         dst.write_bytes(src.read_bytes())
 
-    logger.info("완료: %d개 파일 → %s", len(rename_plan), _OUT_DIR)
+    logger.info("완료: %d개 파일 → %s", len(rename_plan), out_dir)
+    return len(rename_plan)
+
+
+def main() -> None:
+    """CLI 진입점. 실패 시 종료코드 1."""
+    from tracktory.relation.prerequisite.logging_setup import setup_logging
+
+    setup_logging("prereq")
+    try:
+        rename_syllabi()
+    except (FileNotFoundError, ValueError) as e:
+        logger.error("%s", e)
+        sys.exit(1)
 
 
 if __name__ == "__main__":

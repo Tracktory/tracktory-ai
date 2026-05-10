@@ -122,29 +122,40 @@ def _process_text(text: str) -> tuple[str, bool]:
     return "".join(result_lines), appended_null
 
 
-def main() -> None:
-    from tracktory.relation.prerequisite.logging_setup import setup_logging
+def normalize_syllabi(
+    src_dir: Path = _SRC_DIR,
+    out_dir: Path = _OUT_DIR,
+    log_file: Path = _LOG_FILE,
+) -> int:
+    """syllabi_rename 디렉터리의 강의계획서를 정규화하여 syllabi_clean 에 쓴다.
 
-    setup_logging("prereq")
+    Args:
+        src_dir: 입력 디렉터리.
+        out_dir: 출력 디렉터리.
+        log_file: 선수과목 원문 로그 파일 경로.
 
-    if not _SRC_DIR.exists():
-        logger.error("%s 가 존재하지 않습니다.", _SRC_DIR)
-        sys.exit(1)
+    Returns:
+        처리한 파일 수.
 
-    txt_files = sorted(_SRC_DIR.glob("*.txt"))
-    logger.info("탐색 경로: %s", _SRC_DIR)
+    Raises:
+        FileNotFoundError: 입력 디렉터리가 없거나 *.txt 파일이 없을 때.
+    """
+    if not src_dir.exists():
+        raise FileNotFoundError(f"디렉터리가 존재하지 않습니다: {src_dir}")
+
+    txt_files = sorted(src_dir.glob("*.txt"))
+    logger.info("탐색 경로: %s", src_dir)
     logger.info("발견된 파일: %d개", len(txt_files))
 
     if not txt_files:
-        logger.error("파일 없음 — 경로를 확인하세요.")
-        sys.exit(1)
+        raise FileNotFoundError(f"파일 없음: {src_dir}")
 
     null_count = 0
     has_prereq_count = 0
     appended_null_count = 0
     prereq_log: list[tuple[str, str]] = []
 
-    _OUT_DIR.mkdir(parents=True, exist_ok=True)
+    out_dir.mkdir(parents=True, exist_ok=True)
 
     for txt_file in txt_files:
         try:
@@ -175,11 +186,11 @@ def main() -> None:
                     prereq_log.append((course_name or txt_file.stem, value))
                 break
 
-        (_OUT_DIR / txt_file.name).write_text(processed, encoding="utf-8")
+        (out_dir / txt_file.name).write_text(processed, encoding="utf-8")
 
     # 로그 파일 저장 (선수과목 있는 과목만)
-    _LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
-    with _LOG_FILE.open("w", encoding="utf-8") as f:
+    log_file.parent.mkdir(parents=True, exist_ok=True)
+    with log_file.open("w", encoding="utf-8") as f:
         f.write(f"선수과목 원문 목록 ({len(prereq_log)}건)\n")
         f.write("=" * 60 + "\n\n")
         for course, raw in prereq_log:
@@ -190,8 +201,22 @@ def main() -> None:
     logger.info("  선수과목 있음           : %d개", has_prereq_count)
     logger.info("  선수과목 null          : %d개", null_count)
     logger.info("  └ 라인 없어 null 추가  : %d개", appended_null_count)
-    logger.info("완료: %d개 파일 → %s", len(txt_files), _OUT_DIR)
-    logger.info("로그  : %s", _LOG_FILE)
+    logger.info("완료: %d개 파일 → %s", len(txt_files), out_dir)
+    logger.info("로그  : %s", log_file)
+
+    return len(txt_files)
+
+
+def main() -> None:
+    """CLI 진입점. 실패 시 종료코드 1."""
+    from tracktory.relation.prerequisite.logging_setup import setup_logging
+
+    setup_logging("prereq")
+    try:
+        normalize_syllabi()
+    except FileNotFoundError as e:
+        logger.error("%s", e)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
