@@ -87,7 +87,7 @@ def normalize_wanted(
         job_id = CATEGORY_TO_JOB_ID.get(post.get("category", ""))
         if job_id is not None:
             record["category"] = job_id
-        raw_tags: list = record.get("tech_stacks") or []
+        raw_tags: list[str] = record.get("tech_stacks") or []
         record["tech_stacks"] = [_normalize_tag(str(t)) for t in raw_tags if str(t).strip()]
         result.append(record)
 
