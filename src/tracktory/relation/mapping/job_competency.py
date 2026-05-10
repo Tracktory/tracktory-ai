@@ -125,7 +125,7 @@ def _merge_competencies(
             )
         )
         curated_names.add(name.lower())
-        for tag in (split_tech_name(name) or []):
+        for tag in (tags or []):
             curated_names.add(tag.lower())
 
     if total_postings > 0:
