@@ -167,11 +167,17 @@ def build_job_competency_map(
         {job_id: JobCompetencyEntry} 딕셔너리.
     """
     job_stacks_raw = _load_json(job_stacks_path)
-    assert isinstance(job_stacks_raw, dict)
+    if not isinstance(job_stacks_raw, dict):
+        raise TypeError(
+            f"{job_stacks_path}: expected JSON object, got {type(job_stacks_raw).__name__}"
+        )
     categories: list[dict] = job_stacks_raw["job_categories"]
 
     postings = _load_json(wanted_by_job_path)
-    assert isinstance(postings, list)
+    if not isinstance(postings, list):
+        raise TypeError(
+            f"{wanted_by_job_path}: expected JSON array, got {type(postings).__name__}"
+        )
 
     wanted_freq = _build_wanted_freq_per_job(postings)
     result: dict[str, JobCompetencyEntry] = {}
