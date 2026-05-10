@@ -188,15 +188,19 @@ def build_prerequisites(
 
 
 def validate_prerequisites(graph: dict[str, list[str]]) -> bool:
-    """선수과목 그래프에서 자기 자신 참조와 순환참조를 검증한다.
+    """선수과목 그래프에서 자기 자신 참조·순환참조·dangling 참조를 검증한다.
+
+    dangling 참조(graph 에 노드가 없는 선수과목)는 경고로 분류하여 통과 여부에는
+    영향을 주지 않지만 로그로 보고한다. 자기 자신 참조와 순환참조는 에러로 분류한다.
 
     Args:
         graph: build_prerequisites() 반환값.
 
     Returns:
-        문제가 없으면 True, 하나라도 발견되면 False.
+        에러가 없으면 True, 하나라도 발견되면 False.
     """
     errors: list[str] = []
+    warnings: list[str] = []
 
     # 1. 자기 자신 참조
     for course, prereqs in graph.items():
@@ -211,7 +215,10 @@ def validate_prerequisites(graph: dict[str, list[str]]) -> bool:
         color[node] = GRAY
         for prereq in graph.get(node, []):
             if prereq not in color:
-                continue  # 그래프에 없는 과목 스킵
+                # graph 에 노드가 없는 선수과목 — alias/courses.csv 매칭은 됐지만
+                # syllabi 파일이 없어 자체 그래프 항목이 없는 경우.
+                warnings.append(f"존재하지 않는 선수과목 참조: {node} → {prereq}")
+                continue
             if color[prereq] == GRAY:
                 cycle = path[path.index(prereq):] + [prereq] if prereq in path else path + [prereq]
                 errors.append(f"순환참조: {' → '.join(cycle)}")
@@ -222,6 +229,11 @@ def validate_prerequisites(graph: dict[str, list[str]]) -> bool:
     for course in graph:
         if color[course] == WHITE:
             dfs(course, [course])
+
+    if warnings:
+        logger.warning("[검증 경고] dangling 참조 %d건", len(warnings))
+        for w in warnings:
+            logger.warning("  ⚠ %s", w)
 
     if errors:
         logger.error("[검증 실패] %d건", len(errors))
