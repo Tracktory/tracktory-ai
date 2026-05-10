@@ -152,7 +152,8 @@ def build_prerequisites(
     alias_map: dict[str, str | None] = {}
     if alias_map_path.exists():
         with alias_map_path.open(encoding="utf-8") as f:
-            alias_map = json.load(f)
+            raw_alias = json.load(f)
+        alias_map = {_normalize(k): v for k, v in raw_alias.items()}
     else:
         print(f"[경고] prereq_alias.json 없음 — 정확 매칭만 수행 ({alias_map_path})")
 
@@ -170,7 +171,7 @@ def build_prerequisites(
                 official = lookup.get(_normalize(fragment))
                 # 2. prereq_alias.json 조회
                 if official is None:
-                    official = alias_map.get(fragment)
+                    official = alias_map.get(_normalize(fragment))
                 if official and official not in prereq_names and official != course_name:
                     prereq_names.append(official)
 
