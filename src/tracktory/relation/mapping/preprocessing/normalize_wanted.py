@@ -21,6 +21,9 @@ from pathlib import Path
 from tracktory.common.tech_keywords import NORMALIZATION_MAP
 from tracktory.relation.mapping.config import WANTED_CLEANED_PATH, WANTED_BY_JOB_PATH
 
+# lower-keyed 사본 — 모듈 로드 시 1회 생성하여 _normalize_tag 의 O(1) lookup 에 사용.
+_NORMALIZATION_LOWER: dict[str, str] = {k.lower(): v for k, v in NORMALIZATION_MAP.items()}
+
 # wanted_cleaned.json의 category 값 → job_id
 CATEGORY_TO_JOB_ID: dict[str, str] = {
     "프론트엔드": "FE",
@@ -52,13 +55,7 @@ def _normalize_tag(tag: str) -> str:
     stripped = tag.strip()
     if not stripped:
         return stripped
-    if stripped in NORMALIZATION_MAP:
-        return NORMALIZATION_MAP[stripped]
-    lower = stripped.lower()
-    for variant, canonical in NORMALIZATION_MAP.items():
-        if variant.lower() == lower:
-            return canonical
-    return stripped
+    return _NORMALIZATION_LOWER.get(stripped.lower(), stripped)
 
 
 def normalize_wanted(
