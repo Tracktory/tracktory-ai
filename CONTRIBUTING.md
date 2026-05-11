@@ -50,6 +50,21 @@ uv lock --check
 - Python 버전: **3.13**
 - 문자열: **double quote** (`"`)
 
+<!-- core/CONTRIBUTING.md.tmpl 의 <!-- === LANG_DEV_ROUTINE_HERE === --> anchor 에 markdown-insert -->
+
+### Python 추가 단계
+
+#### Lock 파일 무결성
+
+`uv.lock` 은 손상되기 쉬우므로 다음 가드:
+- `.gitattributes` 의 `uv.lock merge=binary` (머지 충돌 방지)
+- pre-commit hook 의 `uv lock --check` (커밋 시 자동 검증)
+- 의존성 추가: `uv add <pkg>` (lock 자동 갱신, 직접 편집 X)
+
+#### 가상환경 vs 글로벌
+
+- 모든 명령은 `uv run` 으로 실행 (가상환경 자동 활성화)
+- 글로벌 pip install 금지 — 의존성은 `pyproject.toml` 에만 선언
 <!-- === LANG_DEV_ROUTINE_HERE === -->
 
 ---
