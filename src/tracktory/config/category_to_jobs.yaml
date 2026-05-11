@@ -1,0 +1,30 @@
+# 사용자 관심사 카테고리 → 직무 사전 매핑 (직무 매칭 노드 fallback)
+#
+# 코사인 유사도가 임계값 미만 (cold-start, 1학년 정보 부족) 일 때 사용자의
+# 1순위 관심사 카테고리에 사전 정의된 인기 직무 top-k 를 안전 추천으로
+# 반환한다. fallback 결과에는 ``fallback_used=True`` 가 마킹되어 LLM 설명
+# 노드가 사용자에게 "마이페이지에서 흥미·관심사를 추가하면 더 정확해져요"
+# 캐비잇 메시지를 추가한다.
+#
+# 스키마:
+#   <카테고리명>:
+#     - { job_id: <직무 식별자>, rank: <1~5 순위> }
+#     - ...
+#
+# 카테고리명은 사용자 관심사 카테고리 (14 가지 — IT/인터넷, 경영/사무 등) 와
+# 1:1 매칭. 실제 70 항목 (14 × 5) 매핑은 후속 데이터 작업 PR 에서 채운다.
+# 본 파일은 스키마 명세 + 1~2 카테고리 예시만 보유한다.
+
+"IT/인터넷":
+  - { job_id: backend_developer, rank: 1 }
+  - { job_id: frontend_developer, rank: 2 }
+  - { job_id: data_engineer, rank: 3 }
+  - { job_id: devops_engineer, rank: 4 }
+  - { job_id: ml_engineer, rank: 5 }
+
+"연구개발/설계":
+  - { job_id: ml_engineer, rank: 1 }
+  - { job_id: data_scientist, rank: 2 }
+  - { job_id: research_scientist, rank: 3 }
+  - { job_id: data_engineer, rank: 4 }
+  - { job_id: backend_developer, rank: 5 }
