@@ -26,3 +26,5 @@ repos:
         language: system
         files: ^(pyproject\.toml|uv\.lock)$
         pass_filenames: false
+
+  # === LANG_HOOKS_HERE ===
