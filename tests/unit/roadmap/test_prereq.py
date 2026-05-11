@@ -55,6 +55,14 @@ def test_load_alias_map_rejects_non_string_value(tmp_path: Path) -> None:
         load_alias_map(path)
 
 
+def test_load_alias_map_wraps_json_decode_error(tmp_path: Path) -> None:
+    """malformed JSON 입력은 ValueError 로 wrap 되어 노출된다."""
+    path = tmp_path / "alias.json"
+    path.write_text("{ not valid json", encoding="utf-8")
+    with pytest.raises(ValueError, match="JSON 디코드 실패"):
+        load_alias_map(path)
+
+
 def test_resolve_alias_exact_match() -> None:
     alias_map = AliasMap(entries={"java": "자바 프로그래밍"})
     assert resolve_alias("java", alias_map) == "자바 프로그래밍"
@@ -79,6 +87,13 @@ def test_resolve_alias_raises_when_chain_cycles() -> None:
     alias_map = AliasMap(entries={"A": "B", "B": "A"})
     with pytest.raises(RuntimeError):
         resolve_alias("A", alias_map)
+
+
+def test_resolve_alias_raises_when_depth_exceeded() -> None:
+    """긴 acyclic 체인에서 깊이 상한 초과 시 RuntimeError 발생."""
+    alias_map = AliasMap(entries={"A": "B", "B": "C", "C": "D", "D": "E"})
+    with pytest.raises(RuntimeError, match="깊이"):
+        resolve_alias("A", alias_map, max_depth=3)
 
 
 def test_detect_alias_cycles_returns_empty_when_acyclic() -> None:

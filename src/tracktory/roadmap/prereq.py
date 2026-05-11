@@ -13,13 +13,14 @@ alias 매핑이 체인을 이루는 경우 ``resolve_alias`` 가 차례로 따�
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 _MAX_RESOLVE_DEPTH = 8
-_PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
+_PACKAGE_ROOT = Path(__file__).resolve().parent.parent.parent.parent
 
 
 class AliasMap(BaseModel):
@@ -44,8 +45,18 @@ class AliasMap(BaseModel):
 
 
 def default_alias_map_path() -> Path:
-    """기본 alias 사전 파일 경로 (``data/processed/prereq_alias.json``)."""
-    return _PROJECT_ROOT / "data" / "processed" / "prereq_alias.json"
+    """기본 alias 사전 파일 경로.
+
+    조회 순서:
+        1. ``TRACKTORY_DATA_DIR`` 환경변수가 설정되어 있으면 그 디렉토리의
+           ``prereq_alias.json`` 을 가리킨다.
+        2. 아니면 패키지 위치 기준 ``../../../../data/processed/prereq_alias.json``
+           을 반환한다 (로컬 개발 편의용 — editable install 전제).
+    """
+    env_dir = os.environ.get("TRACKTORY_DATA_DIR")
+    if env_dir:
+        return Path(env_dir) / "prereq_alias.json"
+    return _PACKAGE_ROOT / "data" / "processed" / "prereq_alias.json"
 
 
 def load_alias_map(path: Path) -> AliasMap:
@@ -61,9 +72,15 @@ def load_alias_map(path: Path) -> AliasMap:
         검증을 통과한 ``AliasMap``.
 
     Raises:
-        ValueError: 최상위가 dict 가 아니거나 value 가 ``str | None`` 외 타입인 경우.
+        FileNotFoundError: 경로의 파일이 존재하지 않는 경우.
+        ValueError: JSON 파싱 실패 또는 최상위가 dict 가 아니거나 value 가
+            ``str | None`` 외 타입인 경우.
     """
-    raw: Any = json.loads(path.read_text(encoding="utf-8"))
+    text = path.read_text(encoding="utf-8")
+    try:
+        raw: Any = json.loads(text)
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"alias map JSON 디코드 실패. path={path}") from exc
     if not isinstance(raw, dict):
         raise ValueError(f"alias map JSON 최상위는 객체여야 합니다. got={type(raw).__name__}")
 
@@ -79,13 +96,20 @@ def load_alias_map(path: Path) -> AliasMap:
     return AliasMap(entries=entries)
 
 
-def resolve_alias(text: str, alias_map: AliasMap) -> str | None:
+def resolve_alias(
+    text: str,
+    alias_map: AliasMap,
+    *,
+    max_depth: int | None = None,
+) -> str | None:
     """원시 텍스트를 정규 교과목명으로 환원한다.
 
     동작 규약:
         * 정확 매칭만 사용한다. 키 자체가 freeform 잡음 텍스트라서 substring
           매칭은 false-positive 위험이 크다.
-        * 매핑이 없으면 입력 텍스트 그대로 반환한다 (pass-through).
+        * 매핑이 없으면 입력 텍스트 그대로 반환한다 (pass-through). 호출자는
+          ``None`` (정규화 불가 명시) 과 pass-through (사전 미등재) 를
+          의미적으로 구분해야 한다.
         * 매핑 값이 ``None`` 이면 ``None`` 을 반환한다.
         * 결과가 다시 alias 키에 존재하면 다음 단계로 따라간다.
         * 방문한 노드 집합으로 cycle 을 감지하고, 깊이 상한을 초과하면
@@ -95,6 +119,8 @@ def resolve_alias(text: str, alias_map: AliasMap) -> str | None:
     Args:
         text: 원시 텍스트.
         alias_map: alias 매핑.
+        max_depth: alias 체인 최대 깊이. ``None`` 이면 모듈 기본값 사용.
+            테스트용 작은 값 주입을 허용한다.
 
     Returns:
         정규 교과목명, 또는 정규화 불가 시 ``None``.
@@ -106,9 +132,10 @@ def resolve_alias(text: str, alias_map: AliasMap) -> str | None:
     if text not in entries:
         return text
 
+    depth_limit = max_depth if max_depth is not None else _MAX_RESOLVE_DEPTH
     visited: set[str] = set()
     current: str = text
-    for _ in range(_MAX_RESOLVE_DEPTH):
+    for _ in range(depth_limit):
         if current in visited:
             raise RuntimeError(f"alias 체인에 cycle 이 감지되었습니다. start={text!r}")
         visited.add(current)
@@ -120,7 +147,7 @@ def resolve_alias(text: str, alias_map: AliasMap) -> str | None:
             return next_value
         current = next_value
 
-    raise RuntimeError(f"alias 체인 깊이가 {_MAX_RESOLVE_DEPTH} 를 초과했습니다. start={text!r}")
+    raise RuntimeError(f"alias 체인 깊이가 {depth_limit} 를 초과했습니다. start={text!r}")
 
 
 def detect_alias_cycles(alias_map: AliasMap) -> list[list[str]]:
