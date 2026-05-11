@@ -34,6 +34,10 @@ class GraphState(TypedDict, total=False):
         트랙 시너지 출력:
             primary_combos, secondary_combos, slot3_fallback_triggered,
             slot3_fallback_level
+        학습 로드맵 출력:
+            roadmap (Roadmap.model_dump(mode="json") 결과 dict)
+        LLM 설명 출력:
+            explanation (Explanation.model_dump(mode="json") 결과 dict)
         누적:
             errors, trace
     """
@@ -57,6 +61,12 @@ class GraphState(TypedDict, total=False):
     secondary_combos: list[dict[str, Any]] | None
     slot3_fallback_triggered: bool | None
     slot3_fallback_level: Literal["T2", "MMR"] | None
+
+    # --- 학습 로드맵 출력 (overwrite) ---
+    roadmap: dict[str, Any] | None
+
+    # --- LLM 설명 출력 (overwrite) ---
+    explanation: dict[str, Any] | None
 
     # --- 누적 (reducer = list concatenation) ---
     errors: Annotated[list[str], add]
