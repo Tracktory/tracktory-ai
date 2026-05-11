@@ -50,6 +50,8 @@ uv lock --check
 - Python 버전: **3.13**
 - 문자열: **double quote** (`"`)
 
+<!-- === LANG_DEV_ROUTINE_HERE === -->
+
 ---
 
 ## 2. 커밋 메시지 규칙
@@ -122,6 +124,8 @@ test: 추천 파이프라인 통합 테스트 추가
 ---
 
 ## 3. 파이썬 기본 규약
+
+<!-- === LANG_RULES_HERE === -->
 
 도구가 못 잡지만 팀이 지켜야 하는 것만 나열합니다.
 
@@ -328,6 +332,8 @@ result: JobRecommendation = structured_llm.invoke(prompt)
 ---
 
 ## 5. 테스트 규약
+
+<!-- === LANG_TEST_RULES_HERE === -->
 
 ### 5.1 노드 단위 테스트
 
