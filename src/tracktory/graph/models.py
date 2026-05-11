@@ -1,13 +1,18 @@
-"""트랙 시너지 노드 + 직무 매칭 노드의 공통 도메인 모델.
+"""추천 파이프라인 노드들의 공통 도메인 모델.
 
-7 종 Pydantic 모델:
+Pydantic 모델 목록:
 
 - ``Track`` — 한성대 단일 트랙 메타데이터 (4-tier hierarchy + 메타 텍스트·벡터).
 - ``JobCandidate`` — 직무 매칭 노드의 결과 단건.
 - ``TrackCombo`` — 두 트랙의 조합 단위.
 - ``RankedCombo`` — ``TrackCombo`` 에 시너지 점수·슬롯 분류·순위가 부착된 단위.
-- ``SynergyConfig`` — ``synergy.yaml`` 의 시너지 외부화 설정 (4 nested config + 단조 제약).
-- ``JobMatchingConfig`` — ``synergy.yaml`` 의 ``job_matching`` 섹션 외부화 매핑.
+- ``RoadmapCourse`` — 학습 로드맵 단계 안의 추천 과목 단위.
+- ``RoadmapStage`` — 학습 로드맵의 한 단계 (기초·핵심·응용·산학).
+- ``Roadmap`` — 4 단계 학습 로드맵 전체.
+- ``ExplanationSection`` — LLM 자연어 설명의 주제별 단락.
+- ``Explanation`` — LLM 자연어 설명 전체.
+- ``SynergyConfig`` — 시너지 외부화 설정 (4 nested config + 단조 제약).
+- ``JobMatchingConfig`` — 직무 매칭 노드의 외부화 매핑.
 """
 
 from __future__ import annotations
@@ -122,6 +127,96 @@ class RankedCombo(BaseModel):
     synergy_score: float = Field(..., ge=0.0, le=1.0)
     slot_type: Literal["primary", "cross_college", "mmr"]
     rank: int = Field(..., ge=1, le=7)
+
+
+# ---------------------------------------------------------------------------
+# Roadmap / Explanation — 학습 로드맵 + LLM 자연어 설명 도메인 모델
+# ---------------------------------------------------------------------------
+
+
+class RoadmapCourse(BaseModel):
+    """학습 로드맵 한 단계 안에 노출되는 추천 과목.
+
+    Attributes:
+        course_id: 과목 식별자.
+        course_name: 사용자 표시용 과목명.
+        priority: 같은 단계 내 우선순위 (1 이 최우선). 사용자 화면의
+            "1순위" / "2순위" 표기에 그대로 매핑된다.
+    """
+
+    course_id: str = Field(..., min_length=1)
+    course_name: str = Field(..., min_length=1)
+    priority: int = Field(..., ge=1)
+
+
+class RoadmapStage(BaseModel):
+    """학습 로드맵의 한 단계.
+
+    학습 깊이를 단조 증가시키는 4 단계 분류 — foundation (기초)
+    → core (핵심) → application (응용) → industry (산학). 산학은
+    캡스톤·인턴십·기업 협업 과목을 포함한다.
+
+    Attributes:
+        stage: 단계 식별자.
+        courses: 본 단계에서 추천하는 과목들. 비어 있어도 valid 하다
+            (예: 1학년 사용자의 산학 단계 빈 상태).
+    """
+
+    stage: Literal["foundation", "core", "application", "industry"]
+    courses: list[RoadmapCourse] = Field(default_factory=list)
+
+
+class Roadmap(BaseModel):
+    """4 단계 학습 로드맵 전체.
+
+    각 단계의 학습 깊이가 단조 증가하므로 단계 누락이나 순서 뒤바뀜은
+    의미가 없다. 모델 검증으로 ``foundation → core → application
+    → industry`` 4 단계가 정확히 한 번씩 이 순서대로 등장하도록 강제한다.
+    개별 단계의 과목 리스트는 비어 있을 수 있다.
+
+    Attributes:
+        stages: 정확히 4 개 단계.
+    """
+
+    stages: list[RoadmapStage] = Field(...)
+
+    @model_validator(mode="after")
+    def _enforce_four_stages_in_order(self) -> Self:
+        expected = ["foundation", "core", "application", "industry"]
+        actual = [s.stage for s in self.stages]
+        if actual != expected:
+            raise ValueError(f"roadmap stages must be exactly {expected} in order, got {actual}")
+        return self
+
+
+class ExplanationSection(BaseModel):
+    """LLM 자연어 설명의 영역별 단락.
+
+    하나의 설명을 직무·트랙·로드맵 세 영역으로 분리하면 사용자가 어떤
+    영역의 근거를 보고 있는지 시각적으로 구분 가능하다.
+
+    Attributes:
+        topic: 단락이 다루는 영역.
+        body: 단락 본문. 빈 문자열은 의미가 없으므로 검증으로 차단한다.
+    """
+
+    topic: Literal["jobs", "tracks", "roadmap"]
+    body: str = Field(..., min_length=1)
+
+
+class Explanation(BaseModel):
+    """LLM 자연어 설명 전체.
+
+    ``sections`` 가 비어 있어도 valid 하다 (전체 요약만 ``text`` 로 채워진
+    상태).
+
+    Attributes:
+        text: 전체 요약 본문.
+        sections: 영역별 단락. 비어 있을 수 있다.
+    """
+
+    text: str = Field(..., min_length=1)
+    sections: list[ExplanationSection] = Field(default_factory=list)
 
 
 # ---------------------------------------------------------------------------
