@@ -15,9 +15,13 @@
 
 1트랙 주전공 제약:
     학생이 트랙을 아직 선택하지 않은 학년 (``current_tracks`` 비어있음) 은
-    학생의 주전공이 속한 단과대 안의 트랙을 1트랙 풀로 두고 모든 짝을
-    enumerate 한다. 트랙을 이미 선택한 학년은 학생이 고른 트랙을 1트랙으로
-    고정하고 나머지 모든 트랙과의 짝을 enumerate 한다.
+    학생의 주전공 학부에 속한 트랙을 1트랙 풀로 두고 모든 짝을 enumerate
+    한다. 트랙을 이미 선택한 학년은 학생이 고른 트랙을 1트랙으로 고정하고
+    나머지 모든 트랙과의 짝을 enumerate 한다.
+
+    "주전공 소속" 의 단위는 학부 (예: 컴퓨터공학부) 이지 단과대 (예:
+    IT공과대학) 가 아니다. 단과대 단위로 풀면 다른 학부의 트랙까지 1트랙
+    후보로 등장하므로 학부 식별자를 인자로 받는다.
 
 self-pair 제외 / 순서 무관 dedup:
     두 트랙 식별자를 정렬한 키로 dedup 하여 같은 두 트랙으로 구성된 페어가
@@ -31,15 +35,15 @@ from tracktory.graph.models import Track, TrackCombo
 
 def build_candidate_pairs(
     tracks: list[Track],
-    user_college_id: str,
+    user_department_id: str,
     current_tracks: list[str],
 ) -> list[TrackCombo]:
     """학년 분기 + 1트랙 주전공 제약을 적용한 후보 페어 리스트.
 
     Args:
         tracks: 후보 풀이 될 전체 트랙 목록. 호출자가 외부에서 로드하여 주입한다.
-        user_college_id: 학생 주전공 학부가 속한 단과대 식별자. 1트랙 풀을
-            학생 단과대 안으로 제한하는 데 사용한다 (트랙 미선택 학년에 한정).
+        user_department_id: 학생 주전공 학부 식별자. 1트랙 풀을 학생 학부 안의
+            트랙으로 제한하는 데 사용한다 (트랙 미선택 학년에 한정).
         current_tracks: 학생이 이미 선택한 트랙 식별자 목록. 비어있으면 트랙
             미선택 학년, 차 있으면 트랙 선택 학년 분기를 의미한다.
 
@@ -52,7 +56,7 @@ def build_candidate_pairs(
     if current_tracks:
         primary_pool: list[Track] = [by_id[tid] for tid in current_tracks if tid in by_id]
     else:
-        primary_pool = [track for track in tracks if track.college_id == user_college_id]
+        primary_pool = [track for track in tracks if track.department_id == user_department_id]
 
     seen: set[str] = set()
     combos: list[TrackCombo] = []

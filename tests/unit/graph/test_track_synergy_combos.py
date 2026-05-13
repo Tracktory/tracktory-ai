@@ -10,15 +10,15 @@ from __future__ import annotations
 from tracktory.graph.nodes.track_candidates import build_candidate_pairs
 
 
-def test_generate_combos_filters_by_user_college_for_freshman(make_track) -> None:
-    """트랙 미선택 학년 (current_tracks=[]): 1트랙은 학생 단과대 소속만 선택된다."""
-    in_college = make_track("a", college_id="C1")
-    out_college = make_track("b", college_id="C2")
-    third = make_track("c", college_id="C2")
+def test_generate_combos_filters_by_user_department_for_freshman(make_track) -> None:
+    """트랙 미선택 학년 (current_tracks=[]): 1트랙은 학생 주전공 학부 소속만 선택된다."""
+    in_dept = make_track("a", department_id="D1")
+    out_dept = make_track("b", department_id="D2")
+    third = make_track("c", department_id="D2")
 
     combos = build_candidate_pairs(
-        tracks=[in_college, out_college, third],
-        user_college_id="C1",
+        tracks=[in_dept, out_dept, third],
+        user_department_id="D1",
         current_tracks=[],
     )
     primary_track_ids = {c.track_a.track_id for c in combos}
@@ -28,13 +28,13 @@ def test_generate_combos_filters_by_user_college_for_freshman(make_track) -> Non
 
 def test_generate_combos_uses_current_tracks_for_upperclass(make_track) -> None:
     """트랙 선택 학년 (current_tracks 비어있지 않음): 1트랙 풀 = current_tracks."""
-    user_track = make_track("user_t", college_id="C1")
-    other = make_track("o1", college_id="C2")
-    another = make_track("o2", college_id="C2")
+    user_track = make_track("user_t", department_id="D1")
+    other = make_track("o1", department_id="D2")
+    another = make_track("o2", department_id="D2")
 
     combos = build_candidate_pairs(
         tracks=[user_track, other, another],
-        user_college_id="C1",
+        user_department_id="D1",
         current_tracks=["user_t"],
     )
     primary_track_ids = {c.track_a.track_id for c in combos}
@@ -43,10 +43,10 @@ def test_generate_combos_uses_current_tracks_for_upperclass(make_track) -> None:
 
 def test_generate_combos_excludes_self_pairs(make_track) -> None:
     """동일 트랙 (track_a.track_id == track_b.track_id) 조합은 제외."""
-    only = make_track("solo", college_id="C1")
+    only = make_track("solo", department_id="D1")
     combos = build_candidate_pairs(
         tracks=[only],
-        user_college_id="C1",
+        user_department_id="D1",
         current_tracks=[],
     )
     assert combos == []
@@ -54,12 +54,12 @@ def test_generate_combos_excludes_self_pairs(make_track) -> None:
 
 def test_generate_combos_dedup_by_combo_key(make_track) -> None:
     """1트랙 풀에 두 트랙이 모두 있으면 (a, b) 와 (b, a) 가 동일 combo_key 로 dedup."""
-    a = make_track("aaa", college_id="C1")
-    b = make_track("bbb", college_id="C1")
+    a = make_track("aaa", department_id="D1")
+    b = make_track("bbb", department_id="D1")
 
     combos = build_candidate_pairs(
         tracks=[a, b],
-        user_college_id="C1",
+        user_department_id="D1",
         current_tracks=[],
     )
     assert len(combos) == 1

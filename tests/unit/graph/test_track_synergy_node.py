@@ -26,11 +26,15 @@ def _build_node(
     return node, repo
 
 
-def _normalized_profile(college: str = "C1", current_tracks: list[str] | None = None) -> dict:
+def _normalized_profile(
+    college: str = "C1",
+    department: str = "D1",
+    current_tracks: list[str] | None = None,
+) -> dict:
     return {
         "admission_year": 2025,
         "college": college,
-        "department": "컴퓨터공학부",
+        "department": department,
         "current_tracks": current_tracks or [],
         "interests": ["IT/인터넷"],
         "dev_interests": ["AI"],
@@ -54,10 +58,10 @@ def test_node_skips_when_normalized_profile_missing(real_synergy_yaml_path) -> N
     assert result["trace"] == ["track_synergy:skip"]
 
 
-def test_node_skips_when_college_missing(real_synergy_yaml_path) -> None:
+def test_node_skips_when_department_missing(real_synergy_yaml_path) -> None:
     node, _ = _build_node(tracks=[], real_synergy_yaml_path=real_synergy_yaml_path)
     profile = _normalized_profile()
-    del profile["college"]
+    del profile["department"]
     result = node(
         {
             "recommended_jobs": [{"job_id": "j1", "job_name": "x", "match_score": 0.5}],

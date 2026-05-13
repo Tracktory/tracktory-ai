@@ -66,11 +66,11 @@ def _build_node(tracks: list[Track]) -> TrackSynergyNode:
     return TrackSynergyNode(track_repo=repo, config_path=_REAL_SYNERGY_YAML)
 
 
-def _normalized_profile(college: str = "C1") -> dict[str, Any]:
+def _normalized_profile(college: str = "C1", department: str = "D1") -> dict[str, Any]:
     return {
         "admission_year": 2025,
         "college": college,
-        "department": "컴퓨터공학부",
+        "department": department,
         "current_tracks": [],
         "interests": ["IT/인터넷"],
         "dev_interests": ["AI"],
@@ -81,7 +81,7 @@ def _normalized_profile(college: str = "C1") -> dict[str, Any]:
     }
 
 
-def _state(college: str = "C1") -> dict[str, Any]:
+def _state(college: str = "C1", department: str = "D1") -> dict[str, Any]:
     return {
         "recommended_jobs": [
             {
@@ -91,7 +91,7 @@ def _state(college: str = "C1") -> dict[str, Any]:
                 "match_score": 0.7,
             }
         ],
-        "normalized_profile": _normalized_profile(college=college),
+        "normalized_profile": _normalized_profile(college=college, department=department),
     }
 
 
@@ -216,7 +216,7 @@ def test_full_pipeline_synthetic_47_tracks() -> None:
     assert len(tracks) == 47
 
     node = _build_node(tracks)
-    result = node(_state(college="C0"))
+    result = node(_state(college="C0", department="D0_0"))
 
     assert len(result["primary_combos"]) == 2
     assert len(result["secondary_combos"]) == 5

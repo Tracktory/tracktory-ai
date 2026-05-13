@@ -136,7 +136,7 @@ def _synergy_score(
 def _select_primary(scored: list[_ScoredCombo], k: int) -> list[RankedCombo]:
     """시너지 상위 k 개를 주 추천으로 선택한다.
 
-    1트랙 주전공 제약은 ``_generate_combos`` 단계에서 이미 적용되어 있으므로
+    1트랙 주전공 제약은 ``build_candidate_pairs`` 단계에서 이미 적용되어 있으므로
     여기서는 단순 top-k. 동점 시 ``combo_key`` 알파벳 순으로 deterministic 결정.
     """
     top = sorted(scored, key=lambda cand: (-cand.synergy_score, cand.combo.combo_key))[:k]
@@ -371,10 +371,10 @@ class TrackSynergyNode:
                 "trace": ["track_synergy:skip"],
             }
 
-        college_id = normalized.get("college")
-        if not college_id:
+        department_id = normalized.get("department")
+        if not department_id:
             return {
-                "errors": ["track_synergy skipped: college missing in normalized_profile"],
+                "errors": ["track_synergy skipped: department missing in normalized_profile"],
                 "trace": ["track_synergy:skip"],
             }
 
@@ -385,7 +385,7 @@ class TrackSynergyNode:
         tracks = self._repo.list_all()
 
         # 단계 3: 후보 조합 생성
-        combos = build_candidate_pairs(tracks, college_id, current_tracks)
+        combos = build_candidate_pairs(tracks, department_id, current_tracks)
         if not combos:
             return {
                 "errors": ["track_synergy skipped: no candidate combos generated"],

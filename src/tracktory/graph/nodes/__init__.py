@@ -6,7 +6,6 @@
 
 from tracktory.graph.nodes.input_normalize import NormalizedProfile, normalize_input
 from tracktory.graph.nodes.profile_embed import EmbeddingClient, ProfileEmbedNode
-from tracktory.graph.nodes.track_candidates import build_candidate_pairs
 from tracktory.graph.nodes.track_synergy import TrackRepository, TrackSynergyNode
 
 __all__ = [
@@ -15,6 +14,5 @@ __all__ = [
     "ProfileEmbedNode",
     "TrackRepository",
     "TrackSynergyNode",
-    "build_candidate_pairs",
     "normalize_input",
 ]
