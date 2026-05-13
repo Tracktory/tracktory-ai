@@ -42,6 +42,7 @@ from tracktory.graph.models import (
     TrackCombo,
     WeightsConfig,
 )
+from tracktory.graph.nodes.track_candidates import build_candidate_pairs
 from tracktory.graph.state import GraphState
 
 _DEFAULT_SYNERGY_CONFIG_PATH = Path(__file__).resolve().parents[2] / "config" / "synergy.yaml"
@@ -75,49 +76,6 @@ class _ScoredCombo(NamedTuple):
 
     combo: TrackCombo
     synergy_score: float
-
-
-# ---------------------------------------------------------------------------
-# 후보 생성
-# ---------------------------------------------------------------------------
-
-
-def _generate_combos(
-    tracks: list[Track],
-    user_college_id: str,
-    current_tracks: list[str],
-) -> list[TrackCombo]:
-    """후보 트랙 조합을 생성한다.
-
-    1트랙 주전공 제약:
-        - ``current_tracks`` 가 비어있지 않으면 (2학년+): 사용자가 이미 선택한
-          트랙을 1트랙 풀로 사용한다 (현재 트랙 기반 시너지 분석).
-        - 비어있으면 (1학년): 사용자 단과대 소속 트랙을 1트랙 풀로 사용한다
-          (조합 신규 추천).
-
-    self-pair (``track_a == track_b``) 는 제외하며, 두 트랙 ID 의 정렬된 조합으로
-    dedup 한다.
-    """
-    by_id = {track.track_id: track for track in tracks}
-
-    if current_tracks:
-        primary_pool: list[Track] = [by_id[tid] for tid in current_tracks if tid in by_id]
-    else:
-        primary_pool = [track for track in tracks if track.college_id == user_college_id]
-
-    seen: set[str] = set()
-    combos: list[TrackCombo] = []
-    for primary_track in primary_pool:
-        for partner in tracks:
-            if primary_track.track_id == partner.track_id:
-                continue
-            ids_sorted = sorted([primary_track.track_id, partner.track_id])
-            key = "::".join(ids_sorted)
-            if key in seen:
-                continue
-            seen.add(key)
-            combos.append(TrackCombo(track_a=primary_track, track_b=partner, combo_key=key))
-    return combos
 
 
 # ---------------------------------------------------------------------------
@@ -427,7 +385,7 @@ class TrackSynergyNode:
         tracks = self._repo.list_all()
 
         # 단계 3: 후보 조합 생성
-        combos = _generate_combos(tracks, college_id, current_tracks)
+        combos = build_candidate_pairs(tracks, college_id, current_tracks)
         if not combos:
             return {
                 "errors": ["track_synergy skipped: no candidate combos generated"],
