@@ -1,16 +1,14 @@
 """챗봇 LangGraph 조립.
 
 흐름:
-    START
-      → classify_intent
-      → [route_after_intent]
-          → retrieve_rag → generate_response → END   (track / job / course)
-          → generate_response → END                  (general_advice)
+    START → classify_intent → [route]
+                              ├─ retrieve_rag → generate_response → END  (track/job/course)
+                              └─ generate_response → END                 (general_advice)
 
-skeleton 단계에서는 더미 노드만 연결. 실제 구현 시 build 함수가 LLM·RAGFlow
-클라이언트를 인자로 받도록 시그니처 확장 예정 (CLAUDE.md §4.4 의존성 주입).
+MemorySaver 는 in-process 휘발성 — 운영은 PostgresSaver 등 영속 saver 로 교체.
 """
 
+from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.state import CompiledStateGraph
 
@@ -24,13 +22,9 @@ from tracktory.chatbot.state import ChatbotState
 
 
 def build_chatbot_graph() -> CompiledStateGraph:
-    """챗봇 StateGraph 를 빌드하여 컴파일된 그래프를 반환한다.
+    """챗봇 그래프 컴파일. ``config={"configurable": {"thread_id": ...}}`` 와 함께 호출.
 
-    Returns:
-        ``invoke`` / ``stream`` 호출이 가능한 컴파일된 그래프.
-
-    TODO: ``build_chatbot_graph(llm, rag_client)`` 로 시그니처 확장.
-    노드를 클래스로 전환하여 의존성을 __init__ 로 주입한다.
+    TODO: (llm, rag_client, checkpointer) 의존성 주입으로 시그니처 확장.
     """
     builder: StateGraph = StateGraph(ChatbotState)
 
@@ -50,4 +44,4 @@ def build_chatbot_graph() -> CompiledStateGraph:
     builder.add_edge("retrieve_rag", "generate_response")
     builder.add_edge("generate_response", END)
 
-    return builder.compile()
+    return builder.compile(checkpointer=MemorySaver())

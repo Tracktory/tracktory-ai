@@ -1,26 +1,26 @@
 """챗봇 LangGraph state schema.
 
-입력(불변) / 갱신 필드를 주석으로 구분
+히스토리는 checkpointer 가 thread_id 단위로 자체 관리
+백엔드는 'conversation_id' 만 유지하고 매 요청마다 'user_context' 만 주입
 """
 
-from typing import Literal, TypedDict
+from typing import Annotated, TypedDict
 
-ChatbotIntent = Literal[
-    "track_question",   # 트랙
-    "job_question",     # 직무
-    "course_question",  # 과목
-    "general_advice",   # 일반
-]
+from langchain_core.messages import BaseMessage
+from langgraph.graph.message import add_messages
+
+from tracktory.chatbot.config import ChatbotIntent
 
 
 class ChatbotState(TypedDict):
-    # --- 입력 (불변) — 매 요청마다 외부에서 주입 ---
-    message: str                              # 사용자 질문
-    user_context: dict                        # 사용자 정보
-    history: list[dict]                       # 이전 대화 턴 (Spring 이 동봉)
+    # --- 입력 ---
+    user_context: dict  # 온보딩 정보
 
-    # --- 갱신 — 각 노드가 자기 필드만 overwrite ---
-    intent: ChatbotIntent | None              # classify_intent 출력
-    intent_reason: str | None                 # classify_intent 출력 (디버깅·평가용)
-    retrieved_docs: list[dict]                # retrieve_rag 출력
-    response: str | None                      # generate_response 출력
+    # --- 누적 (add_messages reducer) ---
+    messages: Annotated[list[BaseMessage], add_messages]
+
+    # --- 갱신 ---
+    intent: ChatbotIntent | None
+    intent_reason: str | None  # 디버깅·평가용
+    retrieved_docs: list[dict]
+    response: str | None  # API 응답용
