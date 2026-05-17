@@ -13,7 +13,7 @@
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
-from tracktory.chatbot.state import ChatbotIntent
+from tracktory.chatbot.config import ChatbotIntent
 
 
 class IntentClassification(BaseModel):
