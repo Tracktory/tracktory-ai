@@ -1,22 +1,32 @@
-"""챗봇 LangGraph 노드 — skeleton 더미.
+""" 챗봇 LangGraph 노드 """
 
-LLM·RAGFlow 의존성 주입 시 함수 → 클래스로 전환하고 nodes/ 폴더로 split 예정.
-"""
+from __future__ import annotations
+
+from typing import Any
 
 from langchain_core.messages import AIMessage
+from langchain_core.runnables import Runnable
 
 from tracktory.chatbot.state import ChatbotState
+from tracktory.prompts.chatbot.intent import IntentClassification
 
 
-def classify_intent(state: ChatbotState) -> dict:
-    """질문의 의도를 4-way 분류 (track / job / course / general).
-
-    TODO: prompts.chatbot.intent.INTENT_CLASSIFIER_PROMPT + with_structured_output 로 교체.
+class ClassifyIntentNode:
+    """ 챗봇 의도 분류 노드
+    질문의 의도를 4-way 분류 (track / job / course / general)
     """
-    return {
-        "intent": "general_advice",
-        "intent_reason": "(dummy) skeleton 단계 — 항상 general_advice 반환",
-    }
+
+    def __init__(self, classifier: Runnable[dict[str, Any], IntentClassification]) -> None:
+        self._classifier = classifier
+
+    def __call__(self, state: ChatbotState) -> dict:
+        last_message = state["messages"][-1].content
+        result = self._classifier.invoke({"message": last_message})
+        return {
+            "intent": result.intent,
+            "intent_reason": result.reason,
+            "search_keywords": result.search_keywords,
+        }
 
 
 def retrieve_rag(state: ChatbotState) -> dict:

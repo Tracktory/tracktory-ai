@@ -22,5 +22,6 @@ class ChatbotState(TypedDict):
     # --- 갱신 ---
     intent: ChatbotIntent | None
     intent_reason: str | None  # 디버깅·평가용
+    search_keywords: list[str]
     retrieved_docs: list[dict]
     response: str | None  # API 응답용
