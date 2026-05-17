@@ -18,24 +18,30 @@ from langgraph.graph.state import CompiledStateGraph
 from tracktory.chatbot.edges import route_after_intent
 from tracktory.chatbot.nodes import (
     ClassifyIntentNode,
+    RetrieveRagNode,
     generate_response,
-    retrieve_rag,
 )
+from tracktory.chatbot.rag.ragflow import RagFlowChatbotRetriever
 from tracktory.chatbot.state import ChatbotState
 from tracktory.prompts.chatbot.intent import IntentClassification
 
 
 def build_chatbot_graph(
+    *,
     classifier: Runnable[dict[str, Any], IntentClassification],
+    retriever: RagFlowChatbotRetriever,
 ) -> CompiledStateGraph:
     """챗봇 그래프 컴파일. ``config={"configurable": {"thread_id": ...}}`` 와 함께 호출
 
-    TODO: TK-16 retrieve_rag 클라이언트 주입, TK-19 generate_response LLM 주입,
+    classifier: INTENT_CLASSIFIER_PROMPT | LLM 체인
+    retriever: RagFlowChatbotRetriever
+
+    TODO: TK-19 generate_response LLM 주입,
     """
     builder: StateGraph = StateGraph(ChatbotState)
 
     builder.add_node("classify_intent", ClassifyIntentNode(classifier))
-    builder.add_node("retrieve_rag", retrieve_rag)
+    builder.add_node("retrieve_rag", RetrieveRagNode(retriever))
     builder.add_node("generate_response", generate_response)
 
     builder.add_edge(START, "classify_intent")
