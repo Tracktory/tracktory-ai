@@ -10,6 +10,7 @@ from langchain_core.messages import BaseMessage
 from langgraph.graph.message import add_messages
 
 from tracktory.chatbot.config import ChatbotIntent
+from tracktory.chatbot.rag.ragflow import RetrievedChunk
 
 
 class ChatbotState(TypedDict):
@@ -23,5 +24,5 @@ class ChatbotState(TypedDict):
     intent: ChatbotIntent | None
     intent_reason: str | None  # 디버깅·평가용
     search_keywords: list[str]
-    retrieved_docs: list[dict]
+    retrieved_docs: list[RetrievedChunk]
     response: str | None  # API 응답용
