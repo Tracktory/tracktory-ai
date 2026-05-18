@@ -11,6 +11,11 @@ from langchain_core.runnables import Runnable
 from tracktory.chatbot.rag.ragflow import RagFlowChatbotRetriever, RagSearchError
 from tracktory.chatbot.state import ChatbotState
 from tracktory.prompts.chatbot.intent import IntentClassification
+from tracktory.prompts.chatbot.rag_response import (
+    ChatbotResponse,
+    format_retrieved_docs,
+    format_user_context,
+)
 
 logger = logging.getLogger("chatbot")
 
@@ -69,15 +74,42 @@ class RetrieveRagNode:
         return {"retrieved_docs": cleaned}
 
 
-def generate_response(state: ChatbotState) -> dict:
-    """LLM 으로 자연어 응답 생성. AIMessage 도 messages 에 함께 append 해야
-    다음 턴 checkpointer 가 어시스턴트 응답까지 복원한다.
+class GenerateResponseNode:
+    """챗봇 응답 생성 노드 — intent 에 따라 RAG / 일반 조언 chain 선택
 
-    TODO: 의도별 두 노드로 split (rag_answer / general_advice).
+    - track/job/course → RAG chain (RAG_RESPONSE_PROMPT, retrieved_docs 사용)
+    - general_advice → 일반 조언 chain (GENERAL_ADVICE_PROMPT, 자료 미사용)
     """
-    last_user_msg = state["messages"][-1].content if state["messages"] else ""
-    response_text = f"(dummy) 응답: {last_user_msg}"
-    return {
-        "response": response_text,
-        "messages": [AIMessage(content=response_text)],
-    }
+
+    def __init__(
+        self,
+        rag_chain: Runnable[dict[str, Any], ChatbotResponse],
+        general_chain: Runnable[dict[str, Any], ChatbotResponse],
+    ) -> None:
+        self._rag = rag_chain
+        self._general = general_chain
+
+    def __call__(self, state: ChatbotState) -> dict:
+        user_context_block = format_user_context(state.get("user_context"))
+
+        if state.get("intent") == "general_advice":
+            result = self._general.invoke(
+                {
+                    "messages": state["messages"],
+                    "user_context_block": user_context_block,
+                }
+            )
+        else:
+            result = self._rag.invoke(
+                {
+                    "messages": state["messages"],
+                    "user_context_block": user_context_block,
+                    "retrieved_context": format_retrieved_docs(state.get("retrieved_docs") or []),
+                }
+            )
+
+        return {
+            "response": result.text,
+            "response_choices": result.choices,
+            "messages": [AIMessage(content=result.text)],
+        }

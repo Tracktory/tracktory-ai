@@ -26,21 +26,21 @@ def setup_logging(name: str = "chatbot", verbose: bool = False) -> logging.Logge
     if logger.handlers:
         return logger
 
-    level = logging.DEBUG if verbose else logging.INFO
-    logger.setLevel(level)
+    # logger 는 항상 DEBUG 까지 받아 handler 별로 필터링
+    logger.setLevel(logging.DEBUG)
 
     formatter = logging.Formatter(
         "%(asctime)s [%(levelname)s] %(name)s: %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S",
     )
 
-    # 콘솔 핸들러
+    # 콘솔 핸들러 — verbose 면 DEBUG, 아니면 INFO 만
     console = logging.StreamHandler(sys.stdout)
-    console.setLevel(level)
+    console.setLevel(logging.DEBUG if verbose else logging.INFO)
     console.setFormatter(formatter)
     logger.addHandler(console)
 
-    # 파일 핸들러
+    # 파일 핸들러 — 항상 DEBUG 전부 캡처
     config.LOG_DIR.mkdir(parents=True, exist_ok=True)
     log_file = config.LOG_DIR / f"{name}_{datetime.now():%Y%m%d}.log"
     file_handler = logging.FileHandler(log_file, encoding="utf-8")

@@ -25,4 +25,5 @@ class ChatbotState(TypedDict):
     intent_reason: str | None  # 디버깅·평가용
     search_keywords: list[str]
     retrieved_docs: list[RetrievedChunk]
-    response: str | None  # API 응답용
+    response: str | None  # API 응답 본문
+    response_choices: list[str]  # 후속 질문 후보 1-3 개
