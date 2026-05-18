@@ -24,6 +24,22 @@ from tracktory.rag.preprocessing.tracks.parser import parse
 logger = logging.getLogger(__name__)
 
 _DIRECTORY_PAGE_SIGNALS: list[str] = ["대학_트랙", "대학전체", "공유하기", "팝업존"]
+_COLLEGE_JSON_FILES: tuple[str, ...] = ("한성대_트랙구조.json", "track_structure.json")
+_TRACK_CSV_FILES: tuple[str, ...] = ("한성대_트랙정보.csv", "tracks.csv")
+_COURSE_CSV_FILES: tuple[str, ...] = ("한성대_강의정보.csv", "courses.csv")
+_JOB_CSV_FILES: tuple[str, ...] = ("wanted_cleaned.csv",)
+_SYLLABUS_INPUTS: list[tuple[str, tuple[str, ...], tuple[str, ...]]] = [
+    ("2026-1", ("한성대_강의계획서.csv", "syllabi.csv"), ("syllabi", "1학기")),
+    ("2025-2", ("hansung_syllabuses_raw_20252.csv",), ("syllabi", "2학기")),
+]
+
+
+def _resolve_raw_file(raw_dir: Path, candidates: tuple[str, ...]) -> Path:
+    for filename in candidates:
+        path = raw_dir / filename
+        if path.exists():
+            return path
+    return raw_dir / candidates[0]
 
 
 def process_tracks(
@@ -84,13 +100,13 @@ def run_all(
     """
     raw = raw_dir or CommonConfig.DATA_RAW_DIR / "hansung"
     out = output_dir or CommonConfig.DATA_PROCESSED_DIR / "rag"
-    college_json = str(raw / "track_structure.json")
+    college_json = _resolve_raw_file(raw, _COLLEGE_JSON_FILES)
 
     # ── 1. 트랙 소개 ───────────────────────────────────────────────────────────
     logger.info("[1/4] 트랙 소개 처리 중...")
     results, skipped = process_tracks(
-        track_csv=str(raw / "tracks.csv"),
-        college_json=college_json,
+        track_csv=str(_resolve_raw_file(raw, _TRACK_CSV_FILES)),
+        college_json=str(college_json),
         output_dir=str(out / "tracks"),
     )
     logger.info("  → tracks/ (%d개 / 스킵: %d개)", len(results), len(skipped))
@@ -100,22 +116,36 @@ def run_all(
     # ── 2. 강의정보 ────────────────────────────────────────────────────────────
     logger.info("[2/4] 강의정보 (교과목 목록) 처리 중...")
     course_results = build_courses(
-        track_csv=str(raw / "courses.csv"),
-        college_json=college_json,
+        track_csv=str(_resolve_raw_file(raw, _COURSE_CSV_FILES)),
+        college_json=str(college_json),
         output_dir=str(out / "courses"),
     )
     logger.info("  → courses/ (%d개)", len(course_results))
 
     # ── 3. 강의계획서 ──────────────────────────────────────────────────────────
     logger.info("[3/4] 강의계획서 처리 중...")
-    syl_results, syl_skipped = build_syllabi(
-        syllabus_csv=str(raw / "syllabi.csv"),
-        output_dir=str(out / "syllabi"),
-    )
-    logger.info("  → syllabi/ (%d개 / 스킵: %d개)", len(syl_results), len(syl_skipped))
+    total_syllabi = 0
+    total_skipped = 0
+    for label, filenames, output_parts in _SYLLABUS_INPUTS:
+        syllabus_results, syllabus_skipped = build_syllabi(
+            syllabus_csv=str(_resolve_raw_file(raw, filenames)),
+            output_dir=str(out.joinpath(*output_parts)),
+        )
+        total_syllabi += len(syllabus_results)
+        total_skipped += len(syllabus_skipped)
+        logger.info(
+            "  → %s/ [%s] (%d개 / 스킵: %d개)",
+            "/".join(output_parts),
+            label,
+            len(syllabus_results),
+            len(syllabus_skipped),
+        )
+    logger.info("  → syllabi 합계 (%d개 / 스킵: %d개)", total_syllabi, total_skipped)
 
     # ── 4. 채용공고 ────────────────────────────────────────────────────────────
-    jobs_csv = str(CommonConfig.DATA_PROCESSED_DIR / "wanted_cleaned.csv")
+    raw_jobs_csv = _resolve_raw_file(raw, _JOB_CSV_FILES)
+    processed_jobs_csv = CommonConfig.DATA_PROCESSED_DIR / "wanted_cleaned.csv"
+    jobs_csv = str(raw_jobs_csv if raw_jobs_csv.exists() else processed_jobs_csv)
     if os.path.exists(jobs_csv):
         logger.info("[4/4] 채용공고 처리 중...")
         job_results = build_jobs_from_csv(
