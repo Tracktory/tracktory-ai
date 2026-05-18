@@ -1,11 +1,7 @@
-"""챗봇 파이프라인 통합 테스트 — 질문 → LLM 분류 → RAGFlow 검색
+"""챗봇 파이프라인 통합 테스트 — 질문 → LLM 분류 → RAGFlow 검색 → LLM 응답
 
-ClassifyIntentNode (실 OpenAI) → RetrieveRagNode (실 RAGFlow) 까지 흘려보고
-각 단계 결과 출력 + 기본 assertion
-
-TODO (TK-19 응답 생성 노드 완성 후):
-    - generate_response 단계 추가
-    - state["response"] assertion (자료 기반 응답 / "해당 데이터 없음" 분기 등)
+ClassifyIntentNode (실 OpenAI) → RetrieveRagNode (실 RAGFlow) → GenerateResponseNode (실 OpenAI)
+3 단계 전구간 검증
 
 실행:
     # 전체 (5 케이스)
@@ -22,13 +18,22 @@ import textwrap
 import pytest
 from langchain_core.messages import HumanMessage
 
-from tracktory.chatbot.nodes import ClassifyIntentNode, RetrieveRagNode
+from tracktory.chatbot.nodes import (
+    ClassifyIntentNode,
+    GenerateResponseNode,
+    RetrieveRagNode,
+)
 from tracktory.chatbot.rag.ragflow import RagFlowChatbotRetriever
 from tracktory.chatbot.state import ChatbotState
 from tracktory.common.config import settings
 from tracktory.prompts.chatbot.intent import (
     INTENT_CLASSIFIER_PROMPT,
     IntentClassification,
+)
+from tracktory.prompts.chatbot.general_advice import GENERAL_ADVICE_PROMPT
+from tracktory.prompts.chatbot.rag_response import (
+    RAG_RESPONSE_PROMPT,
+    ChatbotResponse,
 )
 
 pytest.importorskip(
@@ -56,6 +61,7 @@ def _initial_state(message: str) -> ChatbotState:
         "search_keywords": [],
         "retrieved_docs": [],
         "response": None,
+        "response_choices": [],
     }
 
 
@@ -71,19 +77,19 @@ def _initial_state(message: str) -> ChatbotState:
 )
 @pytest.mark.parametrize("query", _QUERIES)
 def test_chatbot_pipeline(query: str) -> None:
-    """질문 → LLM 의도 분류 → RAGFlow 검색 파이프라인
-
-    TODO: TK-19 generate_response LLM 노드 완성 후 응답 생성 단계 추가
-    """
+    """질문 → LLM 의도 분류 → RAGFlow 검색 → LLM 응답 전구간"""
     from langchain_openai import ChatOpenAI
 
-    # 의도 분류 chain 조립
+    # chain 조립
     llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
     classifier = INTENT_CLASSIFIER_PROMPT | llm.with_structured_output(IntentClassification)
+    rag_chain = RAG_RESPONSE_PROMPT | llm.with_structured_output(ChatbotResponse)
+    general_chain = GENERAL_ADVICE_PROMPT | llm.with_structured_output(ChatbotResponse)
 
     # 노드 + 의존성 주입
     intent_node = ClassifyIntentNode(classifier)
     retrieve_node = RetrieveRagNode(RagFlowChatbotRetriever())
+    response_node = GenerateResponseNode(rag_chain, general_chain)
 
     # 초기 state
     state = _initial_state(query)
@@ -120,8 +126,17 @@ def test_chatbot_pipeline(query: str) -> None:
         print(wrapped + "...")
     print("=" * 70)
 
-    # ───── 단계 3: 응답 생성 (TK-19 후 추가) ─────
-    # TODO: generate_response 가 LLM 호출로 교체되면 여기서 호출하고 state["response"] 검증
+    # ───── 단계 3: LLM 응답 생성 ─────
+    response_result = response_node(state)
+    state["response"] = response_result["response"]
+    state["response_choices"] = response_result["response_choices"]
+
+    print("\n[응답]")
+    print(textwrap.fill(state["response"], width=80, initial_indent="  ", subsequent_indent="  "))
+    print("\n[후속 선택지]")
+    for i, choice in enumerate(state["response_choices"], start=1):
+        print(f"  {i}. {choice}")
+    print("=" * 70)
 
     # ───── Assertion ─────
     assert state["intent"] in (
@@ -142,3 +157,9 @@ def test_chatbot_pipeline(query: str) -> None:
         )
         for chunk in chunks:
             assert chunk["content"].strip(), f"빈 본문 청크: {chunk}"
+
+    # 응답 생성 검증 — Pydantic 이 이미 min_length=1·max_length=3 강제하지만 명시
+    assert state["response"], "응답 본문이 비어있음"
+    assert 1 <= len(state["response_choices"]) <= 3, (
+        f"후속 선택지 1-3 개 강제 위반: {len(state['response_choices'])}개"
+    )
