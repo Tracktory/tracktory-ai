@@ -6,6 +6,7 @@ data/raw/hansung/ 아래 CSV들을 읽어 data/processed/rag/ 에 RAGFlow 적재
     uv run python -m tracktory.rag.preprocessing.pipeline
 """
 
+import json
 import logging
 import os
 from pathlib import Path
@@ -15,6 +16,14 @@ import pandas as pd
 
 from tracktory.common.config import CommonConfig
 from tracktory.rag.preprocessing.courses import build_courses
+from tracktory.rag.preprocessing.extract_rag_metadata import extract_all as extract_metadata
+from tracktory.rag.preprocessing.find_syllabus_duplicates import (
+    find_duplicates,
+    move_duplicates,
+)
+from tracktory.rag.preprocessing.find_syllabus_duplicates import (
+    write_outputs as write_duplicate_outputs,
+)
 from tracktory.rag.preprocessing.jobs import build_jobs_from_csv
 from tracktory.rag.preprocessing.syllabus import build_syllabi
 from tracktory.rag.preprocessing.tracks.builder import build_all, load_college_map
@@ -103,7 +112,7 @@ def run_all(
     college_json = _resolve_raw_file(raw, _COLLEGE_JSON_FILES)
 
     # ── 1. 트랙 소개 ───────────────────────────────────────────────────────────
-    logger.info("[1/4] 트랙 소개 처리 중...")
+    logger.info("[1/6] 트랙 소개 처리 중...")
     results, skipped = process_tracks(
         track_csv=str(_resolve_raw_file(raw, _TRACK_CSV_FILES)),
         college_json=str(college_json),
@@ -114,7 +123,7 @@ def run_all(
         logger.info("    [SKIP] %s: %s", name, reason)
 
     # ── 2. 강의정보 ────────────────────────────────────────────────────────────
-    logger.info("[2/4] 강의정보 (교과목 목록) 처리 중...")
+    logger.info("[2/6] 강의정보 (교과목 목록) 처리 중...")
     course_results = build_courses(
         track_csv=str(_resolve_raw_file(raw, _COURSE_CSV_FILES)),
         college_json=str(college_json),
@@ -123,7 +132,7 @@ def run_all(
     logger.info("  → courses/ (%d개)", len(course_results))
 
     # ── 3. 강의계획서 ──────────────────────────────────────────────────────────
-    logger.info("[3/4] 강의계획서 처리 중...")
+    logger.info("[3/6] 강의계획서 처리 중...")
     total_syllabi = 0
     total_skipped = 0
     for label, filenames, output_parts in _SYLLABUS_INPUTS:
@@ -147,14 +156,45 @@ def run_all(
     processed_jobs_csv = CommonConfig.DATA_PROCESSED_DIR / "wanted_cleaned.csv"
     jobs_csv = str(raw_jobs_csv if raw_jobs_csv.exists() else processed_jobs_csv)
     if os.path.exists(jobs_csv):
-        logger.info("[4/4] 채용공고 처리 중...")
+        logger.info("[4/6] 채용공고 처리 중...")
         job_results = build_jobs_from_csv(
             csv_path=jobs_csv,
             output_dir=str(out / "jobs"),
         )
         logger.info("  → jobs/ (%d개)", len(job_results))
     else:
-        logger.info("[4/4] 채용공고 건너뜀 — 파일 없음: %s", jobs_csv)
+        logger.info("[4/6] 채용공고 건너뜀 — 파일 없음: %s", jobs_csv)
+
+    # ── 5. 강의계획서 중복 탐지 + 격리 ────────────────────────────────────────
+    logger.info("[5/6] 강의계획서 중복 탐지 중...")
+    syllabi_dir = out / "syllabi"
+    if syllabi_dir.exists():
+        duplicate_groups = find_duplicates(syllabi_dir)
+        groups_path, delete_list_path = write_duplicate_outputs(duplicate_groups, out)
+        duplicate_count = sum(len(g["duplicates"]) for g in duplicate_groups)
+        logger.info(
+            "  → 중복 그룹 %d개 / 중복 파일 %d개 (groups: %s, delete-list: %s)",
+            len(duplicate_groups),
+            duplicate_count,
+            groups_path.name,
+            delete_list_path.name,
+        )
+        if duplicate_groups:
+            quarantine_dir = out / "_duplicates" / "syllabi"
+            moved = move_duplicates(duplicate_groups, syllabi_dir, quarantine_dir)
+            logger.info("  → 격리 이동 %d개 → %s", moved, quarantine_dir)
+    else:
+        logger.info("[5/6] 중복 탐지 건너뜀 — 디렉터리 없음: %s", syllabi_dir)
+
+    # ── 6. 메타데이터 추출 ────────────────────────────────────────────────────
+    logger.info("[6/6] 메타데이터 추출 중...")
+    metadata = extract_metadata(out)
+    metadata_path = out / "metadata.json"
+    metadata_path.write_text(
+        json.dumps(metadata, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    logger.info("  → metadata.json (%d개 문서)", len(metadata))
 
     logger.info("[완료] 전체 전처리 파이프라인 완료")
 
