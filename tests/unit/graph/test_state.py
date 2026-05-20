@@ -74,7 +74,7 @@ def test_recommended_jobs_roundtrip_with_other_fields() -> None:
     """직무 dict 3 개 + 다른 필드와 함께 json round-trip 후 동일 dict 가 복원된다."""
     state: GraphState = {
         "user_id": "u1",
-        "profile_vector": [0.1, 0.2, 0.3],
+        "profile_text": "데이터 분석에 관심 있는 학생",
         "recommended_jobs": _three_jobs(),
         "errors": [],
         "trace": ["input_normalize:ok", "profile_embed:ok"],
@@ -187,7 +187,6 @@ def test_full_state_roundtrip_all_output_fields() -> None:
         "raw_input": {"interests": ["IT"], "year": 2026},
         "normalized_profile": {"interest_categories": ["it"]},
         "profile_text": "IT 에 관심이 많은 학생",
-        "profile_vector": [0.11, 0.22, 0.33],
         "recommended_jobs": _three_jobs(),
         "primary_combos": primary,
         "secondary_combos": secondary,

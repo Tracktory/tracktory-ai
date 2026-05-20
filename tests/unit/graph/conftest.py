@@ -1,4 +1,4 @@
-"""트랙 시너지 노드 단위 테스트의 공통 fixture.
+"""트랙 시너지·직무 매칭 노드 단위 테스트의 공통 fixture.
 
 사용 패턴: ``def test_xxx(make_track, make_job, ...)`` — pytest 가 자동 주입한다.
 factory pattern (호출 시점 객체 생성) 으로 테스트마다 다른 인자로 트랙을 만들 수 있다.
@@ -22,7 +22,7 @@ from tracktory.graph.models import (
     TrackCombo,
 )
 from tracktory.graph.nodes.roadmap import CourseRepository
-from tracktory.rag.job_index import InMemoryJobIndex, Job
+from tracktory.rag.job_search import JobSearchClient, RagSearchError, RagSearchResult
 
 _DEFAULT_DIM = 1536
 
@@ -177,25 +177,55 @@ def real_category_mapping_path() -> Path:
     )
 
 
-@pytest.fixture
-def make_job_data() -> Callable[..., Job]:
-    """``Job`` 도메인 factory — 직무 매칭 노드 fixture 용.
+# ---------------------------------------------------------------------------
+# JobSearchClient fake — 직무 매칭 노드 단위 테스트용
+# ---------------------------------------------------------------------------
 
-    ``vector_seed`` 가 주어지면 deterministic L2 normalized 벡터를 채운다.
+
+class FakeJobSearchClient:
+    """``rag_search_jobs`` 호출 시 미리 정해진 결과 리스트를 ``top_k`` 만큼 반환한다.
+
+    ``raise_error`` 가 True 면 ``RagSearchError`` 를 raise 하여 직무 매칭 노드의
+    error → fallback 분기를 검증할 수 있다.
     """
+
+    def __init__(
+        self,
+        results: list[RagSearchResult] | None = None,
+        *,
+        raise_error: bool = False,
+    ) -> None:
+        self._results = list(results or [])
+        self._raise_error = raise_error
+        self.last_query: str | None = None
+        self.last_top_k: int | None = None
+
+    def rag_search_jobs(self, query: str, top_k: int = 3) -> list[RagSearchResult]:
+        self.last_query = query
+        self.last_top_k = top_k
+        if self._raise_error:
+            raise RagSearchError("fake search failure")
+        return list(self._results[:top_k])
+
+
+@pytest.fixture
+def make_search_result() -> Callable[..., RagSearchResult]:
+    """``RagSearchResult`` factory — 직무 검색 boundary 결과 단건."""
 
     def _factory(
         job_id: str,
         *,
         job_name: str | None = None,
+        score: float = 0.8,
+        description: str | None = None,
         tech_stacks: list[str] | None = None,
         competency_tags: list[str] | None = None,
-        vector_seed: int | None = None,
-    ) -> Job:
-        return Job(
+    ) -> RagSearchResult:
+        return RagSearchResult(
             job_id=job_id,
             job_name=job_name or job_id,
-            job_vector=_make_meta_vector(vector_seed),
+            score=score,
+            description=description or f"{job_id} 직무 설명",
             tech_stacks=tech_stacks or [],
             competency_tags=competency_tags or [],
         )
@@ -204,11 +234,15 @@ def make_job_data() -> Callable[..., Job]:
 
 
 @pytest.fixture
-def make_in_memory_job_index() -> Callable[[list[Job]], InMemoryJobIndex]:
-    """``InMemoryJobIndex`` 단순 wrapper factory."""
+def make_fake_job_search_client() -> Callable[..., JobSearchClient]:
+    """``FakeJobSearchClient`` factory — Protocol 만 노출한다."""
 
-    def _factory(jobs: list[Job]) -> InMemoryJobIndex:
-        return InMemoryJobIndex(jobs=jobs)
+    def _factory(
+        results: list[RagSearchResult] | None = None,
+        *,
+        raise_error: bool = False,
+    ) -> JobSearchClient:
+        return FakeJobSearchClient(results=results, raise_error=raise_error)
 
     return _factory
 
