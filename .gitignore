@@ -20,6 +20,13 @@ Thumbs.db
 # Logs
 logs/
 
+# pytest / coverage 산출물
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+coverage.xml
+
 # OMC
 .omc/
 
