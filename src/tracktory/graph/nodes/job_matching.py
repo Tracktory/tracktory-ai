@@ -42,6 +42,9 @@ _DEFAULT_CONFIG_PATH = Path(__file__).resolve().parents[2] / "config" / "synergy
 _DEFAULT_CATEGORY_MAPPING_PATH = (
     Path(__file__).resolve().parents[2] / "config" / "category_to_jobs.yaml"
 )
+# yaml entry 에 ``rank`` 가 누락된 경우 정렬 시 마지막으로 밀어내는 sentinel.
+# 매직 넘버 회피용 상수 — yaml 스키마가 ``rank`` 를 필수화하면 제거 가능.
+_RANK_SENTINEL = 999
 
 logger = logging.getLogger(__name__)
 
@@ -106,7 +109,7 @@ def _build_fallback_candidates(
     if not entries:
         return []
 
-    sorted_entries = sorted(entries, key=lambda entry: entry.get("rank", 999))[:k]
+    sorted_entries = sorted(entries, key=lambda entry: entry.get("rank", _RANK_SENTINEL))[:k]
     candidates: list[JobCandidate] = []
     for entry in sorted_entries:
         job_id = entry.get("job_id")
@@ -168,9 +171,15 @@ class JobMatchingNode:
         try:
             results = self._client.rag_search_jobs(query=profile_text, top_k=top_k)
         except RagSearchError as exc:
+            # PII / 자격증명 누출 회피를 위해 메시지 전체가 아닌 예외 타입과
+            # 축약 메시지만 로깅한다. 구현체는 ``RagSearchError`` 메시지에
+            # status code / request_id 정도만 실어 보낼 책임이 있다.
             logger.warning(
                 "job_matching_rag_search_error",
-                extra={"error": str(exc)},
+                extra={
+                    "error_type": type(exc).__name__,
+                    "error_message": str(exc)[:200],
+                },
             )
             return self._fallback_response(normalized, top_k, max_similarity=0.0, reason="error")
 
