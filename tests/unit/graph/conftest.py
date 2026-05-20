@@ -14,12 +14,14 @@ import numpy as np
 import pytest
 
 from tracktory.graph.models import (
+    Course,
     JobCandidate,
     JobMatchingConfig,
     SynergyConfig,
     Track,
     TrackCombo,
 )
+from tracktory.graph.nodes.roadmap import CourseRepository
 from tracktory.rag.job_index import InMemoryJobIndex, Job
 
 _DEFAULT_DIM = 1536
@@ -231,3 +233,66 @@ def make_job_matching_config() -> Callable[..., JobMatchingConfig]:
         )
 
     return _factory
+
+
+@pytest.fixture
+def make_course() -> Callable[..., Course]:
+    """``Course`` factory — 학습 로드맵 노드 fixture 용.
+
+    Repository 가 채울 모든 메타 (stage·credits·prereq_ids·priority) 를 키워드
+    인자로 override 가능하다.
+    """
+
+    def _factory(
+        course_id: str,
+        *,
+        course_name: str | None = None,
+        credits: int = 3,
+        stage: str = "foundation",
+        prereq_ids: list[str] | None = None,
+        track_ids: list[str] | None = None,
+        priority: int = 1,
+    ) -> Course:
+        return Course(
+            course_id=course_id,
+            course_name=course_name or course_id,
+            credits=credits,
+            stage=stage,  # type: ignore[arg-type]
+            prereq_ids=prereq_ids or [],
+            track_ids=track_ids or [],
+            priority=priority,
+        )
+
+    return _factory
+
+
+@pytest.fixture
+def make_course_repo() -> Callable[..., CourseRepository]:
+    """단순 in-memory ``CourseRepository`` factory.
+
+    ``courses_by_track`` 인자는 ``dict[track_id, list[Course]]`` — ``list_for_tracks``
+    가 요청 ``track_ids`` 의 합집합을 ``course_id`` 기준 dedup 하여 반환한다.
+    """
+
+    def _factory(courses_by_track: dict[str, list[Course]]) -> CourseRepository:
+        class _InMemoryCourseRepo:
+            def __init__(self, mapping: dict[str, list[Course]]) -> None:
+                self._mapping = mapping
+
+            def list_for_tracks(self, track_ids: list[str]) -> list[Course]:
+                seen: dict[str, Course] = {}
+                for track_id in track_ids:
+                    for course in self._mapping.get(track_id, []):
+                        if course.course_id not in seen:
+                            seen[course.course_id] = course
+                return list(seen.values())
+
+        return _InMemoryCourseRepo(courses_by_track)
+
+    return _factory
+
+
+@pytest.fixture
+def real_roadmap_yaml_path() -> Path:
+    """실제 ``src/tracktory/config/roadmap.yaml`` 의 경로 — 정합 sanity check 용."""
+    return Path(__file__).resolve().parents[3] / "src" / "tracktory" / "config" / "roadmap.yaml"

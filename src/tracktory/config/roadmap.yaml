@@ -1,0 +1,20 @@
+# 학습 로드맵 외부화 설정 (학기 용량 + 졸업 요건)
+#
+# 본 파일은 한성대 일반 학사 제도를 기반으로 한 hard constraint 만 담는다.
+# 시너지 가중치 ablation (synergy.yaml) 과 변경 이유가 독립적이라 별도 파일로
+# 운영한다.
+
+# ── 학기 용량 정책 ──────────────────────────────────────────────────
+# default  : 학기당 기본 최대 학점 (한성대 일반 학기 제도)
+# high_gpa : 직전 학기 평점 우수 기준선 이상일 때 허용 학점 (현재는 보존만)
+#
+# 현재 사용자 입력에 직전 학기 평점 필드가 없어 노드 본체는 default 만 사용한다.
+capacity:
+  max_credits_per_semester_default: 18
+  max_credits_per_semester_high_gpa: 21
+
+# ── 졸업 요건 (1트랙 + 2트랙 합산) ──────────────────────────────────
+# total_credits_two_tracks : 4 단계 누적 학점 hard cap.
+#   초과하는 추가 과목은 우선순위 낮은 (= 큰 priority 숫자) 단계부터 컷.
+graduation:
+  total_credits_two_tracks: 30

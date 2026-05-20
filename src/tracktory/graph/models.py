@@ -6,6 +6,7 @@ Pydantic 모델 목록:
 - ``JobCandidate`` — 직무 매칭 노드의 결과 단건.
 - ``TrackCombo`` — 두 트랙의 조합 단위.
 - ``RankedCombo`` — ``TrackCombo`` 에 시너지 점수·슬롯 분류·순위가 부착된 단위.
+- ``Course`` — 학습 로드맵 노드의 입력 단위 (Repository 가 채워 반환).
 - ``RoadmapCourse`` — 학습 로드맵 단계 안의 추천 과목 단위.
 - ``RoadmapStage`` — 학습 로드맵의 한 단계 (기초·핵심·응용·산학).
 - ``Roadmap`` — 4 단계 학습 로드맵 전체.
@@ -13,6 +14,7 @@ Pydantic 모델 목록:
 - ``Explanation`` — LLM 자연어 설명 전체.
 - ``SynergyConfig`` — 시너지 외부화 설정 (4 nested config + 단조 제약).
 - ``JobMatchingConfig`` — 직무 매칭 노드의 외부화 매핑.
+- ``RoadmapConfig`` — 학습 로드맵 외부화 설정 (학기 용량 + 졸업 요건).
 """
 
 from __future__ import annotations
@@ -132,6 +134,36 @@ class RankedCombo(BaseModel):
 # ---------------------------------------------------------------------------
 # Roadmap / Explanation — 학습 로드맵 + LLM 자연어 설명 도메인 모델
 # ---------------------------------------------------------------------------
+
+
+class Course(BaseModel):
+    """학습 로드맵 노드의 입력 단위 — Repository 가 채워 반환한다.
+
+    Repository 책임:
+        - ``stage`` 분류 — 강의계획서·커리큘럼 메타로부터 학습 깊이 4 단계
+          (foundation / core / application / industry) 중 하나를 도출한다.
+        - ``prereq_ids`` 추출 — 선수과목 관계 그래프에서 본 과목이 의존하는
+          선수 ``course_id`` 리스트를 정규화하여 채운다.
+        - ``priority`` 할당 — 낮은 숫자가 우선. 학년·필수 여부·선수 깊이
+          등으로 도출되며, 본 노드는 Repository 가 부여한 값을 그대로 사용한다.
+
+    Attributes:
+        course_id: 과목 식별자.
+        course_name: 사용자 표시용 과목명.
+        credits: 학점 (학기·졸업 학점 cap 의 단위).
+        stage: 4 단계 학습 깊이 분류.
+        prereq_ids: 선수과목의 정규화된 ``course_id`` 리스트.
+        track_ids: 본 과목이 권장되는 트랙 식별자 리스트.
+        priority: 같은 단계 안의 우선순위 (1 이 최우선).
+    """
+
+    course_id: str = Field(..., min_length=1)
+    course_name: str = Field(..., min_length=1)
+    credits: int = Field(..., ge=1)
+    stage: Literal["foundation", "core", "application", "industry"]
+    prereq_ids: list[str] = Field(default_factory=list)
+    track_ids: list[str] = Field(default_factory=list)
+    priority: int = Field(default=1, ge=1)
 
 
 class RoadmapCourse(BaseModel):
@@ -395,3 +427,68 @@ class JobMatchingConfig(BaseModel):
         if not isinstance(section, dict):
             raise ValueError(f"Synergy config file {path} must contain a 'job_matching' mapping")
         return cls.model_validate(section)
+
+
+# ---------------------------------------------------------------------------
+# RoadmapConfig — roadmap.yaml 외부화 매핑
+# ---------------------------------------------------------------------------
+
+
+class CapacityConfig(BaseModel):
+    """학기 용량 정책.
+
+    한성대 일반 학기 제도를 기반으로 한 hard cap 으로, 가중치 ablation 대상이
+    아니다. 사용자 입력에 직전 학기 평점 필드가 추가되기 전까지는 노드 본체가
+    ``max_credits_per_semester_default`` 만 사용한다.
+
+    Attributes:
+        max_credits_per_semester_default: 학기당 기본 최대 학점.
+        max_credits_per_semester_high_gpa: 직전 학기 평점이 우수 기준선 이상일 때
+            허용하는 확장 학점. 현재는 보존만 하며 노드 본체는 미사용.
+    """
+
+    max_credits_per_semester_default: int = Field(..., ge=1)
+    max_credits_per_semester_high_gpa: int = Field(..., ge=1)
+
+
+class GraduationConfig(BaseModel):
+    """졸업 요건 hard constraint.
+
+    Attributes:
+        total_credits_two_tracks: 1트랙 + 2트랙 합산 졸업 학점 총합.
+            4 단계 누적 학점이 이 값을 넘으면 초과 과목은 컷한다.
+    """
+
+    total_credits_two_tracks: int = Field(..., ge=1)
+
+
+class RoadmapConfig(BaseModel):
+    """``roadmap.yaml`` 의 외부화 설정 1:1 매핑.
+
+    yaml 로딩은 ``load_from_yaml`` classmethod 에 격리하여 노드 호출 경로에서
+    파일 I/O 를 단일 위치로 모은다. 본 설정은 한성대 학사 제도 기반이라
+    실험적 가중치 변경 대상이 아니며, 시너지 가중치 ablation 과 변경 이유가
+    독립적이라 ``synergy.yaml`` 과 분리된 파일로 운영한다.
+    """
+
+    capacity: CapacityConfig
+    graduation: GraduationConfig
+
+    @classmethod
+    def load_from_yaml(cls, path: Path) -> Self:
+        """yaml 파일에서 ``RoadmapConfig`` 를 로드한다.
+
+        Args:
+            path: ``roadmap.yaml`` 의 경로.
+
+        Returns:
+            검증된 ``RoadmapConfig`` 인스턴스.
+
+        Raises:
+            ValueError: yaml 이 mapping 이 아닐 때.
+        """
+        with path.open("r", encoding="utf-8") as f:
+            raw = yaml.safe_load(f)
+        if not isinstance(raw, dict):
+            raise ValueError(f"Roadmap config file {path} must define a top-level mapping")
+        return cls.model_validate(raw)
