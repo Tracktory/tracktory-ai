@@ -34,6 +34,19 @@ class ProfileEmbedNode:
         self._template = _load_template(template_path or _DEFAULT_TEMPLATE_PATH)
 
     def __call__(self, state: GraphState) -> dict[str, Any]:
+        """정규화된 프로필을 ``profile_text`` 한 필드만 채워 부분 state 로 반환한다.
+
+        반환값 계약:
+            정상: ``{"profile_text": str, "trace": [...]}`` — profile_text 는
+                비어 있지 않은 자연어 문장임을 보장한다 (template pattern 이 비어 있지
+                않은 한 빈 문자열은 발생하지 않음).
+            skip: ``{"errors": [...], "trace": [...]}`` — profile_text 키 자체를
+                담지 않아 다음 단계 노드가 ``state.get("profile_text")`` 로 skip
+                여부를 판단할 수 있게 한다.
+
+        부작용:
+            없음. 임베딩 호출 / 외부 I/O 없음 (Path A canonical).
+        """
         profile = state.get("normalized_profile")
         if not profile:
             return {
@@ -49,6 +62,7 @@ class ProfileEmbedNode:
 
 
 def _load_template(path: Path) -> dict[str, Any]:
+    """template yaml 을 dict 으로 로드한다. top-level 이 mapping 이 아니면 ``ValueError``."""
     with path.open("r", encoding="utf-8") as f:
         loaded = yaml.safe_load(f)
     if not isinstance(loaded, dict):

@@ -155,6 +155,22 @@ class JobMatchingNode:
         )
 
     def __call__(self, state: GraphState) -> dict[str, Any]:
+        """프로필 텍스트로 직무 후보를 산출하여 부분 state 를 반환한다.
+
+        반환값 계약:
+            정상: ``{"recommended_jobs": [...], "trace": ["job_matching:ok"]}``
+                — ``fallback_used=False`` 인 후보 ``top_k`` 건.
+            fallback (low score 또는 외부 호출 실패): trace 는
+                ``job_matching:fallback_categorized``. 모든 후보가 ``fallback_used=True``.
+            fallback unmapped (카테고리 매핑 부재): trace 는
+                ``job_matching:fallback_unmapped``. ``recommended_jobs`` 는 빈 list.
+            skip: trace 는 ``job_matching:skip``. ``recommended_jobs`` 키 부재.
+
+        부작용:
+            ``job_search_client.rag_search_jobs`` 호출 1 회 (외부 검색 boundary).
+            ``logger.warning`` 은 RagSearchError 분기·미매핑 분기에서 발생,
+            ``logger.info`` 는 카테고리 fallback 분기에서 발생한다.
+        """
         # 단계 1: 입력 검증
         profile_text: str | None = state.get("profile_text")
         normalized: dict[str, Any] | None = state.get("normalized_profile")
