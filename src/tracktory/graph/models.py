@@ -206,11 +206,21 @@ class Roadmap(BaseModel):
     → industry`` 4 단계가 정확히 한 번씩 이 순서대로 등장하도록 강제한다.
     개별 단계의 과목 리스트는 비어 있을 수 있다.
 
+    Stage ↔ 학기 매핑:
+        4 단계는 본질적으로 학습 깊이가 단조 증가하는 추상이며 학기 개념과는
+        다른 축이다. 본 시스템 MVP 에서는 1 단계 = 1 권장 학기로 매핑하여
+        학기당 학점 cap 을 단계 단위로 강제한다. 구체 학기 번호 매핑이나
+        다학기 분산은 후속 노드 / UI 의 책임이다.
+
     Attributes:
         stages: 정확히 4 개 단계.
+        derived_from_combo_key: 본 로드맵이 파생된 트랙 조합 식별자.
+            후속 자연어 설명 노드가 어느 조합과의 binding 인지 추적할 때
+            사용한다. 안전 종료 (조합 부재) 시 ``None``.
     """
 
     stages: list[RoadmapStage] = Field(...)
+    derived_from_combo_key: str | None = Field(default=None)
 
     @model_validator(mode="after")
     def _enforce_four_stages_in_order(self) -> Self:

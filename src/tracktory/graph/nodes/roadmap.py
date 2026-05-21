@@ -4,18 +4,32 @@
 과목·선수과목 관계·학기 용량·졸업 총 학점이라는 학사 제약을 모두 만족하는
 4 단계 (foundation → core → application → industry) 추천 로드맵으로 묶는다.
 
+Stage ↔ 학기 매핑 (MVP 단순화):
+    ``Roadmap`` 의 4 단계는 본질적으로 학습 깊이가 단조 증가하는 추상 (기초 →
+    산학) 이며 학기 개념과는 다른 축이다. 본 MVP 에서는 1 단계 = 1 권장 학기
+    로 매핑하여 학기당 학점 cap (18) 을 단계 단위로 강제한다. 실제 학사
+    이수는 8 학기 안팎이므로 본 매핑은 추천 가이드를 압축하는 단순화이며,
+    구체적 학기 번호 매핑이나 다학기 분산은 후속 노드/UI 의 책임이다.
+
 처리 흐름 (7 단계):
     1. 입력 검증 — ``primary_combos`` / ``normalized_profile`` 부재 시 안전 종료.
-    2. 1 순위 조합의 두 트랙 식별자 수집.
+    2. 1 순위 조합의 두 트랙 식별자 + 조합 식별자 수집.
     3. 과목 메타 로드 (외부 I/O — 진입점 단 1 곳).
     4. 이수 과목을 후보에서 제외 (선수 만족 신호로는 보존).
     5. 단계별 그룹화 + 단계 순서로 선수과목 위배 컷 + 학기 용량 cap.
     6. 4 단계 누적으로 졸업 총 학점 cap.
-    7. state 부분 반환.
+    7. state 부분 반환. 파생된 조합 식별자를 ``Roadmap`` 에 함께 흘려 후속
+       LLM 설명 노드가 어느 조합과의 binding 인지 추적 가능하게 한다.
 
 부작용 격리:
     - ``course_repo`` 호출은 ``__call__`` 단 1 곳.
     - 순수 계산 함수는 모두 module-level — mock 없이 단위 테스트 가능.
+
+Trace 토큰:
+    - ``roadmap:ok`` — 정상 생성.
+    - ``roadmap:empty`` — 1 순위 조합 부재 또는 Repository 빈 결과로 안전 종료.
+    - ``roadmap:all_completed`` — 후보는 있었으나 이수 과목이 전부 cover 한 경우.
+    - ``roadmap:skip`` — ``normalized_profile`` 부재로 그래프 입력 자체 부재.
 """
 
 from __future__ import annotations
@@ -150,9 +164,16 @@ def _to_roadmap_courses(courses: list[Course]) -> list[RoadmapCourse]:
     ]
 
 
-def _empty_roadmap() -> Roadmap:
-    """빈 단계로만 구성된 안전 종료용 로드맵."""
-    return Roadmap(stages=[RoadmapStage(stage=stage, courses=[]) for stage in _STAGE_ORDER])
+def _empty_roadmap(combo_key: str | None = None) -> Roadmap:
+    """빈 단계로만 구성된 안전 종료용 로드맵.
+
+    조합 식별자가 식별된 경우 (예: 후보가 모두 이수되어 빈 결과) 호출자가
+    그대로 흘려 후속 노드가 binding 을 추적할 수 있게 한다.
+    """
+    return Roadmap(
+        stages=[RoadmapStage(stage=stage, courses=[]) for stage in _STAGE_ORDER],
+        derived_from_combo_key=combo_key,
+    )
 
 
 def _extract_primary_track_ids(primary_combos: list[dict[str, Any]]) -> list[str]:
@@ -170,6 +191,21 @@ def _extract_primary_track_ids(primary_combos: list[dict[str, Any]]) -> list[str
     track_b = combo.get("track_b") or {}
     track_ids = [tid for tid in (track_a.get("track_id"), track_b.get("track_id")) if tid]
     return track_ids
+
+
+def _extract_primary_combo_key(primary_combos: list[dict[str, Any]]) -> str | None:
+    """``primary_combos`` 의 1 순위 항목에서 조합 식별자를 뽑는다.
+
+    후속 자연어 설명 노드가 "이 로드맵이 어느 트랙 조합에서 파생되었는가" 를
+    명시적으로 알 수 있도록 ``Roadmap.derived_from_combo_key`` 로 흘릴 값이다.
+    형태가 어긋나면 ``None`` 을 반환한다.
+    """
+    if not primary_combos:
+        return None
+    top = primary_combos[0]
+    combo = top.get("combo") or {}
+    key = combo.get("combo_key")
+    return key if isinstance(key, str) and key else None
 
 
 # ---------------------------------------------------------------------------
@@ -201,8 +237,10 @@ class RoadmapNode:
                 "trace": ["roadmap:skip"],
             }
 
-        primary_combos: list[dict[str, Any]] | None = state.get("primary_combos")
-        track_ids = _extract_primary_track_ids(primary_combos or [])
+        primary_combos_raw: list[dict[str, Any]] | None = state.get("primary_combos")
+        primary_combos = primary_combos_raw or []
+        track_ids = _extract_primary_track_ids(primary_combos)
+        combo_key = _extract_primary_combo_key(primary_combos)
         if not track_ids:
             # 1 학년 트랙 미선택 또는 시너지 노드 산출 부재 — 빈 로드맵으로 그래프 흐름 유지
             return {
@@ -214,7 +252,7 @@ class RoadmapNode:
         courses = self._repo.list_for_tracks(track_ids)
         if not courses:
             return {
-                "roadmap": _empty_roadmap().model_dump(mode="json"),
+                "roadmap": _empty_roadmap(combo_key).model_dump(mode="json"),
                 "trace": ["roadmap:empty"],
             }
 
@@ -222,6 +260,12 @@ class RoadmapNode:
         completed_courses = normalized.get("completed_courses") or []
         completed_set: set[str] = set(completed_courses)
         remaining = _filter_completed(courses, completed_set)
+        if not remaining:
+            # 후보는 있었으나 이수 과목이 모두 cover — Repository 빈 결과와 구분
+            return {
+                "roadmap": _empty_roadmap(combo_key).model_dump(mode="json"),
+                "trace": ["roadmap:all_completed"],
+            }
         grouped = _group_by_stage(remaining)
 
         # 단계 4: 단계 순서로 선수과목 위배 컷 + 학기 용량 cap
@@ -244,7 +288,8 @@ class RoadmapNode:
             stages=[
                 RoadmapStage(stage=stage, courses=_to_roadmap_courses(capped[stage]))
                 for stage in _STAGE_ORDER
-            ]
+            ],
+            derived_from_combo_key=combo_key,
         )
 
         return {

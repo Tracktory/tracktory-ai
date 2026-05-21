@@ -123,6 +123,7 @@ def test_node_returns_four_stages_in_canonical_order_with_completed_filtered(
     )
 
     assert result["trace"] == ["roadmap:ok"]
+    assert result["roadmap"]["derived_from_combo_key"] == "T_A::T_B"
     stages = result["roadmap"]["stages"]
     assert [s["stage"] for s in stages] == ["foundation", "core", "application", "industry"]
 
@@ -158,6 +159,7 @@ def test_node_returns_empty_roadmap_when_primary_combos_missing(
     )
 
     assert result["trace"] == ["roadmap:empty"]
+    assert result["roadmap"]["derived_from_combo_key"] is None
     stages = result["roadmap"]["stages"]
     assert [s["stage"] for s in stages] == ["foundation", "core", "application", "industry"]
     assert all(s["courses"] == [] for s in stages)
@@ -351,6 +353,7 @@ def test_node_returns_empty_roadmap_when_repo_returns_no_courses(
     )
 
     assert result["trace"] == ["roadmap:empty"]
+    assert result["roadmap"]["derived_from_combo_key"] == "T_A::T_B"
     stages = result["roadmap"]["stages"]
     assert all(s["courses"] == [] for s in stages)
 
@@ -385,3 +388,43 @@ def test_node_breaks_priority_ties_by_course_id_alphabetical(
 
     foundation_ids = [c["course_id"] for c in result["roadmap"]["stages"][0]["courses"]]
     assert foundation_ids == ["alpha", "mike", "zeta"]
+
+
+# ---------------------------------------------------------------------------
+# 시나리오 10: 이수 과목이 모든 후보를 cover — roadmap:all_completed
+# ---------------------------------------------------------------------------
+
+
+def test_node_marks_all_completed_when_completed_covers_all_candidates(
+    make_course: Callable[..., Course],
+    make_course_repo: Callable[..., CourseRepository],
+    real_roadmap_yaml_path: Path,
+) -> None:
+    """Repository 가 후보를 반환했지만 사용자가 모두 이수한 경우 trace 가 구분된다.
+
+    Repository 빈 결과 (``roadmap:empty``) 와는 다른 케이스 — 사용자 시점에서는
+    동일한 빈 로드맵이지만 운영 디버깅에서 두 케이스를 구분해야 한다.
+    """
+    courses_by_track: dict[str, list[Course]] = {
+        "T_A": [
+            make_course("c1", credits=3, stage="foundation", priority=1),
+            make_course("c2", credits=3, stage="core", priority=1),
+        ],
+        "T_B": [
+            make_course("c3", credits=3, stage="application", priority=1),
+        ],
+    }
+    node = _build_node(courses_by_track, real_roadmap_yaml_path, make_course_repo)
+
+    result = node(
+        {
+            "normalized_profile": _normalized_profile(completed_courses=["c1", "c2", "c3"]),
+            "primary_combos": _primary_combos("T_A", "T_B"),
+        }
+    )
+
+    assert result["trace"] == ["roadmap:all_completed"]
+    assert result["roadmap"]["derived_from_combo_key"] == "T_A::T_B"
+    stages = result["roadmap"]["stages"]
+    assert [s["stage"] for s in stages] == ["foundation", "core", "application", "industry"]
+    assert all(s["courses"] == [] for s in stages)
