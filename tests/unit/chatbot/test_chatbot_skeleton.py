@@ -90,6 +90,9 @@ def test_threads_isolated() -> None:
     for i, msg in enumerate(result_b["messages"]):
         print(f"  {i}. {type(msg).__name__}: {msg.content}")
 
+    # A 는 자기 turn 만 보유 → B 메시지 누수 없음
+    assert len(result_a["messages"]) == 2
+    assert result_a["messages"][0].content == "A 의 첫 질문"
     # B 는 자기 turn 만 보유 → A 메시지 누수 없음
     assert len(result_b["messages"]) == 2
     assert result_b["messages"][0].content == "B 의 첫 질문"
