@@ -41,6 +41,11 @@ def load_college_map(json_path: str) -> dict[str, dict[str, str]]:
     return mapping
 
 
+def _normalize_name(name: str) -> str:
+    """U+318D(ㆍ)이 포함되면 GraphRAG 엔티티 추출에서 NaN 임베딩이 발생할 수 있어 치환."""
+    return name.replace("ㆍ", "·")
+
+
 def build_document(
     track_name: str,
     sections: dict[str, str],
@@ -49,6 +54,7 @@ def build_document(
     """RAG 청크가 잘려 나와도 어느 트랙인지 알 수 있어야 해 헤더 필요. 첫 줄에 트랙·대학·학부 컨텍스트 헤더 포함하여 문서 생성."""
     college = college_info.get("college", "한성대학교")
     department = college_info.get("department", "")
+    track_name = _normalize_name(track_name)
 
     if department:
         header = f"[트랙: {track_name} | 대학: {college} | 학부: {department}]"

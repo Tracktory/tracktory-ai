@@ -139,6 +139,11 @@ def _parse_syllabus(text: str) -> dict[str, str | list[str]]:
     return result
 
 
+def _normalize_text(text: str) -> str:
+    """U+318D(ㆍ)이 포함되면 GraphRAG 엔티티 추출에서 NaN 임베딩이 발생할 수 있어 치환."""
+    return text.replace("ㆍ", "·")
+
+
 def _build_document(course_code: str, parsed: dict[str, str | list[str]]) -> str:
     course_name = parsed.get("과목명", course_code)
     professor = parsed.get("교수", "")
@@ -190,7 +195,7 @@ def _build_document(course_code: str, parsed: dict[str, str | list[str]]) -> str
         lines += ["", "■ 주차별 수업 주제"]
         lines.extend(weekly)
 
-    return "\n".join(lines).strip()
+    return _normalize_text("\n".join(lines).strip())
 
 
 def build_syllabi(
