@@ -94,3 +94,19 @@ def test_roadmap_roundtrip_model_dump_validate() -> None:
     assert restored == original
     assert len(restored.stages) == 4
     assert restored.stages[1].courses[1].priority == 2
+
+
+def test_roadmap_defaults_combo_key_to_none() -> None:
+    """파생 조합 식별자는 명시되지 않으면 None — 안전 종료 분기를 위한 기본값."""
+    roadmap = Roadmap(stages=_full_stages())
+    assert roadmap.derived_from_combo_key is None
+
+
+def test_roadmap_preserves_combo_key_through_roundtrip() -> None:
+    """파생 조합 식별자가 dump → validate 라운드트립으로 보존된다."""
+    original = Roadmap(stages=_full_stages(), derived_from_combo_key="big_data::korean_edu")
+    dumped = original.model_dump(mode="json")
+    restored = Roadmap.model_validate(dumped)
+
+    assert restored.derived_from_combo_key == "big_data::korean_edu"
+    assert restored == original
