@@ -21,8 +21,9 @@ class RagSearchResult(BaseModel):
     """외부 직무 검색 boundary 의 반환 단건.
 
     boundary 너머에서 직무 KB 검색 + hybrid retrieval + reranker 결합을 마친
-    뒤 자체 코드로 넘어오는 형태다. ``score`` 는 검색 시스템의 결합 점수로
-    ``[0, 1]`` 범위 단조 정렬을 보장한다.
+    뒤 자체 코드로 넘어오는 형태다. ``score`` 는 ``[0, 1]`` 범위로 정규화되며
+    상위가 ``min_job_similarity`` 임계값 비교 기준이 된다 (정규화·정렬 책임은
+    ``JobSearchClient`` 구현체 contract 4·5 참조).
 
     Attributes:
         job_id: 직무 식별자.
@@ -62,6 +63,14 @@ class JobSearchClient(Protocol):
            (응답 생성 < 30 초) 를 보장한다.
         3. ``RagSearchError`` 메시지에 자격증명·API 키·요청 본문 전체를
            포함하지 않는다 (status code / request_id 정도만).
+        4. ``score`` 는 ``[0, 1]`` 범위로 정규화하여 반환한다. 외부 검색
+           시스템이 다른 범위의 점수 (예: dot product, 비정규화 BM25) 를
+           내려주면 구현체에서 변환한다. 직무 매칭 노드가 ``score`` 를
+           ``min_job_similarity`` (0.3) 임계값과 직접 비교하므로 단조성·
+           범위 보장은 boundary 내부 책임이다.
+        5. 반환 리스트는 ``score`` 내림차순으로 정렬한다. 직무 매칭 노드는
+           상위 1 개를 임계값과 비교하므로 정렬 미보장 시 fallback 분기
+           결정이 부정확해진다.
     """
 
     def rag_search_jobs(self, query: str, top_k: int = 3) -> list[RagSearchResult]:
