@@ -6,13 +6,12 @@
 
 from tracktory.graph.nodes.input_normalize import NormalizedProfile, normalize_input
 from tracktory.graph.nodes.llm_explanation import LLMClient, LLMExplanationNode
-from tracktory.graph.nodes.profile_embed import EmbeddingClient, ProfileEmbedNode
+from tracktory.graph.nodes.profile_embed import ProfileEmbedNode
 from tracktory.graph.nodes.roadmap import CourseRepository, RoadmapNode
 from tracktory.graph.nodes.track_synergy import TrackRepository, TrackSynergyNode
 
 __all__ = [
     "CourseRepository",
-    "EmbeddingClient",
     "LLMClient",
     "LLMExplanationNode",
     "NormalizedProfile",

@@ -28,7 +28,7 @@ class GraphState(TypedDict, total=False):
         정규화 출력:
             normalized_profile (dict 형태로 NormalizedProfile.model_dump 결과)
         임베딩 출력:
-            profile_text, profile_vector
+            profile_text
         직무 추천 출력:
             recommended_jobs (직무 매칭 노드의 결과 dict 리스트)
         트랙 시너지 출력:
@@ -51,7 +51,6 @@ class GraphState(TypedDict, total=False):
 
     # --- 임베딩 출력 ---
     profile_text: str | None
-    profile_vector: list[float] | None
 
     # --- 직무 추천 출력 ---
     recommended_jobs: list[dict[str, Any]] | None

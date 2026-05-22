@@ -8,23 +8,29 @@
 #
 # 스키마:
 #   <카테고리명>:
-#     - { job_id: <직무 식별자>, rank: <1~5 순위> }
+#     - { job_id: <직무 식별자>, job_name: <사용자 표시명>, rank: <1~5 순위> }
 #     - ...
 #
 # 카테고리명은 사용자 관심사 카테고리 (14 가지 — IT/인터넷, 경영/사무 등) 와
 # 1:1 매칭. 실제 70 항목 (14 × 5) 매핑은 후속 데이터 작업 PR 에서 채운다.
 # 본 파일은 스키마 명세 + 1~2 카테고리 예시만 보유한다.
+#
+# 직무 검색 boundary 위임 구조에서는 fallback 시 직무 KB 를 거치지 않고
+# 본 yaml 만 사용해 후보를 구성한다. 따라서 ``job_name`` 도 매핑 entry 에
+# 인라인으로 보존한다. ``tech_stacks`` / ``competency_tags`` 는 fallback
+# 후보에서는 빈 리스트로 두고, 다운스트림 노드는 ``fallback_used=True`` 인
+# 후보를 보수적으로 처리한다.
 
 "IT/인터넷":
-  - { job_id: backend_developer, rank: 1 }
-  - { job_id: frontend_developer, rank: 2 }
-  - { job_id: data_engineer, rank: 3 }
-  - { job_id: devops_engineer, rank: 4 }
-  - { job_id: ml_engineer, rank: 5 }
+  - { job_id: backend_developer, job_name: 백엔드 개발자, rank: 1 }
+  - { job_id: frontend_developer, job_name: 프론트엔드 개발자, rank: 2 }
+  - { job_id: data_engineer, job_name: 데이터 엔지니어, rank: 3 }
+  - { job_id: devops_engineer, job_name: 데브옵스 엔지니어, rank: 4 }
+  - { job_id: ml_engineer, job_name: 머신러닝 엔지니어, rank: 5 }
 
 "연구개발/설계":
-  - { job_id: ml_engineer, rank: 1 }
-  - { job_id: data_scientist, rank: 2 }
-  - { job_id: research_scientist, rank: 3 }
-  - { job_id: data_engineer, rank: 4 }
-  - { job_id: backend_developer, rank: 5 }
+  - { job_id: ml_engineer, job_name: 머신러닝 엔지니어, rank: 1 }
+  - { job_id: data_scientist, job_name: 데이터 사이언티스트, rank: 2 }
+  - { job_id: research_scientist, job_name: 연구원, rank: 3 }
+  - { job_id: data_engineer, job_name: 데이터 엔지니어, rank: 4 }
+  - { job_id: backend_developer, job_name: 백엔드 개발자, rank: 5 }
