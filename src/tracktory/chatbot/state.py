@@ -20,10 +20,16 @@ class ChatbotState(TypedDict):
     # --- 누적 (add_messages reducer) ---
     messages: Annotated[list[BaseMessage], add_messages]
 
-    # --- 갱신 ---
+    # --- 갱신 (classify_intent 출력) ---
     intent: ChatbotIntent | None
     intent_reason: str | None  # 디버깅·평가용
     search_keywords: list[str]
+    is_catalog_query: bool  # 전체 카탈로그 요청 (트랙 종류 / 직무 종류 등)
+    target_grade: int | None  # 질문에 학년 명시 시 1~4, 없으면 None
+
+    # --- 갱신 (retrieve_rag 출력) ---
     retrieved_docs: list[RetrievedChunk]
+
+    # --- 갱신 (generate_response 출력) ---
     response: str | None  # API 응답 본문
     response_choices: list[str]  # 후속 질문 후보 1-3 개
