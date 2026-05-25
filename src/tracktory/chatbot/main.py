@@ -9,6 +9,9 @@
 
 로그 파일:
     logs/chatbot_YYYYMMDD.log (UTF-8)
+
+영속 저장:
+    data/checkpoints/chatbot.sqlite — 같은 thread_id 면 프로세스 재시작 후에도 히스토리 복원
 """
 
 from __future__ import annotations
@@ -17,16 +20,20 @@ import argparse
 import logging
 import textwrap
 import time
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 from langchain_core.messages import HumanMessage
 from langchain_core.runnables import RunnableConfig
 from langchain_openai import ChatOpenAI
+from langgraph.checkpoint.base import BaseCheckpointSaver
+from langgraph.checkpoint.sqlite import SqliteSaver
 from langgraph.graph.state import CompiledStateGraph
 
 from tracktory.chatbot.graph import build_chatbot_graph
 from tracktory.chatbot.logging_setup import setup_logging
 from tracktory.chatbot.rag.ragflow import RagFlowChatbotRetriever
+from tracktory.common.config import config as common_config
 from tracktory.prompts.chatbot.general_advice import GENERAL_ADVICE_PROMPT
 from tracktory.prompts.chatbot.intent import (
     INTENT_CLASSIFIER_PROMPT,
@@ -36,6 +43,8 @@ from tracktory.prompts.chatbot.rag_response import (
     RAG_RESPONSE_PROMPT,
     ChatbotResponse,
 )
+
+CHECKPOINT_DB_PATH = common_config.PROJECT_ROOT / "data" / "checkpoints" / "chatbot.sqlite"
 
 _EXIT_COMMANDS = {"exit", "quit"}
 
@@ -49,10 +58,11 @@ _FIELD_FORMATTERS: dict[str, Callable[[Any], str]] = {
 }
 
 
-def _build_graph() -> CompiledStateGraph:
-    """4 종 의존성 주입해서 그래프 컴파일"""
+def _build_graph(checkpointer: BaseCheckpointSaver) -> CompiledStateGraph:
+    """4 종 의존성 + checkpointer 주입해서 그래프 컴파일"""
     llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
     return build_chatbot_graph(
+        checkpointer=checkpointer,
         classifier=INTENT_CLASSIFIER_PROMPT | llm.with_structured_output(IntentClassification),
         retriever=RagFlowChatbotRetriever(),
         rag_response_chain=RAG_RESPONSE_PROMPT | llm.with_structured_output(ChatbotResponse),
@@ -159,28 +169,36 @@ def _parse_args() -> argparse.Namespace:
 def main() -> None:
     args = _parse_args()
     logger = setup_logging(verbose=args.verbose)
-    logger.info("챗봇 시작 (thread_id=%s, verbose=%s)", args.thread_id, args.verbose)
+    logger.info(
+        "챗봇 시작 (thread_id=%s, verbose=%s, db=%s)",
+        args.thread_id,
+        args.verbose,
+        CHECKPOINT_DB_PATH,
+    )
 
-    graph = _build_graph()
-    config: RunnableConfig = {"configurable": {"thread_id": args.thread_id}}
+    CHECKPOINT_DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
-    print("\n챗봇 시작. 'exit' 또는 Ctrl+C 로 종료\n")
+    with SqliteSaver.from_conn_string(str(CHECKPOINT_DB_PATH)) as saver:
+        graph = _build_graph(checkpointer=saver)
+        config: RunnableConfig = {"configurable": {"thread_id": args.thread_id}}
 
-    while True:
-        try:
-            query = input("> ").strip()
-        except (EOFError, KeyboardInterrupt):
-            print("\n종료")
-            break
+        print("\n챗봇 시작. 'exit' 또는 Ctrl+C 로 종료\n")
 
-        if not query:
-            continue
-        if query.lower() in _EXIT_COMMANDS:
-            print("\n종료")
-            break
+        while True:
+            try:
+                query = input("> ").strip()
+            except (EOFError, KeyboardInterrupt):
+                print("\n종료")
+                break
 
-        if result := _run_turn(graph, query, config, logger):
-            _print_response(*result)
+            if not query:
+                continue
+            if query.lower() in _EXIT_COMMANDS:
+                print("\n종료")
+                break
+
+            if result := _run_turn(graph, query, config, logger):
+                _print_response(*result)
 
 
 if __name__ == "__main__":
