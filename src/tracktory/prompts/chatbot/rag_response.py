@@ -12,7 +12,7 @@ from tracktory.chatbot.rag.ragflow import RetrievedChunk
 
 
 class ChatbotResponse(BaseModel):
-    """ 응답 본문 + 후속 선택지 """
+    """응답 본문 + 후속 선택지"""
 
     text: str = Field(..., min_length=1, description="응답 본문. 출처는 [근거: #N] 형식")
     choices: list[str] = Field(
@@ -79,16 +79,31 @@ def format_user_context(user_context: dict[str, Any] | None) -> str:
     enrollment_parts: list[str] = []
     if entry_year := user_context.get("entry_year"):
         enrollment_parts.append(f"{entry_year}년 입학")
-    if grade := user_context.get("current_year") or user_context.get("year") or user_context.get("grade"):
+    if grade := user_context.get("grade"):
         enrollment_parts.append(f"{grade}학년")
+
+    # 이수 과목 — list[dict] 를 "과목명(학년-학기)" 형태로 평탄화
+    completed_subjects_raw = user_context.get("completed_subjects") or []
+    completed_labels = [
+        f"{s['name']}({s['year']}-{s['semester']})"
+        for s in completed_subjects_raw
+        if isinstance(s, dict) and s.get("name")
+    ]
 
     fields: list[tuple[str, Any]] = [
         ("학적", " · ".join(enrollment_parts) if enrollment_parts else None),
         ("단과대", user_context.get("college")),
-        ("희망 트랙", user_context.get("preferred_tracks") or user_context.get("tracks")),
+        ("학부", user_context.get("department")),
+        (
+            "소속 트랙",
+            user_context.get("user_track")
+            or user_context.get("preferred_tracks")
+            or user_context.get("tracks"),
+        ),
         ("관심 분야", user_context.get("interests")),
         ("공부 분야", user_context.get("study_field")),
         ("자신 있는 언어", user_context.get("languages")),
+        ("이수 과목", completed_labels),
     ]
 
     # 취업 선호 — nested dict (job_preference) 또는 평면 키 모두 대응

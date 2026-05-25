@@ -17,10 +17,12 @@
 from __future__ import annotations
 
 import argparse
+import json
 import logging
 import textwrap
 import time
 from collections.abc import Callable
+from pathlib import Path
 from typing import Any
 
 from langchain_core.messages import HumanMessage
@@ -90,13 +92,14 @@ def _run_turn(
     query: str,
     config: RunnableConfig,
     logger: logging.Logger,
+    user_context: dict[str, Any],
 ) -> tuple[str, list[str], float] | None:
     """한 턴 실행 — (response, choices, elapsed) 반환. 에러 시 None"""
     logger.info("질문: %s", query)
     start = time.perf_counter()
 
     input_state = {
-        "user_context": {},  # TODO: 백엔드 연동 시 실제 온보딩 정보
+        "user_context": user_context,
         "messages": [HumanMessage(content=query)],
     }
 
@@ -163,18 +166,48 @@ def _parse_args() -> argparse.Namespace:
         default="console-session-1",
         help="대화 세션 ID (같은 ID 면 히스토리 유지)",
     )
+    parser.add_argument(
+        "--user-context-file",
+        type=Path,
+        default=None,
+        help="user_context JSON fixture 경로 (예: src/tracktory/chatbot/fixtures/user_context_sample_year2.json). "
+        "미지정 시 빈 dict — 개인화 없는 일반 응답",
+    )
     return parser.parse_args()
+
+
+def _load_user_context(path: Path | None, logger: logging.Logger) -> dict[str, Any]:
+    """fixture 파일 로드 — 미지정/없음/파싱실패 시 빈 dict 로 안전 폴백"""
+    if path is None:
+        return {}
+    if not path.exists():
+        logger.warning("user_context_file 없음 — 빈 dict 로 진행: %s", path)
+        return {}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        logger.warning("user_context_file 파싱 실패 — 빈 dict 로 진행: %s (%s)", path, exc)
+        return {}
+    if not isinstance(data, dict):
+        logger.warning("user_context_file 이 dict 아님 — 빈 dict 로 진행: %s", path)
+        return {}
+    return data
 
 
 def main() -> None:
     args = _parse_args()
     logger = setup_logging(verbose=args.verbose)
     logger.info(
-        "챗봇 시작 (thread_id=%s, verbose=%s, db=%s)",
+        "챗봇 시작 (thread_id=%s, verbose=%s, db=%s, user_context_file=%s)",
         args.thread_id,
         args.verbose,
         CHECKPOINT_DB_PATH,
+        args.user_context_file,
     )
+
+    user_context = _load_user_context(args.user_context_file, logger)
+    if user_context:
+        logger.info("user_context 로드 완료 — 키 %d개", len(user_context))
 
     CHECKPOINT_DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
@@ -197,7 +230,7 @@ def main() -> None:
                 print("\n종료")
                 break
 
-            if result := _run_turn(graph, query, config, logger):
+            if result := _run_turn(graph, query, config, logger, user_context):
                 _print_response(*result)
 
 
