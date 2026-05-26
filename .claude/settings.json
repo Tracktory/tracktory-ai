@@ -1,4 +1,9 @@
 {
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "includeCoAuthoredBy": false,
   "permissions": {
     "allow": [
       "Read",
@@ -25,14 +30,11 @@
       "Bash(mypy *)",
       "Bash(pre-commit *)",
       "Bash(pip install *)",
-      "Bash(pip show *)"
+      "Bash(pip show *)",
+      "Bash(git --no-pager diff b1f8c8f..origin/develop -- src/tracktory/graph/nodes/__init__.py tests/unit/graph/conftest.py)",
+      "Bash(git fetch *)"
     ]
   },
-  "attribution": {
-    "commit": "",
-    "pr": ""
-  },
-  "includeCoAuthoredBy": false,
   "hooks": {
     "SessionStart": [
       {

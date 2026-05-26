@@ -1,6 +1,6 @@
 """강의계획서 전처리: 과목별 RAG 문서 생성
 
-한성대_강의계획서.csv → data/processed/rag/syllabi/강의계획서_{Course_Code}.txt
+한성대_강의계획서.csv → data/processed/rag/syllabi/강의계획서_{과목명}_{Course_Code}.txt
 
 유지: 과목명, 교수 정보, 역량성취기준, 교과목개요, 수업목표, 선수과목, 주교재, 주차별 주제
 제거: 인재상·교수학습방법·수업유형·성적평가 (보일러플레이트)
@@ -10,6 +10,8 @@ import os
 import re
 
 import pandas as pd
+
+from tracktory.rag.preprocessing.normalize import normalize_text, safe_filename_part
 
 _SECTION_HEADERS: frozenset[str] = frozenset(
     {
@@ -139,11 +141,6 @@ def _parse_syllabus(text: str) -> dict[str, str | list[str]]:
     return result
 
 
-def _normalize_text(text: str) -> str:
-    """U+318D(ㆍ)이 포함되면 GraphRAG 엔티티 추출에서 NaN 임베딩이 발생할 수 있어 치환."""
-    return text.replace("ㆍ", "·")
-
-
 def _build_document(course_code: str, parsed: dict[str, str | list[str]]) -> str:
     course_name = parsed.get("과목명", course_code)
     professor = parsed.get("교수", "")
@@ -192,10 +189,16 @@ def _build_document(course_code: str, parsed: dict[str, str | list[str]]) -> str
 
     weekly = parsed.get("주차별수업")
     if weekly and isinstance(weekly, list):
-        lines += ["", "■ 주차별 수업 주제"]
-        lines.extend(weekly)
+        first_half = weekly[:8]
+        second_half = weekly[8:]
+        if first_half:
+            lines += ["", "■ 주차별 수업 주제 (1-8주)"]
+            lines.extend(first_half)
+        if second_half:
+            lines += ["", "■ 주차별 수업 주제 (9-16주)"]
+            lines.extend(second_half)
 
-    return _normalize_text("\n".join(lines).strip())
+    return "\n".join(lines).strip()
 
 
 def build_syllabi(
@@ -213,7 +216,7 @@ def build_syllabi(
         course_code = str(row["Course_Code"])
         text = str(row["Syllabus_Text"])
 
-        parsed = _parse_syllabus(text)
+        parsed = _parse_syllabus(normalize_text(text))
         course_name = parsed.get("과목명", "")
 
         if not course_name:
@@ -221,7 +224,8 @@ def build_syllabi(
             continue
 
         doc = _build_document(course_code, parsed)
-        out_path = os.path.join(output_dir, f"강의계획서_{course_code}.txt")
+        safe_name = safe_filename_part(str(course_name))
+        out_path = os.path.join(output_dir, f"강의계획서_{safe_name}_{course_code}.txt")
         with open(out_path, "w", encoding="utf-8") as f:
             f.write(doc)
 

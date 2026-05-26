@@ -4,6 +4,8 @@ import json
 import os
 from typing import Any
 
+from tracktory.rag.preprocessing.normalize import safe_filename_part
+
 _SECTION_ORDER: list[tuple[str, str]] = [
     ("소개", "소개"),
     ("교육목표", "교육목표"),
@@ -41,11 +43,6 @@ def load_college_map(json_path: str) -> dict[str, dict[str, str]]:
     return mapping
 
 
-def _normalize_name(name: str) -> str:
-    """U+318D(ㆍ)이 포함되면 GraphRAG 엔티티 추출에서 NaN 임베딩이 발생할 수 있어 치환."""
-    return name.replace("ㆍ", "·")
-
-
 def build_document(
     track_name: str,
     sections: dict[str, str],
@@ -54,8 +51,6 @@ def build_document(
     """RAG 청크가 잘려 나와도 어느 트랙인지 알 수 있어야 해 헤더 필요. 첫 줄에 트랙·대학·학부 컨텍스트 헤더 포함하여 문서 생성."""
     college = college_info.get("college", "한성대학교")
     department = college_info.get("department", "")
-    track_name = _normalize_name(track_name)
-
     if department:
         header = f"[트랙: {track_name} | 대학: {college} | 학부: {department}]"
     else:
@@ -85,8 +80,10 @@ def build_all(
         college_info = college_map.get(track_name, {"college": "한성대학교", "department": ""})
         doc_text = build_document(track_name, sections, college_info)
 
-        safe_name = track_name.replace("/", "_").replace("ㆍ", "_").replace("·", "_")
-        file_path = os.path.join(output_dir, f"트랙소개_{safe_name}.txt")
+        safe_name = safe_filename_part(track_name)
+        dept = college_info.get("department", "")
+        suffix = f"_{safe_filename_part(dept, max_len=30)}" if dept else ""
+        file_path = os.path.join(output_dir, f"트랙소개_{safe_name}{suffix}.txt")
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(doc_text)
 

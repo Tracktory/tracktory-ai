@@ -6,6 +6,7 @@ data/raw/hansung/ 아래 CSV들을 읽어 data/processed/rag/ 에 RAGFlow 적재
     uv run python -m tracktory.rag.preprocessing.pipeline
 """
 
+import glob
 import json
 import logging
 import os
@@ -25,6 +26,7 @@ from tracktory.rag.preprocessing.find_syllabus_duplicates import (
     write_outputs as write_duplicate_outputs,
 )
 from tracktory.rag.preprocessing.jobs import build_jobs_from_csv
+from tracktory.rag.preprocessing.normalize import safe_filename_part
 from tracktory.rag.preprocessing.syllabus import build_syllabi
 from tracktory.rag.preprocessing.tracks.builder import build_all, load_college_map
 from tracktory.rag.preprocessing.tracks.cleaner import clean
@@ -88,10 +90,11 @@ def process_tracks(
         sections_by_track[track_name] = parse(clean_lines)
 
     for name, _ in skipped:
-        safe_name = name.replace("/", "_").replace("ㆍ", "_").replace("·", "_")
-        old_file = os.path.join(output_dir, f"트랙소개_{safe_name}.txt")
-        if os.path.exists(old_file):
-            os.remove(old_file)
+        # 파일명이 트랙소개_{트랙명}_{학부}.txt 로 바뀌어, 학부 suffix 유무 모두 정리
+        safe_name = safe_filename_part(name)
+        base = glob.escape(os.path.join(output_dir, f"트랙소개_{safe_name}"))
+        for stale in glob.glob(f"{base}.txt") + glob.glob(f"{base}_*.txt"):
+            os.remove(stale)
 
     results = build_all(sections_by_track, college_map, output_dir)
     return results, skipped

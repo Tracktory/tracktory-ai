@@ -1,12 +1,13 @@
 """강의정보 전처리: 트랙별 교과목 목록 RAG 문서 생성
 
-한성대_강의정보.csv → data/processed/rag/courses/교육과정_{트랙명}.txt
+한성대_강의정보.csv → data/processed/rag/courses/교육과정_{트랙명}_{학부}.txt
 """
 
 import os
 
 import pandas as pd
 
+from tracktory.rag.preprocessing.normalize import normalize_text, safe_filename_part
 from tracktory.rag.preprocessing.tracks.builder import load_college_map
 
 _CATEGORY_LABEL: dict[str, str] = {
@@ -25,6 +26,8 @@ def build_courses(track_csv: str, college_json: str, output_dir: str) -> list[di
     os.makedirs(output_dir, exist_ok=True)
 
     df = pd.read_csv(track_csv, encoding="utf-8")
+    for col in df.select_dtypes(include="object").columns:
+        df[col] = df[col].map(lambda v: normalize_text(v) if isinstance(v, str) else v)
     college_map = load_college_map(college_json)
 
     results: list[dict[str, str | int]] = []
@@ -37,14 +40,14 @@ def build_courses(track_csv: str, college_json: str, output_dir: str) -> list[di
         if info["department"]:
             header_parts.append(f"학부: {info['department']}")
 
-        lines: list[str] = [f"[{' | '.join(header_parts)}]", "", "■ 교육과정 (교과목 목록)", ""]
+        lines: list[str] = [f"[{' | '.join(header_parts)}]"]
 
         for year in sorted(group["학년"].unique()):
             for sem in sorted(group["학기"].unique()):
                 subset = group[(group["학년"] == year) & (group["학기"] == sem)]
                 if subset.empty:
                     continue
-                lines.append(f"{year}학년 {sem}학기")
+                lines.append(f"\n■ {year}학년 {sem}학기")
                 for _, row in subset.iterrows():
                     label = _CATEGORY_LABEL.get(str(row["교과구분"]), str(row["교과구분"]))
                     lines.append(
@@ -53,8 +56,10 @@ def build_courses(track_csv: str, college_json: str, output_dir: str) -> list[di
                 lines.append("")
 
         content = "\n".join(lines).strip()
-        safe_name = str(track_name).replace("/", "_").replace("ㆍ", "_").replace("·", "_")
-        out_path = os.path.join(output_dir, f"교육과정_{safe_name}.txt")
+        safe_name = safe_filename_part(str(track_name))
+        dept = info["department"]
+        suffix = f"_{safe_filename_part(dept, max_len=30)}" if dept else ""
+        out_path = os.path.join(output_dir, f"교육과정_{safe_name}{suffix}.txt")
         with open(out_path, "w", encoding="utf-8") as f:
             f.write(content)
 

@@ -47,7 +47,8 @@ def _parse_syllabus(path: Path, filename: str, text: str) -> dict[str, Any]:
     if path.parent.name in {"1학기", "2학기"}:
         metadata["semester"] = path.parent.name
 
-    code = filename.removeprefix("강의계획서_").removesuffix(".txt")
+    # 파일명: 강의계획서_{과목명}_{코드}.txt — 코드는 항상 마지막 토큰
+    code = filename.removeprefix("강의계획서_").removesuffix(".txt").rsplit("_", 1)[-1]
     if code:
         metadata["course_code"] = code
 
@@ -84,11 +85,11 @@ def _parse_syllabus(path: Path, filename: str, text: str) -> dict[str, Any]:
 
 def _parse_job(filename: str, text: str) -> dict[str, Any]:
     metadata: dict[str, Any] = {"doc_type": "job_posting"}
-    metadata["job_id"] = filename.removeprefix("채용공고_wanted_").removesuffix(".txt")
+    # 파일명: 채용공고_{직무명}_{source_id}.txt — id는 항상 마지막 토큰
+    metadata["job_id"] = filename.removeprefix("채용공고_").removesuffix(".txt").rsplit("_", 1)[-1]
 
     fields = {
         "title": r"^직무:\s*(.+)$",
-        "company": r"^회사:\s*(.+)$",
         "category": r"^카테고리:\s*(.+)$",
         "industry": r"^업종:\s*(.+)$",
         "experience": r"^경력:\s*(.+)$",
