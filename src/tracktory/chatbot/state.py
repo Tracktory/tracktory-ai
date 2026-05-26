@@ -1,7 +1,7 @@
 """챗봇 LangGraph state schema.
 
 히스토리는 checkpointer 가 thread_id 단위로 자체 관리
-백엔드는 'conversation_id' 만 유지하고 매 요청마다 'user_context' 만 주입
+백엔드는 thread_id 만 유지하고 매 요청마다 user_context 만 주입
 """
 
 from typing import Annotated, TypedDict

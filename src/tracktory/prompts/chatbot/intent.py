@@ -8,8 +8,7 @@
     - 두 카테고리에 걸치면 핵심 하나만 — multi-label 은 후속 작업.
     - 의도와 키워드를 한 LLM 호출에 묶음 — 같은 query understanding 단위 +
       호출 비용 절감. 분류 정확도가 떨어지면 분리 검토.
-    - 직전 대화 history 를 같이 전달해 지시어("그것", "그 직무" 등) 와 elliptical
-      질문 ("그럼?") 의 referent 를 직전 turn 에서 끌어옴.
+    - 직전 history 동봉 — 지시어·생략된 표현의 대상을 직전 turn 에서 해석.
 """
 
 from langchain_core.prompts import ChatPromptTemplate
@@ -39,14 +38,13 @@ class IntentClassification(BaseModel):
     )
     is_catalog_query: bool = Field(
         default=False,
-        description="'트랙 종류 알려줘' / '어떤 트랙 있어?' / '직무 카탈로그' 같이 "
-        "특정 대상이 아닌 전체 목록 요청이면 True. retrieve_rag 가 메타 필터로 "
-        "doc_type 전체를 가져오게 된다. 특정 대상 질문이면 False.",
+        description="특정 대상 없는 전체 목록 요청이면 True (예: '트랙 종류 알려줘'). "
+        "판단 규칙은 시스템 프롬프트의 'is_catalog_query 판단 규칙' 참조.",
     )
     target_grade: int | None = Field(
         default=None,
-        description="'1학년 때 뭐 들어야' / '3학년 추천 과목' 같이 학년이 명시되면 1~4, "
-        "명시 안 됐으면 None. 사용자 프로필의 grade 와는 별개 — 질문 자체에 등장한 학년만.",
+        description="질문에 학년이 직접 명시되면 1~4, 아니면 None. "
+        "판단 규칙은 시스템 프롬프트의 'target_grade 판단 규칙' 참조.",
     )
 
 
@@ -84,25 +82,14 @@ _SYSTEM = """당신은 한성대학교 학생의 챗봇 질문을 4-way 분류�
 
 # is_catalog_query 판단 규칙
 
-True 로 둘 때 — **특정 대상 없는 전체 목록 요청**:
-- "트랙 종류가 뭐가 있어?"
-- "어떤 트랙 고르면 좋을까?" (트랙 카탈로그 보고 골라야 함)
-- "직무 종류 알려줘"
-- "들을 수 있는 과목 다 알려줘"
-
-False 로 둘 때 — **특정 대상 또는 좁은 범위**:
-- "빅데이터 트랙이 뭐야?" (특정 트랙)
-- "백엔드 개발자 채용 동향" (특정 직무)
-- "1학년 때 뭐 들어야?" (학년은 좁은 범위, 카탈로그 아님)
+- True: 특정 대상 없는 전체 목록 요청 ("종류", "어떤 ~ 있어", "다 알려줘" 류).
+- False: 특정 대상이 있거나 좁은 범위 (특정 트랙·직무·과목명, 학년 단독 등).
 
 # target_grade 판단 규칙
 
-질문에 학년이 직접 등장하면 그 숫자 (1~4), 아니면 None.
-- "1학년 때 뭐 준비해야?" → 1
-- "2학년 2학기에 어떤 과목?" → 2
-- "3학년 추천 트랙 있어?" → 3
-- "이번 학기 뭐 들어야?" → None (사용자 학년은 user_context 에서 retrieve_rag 가 따로 활용)
-- "다음 학기 뭐 들어야?" → None (역시 user_context.grade 로 retrieve_rag 가 처리)
+- 질문에 학년 숫자(1~4)가 **직접** 등장하면 그 숫자.
+- "이번 학기" / "다음 학기" / "내 학년" 같은 사용자 프로필 의존 표현은 None
+  (user_context.grade 는 retrieve_rag 가 따로 활용).
 
 # 키워드 추출 규칙
 
@@ -206,7 +193,7 @@ False 로 둘 때 — **특정 대상 또는 좁은 범위**:
 _HISTORY_BLOCK = """[직전 대화 (오래된 → 최근 순)]
 {history}
 
-위 history 는 현재 질문의 지시어·생략 주어를 해석할 때만 사용한다."""
+위 history 는 현재 질문의 지시어·생략된 표현을 해석할 때만 사용한다."""
 
 
 _USER = "사용자 질문: {message}"

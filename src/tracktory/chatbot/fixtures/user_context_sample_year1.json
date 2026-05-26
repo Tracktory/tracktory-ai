@@ -6,13 +6,12 @@
   "grade": 1,
   "college": "IT공과대학",
   "department": "컴퓨터공학부",
+  "tracks": [],
   "interests": ["프로그래밍", "AI"],
-  "study_field": ["백엔드"],
-  "languages": ["Python"],
-  "job_preference": {
-    "company_types": ["IT 대기업"],
-    "values": ["성장 가능성"]
-  },
+  "study_fields": ["백엔드"],
+  "tech_stacks": ["Python"],
+  "company_types": ["IT 대기업"],
+  "work_values": ["성장 가능성"],
   "completed_subjects": [
     { "name": "프로그래밍기초", "year": 1, "semester": 1 },
     { "name": "이산수학", "year": 1, "semester": 1 }

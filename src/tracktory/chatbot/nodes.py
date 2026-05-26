@@ -79,12 +79,12 @@ class RetrieveRagNode:
     분기 케이스 (우선순위 순):
         1. catalog: '트랙 종류' 같은 전체 카탈로그 요청
             → doc_type=track_intro 전체 (사용자 college 1차 필터 가능)
-        2. user_track_courses: 사용자 트랙 기반 과목 추천 (키워드 없음 + user_track 있음)
-            → doc_type=curriculum AND track_name in user_tracks
+        2. user_track_courses: 사용자 트랙 기반 과목 추천 (키워드 없음 + tracks 있음)
+            → doc_type=curriculum AND track_name in tracks
         3. grade_syllabus: 학년 명시 과목 추천 (target_grade 있음)
             → doc_type=syllabus AND target_grade contains "N학년"
-        4. user_track_jobs: 사용자 트랙 기반 직무 (키워드 없음 + user_track 있음)
-            → doc_type=track_intro AND track_name in user_tracks (졸업 후 진로 섹션)
+        4. user_track_jobs: 사용자 트랙 기반 직무 (키워드 없음 + tracks 있음)
+            → doc_type=track_intro AND track_name in tracks (졸업 후 진로 섹션)
         5. keyword_search: 기존 동작 (키워드 있음)
             → 일반 vector + keyword 검색
 
@@ -100,7 +100,7 @@ class RetrieveRagNode:
         target_grade = state.get("target_grade")
         keywords = state.get("search_keywords") or []
         user_ctx = state.get("user_context") or {}
-        user_tracks = user_ctx.get("user_track") or []
+        user_tracks = user_ctx.get("tracks") or []
         user_college = user_ctx.get("college")
 
         # general_advice / None — 자료 검색 우회 (정상 경로상 도달 X 안전망)
