@@ -15,6 +15,7 @@ LLM / Repository 호출은 발생하지 않는다.
 
 from __future__ import annotations
 
+from collections.abc import Iterator
 from typing import Any
 from unittest.mock import MagicMock
 
@@ -46,7 +47,7 @@ _EMBED_DIM = 1536
 
 
 @pytest.fixture(autouse=True)
-def _clear_pipeline_cache() -> Any:
+def _clear_pipeline_cache() -> Iterator[None]:
     """모듈 전역 lru_cache 가 테스트 간 누출되지 않도록 자동 격리.
 
     ``MagicMock(spec=Protocol)`` 의 hash 는 id 기반이라 매번 새로 만든
@@ -64,7 +65,7 @@ def _clear_pipeline_cache() -> Any:
 #
 # tests/integration/test_track_synergy_flow.py 의 헬퍼 패턴을 그대로 가져왔다.
 # tests/integration/ 에 ``__init__.py`` 가 없어 직접 import 가 보장되지 않으므로
-# 의도적으로 본 파일 안에 복제했다. 향후 shared fixture 리팩토링은 별도 chore.
+# 의도적으로 본 파일 안에 복제했다.
 # ---------------------------------------------------------------------------
 
 
@@ -304,8 +305,28 @@ def test_get_recommendation_graph_compiles_only_once(monkeypatch: pytest.MonkeyP
     clients = _build_clients()
     config = PipelineConfig()
 
-    g1 = get_recommendation_graph(clients, config)
-    g2 = get_recommendation_graph(clients, config)
+    graph_first = get_recommendation_graph(clients, config)
+    graph_second = get_recommendation_graph(clients, config)
 
-    assert g1 is g2  # 동일 인스턴스 재사용
+    assert graph_first is graph_second  # 동일 인스턴스 재사용
+    assert wrapped.call_count == 1
+
+
+def test_get_recommendation_graph_normalizes_none_config(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """``config=None`` 과 ``config=PipelineConfig()`` 는 동일 캐시 키로 정규화된다.
+
+    wrapper 가 ``None`` 을 기본 인스턴스로 치환한 뒤 내부 ``lru_cache`` 헬퍼에
+    전달하므로, 두 호출 형태가 의미상 동일함을 캐시 hit 으로 확인한다.
+    """
+    wrapped = MagicMock(wraps=graph_pipeline.build_recommendation_graph)
+    monkeypatch.setattr(graph_pipeline, "build_recommendation_graph", wrapped)
+
+    clients = _build_clients()
+
+    graph_from_none = get_recommendation_graph(clients)
+    graph_from_default = get_recommendation_graph(clients, PipelineConfig())
+
+    assert graph_from_none is graph_from_default  # 캐시 키 정규화 → 동일 인스턴스
     assert wrapped.call_count == 1
