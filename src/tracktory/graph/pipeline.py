@@ -28,8 +28,7 @@
     ``get_recommendation_graph`` 헬퍼가 ``functools.lru_cache(maxsize=1)``
     로 동일 의존성에 대해 ``StateGraph.compile()`` 을 한 번만 호출한다.
     의존성 dataclass 가 ``frozen=True`` 이므로 hashable 이며 ``lru_cache``
-    의 키로 그대로 사용된다. FastAPI ``lifespan`` 결합은 본 모듈의 책임
-    이 아니라 후속 작업이 수행한다.
+    의 키로 그대로 사용된다. 운영 시 앱 수명주기 결합은 본 모듈의 책임 밖이다.
 """
 
 from __future__ import annotations
@@ -119,25 +118,25 @@ def build_recommendation_graph(
         ``StateGraph(GraphState).compile()`` 결과. ``invoke({"user_id": ..., "raw_input": {...}})``
         로 호출 가능하다.
     """
-    cfg = config or PipelineConfig()
+    resolved_config = config or PipelineConfig()
 
-    profile_embed_node = ProfileEmbedNode(template_path=cfg.profile_template_path)
+    profile_embed_node = ProfileEmbedNode(template_path=resolved_config.profile_template_path)
     job_matching_node = JobMatchingNode(
         job_search_client=clients.job_search_client,
-        config_path=cfg.job_matching_config_path,
-        category_mapping_path=cfg.job_matching_category_mapping_path,
+        config_path=resolved_config.job_matching_config_path,
+        category_mapping_path=resolved_config.job_matching_category_mapping_path,
     )
     track_synergy_node = TrackSynergyNode(
         track_repo=clients.track_repository,
-        config_path=cfg.synergy_config_path,
+        config_path=resolved_config.synergy_config_path,
     )
     roadmap_node = RoadmapNode(
         course_repo=clients.course_repository,
-        config_path=cfg.roadmap_config_path,
+        config_path=resolved_config.roadmap_config_path,
     )
     llm_explanation_node = LLMExplanationNode(llm_client=clients.llm_client)
 
-    graph: StateGraph = StateGraph(GraphState)
+    graph = StateGraph(GraphState)
     graph.add_node("input_normalize", normalize_input)
     graph.add_node("profile_embed", profile_embed_node)
     graph.add_node("job_matching", job_matching_node)
@@ -160,20 +159,45 @@ def build_recommendation_graph(
     return graph.compile()
 
 
-@lru_cache(maxsize=1)
 def get_recommendation_graph(
     clients: PipelineClients,
     config: PipelineConfig | None = None,
 ) -> CompiledStateGraph:
     """동일 의존성에 대해 컴파일된 그래프를 1회만 생성하여 재사용한다.
 
-    ``lru_cache`` 의 키는 인자 ``(clients, config)`` 의 hash 다.
-    ``PipelineClients`` / ``PipelineConfig`` 가 ``frozen=True`` dataclass 라
-    hashable 이며, 동일 인자 N 회 호출 시 ``build_recommendation_graph`` 는
-    단 1 회만 호출된다.
+    Contract:
+        - ``config=None`` 과 ``config=PipelineConfig()`` 는 동일한 캐시 키로
+          정규화된다. 본 wrapper 가 ``None`` 을 기본 인스턴스로 치환한 뒤
+          내부 ``lru_cache`` 헬퍼에 전달하므로 두 호출은 동일 컴파일 결과를
+          재사용한다.
+        - 운영에서는 동일 ``PipelineClients`` 인스턴스를 재주입하는 형태로
+          호출되어야 캐시 hit 한다. ``frozen=True`` dataclass 는 필드 기반
+          ``__hash__`` 를 자동 생성하지만, ``MagicMock(spec=...)`` 는
+          id 기반 hash 이므로 테스트에서 인스턴스 재사용이 필요하다.
 
-    테스트는 ``get_recommendation_graph.cache_clear()`` 로 캐시를 비울 수
-    있다. 운영에서는 FastAPI ``lifespan`` 안에서 본 함수를 1회 호출하여
-    앱 수명 동안 그래프 인스턴스를 재사용한다 (후속 작업).
+    캐시 비우기: ``get_recommendation_graph.cache_clear()``.
+    """
+    return _cached_recommendation_graph(clients, config or PipelineConfig())
+
+
+@lru_cache(maxsize=1)
+def _cached_recommendation_graph(
+    clients: PipelineClients,
+    config: PipelineConfig,
+) -> CompiledStateGraph:
+    """``build_recommendation_graph`` 를 단 1회만 호출하는 캐시 진입점.
+
+    Contract:
+        - 키는 ``(clients, config)`` 의 hash. ``config`` 는 ``None`` 이 아닌
+          정규화된 인스턴스만 받아 캐시 키 일관성을 보장한다.
+        - ``maxsize=1`` 은 운영에서 동일 의존성 단일 컴파일을 가정한다.
+          서로 다른 의존성 조합이 빈번히 들어오면 최후 호출만 캐시된다.
     """
     return build_recommendation_graph(clients, config)
+
+
+# 외부 호출자가 ``get_recommendation_graph.cache_clear()`` 패턴을 그대로 쓸 수
+# 있도록 내부 lru_cache 헬퍼의 ``cache_clear`` / ``cache_info`` 를 wrapper 에
+# 노출한다. ``functools.lru_cache`` 의 공개 API 와 동일한 인터페이스.
+get_recommendation_graph.cache_clear = _cached_recommendation_graph.cache_clear  # type: ignore[attr-defined]
+get_recommendation_graph.cache_info = _cached_recommendation_graph.cache_info  # type: ignore[attr-defined]
