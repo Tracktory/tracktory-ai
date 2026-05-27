@@ -12,11 +12,11 @@ from tracktory.relation.prerequisite.normalize_prereq import _normalize_prereq_v
 @pytest.mark.parametrize(
     "raw",
     [
-        "",                          # 빈 문자열
-        "  ",                        # 공백만
-        "없음",                       # null 변형 1
-        "해당없음",                    # null 변형 2
-        "없 음",                      # null 변형 3 (공백 무시 일치)
+        "",  # 빈 문자열
+        "  ",  # 공백만
+        "없음",  # null 변형 1
+        "해당없음",  # null 변형 2
+        "없 음",  # null 변형 3 (공백 무시 일치)
         "선수과목없음",
         "무관",
         "n/a",
@@ -31,9 +31,9 @@ def test_returns_null_for_empty_or_negation(raw: str) -> None:
     ("raw", "expected"),
     [
         ("자료구조", "자료구조"),
-        ("자료 구조", "자료 구조"),       # 공백은 유지 (정규화는 비교용일 뿐)
-        ("자료구조 (필수)", "자료구조"),   # 괄호 부연설명 제거
-        ("자료구조.", "자료구조"),         # 끝 마침표 제거
+        ("자료 구조", "자료 구조"),  # 공백은 유지 (정규화는 비교용일 뿐)
+        ("자료구조 (필수)", "자료구조"),  # 괄호 부연설명 제거
+        ("자료구조.", "자료구조"),  # 끝 마침표 제거
     ],
 )
 def test_returns_cleaned_value(raw: str, expected: str) -> None:

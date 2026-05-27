@@ -76,7 +76,7 @@ def _parse_course_name(text: str) -> str:
     """txt 텍스트에서 과목명을 추출한다."""
     for line in text.splitlines():
         if line.strip().startswith("과목명:"):
-            return line.strip()[len("과목명:"):].strip()
+            return line.strip()[len("과목명:") :].strip()
     return ""
 
 
@@ -84,7 +84,7 @@ def _parse_prereq_raw(text: str) -> str:
     """txt 텍스트에서 선수과목 원문을 추출한다. 없으면 'null' 반환."""
     for line in text.splitlines():
         if line.strip().startswith("선수과목:"):
-            return line.strip()[len("선수과목:"):].strip()
+            return line.strip()[len("선수과목:") :].strip()
     return "null"
 
 
@@ -220,7 +220,7 @@ def validate_prerequisites(graph: dict[str, list[str]]) -> bool:
                 warnings.append(f"존재하지 않는 선수과목 참조: {node} → {prereq}")
                 continue
             if color[prereq] == GRAY:
-                cycle = path[path.index(prereq):] + [prereq] if prereq in path else path + [prereq]
+                cycle = path[path.index(prereq) :] + [prereq] if prereq in path else path + [prereq]
                 errors.append(f"순환참조: {' → '.join(cycle)}")
             elif color[prereq] == WHITE:
                 dfs(prereq, path + [prereq])

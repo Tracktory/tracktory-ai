@@ -30,7 +30,7 @@ TECH_SPLIT_MAP: dict[str, list[str]] = {
     "Python / Bash": ["Python", "Bash"],
     "Go (Golang)": ["Go"],
     # ── 프레임워크 / 라이브러리 ─────────────────────────────────────────
-    "Flutter (Dart)": ["Flutter", "Dart"],         # Flutter=프레임워크, Dart=언어
+    "Flutter (Dart)": ["Flutter", "Dart"],  # Flutter=프레임워크, Dart=언어
     "Node.js / Express": ["Node.js", "Express"],
     "Zustand / React Query": ["Zustand", "React Query"],
     "Storybook / Vitest": ["Storybook", "Vitest"],
@@ -38,15 +38,15 @@ TECH_SPLIT_MAP: dict[str, list[str]] = {
     "LangChain / LlamaIndex": ["LangChain", "LlamaIndex"],
     "Hugging Face Transformers": ["Hugging Face"],
     "Jupyter Notebook": ["Jupyter"],
-    "GraphQL / REST API": ["GraphQL"],             # REST API는 아키텍처 개념 — 기술 스택 아님
+    "GraphQL / REST API": ["GraphQL"],  # REST API는 아키텍처 개념 — 기술 스택 아님
     # ── 게임 엔진 (엔진 + 사용 언어가 묶인 경우) ───────────────────────
     "Unity (C#)": ["Unity", "C#"],
     "Unreal Engine 5 (C++)": ["Unreal Engine", "C++"],
-    "HLSL / GLSL": ["HLSL", "GLSL"],               # 게임/그래픽 셰이더 언어
+    "HLSL / GLSL": ["HLSL", "GLSL"],  # 게임/그래픽 셰이더 언어
     "Blender / Maya": ["Blender", "Maya"],
     "게임 서버 (Go, Java, Node.js)": ["Go", "Java", "Node.js"],
     # ── 모바일 SDK / 빌드도구 ──────────────────────────────────────────
-    "Kotlin Multiplatform (KMP)": ["Kotlin"],      # KMP=멀티플랫폼 SDK, Kotlin=언어
+    "Kotlin Multiplatform (KMP)": ["Kotlin"],  # KMP=멀티플랫폼 SDK, Kotlin=언어
     "Android Jetpack": ["Android"],
     "Gradle / CocoaPods": ["Gradle", "CocoaPods"],
     "VR/AR SDK (ARCore, ARKit, OpenXR)": ["ARCore", "ARKit", "OpenXR"],
@@ -71,7 +71,7 @@ TECH_SPLIT_MAP: dict[str, list[str]] = {
     "Apache Kafka": ["Kafka"],
     "Apache Airflow": ["Airflow"],
     # ── 컴퓨팅 플랫폼 ─────────────────────────────────────────────────
-    "CUDA / GPU 프로그래밍": ["CUDA", "GPU"],       # NVIDIA 병렬컴퓨팅 플랫폼
+    "CUDA / GPU 프로그래밍": ["CUDA", "GPU"],  # NVIDIA 병렬컴퓨팅 플랫폼
     # ── 보안 ──────────────────────────────────────────────────────────
     "SIEM 솔루션 (Splunk, QRadar, Sentinel)": ["SIEM", "Splunk", "QRadar", "Sentinel"],
     "SIEM 도구 (Splunk, QRadar, Sentinel)": ["SIEM", "Splunk", "QRadar", "Sentinel"],
@@ -82,9 +82,9 @@ TECH_SPLIT_MAP: dict[str, list[str]] = {
     "클라우드 보안 (AWS Security Hub, Azure Defender)": ["AWS Security Hub", "Azure Defender"],
     "포렌식 도구 (Volatility, Autopsy)": ["Volatility", "Autopsy"],
     "Wireshark / tcpdump": ["Wireshark", "tcpdump"],
-    "보안 인증 (CISSP, CEH, OSCP)": [],            # 자격증 — 도구/언어 아님
+    "보안 인증 (CISSP, CEH, OSCP)": [],  # 자격증 — 도구/언어 아님
     # ── 기타 ──────────────────────────────────────────────────────────
-    "A/B 테스팅 프레임워크": [],                    # 방법론 개념 — 특정 도구 아님
+    "A/B 테스팅 프레임워크": [],  # 방법론 개념 — 특정 도구 아님
     "Excel / Google Sheets": ["Excel", "Google Sheets"],
 }
 

@@ -27,16 +27,33 @@ _LOG_FILE = _ROOT / "logs" / "prereq_raw.log"
 
 # 괄호 제거·공백 제거·소문자 변환 후 정확 일치로 null 판정하는 값 집합
 _NULL_EXACT: set[str] = {
-    "", "null", "없음", "ㅇ해당사항없음", "-해당없음", "해당없음", "해당사항없음",
-    "선수과목없음", "별도없음", "무", "무관",
-    "x", "?음", "-na", "n/a", "na", "none", "-", "--", "`",
+    "",
+    "null",
+    "없음",
+    "ㅇ해당사항없음",
+    "-해당없음",
+    "해당없음",
+    "해당사항없음",
+    "선수과목없음",
+    "별도없음",
+    "무",
+    "무관",
+    "x",
+    "?음",
+    "-na",
+    "n/a",
+    "na",
+    "none",
+    "-",
+    "--",
+    "`",
 }
 
 # 공백 제거 후 이 접두사로 시작하면 null (자유서술 패턴)
 _NULL_STARTS: tuple[str, ...] = (
-    "없",                    # 없음, 없습니다, 없음(설명), 없음, 필수: ...
-    "선수과목없음",           # 선수과목 없음. 단, 기본적인 ... 같은 자유서술
-    "특정교과목에제한",       # 특정 교과목에 제한은 없으나 ...
+    "없",  # 없음, 없습니다, 없음(설명), 없음, 필수: ...
+    "선수과목없음",  # 선수과목 없음. 단, 기본적인 ... 같은 자유서술
+    "특정교과목에제한",  # 특정 교과목에 제한은 없으나 ...
     "필수선수과목은없으나",
 )
 
@@ -106,7 +123,7 @@ def _process_text(text: str) -> tuple[str, bool]:
         stripped = line.strip()
         if stripped.startswith("선수과목:"):
             prereq_found = True
-            value = stripped[len("선수과목:"):].strip()
+            value = stripped[len("선수과목:") :].strip()
             normalized = _normalize_prereq_value(value)
             ending = "\n" if line.endswith(("\n", "\r\n")) else ""
             result_lines.append(f"선수과목: {normalized}{ending}")
@@ -172,13 +189,13 @@ def normalize_syllabi(
         course_name = ""
         for line in processed.splitlines():
             if line.strip().startswith("과목명:"):
-                course_name = line.strip()[len("과목명:"):].strip()
+                course_name = line.strip()[len("과목명:") :].strip()
                 break
 
         # 선수과목 값 추출 및 통계 집계
         for line in processed.splitlines():
             if line.strip().startswith("선수과목:"):
-                value = line.strip()[len("선수과목:"):].strip()
+                value = line.strip()[len("선수과목:") :].strip()
                 if value == "null":
                     null_count += 1
                 else:

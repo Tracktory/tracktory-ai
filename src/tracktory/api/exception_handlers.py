@@ -24,15 +24,11 @@ def register_exception_handlers(app: FastAPI) -> None:
     """앱에 표준 예외 핸들러를 등록한다."""
 
     @app.exception_handler(RequestValidationError)
-    async def validation_handler(
-        request: Request, exc: RequestValidationError
-    ) -> JSONResponse:
+    async def validation_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
         return _error_response(ErrorResponseCode.BAD_REQUEST_ERROR)
 
     @app.exception_handler(StarletteHTTPException)
-    async def http_exception_handler(
-        request: Request, exc: StarletteHTTPException
-    ) -> JSONResponse:
+    async def http_exception_handler(request: Request, exc: StarletteHTTPException) -> JSONResponse:
         if exc.status_code == 404:
             return _error_response(ErrorResponseCode.NOT_FOUND_ENDPOINT)
         if exc.status_code == 405:
