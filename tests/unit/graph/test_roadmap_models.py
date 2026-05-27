@@ -2,13 +2,14 @@
 
 학습 깊이 단조 증가 4 단계 (foundation → core → application → industry)
 순서·중복·누락이 검증으로 차단되는지, 과목 단위의 우선순위 범위가 강제되는지,
-직렬화 round-trip 이 동일 모델을 복원하는지 확인한다.
+학기 단위 분산 plan 의 학기·학년 범위가 강제되는지, 직렬화 round-trip 이
+동일 모델을 복원하는지 확인한다.
 """
 
 import pytest
 from pydantic import ValidationError
 
-from tracktory.graph.models import Roadmap, RoadmapCourse, RoadmapStage
+from tracktory.graph.models import Roadmap, RoadmapCourse, RoadmapStage, SemesterPlan
 
 
 def _course(course_id: str, priority: int = 1) -> RoadmapCourse:
@@ -109,4 +110,60 @@ def test_roadmap_preserves_combo_key_through_roundtrip() -> None:
     restored = Roadmap.model_validate(dumped)
 
     assert restored.derived_from_combo_key == "big_data::korean_edu"
+    assert restored == original
+
+
+# ---------------------------------------------------------------------------
+# SemesterPlan + Roadmap.semesters 검증
+# ---------------------------------------------------------------------------
+
+
+def test_semester_plan_accepts_valid_semester_and_grade() -> None:
+    plan = SemesterPlan(semester=4, grade=2, courses=[_course("c1")], credits_total=3)
+    assert plan.semester == 4
+    assert plan.grade == 2
+    assert plan.cap_reached is False
+    assert plan.graduation_insufficient is False
+
+
+def test_semester_plan_rejects_semester_out_of_range() -> None:
+    with pytest.raises(ValidationError):
+        SemesterPlan(semester=9, grade=4)
+
+
+def test_semester_plan_rejects_grade_out_of_range() -> None:
+    with pytest.raises(ValidationError):
+        SemesterPlan(semester=1, grade=5)
+
+
+def test_semester_plan_rejects_negative_credits() -> None:
+    with pytest.raises(ValidationError):
+        SemesterPlan(semester=1, grade=1, credits_total=-1)
+
+
+def test_roadmap_defaults_semesters_to_empty_list() -> None:
+    """학기 분산 결과가 비어 있어도 모델은 valid 하다 (안전 종료 경로)."""
+    roadmap = Roadmap(stages=_full_stages())
+    assert roadmap.semesters == []
+
+
+def test_roadmap_roundtrip_preserves_semesters_with_markers() -> None:
+    """학기 분산 + 마커 (cap_reached / graduation_insufficient) 가 라운드트립으로 보존된다."""
+    plans = [
+        SemesterPlan(semester=3, grade=2, courses=[_course("c1")], credits_total=3),
+        SemesterPlan(
+            semester=4,
+            grade=2,
+            courses=[_course("c2")],
+            credits_total=3,
+            cap_reached=True,
+        ),
+    ]
+    original = Roadmap(stages=_full_stages(), semesters=plans)
+    dumped = original.model_dump(mode="json")
+    restored = Roadmap.model_validate(dumped)
+
+    assert len(restored.semesters) == 2
+    assert restored.semesters[1].cap_reached is True
+    assert restored.semesters[1].graduation_insufficient is False
     assert restored == original
