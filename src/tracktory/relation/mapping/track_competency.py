@@ -67,7 +67,7 @@ def _parse_course_name(text: str) -> str:
     for line in text.splitlines():
         stripped = line.strip()
         if stripped.startswith("과목명:"):
-            return stripped[len("과목명:"):].strip()
+            return stripped[len("과목명:") :].strip()
     return ""
 
 

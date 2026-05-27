@@ -33,7 +33,7 @@ def _extract_course_name(text: str) -> str:
     for line in text.splitlines():
         stripped = line.strip()
         if stripped.startswith("과목명:"):
-            return stripped[len("과목명:"):].strip()
+            return stripped[len("과목명:") :].strip()
     return ""
 
 
@@ -69,10 +69,7 @@ def rename_syllabi(
     if not syllabi_dir.exists():
         raise FileNotFoundError(f"디렉터리가 존재하지 않습니다: {syllabi_dir}")
 
-    txt_files = sorted(
-        p for p in syllabi_dir.glob("*.txt")
-        if p.name.startswith("강의계획서_")
-    )
+    txt_files = sorted(p for p in syllabi_dir.glob("*.txt") if p.name.startswith("강의계획서_"))
     logger.info("발견된 파일: %d개", len(txt_files))
     if not txt_files:
         raise FileNotFoundError(f"파일 없음: {syllabi_dir}")

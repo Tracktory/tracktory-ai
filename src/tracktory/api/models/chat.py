@@ -40,7 +40,7 @@ class ChatReq(BaseModel):
         None, description="멀티턴 대화 식별자 — 새 대화면 None, 서버가 신규 발급"
     )
     history: list[Message] = Field(
-        default_factory=list, # 인스턴스마다 새 빈 리스트 생성
+        default_factory=list,  # 인스턴스마다 새 빈 리스트 생성
         description="이전 대화 턴 — 첫 질문이면 빈 리스트",
     )
     user_context: UserContext = Field(

@@ -11,7 +11,6 @@ from tracktory.relation.prerequisite.build_prerequisites import (
     _split_prereq_raw,
 )
 
-
 # --- _split_prereq_raw ---
 
 
@@ -54,11 +53,11 @@ def test_split_empty_returns_empty_list() -> None:
     ("name", "expected"),
     [
         ("자료구조", "자료구조"),
-        ("자료 구조", "자료구조"),              # 공백 제거
-        ("Programming I", "programmingi"),     # 소문자 + 공백 제거
-        ("수학(미적)", "수학"),                # 괄호 제거
-        ("객체 지향 (실습)", "객체지향"),       # 공백 + 괄호 동시
-        ("", ""),                              # 빈 문자열
+        ("자료 구조", "자료구조"),  # 공백 제거
+        ("Programming I", "programmingi"),  # 소문자 + 공백 제거
+        ("수학(미적)", "수학"),  # 괄호 제거
+        ("객체 지향 (실습)", "객체지향"),  # 공백 + 괄호 동시
+        ("", ""),  # 빈 문자열
     ],
 )
 def test_normalize_course_name(name: str, expected: str) -> None:

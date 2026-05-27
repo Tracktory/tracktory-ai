@@ -20,19 +20,19 @@ from typing import TypedDict
 
 from tracktory.common.tech_split import split_tech_name
 from tracktory.relation.mapping.config import (
+    JOB_COMPETENCY_OUT_PATH,
     JOB_STACKS_PATH,
     WANTED_BY_JOB_PATH,
-    JOB_COMPETENCY_OUT_PATH,
 )
 
 
 class CompetencyItem(TypedDict):
     name: str
-    type: str                  # "language" | "framework" | "tool" | "library" | "extra"
-    importance: str | None     # "필수" | "권장" | None(큐레이션 없음)
-    curated_rank: int | None   # 큐레이션 순위 (없으면 None)
-    wanted_count: int          # 해당 직무 공고 중 등장 횟수
-    wanted_rate: float         # wanted_count / total_postings
+    type: str  # "language" | "framework" | "tool" | "library" | "extra"
+    importance: str | None  # "필수" | "권장" | None(큐레이션 없음)
+    curated_rank: int | None  # 큐레이션 순위 (없으면 None)
+    wanted_count: int  # 해당 직무 공고 중 등장 횟수
+    wanted_rate: float  # wanted_count / total_postings
 
 
 class JobCompetencyEntry(TypedDict):
@@ -125,7 +125,7 @@ def _merge_competencies(
             )
         )
         curated_names.add(name.lower())
-        for tag in (tags or []):
+        for tag in tags or []:
             curated_names.add(tag.lower())
 
     if total_postings > 0:
@@ -175,18 +175,14 @@ def build_job_competency_map(
 
     postings = _load_json(wanted_by_job_path)
     if not isinstance(postings, list):
-        raise TypeError(
-            f"{wanted_by_job_path}: expected JSON array, got {type(postings).__name__}"
-        )
+        raise TypeError(f"{wanted_by_job_path}: expected JSON array, got {type(postings).__name__}")
 
     wanted_freq = _build_wanted_freq_per_job(postings)
     result: dict[str, JobCompetencyEntry] = {}
 
     for cat in categories:
         job_id: str = cat["category_id"]
-        total_postings, tech_counter, posting_tag_sets = wanted_freq.get(
-            job_id, (0, Counter(), [])
-        )
+        total_postings, tech_counter, posting_tag_sets = wanted_freq.get(job_id, (0, Counter(), []))
         competencies = _merge_competencies(
             curated_stacks=cat["tech_stacks"],
             total_postings=total_postings,

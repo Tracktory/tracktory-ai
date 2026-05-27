@@ -273,8 +273,10 @@ def make_job_matching_config() -> Callable[..., JobMatchingConfig]:
 def make_course() -> Callable[..., Course]:
     """``Course`` factory — 학습 로드맵 노드 fixture 용.
 
-    Repository 가 채울 모든 메타 (stage·credits·prereq_ids·priority) 를 키워드
-    인자로 override 가능하다.
+    Repository 가 채울 모든 메타 (stage·credits·prereq_ids·priority·
+    available_grades·course_type) 를 키워드 인자로 override 가능하다.
+    학년 제약 / 분류 메타가 부재한 케이스를 시뮬레이션하려면 각 인자의
+    기본값 (모든 학년 가능 · 전공 선택) 을 그대로 두면 된다.
     """
 
     def _factory(
@@ -286,6 +288,8 @@ def make_course() -> Callable[..., Course]:
         prereq_ids: list[str] | None = None,
         track_ids: list[str] | None = None,
         priority: int = 1,
+        available_grades: list[int] | None = None,
+        course_type: str = "전공선택",
     ) -> Course:
         return Course(
             course_id=course_id,
@@ -295,6 +299,8 @@ def make_course() -> Callable[..., Course]:
             prereq_ids=prereq_ids or [],
             track_ids=track_ids or [],
             priority=priority,
+            available_grades=available_grades or [1, 2, 3, 4],
+            course_type=course_type,  # type: ignore[arg-type]
         )
 
     return _factory

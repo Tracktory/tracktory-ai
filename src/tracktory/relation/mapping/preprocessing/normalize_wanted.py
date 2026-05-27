@@ -19,7 +19,7 @@ from collections import Counter
 from pathlib import Path
 
 from tracktory.common.tech_keywords import NORMALIZATION_MAP
-from tracktory.relation.mapping.config import WANTED_CLEANED_PATH, WANTED_BY_JOB_PATH
+from tracktory.relation.mapping.config import WANTED_BY_JOB_PATH, WANTED_CLEANED_PATH
 
 # lower-keyed 사본 — 모듈 로드 시 1회 생성하여 _normalize_tag 의 O(1) lookup 에 사용.
 _NORMALIZATION_LOWER: dict[str, str] = {k.lower(): v for k, v in NORMALIZATION_MAP.items()}

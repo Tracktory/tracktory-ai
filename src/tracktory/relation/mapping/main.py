@@ -12,11 +12,11 @@
 
 from __future__ import annotations
 
-from tracktory.relation.mapping.preprocessing.normalize_wanted import normalize_wanted
 from tracktory.relation.mapping.job_competency import (
     build_job_competency_map,
     save_job_competency_map,
 )
+from tracktory.relation.mapping.preprocessing.normalize_wanted import normalize_wanted
 from tracktory.relation.mapping.track_competency import (
     build_track_competency_map,
     save_track_competency_map,
