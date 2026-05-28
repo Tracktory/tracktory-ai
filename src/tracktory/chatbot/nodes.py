@@ -27,7 +27,7 @@ class ClassifyIntentNode:
         self._classifier = classifier
 
     def __call__(self, state: ChatbotState) -> dict:
-        messages = state["messages"]
+        messages = state.messages
         if not messages:
             return self._fallback("잘못된 입력: 빈 메시지")
 
@@ -53,7 +53,7 @@ class ClassifyIntentNode:
 
     @staticmethod
     def _fallback(reason: str, *, exc_info: bool = False) -> dict:
-        logger.warning("ClassifyIntentNode → general_advice 폴백: %s", reason, exc_info=exc_info)
+        logger.warning("ClassifyIntentNode → general_advice 폴백 — %s", reason, exc_info=exc_info)
         return {
             "intent": "general_advice",
             "intent_reason": reason,
@@ -75,7 +75,7 @@ def generate_response(state: ChatbotState) -> dict:
 
     TODO: 의도별 두 노드로 split (rag_answer / general_advice).
     """
-    last_user_msg = state["messages"][-1].content if state["messages"] else ""
+    last_user_msg = state.messages[-1].content if state.messages else ""
     response_text = f"(dummy) 응답: {last_user_msg}"
     return {
         "response": response_text,

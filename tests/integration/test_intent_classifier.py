@@ -45,15 +45,7 @@ _GOLDEN_CASES: list[tuple[str, str, list[str]]] = [
 
 
 def _state(message: str) -> ChatbotState:
-    return {
-        "user_context": {},
-        "messages": [HumanMessage(content=message)],
-        "intent": None,
-        "intent_reason": None,
-        "search_keywords": [],
-        "retrieved_docs": [],
-        "response": None,
-    }
+    return ChatbotState(user_context={}, messages=[HumanMessage(content=message)])
 
 
 @pytest.mark.integration

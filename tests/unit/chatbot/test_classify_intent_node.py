@@ -13,15 +13,7 @@ from tracktory.chatbot.state import ChatbotState
 
 
 def _state(messages: list[BaseMessage]) -> ChatbotState:
-    return {
-        "user_context": {},
-        "messages": messages,
-        "intent": None,
-        "intent_reason": None,
-        "search_keywords": [],
-        "retrieved_docs": [],
-        "response": None,
-    }
+    return ChatbotState(user_context={}, messages=messages)
 
 
 def test_classifier_failure_falls_back_to_general_advice(
