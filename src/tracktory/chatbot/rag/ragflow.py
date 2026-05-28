@@ -60,7 +60,7 @@ class RagFlowChatbotRetriever:
             "similarity_threshold": 0.2,
             "vector_similarity_weight": 0.3,
             "top_k": top_k,
-            "keyword": True,
+            "keyword": False,
             "use_kg": False,
         }
         if settings.ragflow_reranker_id:
