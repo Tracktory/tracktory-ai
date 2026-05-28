@@ -38,7 +38,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Literal, Protocol
+from typing import Any, Literal
 
 from tracktory.graph.models import (
     Course,
@@ -49,6 +49,7 @@ from tracktory.graph.models import (
     SemesterPlan,
 )
 from tracktory.graph.state import GraphState
+from tracktory.rag.course_repository import CourseRepository
 
 _DEFAULT_ROADMAP_CONFIG_PATH = Path(__file__).resolve().parents[2] / "config" / "roadmap.yaml"
 
@@ -61,32 +62,6 @@ _MAX_SEMESTER: int = 8
 _RECOMMENDED_COURSE_TYPES: frozenset[str] = frozenset({"전공필수", "전공선택"})
 
 logger = logging.getLogger(__name__)
-
-
-class CourseRepository(Protocol):
-    """과목 메타 데이터 접근 인터페이스.
-
-    학습 로드맵 노드는 본 Protocol 만 의존하고 구체 구현은 외부에서 주입받는다.
-    단위 테스트에서는 mock 으로 교체하여 외부 I/O 없이 검증한다. 운영에서는
-    한성대 강의계획서 적재 결과로부터 ``Course`` 를 채워 반환하는 구현이 들어간다.
-
-    Repository 구현체의 책임:
-        - ``stage`` (4 단계 학습 깊이) 분류
-        - ``prereq_ids`` (정규화된 선수과목 식별자) 추출
-        - ``priority`` (낮은 숫자 우선) 할당
-        - ``available_grades`` (학년 제약) 채움. 메타 부재 시 보수적 fallback
-          ``[1, 2, 3, 4]`` (모든 학년 가능).
-        - ``course_type`` (전공필수 / 전공선택 / 교양) 분류. 본 노드는 전공
-          (필수 + 선택) 만 추천 대상으로 필터링한다.
-    """
-
-    def list_for_tracks(self, track_ids: list[str]) -> list[Course]:
-        """주어진 트랙 식별자들에 권장되는 과목 목록을 반환한다.
-
-        두 트랙 모두에 권장되는 과목이 있더라도 ``course_id`` 기준으로 dedup 된
-        리스트를 반환할 책임은 구현체에 있다.
-        """
-        ...
 
 
 # ---------------------------------------------------------------------------
@@ -432,3 +407,6 @@ class RoadmapNode:
             "roadmap": roadmap.model_dump(mode="json"),
             "trace": ["roadmap:ok"],
         }
+
+
+__all__ = ["CourseRepository", "RoadmapNode"]
