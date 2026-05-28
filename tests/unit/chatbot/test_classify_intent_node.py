@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import logging
 from unittest.mock import MagicMock
 
 import pytest
@@ -17,7 +16,7 @@ def _state(messages: list[BaseMessage]) -> ChatbotState:
 
 
 def test_classifier_failure_falls_back_to_general_advice(
-    caplog: logging.LogCaptureFixture,
+    caplog: pytest.LogCaptureFixture,
 ) -> None:
     """classifier 가 예외를 던지면 general_advice 로 폴백 + 사유 기록."""
     classifier = MagicMock()
@@ -60,7 +59,7 @@ def test_classifier_failure_falls_back_to_general_advice(
 def test_invalid_input_falls_back_to_general_advice(
     messages: list[BaseMessage],
     expected_reason: str,
-    caplog: logging.LogCaptureFixture,
+    caplog: pytest.LogCaptureFixture,
 ) -> None:
     """진입부 가드 — 빈 메시지 / HumanMessage 아님 / 문자열 아닌 메시지 폴백"""
     classifier = MagicMock()

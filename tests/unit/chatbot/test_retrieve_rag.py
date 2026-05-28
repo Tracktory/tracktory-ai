@@ -25,6 +25,7 @@ import textwrap
 import pytest
 from langchain_core.messages import HumanMessage
 
+from tracktory.chatbot.config import ChatbotIntent
 from tracktory.chatbot.nodes import RetrieveRagNode
 from tracktory.chatbot.rag.ragflow import RagFlowChatbotRetriever
 from tracktory.chatbot.state import ChatbotState
@@ -38,20 +39,18 @@ pytest.importorskip(
 
 def _state(
     *,
-    message: str = "AI 트랙이 뭐야?",
-    intent: str = "track_question",
-    intent_reason: str | None = None,
-    keywords: list[str] | None = None,
+    message: str,
+    intent: ChatbotIntent,
+    intent_reason: str | None,
+    keywords: list[str],
 ) -> ChatbotState:
-    return {
-        "user_context": {},
-        "messages": [HumanMessage(content=message)],
-        "intent": intent,  # type: ignore[typeddict-item]
-        "intent_reason": intent_reason,
-        "search_keywords": keywords or [],
-        "retrieved_docs": [],
-        "response": None,
-    }
+    return ChatbotState(
+        user_context={},
+        messages=[HumanMessage(content=message)],
+        intent=intent,
+        intent_reason=intent_reason,
+        search_keywords=keywords,
+    )
 
 
 # 테스트 케이스 사전 — `-k <case_name>` 으로 골라서 실행 가능
@@ -85,11 +84,7 @@ _CASES: dict[str, dict] = {
 
 @pytest.mark.integration
 @pytest.mark.skipif(
-    not (
-        settings.ragflow_api_key
-        and settings.ragflow_base_url
-        and settings.ragflow_dataset_id
-    ),
+    not (settings.ragflow_api_key and settings.ragflow_base_url and settings.ragflow_dataset_id),
     reason="RAGFlow env (API_KEY / BASE_URL / DATASET_ID) 미설정",
 )
 @pytest.mark.parametrize("case_name", list(_CASES.keys()))

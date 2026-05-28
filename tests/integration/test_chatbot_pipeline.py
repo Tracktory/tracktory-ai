@@ -48,15 +48,7 @@ _QUERIES: list[str] = [
 
 
 def _initial_state(message: str) -> ChatbotState:
-    return {
-        "user_context": {},
-        "messages": [HumanMessage(content=message)],
-        "intent": None,
-        "intent_reason": None,
-        "search_keywords": [],
-        "retrieved_docs": [],
-        "response": None,
-    }
+    return ChatbotState(user_context={}, messages=[HumanMessage(content=message)])
 
 
 @pytest.mark.integration
@@ -90,22 +82,22 @@ def test_chatbot_pipeline(query: str) -> None:
 
     # ───── 단계 1: 의도 분류 ─────
     intent_result = intent_node(state)
-    state["intent"] = intent_result["intent"]
-    state["intent_reason"] = intent_result["intent_reason"]
-    state["search_keywords"] = intent_result["search_keywords"]
+    state.intent = intent_result["intent"]
+    state.intent_reason = intent_result["intent_reason"]
+    state.search_keywords = intent_result["search_keywords"]
 
     print("\n" + "=" * 70)
     print(f"질문: {query!r}")
     print("─" * 70)
-    print(f"intent:          {state['intent']}")
-    print(f"intent_reason:   {state['intent_reason']}")
-    print(f"search_keywords: {state['search_keywords']}")
+    print(f"intent:          {state.intent}")
+    print(f"intent_reason:   {state.intent_reason}")
+    print(f"search_keywords: {state.search_keywords}")
     print("─" * 70)
 
     # ───── 단계 2: RAG 검색 ─────
     retrieve_result = retrieve_node(state)
-    state["retrieved_docs"] = retrieve_result["retrieved_docs"]
-    chunks = state["retrieved_docs"]
+    state.retrieved_docs = retrieve_result["retrieved_docs"]
+    chunks = state.retrieved_docs
 
     print(f"반환 청크 수: {len(chunks)}")
     print("=" * 70)
@@ -124,21 +116,20 @@ def test_chatbot_pipeline(query: str) -> None:
     # TODO: generate_response 가 LLM 호출로 교체되면 여기서 호출하고 state["response"] 검증
 
     # ───── Assertion ─────
-    assert state["intent"] in (
+    assert state.intent in (
         "track_question",
         "job_question",
         "course_question",
         "general_advice",
-    ), f"의도 라벨이 4 종류 중 하나여야 함: {state['intent']}"
+    ), f"의도 라벨이 4 종류 중 하나여야 함: {state.intent}"
 
-    if state["intent"] == "general_advice":
+    if state.intent == "general_advice":
         # RAG 우회 — chunks 빈 리스트
         assert chunks == [], f"general_advice 인데 청크 반환됨: {len(chunks)}건"
     else:
         # RAG 호출됨 — 결과 있어야
         assert len(chunks) > 0, (
-            f"RAGFlow 0 건 반환 — intent={state['intent']}, "
-            f"keywords={state['search_keywords']}"
+            f"RAGFlow 0 건 반환 — intent={state.intent}, keywords={state.search_keywords}"
         )
         for chunk in chunks:
             assert chunk["content"].strip(), f"빈 본문 청크: {chunk}"
