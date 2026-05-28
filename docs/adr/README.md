@@ -31,7 +31,7 @@
 
 | # | Title | Status | Date | Summary |
 |---|-------|--------|------|---------|
-| [0001](./0001-single-embedding-boundary.md) | Single Embedding Boundary (단일 임베딩 설정) | Accepted | 2026-04-26 | 추천 파이프라인 다섯 위치(Offline 임베딩 생성 / GraphRAG 구축 / 프로필 임베딩 / 직무 매칭 / 트랙 메타 다양성)가 공유하는 단일 `embedding.yaml` 보장. 코사인 유사도가 항상 동일한 임베딩 공간에서 비교됨. |
+| [0001](./0001-single-embedding-boundary.md) | Single Embedding Boundary (단일 임베딩 설정) | Accepted | 2026-04-26 | 추천 파이프라인 다섯 위치(Offline 임베딩 생성 / LightRAG 구축 / 프로필 임베딩 / 직무 매칭 / 트랙 메타 다양성)가 공유하는 단일 `embedding.yaml` 보장. 코사인 유사도가 항상 동일한 임베딩 공간에서 비교됨. |
 
 ## 후속 ADR 후보
 

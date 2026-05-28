@@ -3,6 +3,24 @@
 이 파일은 Claude Code 세션이 이 레포에서 작업할 때 자동으로 로드되는 프로젝트 컨텍스트입니다.
 프로젝트 개요·실행법과 코드/커밋 규약은 루트 문서에 있으며, 이 파일은 그 위에 **Claude가 코드를 볼 때 적용해야 하는 아키텍처 철학**을 얹습니다.
 
+<!-- ZONE: SHARED -->
+
+## 빌드 / 테스트 / 린트
+
+```bash
+uv sync                          # 의존성 설치
+uv run ruff format .             # 포매팅
+uv run ruff check . --fix        # 린트
+uv run mypy src                  # 타입 체크
+uv run pytest                    # 테스트
+uv lock --check                  # lock 파일 검증
+uv run pre-commit install        # pre-commit 1회 설치
+```
+
+<!-- ZONE END: SHARED -->
+
+<!-- ZONE: PROJECT-DOMAIN -->
+
 ## 프로젝트 문서
 
 @README.md
@@ -39,3 +57,9 @@
 - [ ] LLM 구조화 출력에 Pydantic 스키마가 붙었는가?
 - [ ] 프롬프트가 `src/tracktory/prompts/` 모듈로 분리되어 있는가?
 - [ ] 커밋 전 루틴(`ruff format` → `ruff check` → `mypy` → `pytest`)을 안내했는가?
+
+<!-- ZONE END: PROJECT-DOMAIN -->
+
+<!-- ZONE: CLAUDE-ONLY -->
+<!-- Claude 전용 컨텍스트 — 다른 AI 에이전트는 무시. 본 zone 은 zone-extract.sh 가 AGENTS.md 추출 시 제외. -->
+<!-- ZONE END: CLAUDE-ONLY -->

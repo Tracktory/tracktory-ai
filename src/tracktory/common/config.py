@@ -35,7 +35,7 @@ class Settings(BaseSettings):
     ragflow_dataset_id: str
     ragflow_reranker_id: str
 
-    openai_api_key: str
+    openai_api_key: str | None = None
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
