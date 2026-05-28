@@ -1,11 +1,10 @@
 """ProfileEmbedNode 의 계약을 검증한다.
 
-EmbeddingClient 를 MagicMock 으로 대체하여 네트워크 호출 없이 검증한다.
+본 노드는 더 이상 임베딩 클라이언트를 호출하지 않으므로 외부 의존성 없이
+순수 직렬화 출력만 비교한다.
 """
 
-from unittest.mock import MagicMock
-
-from tracktory.graph.nodes.profile_embed import EmbeddingClient, ProfileEmbedNode
+from tracktory.graph.nodes.profile_embed import ProfileEmbedNode
 
 
 def _valid_normalized() -> dict[str, object]:
@@ -24,50 +23,35 @@ def _valid_normalized() -> dict[str, object]:
 
 
 def test_embed_skips_when_normalized_profile_missing() -> None:
-    """normalized_profile 이 없으면 skip 트레이스를 반환하고 embed 를 호출하지 않는다."""
-    client = MagicMock(spec=EmbeddingClient)
-    client.embed.return_value = [0.0]
-    node = ProfileEmbedNode(embedding_client=client)
+    """normalized_profile 이 없으면 skip 트레이스를 반환하고 텍스트도 채우지 않는다."""
+    node = ProfileEmbedNode()
     result = node({})
     assert result["trace"] == ["profile_embed:skip"]
     assert len(result["errors"]) >= 1
     assert "profile_text" not in result
-    assert "profile_vector" not in result
-    client.embed.assert_not_called()
 
 
-def test_embed_invokes_client_and_returns_vector() -> None:
-    """유효한 normalized_profile 이 있을 때 embed 를 1 회 호출하고 벡터를 그대로 반환한다."""
-    sentinel_vector = [0.1, 0.2, 0.3]
-    client = MagicMock(spec=EmbeddingClient)
-    client.embed.return_value = sentinel_vector
-    node = ProfileEmbedNode(embedding_client=client)
+def test_embed_returns_profile_text_only() -> None:
+    """유효한 normalized_profile 이 있을 때 profile_text 만 채워 반환한다."""
+    node = ProfileEmbedNode()
     result = node({"normalized_profile": _valid_normalized()})
     assert isinstance(result["profile_text"], str) and result["profile_text"]
-    assert result["profile_vector"] is sentinel_vector
     assert result["trace"] == ["profile_embed:ok"]
-    assert client.embed.call_count == 1
-    assert client.embed.call_args.args[0] == result["profile_text"]
+    assert "profile_vector" not in result
 
 
 def test_embed_uses_template_pattern_deterministically() -> None:
     """동일 입력에 대해 두 번 호출해도 profile_text 가 동일하다 (Template 직렬화 결정론성)."""
-    client = MagicMock(spec=EmbeddingClient)
-    client.embed.return_value = [0.0]
-    node = ProfileEmbedNode(embedding_client=client)
+    node = ProfileEmbedNode()
     profile = _valid_normalized()
     r1 = node({"normalized_profile": profile})
     r2 = node({"normalized_profile": profile})
     assert r1["profile_text"] == r2["profile_text"]
-    assert client.embed.call_count == 2
-    assert client.embed.call_args_list[0] == client.embed.call_args_list[1]
 
 
 def test_embed_excludes_completed_courses_from_text() -> None:
-    """completed_courses 는 profile_text 에 포함되지 않는다 (이수 과목은 임베딩 대상 X)."""
-    client = MagicMock(spec=EmbeddingClient)
-    client.embed.return_value = [0.0]
-    node = ProfileEmbedNode(embedding_client=client)
+    """completed_courses 는 profile_text 에 포함되지 않는다 (이수 과목은 직렬화 대상 X)."""
+    node = ProfileEmbedNode()
     profile = _valid_normalized()
     profile["completed_courses"] = ["자료구조", "알고리즘"]
     result = node({"normalized_profile": profile})

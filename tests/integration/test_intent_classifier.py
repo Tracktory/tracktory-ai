@@ -25,7 +25,6 @@ from tracktory.prompts.chatbot.intent import (
     IntentClassification,
 )
 
-
 # 골든 케이스 — (message, expected_intent, expected_keywords)
 # expected_keywords 는 search_keywords 에 반드시 포함되어야 하는 부분집합
 # (LLM 이 더 많이 뽑아도 OK, 핵심 키워드 누락만 잡는다)
@@ -46,15 +45,7 @@ _GOLDEN_CASES: list[tuple[str, str, list[str]]] = [
 
 
 def _state(message: str) -> ChatbotState:
-    return {
-        "user_context": {},
-        "messages": [HumanMessage(content=message)],
-        "intent": None,
-        "intent_reason": None,
-        "search_keywords": [],
-        "retrieved_docs": [],
-        "response": None,
-    }
+    return ChatbotState(user_context={}, messages=[HumanMessage(content=message)])
 
 
 @pytest.mark.integration

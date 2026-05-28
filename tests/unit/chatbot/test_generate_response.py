@@ -31,7 +31,6 @@ from tracktory.prompts.chatbot.rag_response import (
     ChatbotResponse,
 )
 
-
 # 실 RAGFlow 출력에서 떼어온 canned 청크
 _TRACK_CHUNKS: list[RetrievedChunk] = [
     {
