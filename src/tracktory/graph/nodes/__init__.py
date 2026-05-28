@@ -5,6 +5,7 @@
 """
 
 from tracktory.graph.nodes.input_normalize import NormalizedProfile, normalize_input
+from tracktory.graph.nodes.job_matching import JobMatchingNode
 from tracktory.graph.nodes.llm_explanation import LLMClient, LLMExplanationNode
 from tracktory.graph.nodes.profile_embed import ProfileEmbedNode
 from tracktory.graph.nodes.roadmap import CourseRepository, RoadmapNode
@@ -12,6 +13,7 @@ from tracktory.graph.nodes.track_synergy import TrackRepository, TrackSynergyNod
 
 __all__ = [
     "CourseRepository",
+    "JobMatchingNode",
     "LLMClient",
     "LLMExplanationNode",
     "NormalizedProfile",
