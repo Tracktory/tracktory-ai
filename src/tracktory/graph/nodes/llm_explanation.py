@@ -24,29 +24,15 @@
 
 from __future__ import annotations
 
-from typing import Any, Protocol
-
-from langchain_core.messages import BaseMessage
+from typing import Any
 
 from tracktory.graph.models import Explanation
 from tracktory.graph.state import GraphState
+from tracktory.llm.llm_client import LLMClient
 from tracktory.prompts.explanation import EXPLANATION_PROMPT
 
 _EMPTY_CONTEXT_MARKER = "데이터 없음"
 _EMPTY_ALL_FALLBACK_TEXT = "이번 추천 결과가 비어 있어 설명을 생성하지 않았습니다."
-
-
-class LLMClient(Protocol):
-    """LLM 호출 인터페이스 — 단일 책임은 메시지 → 검증된 ``Explanation`` 변환.
-
-    구체 구현은 인프라 레이어에서 ``ChatOpenAI(...).with_structured_output(Explanation)``
-    형태로 제공한다. 노드는 본 Protocol 만 의존하여 단위 테스트에서
-    ``MagicMock(spec=LLMClient)`` 로 외부 호출 없이 검증 가능하다.
-    """
-
-    def invoke(self, messages: list[BaseMessage]) -> Explanation:
-        """메시지 리스트를 LLM 으로 보내고 구조화된 ``Explanation`` 을 받는다."""
-        ...
 
 
 # ---------------------------------------------------------------------------
@@ -199,3 +185,6 @@ class LLMExplanationNode:
             "explanation": result.model_dump(mode="json"),
             "trace": ["llm_explanation:ok"],
         }
+
+
+__all__ = ["LLMClient", "LLMExplanationNode"]
