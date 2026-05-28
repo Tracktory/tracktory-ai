@@ -52,7 +52,7 @@ FastAPI AI 중계 서버     ── LangGraph 추천 파이프라인 + RAGFlow /
 flowchart TB
     subgraph SHARED["공유 리소스 (Shared Resources)"]
         EMB[("embedding.yaml<br/>단일 임베딩 boundary<br/>ADR-0001")]
-        RAGKB[("RAGFlow KB<br/>(GraphRAG)")]
+        RAGKB[("RAGFlow KB<br/>(LightRAG)")]
         SYN[("synergy.yaml")]
         CAT[("category_to_jobs.yaml")]
     end
@@ -62,7 +62,7 @@ flowchart TB
         O_CRAWL["크롤링 단계<br/>(Crawling)<br/>강의계획서 47트랙 + 채용공고"]
         O_PRE["전처리·청킹 단계<br/>(Preprocessing &amp; Chunking)"]
         O_EMB["임베딩 생성 단계<br/>(Embedding)"]
-        O_GRAPH["GraphRAG 그래프 구축 단계<br/>(Knowledge Graph)<br/>과목·역량·직무·트랙 4종 노드"]
+        O_GRAPH["LightRAG 그래프 구축 단계<br/>(Knowledge Graph)<br/>과목·역량·직무·트랙 4종 노드"]
         O_JOB["직무-역량 매핑 단계<br/>(Job-Skill Mapping)<br/>채용공고 묶음 → LLM 요약 → 단일 벡터<br/>~$5 / 100직무"]
         O_CRAWL --> O_PRE --> O_EMB --> O_GRAPH
         O_CRAWL --> O_JOB
@@ -124,7 +124,7 @@ flowchart TB
 | 크롤링 (Crawling) | 한성대 강의계획서 47트랙 전체 + 원티드 채용공고 수집 |
 | 전처리·청킹 (Preprocessing & Chunking) | 수집 텍스트를 200자 단위 청크로 분할, 메타데이터 정제 |
 | 임베딩 생성 (Embedding) | 청크 / 트랙 메타 텍스트를 단일 임베딩 모델로 벡터화 |
-| GraphRAG 그래프 구축 (Knowledge Graph) | 과목·역량·직무·트랙 4종 노드를 관계 엣지로 연결 |
+| LightRAG 그래프 구축 (Knowledge Graph) | 과목·역량·직무·트랙 4종 노드를 관계 엣지로 연결 |
 | 직무-역량 매핑 (Job-Skill Mapping) | 채용공고 묶음을 LLM 으로 요약 후 직무당 단일 벡터 + 기술스택 top-10 산출 |
 
 ### 4.2 Online Request
@@ -144,11 +144,11 @@ flowchart TB
 
 ### 5.1 단일 임베딩 boundary
 
-다섯 위치(Offline 임베딩 생성 / GraphRAG 구축 / 프로필 임베딩 / 직무 매칭 / 트랙 메타 다양성 측정) 가 단일 `embedding.yaml` 설정을 공유합니다. 자세한 사유와 결정 배경은 [ADR-0001 Single Embedding Boundary](../adr/0001-single-embedding-boundary.md) 참조.
+다섯 위치(Offline 임베딩 생성 / LightRAG 구축 / 프로필 임베딩 / 직무 매칭 / 트랙 메타 다양성 측정) 가 단일 `embedding.yaml` 설정을 공유합니다. 자세한 사유와 결정 배경은 [ADR-0001 Single Embedding Boundary](../adr/0001-single-embedding-boundary.md) 참조.
 
 ### 5.2 RAGFlow Knowledge Base
 
-GraphRAG 기반 관계 그래프 + 벡터 인덱스. Offline 배치가 적재하고 Online 노드들이 lookup 합니다. 직무-과목, 과목-역량, 트랙-직무 등 단순 벡터 유사도로는 표현 불가능한 관계를 그래프 쿼리로 처리합니다. 학생이 "AI에 관심" 이라고 입력했을 때 단순 키워드 매칭이 아니라 "AI 관련 직무 → 필요 역량 → 그 역량을 가르치는 과목" 의 관계 경로를 따라가는 것이 GraphRAG 의 핵심 가치입니다.
+LightRAG 기반 관계 그래프 + 벡터 인덱스. Offline 배치가 적재하고 Online 노드들이 lookup 합니다. 직무-과목, 과목-역량, 트랙-직무 등 단순 벡터 유사도로는 표현 불가능한 관계를 그래프 쿼리로 처리합니다. 학생이 "AI에 관심" 이라고 입력했을 때 단순 키워드 매칭이 아니라 "AI 관련 직무 → 필요 역량 → 그 역량을 가르치는 과목" 의 관계 경로를 따라가는 것이 LightRAG 의 핵심 가치입니다.
 
 ### 5.3 외부 설정 파일
 
@@ -213,7 +213,7 @@ GraphRAG 기반 관계 그래프 + 벡터 인덱스. Offline 배치가 적재하
 - LangGraph Documentation — https://langchain-ai.github.io/langgraph/
 - RAGFlow Documentation — https://ragflow.io/docs
 - Carbonell & Goldstein, "The Use of MMR, Diversity-Based Reranking for Reordering Documents and Producing Summaries" (1998) — MMR 다양성 알고리즘 원논문
-- Microsoft Research, "GraphRAG: Unlocking LLM discovery on narrative private data" (2024)
+- HKUDS, "LightRAG: Simple and Fast Retrieval-Augmented Generation" (EMNLP 2025). https://github.com/HKUDS/LightRAG
 
 ---
 
@@ -222,3 +222,4 @@ GraphRAG 기반 관계 그래프 + 벡터 인덱스. Offline 배치가 적재하
 | 버전 | 일자 | 작성자 | 변경 내용 |
 |---|---|---|---|
 | 0.1 | 2026-05-02 | 이재원 | 초안. 두 축 구조 mermaid + 노드별 1줄 책임 + 공유 리소스 + 핵심 원칙 5개 + 운영 제약 + 후속 ADR 후보 인덱스. |
+| 0.2 | 2026-05-13 | 이재원 + Claude | GraphRAG → LightRAG 표기 정합. 실제 스택은 LightRAG (HKUDS, EMNLP 2025) — 그동안 GraphRAG (Microsoft) 와 무의식적으로 혼용되어 온 drift 정정. § 3.1 mermaid 다이어그램 / § 4.1 Offline Batch 표 / § 5.1 §5.2 / § 6 Core Principles / § 9 References 의 GraphRAG 표기를 LightRAG 로 통일. 구조·노드 책임·공유 리소스·핵심 원칙 본문은 변경 없음. |

@@ -1,5 +1,6 @@
-"""LLM 프롬프트 템플릿 모듈.
+"""프롬프트 템플릿 모듈.
 
-코드 안에 인라인으로 박지 않고 본 패키지에 모아 diff 리뷰·ablation 을 용이하게 한다
-(CONTRIBUTING.md §4.5).
+LLM 호출 노드는 본 모듈의 ``ChatPromptTemplate`` 만 import 해 사용하고,
+인라인 f-string 으로 프롬프트를 조립하지 않는다. 이로써 프롬프트 변경이
+독립적인 diff 단위가 되어 리뷰가 용이해진다.
 """
