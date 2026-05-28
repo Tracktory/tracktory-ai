@@ -53,3 +53,17 @@ slots:
   secondary_count: 5
   cross_college_reserved: 1
   min_cross_synergy: 0.3
+
+# ── 직무 매칭 (트랙 시너지 입력 산출 단계) ──────────────────────────
+# 사용자 프로필 임베딩 ↔ 직무 임베딩 코사인 유사도 top-k.
+# max similarity 가 min_job_similarity 미만이면 사용자 1순위 관심사
+# 카테고리에 사전 정의된 인기 직무로 fallback.
+#
+# top_k.default  : 첫 인상 신뢰도 (k=3, 첫 화면 깔끔)
+# top_k.expanded : UI "더 보기" 요청 시 (k=5, 탐색 욕구)
+# min_job_similarity 직관 할당: 0.3 (synergy [0,1] 의 하위 1/3 컷)
+job_matching:
+  top_k:
+    default: 3
+    expanded: 5
+  min_job_similarity: 0.3

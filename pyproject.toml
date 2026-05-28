@@ -2,6 +2,8 @@
 name = "tracktory"
 version = "0.1.0"
 description = "AI-powered career recommendation system - data crawling, agent, and API"
+license = "MIT"
+authors = [{ name = "Tracktory Team" }]
 requires-python = ">=3.13"
 dependencies = [
     "beautifulsoup4>=4.14.3",
@@ -21,6 +23,10 @@ dependencies = [
     "uvicorn>=0.46.0",
 ]
 
+[project.urls]
+Repository = "https://github.com/Tracktory/tracktory-ai"
+Issues = "https://github.com/Tracktory/tracktory-ai/issues"
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
@@ -33,6 +39,7 @@ dev = [
     "mypy>=1.20.0",
     "pre-commit>=4.6.0",
     "pytest>=8.4",
+    "pytest-cov>=7.1.0",
     "pytest-mock>=3.14",
     "ruff>=0.15.10",
     "types-pyyaml>=6.0.12.20260408",

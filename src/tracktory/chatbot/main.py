@@ -129,9 +129,10 @@ def _run_turn(
 def _log_blank_lines(logger: logging.Logger, count: int = 2) -> None:
     """logger 의 모든 handler 에 timestamp 없는 raw 빈 줄 N 개 — turn 구분용"""
     for handler in logger.handlers:
-        for _ in range(count):
-            handler.stream.write("\n")
-        handler.flush()
+        if isinstance(handler, logging.StreamHandler):
+            for _ in range(count):
+                handler.stream.write("\n")
+            handler.flush()
 
 
 def _wrap_preserving_lines(text: str, width: int = 80) -> str:

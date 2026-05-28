@@ -26,14 +26,19 @@ class GraphState(TypedDict, total=False):
         입력:
             user_id, raw_input
         정규화 출력:
-            normalized_profile (dict 형태로 NormalizedProfile.model_dump 결과)
+            normalized_profile (dict 형태로 NormalizedProfile.model_dump 결과),
+            current_semester (사용자 입력 또는 fallback 추정값)
         임베딩 출력:
-            profile_text, profile_vector
+            profile_text
         직무 추천 출력:
             recommended_jobs (직무 매칭 노드의 결과 dict 리스트)
         트랙 시너지 출력:
             primary_combos, secondary_combos, slot3_fallback_triggered,
             slot3_fallback_level
+        학습 로드맵 출력:
+            roadmap (Roadmap.model_dump(mode="json") 결과 dict)
+        LLM 설명 출력:
+            explanation (Explanation.model_dump(mode="json") 결과 dict)
         누적:
             errors, trace
     """
@@ -45,9 +50,12 @@ class GraphState(TypedDict, total=False):
     # --- 정규화 출력 (이후 노드 read-only) ---
     normalized_profile: dict[str, Any] | None
 
+    # 학생의 현재 학기 (1~8). 정규화 노드가 사용자 입력 또는 입학년도 기반
+    # fallback 추정으로 채운다. 학습 로드맵 노드의 잔여 학기 분산 시작점.
+    current_semester: int | None
+
     # --- 임베딩 출력 ---
     profile_text: str | None
-    profile_vector: list[float] | None
 
     # --- 직무 추천 출력 ---
     recommended_jobs: list[dict[str, Any]] | None
@@ -57,6 +65,12 @@ class GraphState(TypedDict, total=False):
     secondary_combos: list[dict[str, Any]] | None
     slot3_fallback_triggered: bool | None
     slot3_fallback_level: Literal["T2", "MMR"] | None
+
+    # --- 학습 로드맵 출력 (overwrite) ---
+    roadmap: dict[str, Any] | None
+
+    # --- LLM 설명 출력 (overwrite) ---
+    explanation: dict[str, Any] | None
 
     # --- 누적 (reducer = list concatenation) ---
     errors: Annotated[list[str], add]

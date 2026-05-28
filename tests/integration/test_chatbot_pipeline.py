@@ -26,11 +26,11 @@ from tracktory.chatbot.nodes import (
 from tracktory.chatbot.rag.ragflow import RagFlowChatbotRetriever
 from tracktory.chatbot.state import ChatbotState
 from tracktory.common.config import settings
+from tracktory.prompts.chatbot.general_advice import GENERAL_ADVICE_PROMPT
 from tracktory.prompts.chatbot.intent import (
     INTENT_CLASSIFIER_PROMPT,
     IntentClassification,
 )
-from tracktory.prompts.chatbot.general_advice import GENERAL_ADVICE_PROMPT
 from tracktory.prompts.chatbot.rag_response import (
     RAG_RESPONSE_PROMPT,
     ChatbotResponse,
@@ -53,16 +53,7 @@ _QUERIES: list[str] = [
 
 
 def _initial_state(message: str) -> ChatbotState:
-    return {
-        "user_context": {},
-        "messages": [HumanMessage(content=message)],
-        "intent": None,
-        "intent_reason": None,
-        "search_keywords": [],
-        "retrieved_docs": [],
-        "response": None,
-        "response_choices": [],
-    }
+    return ChatbotState(user_context={}, messages=[HumanMessage(content=message)])
 
 
 @pytest.mark.integration
@@ -80,7 +71,7 @@ def test_chatbot_pipeline(query: str) -> None:
     """질문 → LLM 의도 분류 → RAGFlow 검색 → LLM 응답 전구간"""
     from langchain_openai import ChatOpenAI
 
-    # chain 조립
+    # 의도 분류 chain 조립
     llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
     classifier = INTENT_CLASSIFIER_PROMPT | llm.with_structured_output(IntentClassification)
     rag_chain = RAG_RESPONSE_PROMPT | llm.with_structured_output(ChatbotResponse)
@@ -96,22 +87,22 @@ def test_chatbot_pipeline(query: str) -> None:
 
     # ───── 단계 1: 의도 분류 ─────
     intent_result = intent_node(state)
-    state["intent"] = intent_result["intent"]
-    state["intent_reason"] = intent_result["intent_reason"]
-    state["search_keywords"] = intent_result["search_keywords"]
+    state.intent = intent_result["intent"]
+    state.intent_reason = intent_result["intent_reason"]
+    state.search_keywords = intent_result["search_keywords"]
 
     print("\n" + "=" * 70)
     print(f"질문: {query!r}")
     print("─" * 70)
-    print(f"intent:          {state['intent']}")
-    print(f"intent_reason:   {state['intent_reason']}")
-    print(f"search_keywords: {state['search_keywords']}")
+    print(f"intent:          {state.intent}")
+    print(f"intent_reason:   {state.intent_reason}")
+    print(f"search_keywords: {state.search_keywords}")
     print("─" * 70)
 
     # ───── 단계 2: RAG 검색 ─────
     retrieve_result = retrieve_node(state)
-    state["retrieved_docs"] = retrieve_result["retrieved_docs"]
-    chunks = state["retrieved_docs"]
+    state.retrieved_docs = retrieve_result["retrieved_docs"]
+    chunks = state.retrieved_docs
 
     print(f"반환 청크 수: {len(chunks)}")
     print("=" * 70)
@@ -128,38 +119,37 @@ def test_chatbot_pipeline(query: str) -> None:
 
     # ───── 단계 3: LLM 응답 생성 ─────
     response_result = response_node(state)
-    state["response"] = response_result["response"]
-    state["response_choices"] = response_result["response_choices"]
+    state.response = response_result["response"]
+    state.response_choices = response_result["response_choices"]
 
     print("\n[응답]")
-    print(textwrap.fill(state["response"], width=80, initial_indent="  ", subsequent_indent="  "))
+    print(textwrap.fill(state.response, width=80, initial_indent="  ", subsequent_indent="  "))
     print("\n[후속 선택지]")
-    for i, choice in enumerate(state["response_choices"], start=1):
+    for i, choice in enumerate(state.response_choices, start=1):
         print(f"  {i}. {choice}")
     print("=" * 70)
 
     # ───── Assertion ─────
-    assert state["intent"] in (
+    assert state.intent in (
         "track_question",
         "job_question",
         "course_question",
         "general_advice",
-    ), f"의도 라벨이 4 종류 중 하나여야 함: {state['intent']}"
+    ), f"의도 라벨이 4 종류 중 하나여야 함: {state.intent}"
 
-    if state["intent"] == "general_advice":
+    if state.intent == "general_advice":
         # RAG 우회 — chunks 빈 리스트
         assert chunks == [], f"general_advice 인데 청크 반환됨: {len(chunks)}건"
     else:
         # RAG 호출됨 — 결과 있어야
         assert len(chunks) > 0, (
-            f"RAGFlow 0 건 반환 — intent={state['intent']}, "
-            f"keywords={state['search_keywords']}"
+            f"RAGFlow 0 건 반환 — intent={state.intent}, keywords={state.search_keywords}"
         )
         for chunk in chunks:
             assert chunk["content"].strip(), f"빈 본문 청크: {chunk}"
 
     # 응답 생성 검증 — Pydantic 이 이미 min_length=1·max_length=3 강제하지만 명시
-    assert state["response"], "응답 본문이 비어있음"
-    assert 1 <= len(state["response_choices"]) <= 3, (
-        f"후속 선택지 1-3 개 강제 위반: {len(state['response_choices'])}개"
+    assert state.response, "응답 본문이 비어있음"
+    assert 1 <= len(state.response_choices) <= 3, (
+        f"후속 선택지 1-3 개 강제 위반: {len(state.response_choices)}개"
     )

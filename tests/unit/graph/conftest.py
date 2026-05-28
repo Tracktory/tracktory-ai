@@ -1,4 +1,4 @@
-"""트랙 시너지 노드 단위 테스트의 공통 fixture.
+"""트랙 시너지·직무 매칭 노드 단위 테스트의 공통 fixture.
 
 사용 패턴: ``def test_xxx(make_track, make_job, ...)`` — pytest 가 자동 주입한다.
 factory pattern (호출 시점 객체 생성) 으로 테스트마다 다른 인자로 트랙을 만들 수 있다.
@@ -14,11 +14,15 @@ import numpy as np
 import pytest
 
 from tracktory.graph.models import (
+    Course,
     JobCandidate,
+    JobMatchingConfig,
     SynergyConfig,
     Track,
     TrackCombo,
 )
+from tracktory.graph.nodes.roadmap import CourseRepository
+from tracktory.rag.job_search import JobSearchClient, RagSearchError, RagSearchResult
 
 _DEFAULT_DIM = 1536
 
@@ -159,3 +163,176 @@ def make_synergy_config() -> Callable[..., SynergyConfig]:
 def real_synergy_yaml_path() -> Path:
     """실제 ``src/tracktory/config/synergy.yaml`` 의 경로 — 정합 sanity check 용."""
     return Path(__file__).resolve().parents[3] / "src" / "tracktory" / "config" / "synergy.yaml"
+
+
+@pytest.fixture
+def real_category_mapping_path() -> Path:
+    """실제 ``src/tracktory/config/category_to_jobs.yaml`` 의 경로."""
+    return (
+        Path(__file__).resolve().parents[3]
+        / "src"
+        / "tracktory"
+        / "config"
+        / "category_to_jobs.yaml"
+    )
+
+
+# ---------------------------------------------------------------------------
+# JobSearchClient fake — 직무 매칭 노드 단위 테스트용
+# ---------------------------------------------------------------------------
+
+
+class FakeJobSearchClient:
+    """``rag_search_jobs`` 호출 시 미리 정해진 결과 리스트를 ``top_k`` 만큼 반환한다.
+
+    ``raise_error`` 가 True 면 ``RagSearchError`` 를 raise 하여 직무 매칭 노드의
+    error → fallback 분기를 검증할 수 있다.
+    """
+
+    def __init__(
+        self,
+        results: list[RagSearchResult] | None = None,
+        *,
+        raise_error: bool = False,
+    ) -> None:
+        self._results = list(results or [])
+        self._raise_error = raise_error
+        self.last_query: str | None = None
+        self.last_top_k: int | None = None
+
+    def rag_search_jobs(self, query: str, top_k: int = 3) -> list[RagSearchResult]:
+        self.last_query = query
+        self.last_top_k = top_k
+        if self._raise_error:
+            raise RagSearchError("fake search failure")
+        return list(self._results[:top_k])
+
+
+@pytest.fixture
+def make_search_result() -> Callable[..., RagSearchResult]:
+    """``RagSearchResult`` factory — 직무 검색 boundary 결과 단건."""
+
+    def _factory(
+        job_id: str,
+        *,
+        job_name: str | None = None,
+        score: float = 0.8,
+        description: str | None = None,
+        tech_stacks: list[str] | None = None,
+        competency_tags: list[str] | None = None,
+    ) -> RagSearchResult:
+        return RagSearchResult(
+            job_id=job_id,
+            job_name=job_name or job_id,
+            score=score,
+            description=description or f"{job_id} 직무 설명",
+            tech_stacks=tech_stacks or [],
+            competency_tags=competency_tags or [],
+        )
+
+    return _factory
+
+
+@pytest.fixture
+def make_fake_job_search_client() -> Callable[..., JobSearchClient]:
+    """``FakeJobSearchClient`` factory — Protocol 만 노출한다."""
+
+    def _factory(
+        results: list[RagSearchResult] | None = None,
+        *,
+        raise_error: bool = False,
+    ) -> JobSearchClient:
+        return FakeJobSearchClient(results=results, raise_error=raise_error)
+
+    return _factory
+
+
+@pytest.fixture
+def make_job_matching_config() -> Callable[..., JobMatchingConfig]:
+    """``JobMatchingConfig`` factory — 기본값에 partial override.
+
+    실 yaml 을 거치지 않고 in-memory 에서 검증하고 싶을 때 사용.
+    """
+
+    def _factory(
+        *,
+        top_k: dict[str, int] | None = None,
+        min_job_similarity: float = 0.3,
+    ) -> JobMatchingConfig:
+        base_top_k = {"default": 3, "expanded": 5}
+        if top_k:
+            base_top_k.update(top_k)
+        return JobMatchingConfig.model_validate(
+            {"top_k": base_top_k, "min_job_similarity": min_job_similarity}
+        )
+
+    return _factory
+
+
+@pytest.fixture
+def make_course() -> Callable[..., Course]:
+    """``Course`` factory — 학습 로드맵 노드 fixture 용.
+
+    Repository 가 채울 모든 메타 (stage·credits·prereq_ids·priority·
+    available_grades·course_type) 를 키워드 인자로 override 가능하다.
+    학년 제약 / 분류 메타가 부재한 케이스를 시뮬레이션하려면 각 인자의
+    기본값 (모든 학년 가능 · 전공 선택) 을 그대로 두면 된다.
+    """
+
+    def _factory(
+        course_id: str,
+        *,
+        course_name: str | None = None,
+        credits: int = 3,
+        stage: str = "foundation",
+        prereq_ids: list[str] | None = None,
+        track_ids: list[str] | None = None,
+        priority: int = 1,
+        available_grades: list[int] | None = None,
+        course_type: str = "전공선택",
+    ) -> Course:
+        return Course(
+            course_id=course_id,
+            course_name=course_name or course_id,
+            credits=credits,
+            stage=stage,  # type: ignore[arg-type]
+            prereq_ids=prereq_ids or [],
+            track_ids=track_ids or [],
+            priority=priority,
+            available_grades=available_grades or [1, 2, 3, 4],
+            course_type=course_type,  # type: ignore[arg-type]
+        )
+
+    return _factory
+
+
+@pytest.fixture
+def make_course_repo() -> Callable[..., CourseRepository]:
+    """단순 in-memory ``CourseRepository`` factory.
+
+    ``courses_by_track`` 인자는 ``dict[track_id, list[Course]]`` — ``list_for_tracks``
+    가 요청 ``track_ids`` 의 합집합을 ``course_id`` 기준 dedup 하여 반환한다.
+    """
+
+    def _factory(courses_by_track: dict[str, list[Course]]) -> CourseRepository:
+        class _InMemoryCourseRepo:
+            def __init__(self, mapping: dict[str, list[Course]]) -> None:
+                self._mapping = mapping
+
+            def list_for_tracks(self, track_ids: list[str]) -> list[Course]:
+                seen: dict[str, Course] = {}
+                for track_id in track_ids:
+                    for course in self._mapping.get(track_id, []):
+                        if course.course_id not in seen:
+                            seen[course.course_id] = course
+                return list(seen.values())
+
+        return _InMemoryCourseRepo(courses_by_track)
+
+    return _factory
+
+
+@pytest.fixture
+def real_roadmap_yaml_path() -> Path:
+    """실제 ``src/tracktory/config/roadmap.yaml`` 의 경로 — 정합 sanity check 용."""
+    return Path(__file__).resolve().parents[3] / "src" / "tracktory" / "config" / "roadmap.yaml"

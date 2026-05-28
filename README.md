@@ -39,7 +39,7 @@
 | **Python 3.13** + **uv** | 런타임 + 패키지 관리 | AI/ML 생태계 표준. uv는 pip 대비 10~100배 빠른 의존성 해결 |
 | **LangGraph** | 추천 워크플로 오케스트레이션 | 상태 기반 그래프로 복잡한 다단계 추천 파이프라인을 노드 단위로 분리·테스트 가능 |
 | **FastAPI** | Spring Boot ↔ LangGraph 중계 | 비동기 성능 + 자동 OpenAPI 문서 생성. Spring Boot가 트랜잭션을, FastAPI가 AI 워크로드를 분담 |
-| **GraphRAG** (RAGFlow) | 임베딩 검색 + 관계 기반 탐색 | 단순 벡터 유사도가 아닌 과목-트랙-직무 간 **관계 그래프** 기반 검색으로 추천 정확도 향상 |
+| **LightRAG** (RAGFlow 내 구현) | 임베딩 검색 + 관계 기반 탐색 | 단순 벡터 유사도가 아닌 과목-트랙-직무 간 **관계 그래프** 기반 검색으로 추천 정확도 향상 |
 | **Pydantic** | 상태·출력 스키마 검증 | LLM 구조화 출력을 `with_structured_output`으로 자동 검증. 런타임 타입 안전성 확보 |
 | **Ruff** + **mypy** | 린터·포매터 + 타입 체커 | Ruff는 black/isort/flake8/pylint 통합 대체. mypy로 공개 함수 타입 힌트 강제 |
 

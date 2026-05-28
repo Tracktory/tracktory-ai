@@ -41,36 +41,55 @@ class ClassifyIntentNode:
 
     질문의 의도를 4-way 분류 (track / job / course / general) + 카탈로그 / 학년 시그널.
     멀티턴 지시어 처리를 위해 직전 N turn 의 messages 도 LLM 에 같이 전달한다.
-    LLM 호출 실패 시 general_advice 로 graceful 폴백
+
+    잘못된 입력 (빈 메시지 / HumanMessage 아님 / 문자열 아닌 메시지) 과
+    LLM transient error / 구조화 출력 파싱 실패 시 user 응답이 끊기지 않도록 general_advice 로 폴백.
+    실패 사유는 intent_reason 에 남겨 디버깅·평가에 사용.
     """
 
     def __init__(self, classifier: Runnable[dict[str, Any], IntentClassification]) -> None:
         self._classifier = classifier
 
     def __call__(self, state: ChatbotState) -> dict:
-        messages = state["messages"]
-        last_message = messages[-1].content
+        messages = state.messages
+        if not messages:
+            return self._fallback("잘못된 입력: 빈 메시지")
+
+        last = messages[-1]
+        if not isinstance(last, HumanMessage):
+            return self._fallback(f"잘못된 입력: HumanMessage 아님 ({type(last).__name__})")
+
+        if not isinstance(last.content, str):
+            return self._fallback(f"잘못된 입력: 문자열 아님 ({type(last.content).__name__})")
+
         # 마지막 user 발화는 별도로 LLM 에 넘기므로 history 에서 제외
         history = _format_intent_history(messages[:-1])
 
         try:
-            result = self._classifier.invoke({"message": last_message, "history": history})
-            return {
-                "intent": result.intent,
-                "intent_reason": result.reason,
-                "search_keywords": result.search_keywords,
-                "is_catalog_query": result.is_catalog_query,
-                "target_grade": result.target_grade,
-            }
+            result = self._classifier.invoke({"message": last.content, "history": history})
         except Exception as e:
-            logger.warning("Intent classifier failed, falling back to general_advice: %s", e)
-            return {
-                "intent": "general_advice",
-                "intent_reason": f"classifier_failed: {type(e).__name__}",
-                "search_keywords": [],
-                "is_catalog_query": False,
-                "target_grade": None,
-            }
+            # LLM 클라이언트마다 raise 타입이 다름 (RateLimit / Timeout / ValidationError 등)
+            # 폴백 정책이 동일하므로 Exception 으로 한 곳에서 처리
+            return self._fallback(f"분류 실패: {type(e).__name__}", exc_info=True)
+
+        return {
+            "intent": result.intent,
+            "intent_reason": result.reason,
+            "search_keywords": result.search_keywords,
+            "is_catalog_query": result.is_catalog_query,
+            "target_grade": result.target_grade,
+        }
+
+    @staticmethod
+    def _fallback(reason: str, *, exc_info: bool = False) -> dict:
+        logger.warning("ClassifyIntentNode → general_advice 폴백 — %s", reason, exc_info=exc_info)
+        return {
+            "intent": "general_advice",
+            "intent_reason": reason,
+            "search_keywords": [],
+            "is_catalog_query": False,
+            "target_grade": None,
+        }
 
 
 class RetrieveRagNode:
@@ -95,11 +114,11 @@ class RetrieveRagNode:
         self._retriever = retriever
 
     def __call__(self, state: ChatbotState) -> dict:
-        intent = state.get("intent")
-        is_catalog = state.get("is_catalog_query") or False
-        target_grade = state.get("target_grade")
-        keywords = state.get("search_keywords") or []
-        user_ctx = state.get("user_context") or {}
+        intent = state.intent
+        is_catalog = state.is_catalog_query
+        target_grade = state.target_grade
+        keywords = state.search_keywords
+        user_ctx = state.user_context
         user_tracks = user_ctx.get("tracks") or []
         user_college = user_ctx.get("college")
 
@@ -238,21 +257,21 @@ class GenerateResponseNode:
         self._general = general_chain
 
     def __call__(self, state: ChatbotState) -> dict:
-        user_context_block = format_user_context(state.get("user_context"))
+        user_context_block = format_user_context(state.user_context)
 
-        if state.get("intent") == "general_advice":
+        if state.intent == "general_advice":
             result = self._general.invoke(
                 {
-                    "messages": state["messages"],
+                    "messages": state.messages,
                     "user_context_block": user_context_block,
                 }
             )
         else:
             result = self._rag.invoke(
                 {
-                    "messages": state["messages"],
+                    "messages": state.messages,
                     "user_context_block": user_context_block,
-                    "retrieved_context": format_retrieved_docs(state.get("retrieved_docs") or []),
+                    "retrieved_context": format_retrieved_docs(state.retrieved_docs),
                 }
             )
 
