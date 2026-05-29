@@ -1,19 +1,32 @@
 """LLM 설명 생성 노드의 프롬프트 템플릿.
 
-본 모듈은 영역별 (jobs / tracks / roadmap) 자연어 설명을 생성하는 단일
-``ChatPromptTemplate`` 을 정의한다. 프롬프트는 다음 4 가지 변수 슬롯을 받는다.
+본 모듈은 추천 결과의 자연어 설명을 생성하는 단일 ``ChatPromptTemplate`` 을
+정의한다. 출력은 세 종류로 분리된다.
+
+1. 영역별 단락 (``sections``) — 직무 / 트랙 / 로드맵 영역별 근거.
+2. 학기 단위 부제 (``semester_subtitles``) — 학습 로드맵 화면의 학기 카드
+   헤더에 노출되는 한 줄 요약. 정보 위계의 상위 레벨.
+3. 과목 단위 인과 흐름 (``course_flows``) — 과목 상세 모달에 노출되는
+   "관심사 → 직무 → 트랙 조합 → 이 과목" 인과 사슬. 정보 위계의 하위 레벨.
+
+프롬프트는 다음 7 가지 변수 슬롯을 받는다.
 
 - ``jobs_context``: 직무 후보 직렬화 문자열 (또는 빈 영역 안내).
 - ``tracks_context``: 트랙 조합 직렬화 문자열 (또는 빈 영역 안내).
-- ``roadmap_context``: 학습 로드맵 직렬화 문자열 (또는 빈 영역 안내).
+- ``roadmap_context``: 학습 로드맵 단계별 뷰 직렬화 (또는 빈 영역 안내).
+- ``semesters_context``: 학기별 대표 단계명·과목 직렬화 (학기 부제 입력).
+- ``courses_context``: 과목별 식별자·이름·단계명 직렬화 (인과 흐름 입력).
+- ``anchor_context``: 인과 흐름의 ``{직무명}`` / ``{트랙 조합}`` anchor.
 - ``caveat_required``: ``"yes"`` 또는 ``"no"`` 문자열. 직무 매칭이 카테고리
   사전 매핑 fallback 으로 채택된 경우 ``yes`` 가 흐른다.
 
 프롬프트는 다음 invariant 를 강제한다.
 
 - 출력은 **친근한 존댓말** 톤, 영역별 단락은 **1~2 문장**.
-- 컨텍스트에 명시되지 않은 사실은 생성 금지 — 빈 영역은 해당 ``section``
+- 컨텍스트에 명시되지 않은 사실은 생성 금지 — 빈 영역은 해당 출력 항목
   자체를 비워야 하며 ``text`` 전체 요약에서도 인용하지 않는다.
+- 학기 부제·과목 인과 흐름은 학습 로드맵 컨텍스트가 비어 있으면
+  (``데이터 없음``) 빈 리스트로 둔다.
 - ``caveat_required="yes"`` 인 경우 ``text`` 전체 요약 끝에 추가 입력
   안내 한 줄을 부착한다.
 
@@ -27,41 +40,67 @@ from __future__ import annotations
 from langchain_core.prompts import ChatPromptTemplate
 
 _SYSTEM_MESSAGE = """\
-당신은 한성대학교 학생에게 진로 추천 결과의 근거를 설명해 주는 상담사입니다.
+You are a counselor who explains, to a Hansung University student, the rationale
+behind their career recommendation results.
 
-다음 규칙을 반드시 따르세요.
+You must follow these rules.
 
-- 어투: 학생이 친근하게 느낄 수 있는 존댓말. 격식적이거나 딱딱한 어투 금지.
-- 분량: 영역별 단락(``sections[*].body``) 은 1~2 문장으로 짧게.
-- 사실 근거: 아래 입력으로 주어지는 jobs / tracks / roadmap 컨텍스트 안에
-  명시된 정보만 인용합니다. 컨텍스트에 없는 직무명·트랙명·과목명·역량명을
-  새로 만들거나 추측하지 마세요. 컨텍스트에 데이터가 없으면 해당 영역의
-  단락(``sections``) 자체를 만들지 않습니다.
-- 영역 카테고리: ``sections[*].topic`` 은 jobs / tracks / roadmap 셋 중
-  하나로만 고정합니다. 각 영역은 최대 한 번만 등장합니다.
-- 로드맵 근거: 로드맵 단락을 만들 때, 추천 과목이 어떤 직무 역량 또는
-  기술 스택과 연결되는지 jobs 컨텍스트의 ``competency_tags`` /
-  ``tech_stacks`` 를 근거로 한 줄 안에 명시하세요.
-- ``text`` 전체 요약: 학생이 이번 추천을 한 문장으로 이해할 수 있도록
-  간단히 정리합니다. 영역별 단락의 단순 반복은 피하세요.
-- 캐비잇: ``caveat_required`` 가 ``yes`` 이면, ``text`` 전체 요약의 마지막에
-  "마이페이지에서 관심사·흥미를 추가하시면 더 정확해져요." 라는 톤으로
-  추가 입력 안내 한 문장을 부착합니다. ``no`` 이면 부착하지 않습니다.
+- Language and tone: Write every output in Korean, using friendly 존댓말 (polite
+  spoken Korean) that students find approachable. Avoid stiff or overly formal
+  phrasing.
+- Length: Each area paragraph (``sections[*].body``) must be 1-2 sentences.
+- Grounding: Cite only information explicitly given in the jobs / tracks /
+  roadmap context below. Do not invent or guess job, track, course, or
+  competency names that are absent from the context. If a context area has no
+  data, do not create a paragraph (``sections``) for that area at all.
+- Area category: ``sections[*].topic`` must be exactly one of jobs / tracks /
+  roadmap. Each area appears at most once.
+- Roadmap rationale: When writing the roadmap paragraph, state in one line how
+  the recommended courses connect to job competencies or tech stacks, grounded
+  in the ``competency_tags`` / ``tech_stacks`` of the jobs context.
+- ``text`` overall summary: Summarize so the student can grasp this
+  recommendation at a glance. Avoid merely repeating the per-area paragraphs.
+- Semester subtitles (``semester_subtitles``): Create one item for each semester
+  that appears in the [Semester stages] context. Set ``semester`` to that
+  semester's number, and set ``subtitle`` to the Korean form
+  "이번 학기는 트랙 OO 단계입니다", where OO is that semester's ``단계명``
+  (기초 · 핵심 · 응용 · 산학) taken verbatim from the context. If [Semester
+  stages] is ``데이터 없음``, leave this an empty list.
+- Course causal flows (``course_flows``): Create one item for each course that
+  appears in the [Course stages] context. Set ``course_id`` to that course's
+  ``course_id`` verbatim, and set ``flow`` to the Korean form
+  "당신의 관심사 → OO 직무 → OO 트랙 → 이 과목이 OO입니다". Fill the
+  job-name and track-combo slots with the ``직무명`` / ``트랙 조합`` values from
+  the [Causal-flow anchor] context, and the final OO with that course's
+  ``단계명``. If [Course stages] is ``데이터 없음``, leave this an empty list.
+- Caveat: If ``caveat_required`` is ``yes``, append one extra-input guidance
+  sentence at the end of the ``text`` summary, in the tone of
+  "마이페이지에서 관심사·흥미를 추가하시면 더 정확해져요.". If ``no``, do not
+  append it.
 """
 
 _HUMAN_MESSAGE = """\
-다음 추천 결과에 대해 자연어 설명을 생성해 주세요.
+Generate a natural-language explanation for the following recommendation results.
 
-[jobs 컨텍스트]
+[Jobs context]
 {jobs_context}
 
-[tracks 컨텍스트]
+[Tracks context]
 {tracks_context}
 
-[roadmap 컨텍스트]
+[Roadmap context]
 {roadmap_context}
 
-[캐비잇 부착 여부]
+[Semester stages]
+{semesters_context}
+
+[Course stages]
+{courses_context}
+
+[Causal-flow anchor]
+{anchor_context}
+
+[Caveat required]
 {caveat_required}
 """
 
@@ -74,6 +113,6 @@ EXPLANATION_PROMPT: ChatPromptTemplate = ChatPromptTemplate.from_messages(
 )
 """LLM 설명 생성 노드가 사용하는 단일 프롬프트.
 
-``format_messages`` 호출 시 4 변수 슬롯을 모두 채워야 한다. 직렬화는
+``format_messages`` 호출 시 7 변수 슬롯을 모두 채워야 한다. 직렬화는
 호출 측 노드의 책임으로 분리되어 있다.
 """

@@ -12,6 +12,8 @@ Pydantic 모델 목록:
 - ``SemesterPlan`` — 학생의 잔여 학기 한 학기 단위 추천 과목 계획.
 - ``Roadmap`` — 학습 깊이 라벨 + 학기 분산 plan 의 이중 출력 단위.
 - ``ExplanationSection`` — LLM 자연어 설명의 주제별 단락.
+- ``SemesterSubtitle`` — 학기 카드 헤더용 학기 단위 부제.
+- ``CourseFlow`` — 과목 상세 모달용 과목 단위 인과 흐름.
 - ``Explanation`` — LLM 자연어 설명 전체.
 - ``SynergyConfig`` — 시너지 외부화 설정 (4 nested config + 단조 제약).
 - ``CompletedCourseBoostConfig`` — 이수 과목 부스팅 강도 정책.
@@ -298,19 +300,62 @@ class ExplanationSection(BaseModel):
     body: str = Field(..., min_length=1)
 
 
+class SemesterSubtitle(BaseModel):
+    """학기 카드 헤더에 노출되는 학기 단위 부제.
+
+    학습 로드맵 화면은 학기별 카드로 구성되며, 각 카드 헤더에 그 학기가
+    어떤 학습 깊이 단계인지 한 줄로 요약해 노출한다. 사용자가 카드를 펼치기
+    전에도 "이 학기가 어느 단계인지" 를 인지할 수 있게 하는 정보 위계의
+    상위 레벨이다.
+
+    Attributes:
+        semester: 부제가 매핑되는 학기 번호 (1 학년 1 학기 = 1).
+        subtitle: 학기 카드 헤더 노출 문구. 학습 깊이 단계명을 포함한다.
+    """
+
+    semester: int = Field(..., ge=1, le=8)
+    subtitle: str = Field(..., min_length=1)
+
+
+class CourseFlow(BaseModel):
+    """과목 상세 모달에 노출되는 과목 단위 인과 흐름.
+
+    학기 카드의 과목 row 를 탭하면 열리는 상세 모달에서, 사용자가
+    "관심사 → 직무 → 트랙 조합 → 이 과목" 의 추천 인과를 한 화면에서
+    납득할 수 있도록 과목 단위로 인과 사슬을 노출한다. 정보 위계의 하위
+    레벨로, 학기 부제보다 더 구체적인 근거를 담는다.
+
+    Attributes:
+        course_id: 흐름이 매핑되는 과목 식별자. 모달이 어떤 과목에 부착할지
+            결정하는 키다.
+        flow: 인과 흐름 문구. 관심사·직무·트랙 조합·학습 깊이 단계를 잇는다.
+    """
+
+    course_id: str = Field(..., min_length=1)
+    flow: str = Field(..., min_length=1)
+
+
 class Explanation(BaseModel):
     """LLM 자연어 설명 전체.
 
-    ``sections`` 가 비어 있어도 valid 하다 (전체 요약만 ``text`` 로 채워진
-    상태).
+    영역별 단락 (``sections``) 은 추천 결과 영역별 (직무/트랙/로드맵) 근거를,
+    학기 부제 (``semester_subtitles``) 와 과목 인과 흐름 (``course_flows``) 은
+    학습 로드맵 화면의 정보 위계 (학기 카드 헤더 / 과목 상세 모달) 에 직접
+    매핑되는 두 종류의 출력을 담는다. 세 리스트 모두 비어 있어도 valid 하다
+    (전체 요약만 ``text`` 로 채워진 상태, 또는 로드맵이 비어 학기/과목 출력이
+    없는 상태).
 
     Attributes:
         text: 전체 요약 본문.
         sections: 영역별 단락. 비어 있을 수 있다.
+        semester_subtitles: 학기 카드 헤더용 부제. 로드맵이 비면 빈 리스트.
+        course_flows: 과목 상세 모달용 인과 흐름. 로드맵이 비면 빈 리스트.
     """
 
     text: str = Field(..., min_length=1)
     sections: list[ExplanationSection] = Field(default_factory=list)
+    semester_subtitles: list[SemesterSubtitle] = Field(default_factory=list)
+    course_flows: list[CourseFlow] = Field(default_factory=list)
 
 
 # ---------------------------------------------------------------------------
