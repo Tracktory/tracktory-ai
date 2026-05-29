@@ -80,9 +80,10 @@ def _load_category_mapping(path: Path) -> dict[str, list[dict[str, Any]]]:
 def _to_candidate(result: RagSearchResult) -> JobCandidate:
     """직무 검색 결과 단건을 직무 후보 모델로 변환한다.
 
-    검색 결합 점수가 ``match_score`` 와 ``similarity`` 두 필드에 동일하게
-    채워진다. 본 PR 로 점수 의미가 자체 코사인 → 외부 검색 hybrid + reranker
-    결합 점수로 silent 변경됨에 유의 (PR 본문 회귀 캐비잇 참조).
+    검색 직후에는 후처리 전이라 ``match_score`` 와 ``similarity`` 가 동일한
+    검색 결합 점수에서 출발한다. 이수 과목 부스팅은 이후 ``match_score`` 에만
+    가산되어 두 값이 갈라진다. ``result.score`` 는 외부 검색의 hybrid +
+    reranker 결합 점수다.
     """
     return JobCandidate(
         job_id=result.job_id,
@@ -115,8 +116,10 @@ def _apply_completed_course_boost(
     이며 임베딩 호출이 없다). ``weight = 0`` 이거나 이수 과목이 없으면 입력을
     그대로 반환한다.
 
-    ``match_score`` 와 ``similarity`` 는 같은 값으로 가산하여 두 필드가 항상
-    동일하다는 다운스트림 호환 계약을 보존한다.
+    가산은 최종 적합도인 ``match_score`` 에만 반영하고, 검색 원시 점수인
+    ``similarity`` 는 보존한다. 두 필드가 갈라지는 지점이 바로 이 후처리다 —
+    부스팅이 0 이거나 검색 직후에는 두 값이 일치하지만, 가산이 발생하면
+    ``match_score`` 만 올라간다.
     """
     if weight <= 0.0 or not completed_courses:
         return candidates
@@ -133,7 +136,7 @@ def _apply_completed_course_boost(
         }
         overlap_ratio = len(completed_set & job_tokens) / len(job_tokens) if job_tokens else 0.0
         new_score = min(cand.match_score + weight * overlap_ratio, 1.0)
-        boosted.append(cand.model_copy(update={"match_score": new_score, "similarity": new_score}))
+        boosted.append(cand.model_copy(update={"match_score": new_score}))
 
     boosted.sort(key=lambda c: c.match_score, reverse=True)
     return boosted

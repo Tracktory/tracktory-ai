@@ -145,13 +145,13 @@ def test_node_passes_profile_text_and_top_k_to_client(
     )
 
 
-def test_node_match_score_and_similarity_are_equal_in_normal_path(
+def test_node_match_score_equals_similarity_without_boost(
     make_fake_job_search_client: Callable[..., JobSearchClient],
     make_search_result: Callable[..., RagSearchResult],
     real_synergy_yaml_path: Path,
     real_category_mapping_path: Path,
 ) -> None:
-    """``match_score`` 와 ``similarity`` 는 같은 값으로 채워진다 (다운스트림 호환)."""
+    """이수 과목이 없어 부스팅이 0 이면 ``match_score`` 와 ``similarity`` 가 일치한다."""
     client = make_fake_job_search_client(results=[make_search_result("target", score=0.7)])
     node = _build_node(client, real_synergy_yaml_path, real_category_mapping_path)
 

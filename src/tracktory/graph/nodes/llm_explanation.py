@@ -72,6 +72,9 @@ def _serialize_jobs(jobs: list[dict[str, Any]] | None) -> str:
     for job in jobs:
         tech = ", ".join(job.get("tech_stacks") or []) or "(데이터 없음)"
         competencies = ", ".join(job.get("competency_tags") or []) or "(데이터 없음)"
+        # 설명 근거로는 이수 과목 부스팅으로 굴절되지 않은 검색 원시 점수
+        # (similarity) 를 노출한다. 후보 순위·표시는 match_score(부스팅 반영)
+        # 기준이지만, 관심사-직무 적합도의 근거 설명에는 순수 검색 유사도가 맞다.
         similarity = job.get("similarity", 0.0)
         lines.append(
             f"- {job.get('job_name', '(이름 없음)')}"

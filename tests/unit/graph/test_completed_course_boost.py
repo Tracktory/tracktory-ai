@@ -41,7 +41,24 @@ def test_boost_adds_weight_times_overlap_ratio() -> None:
     result = _apply_completed_course_boost([cand], ["자료구조", "운영체제"], weight=0.2)
     # overlap_ratio = 2/4 = 0.5 → boost = 0.2 * 0.5 = 0.1
     assert result[0].match_score == pytest.approx(0.6)
-    assert result[0].similarity == pytest.approx(0.6)
+    # similarity 는 원본 검색 점수를 보존한다 (부스팅의 영향을 받지 않음).
+    assert result[0].similarity == pytest.approx(0.5)
+
+
+def test_boost_preserves_similarity_as_raw_search_score() -> None:
+    """부스팅이 발생해도 similarity 는 입력 검색 점수 그대로 보존된다."""
+    cand = _candidate(
+        "backend",
+        score=0.5,
+        tech_stacks=["자료구조", "운영체제"],
+        competency_tags=["네트워크", "데이터베이스"],
+    )
+    result = _apply_completed_course_boost(
+        [cand], ["자료구조", "운영체제", "네트워크", "데이터베이스"], weight=0.2
+    )
+    # 전체 overlap → match_score = 0.5 + 0.2*1.0 = 0.7, similarity 는 0.5 보존
+    assert result[0].match_score == pytest.approx(0.7)
+    assert result[0].similarity == pytest.approx(0.5)
 
 
 def test_full_overlap_adds_full_weight() -> None:
