@@ -243,7 +243,7 @@ def test_explanation_passes_caveat_flag_when_fallback_used() -> None:
     )
 
     rendered = _messages_concat(client.invoke.call_args)
-    assert "캐비잇 부착 여부" in rendered
+    assert "[Caveat required]" in rendered
     assert "yes" in rendered
 
 
@@ -264,7 +264,7 @@ def test_explanation_does_not_attach_caveat_when_no_fallback() -> None:
 
     rendered = _messages_concat(client.invoke.call_args)
     # caveat 플래그가 "no" 로 흐르고 "yes" 는 흐르지 않는다.
-    assert "캐비잇 부착 여부" in rendered
+    assert "[Caveat required]" in rendered
     assert "\nno\n" in rendered or rendered.rstrip().endswith("no")
 
 
@@ -469,8 +469,8 @@ def test_empty_roadmap_yields_empty_semester_and_course_context() -> None:
     )
 
     rendered = _messages_concat(client.invoke.call_args)
-    assert "[학기별 단계]" in rendered
-    assert "[과목별 단계]" in rendered
+    assert "[Semester stages]" in rendered
+    assert "[Course stages]" in rendered
     # roadmap_context + semesters_context + courses_context 세 영역 모두 빈 토큰.
     assert rendered.count("데이터 없음") >= 3
 
