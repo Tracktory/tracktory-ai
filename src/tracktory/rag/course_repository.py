@@ -28,12 +28,12 @@ class CourseRepository(Protocol):
         1. ``list_for_tracks`` 반환은 두 트랙 모두에 권장되는 과목이 섞여 있더라도
            ``course_id`` 기준으로 dedup 된 리스트여야 한다. 호출 측은 중복 없는
            카탈로그를 가정하고 후속 stream 알고리즘을 작성한다.
-        2. ``Course`` 의 5 필드 — ``stage`` (4 단계 학습 깊이), ``prereq_ids``
+        2. ``Course`` 의 6 필드 — ``stage`` (4 단계 학습 깊이), ``prereq_ids``
            (정규화된 선수과목 식별자), ``priority`` (낮은 숫자 우선),
-           ``available_grades`` (학년 제약), ``course_type`` (전공필수 / 전공선택
-           / 교양) — 는 모두 구현체가 채워야 한다. ``Course`` 모델이 안전한
-           기본값을 정의하고 있으나 추천 품질을 위해 강의계획서 메타로부터
-           정확히 도출하는 것이 구현체 책임이다.
+           ``available_grades`` (학년 제약), ``available_semesters`` (절대 학기
+           제약), ``course_type`` (전공필수 / 전공선택 / 교양) — 는 모두 구현체가
+           채워야 한다. ``Course`` 모델이 안전한 기본값을 정의하고 있으나 추천
+           품질을 위해 강의계획서 메타로부터 정확히 도출하는 것이 구현체 책임이다.
         3. 외부 호출 실패는 도메인 의미가 있는 예외로 변환하여 raise. raw 예외
            전파 금지.
         4. 동기 호출 contract — 학습 로드맵 노드 진입점이 단일 동기 호출로 1 회만

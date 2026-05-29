@@ -149,3 +149,33 @@ def test_invalid_chunks_is_structured_error(tmp_path: Path) -> None:
         client._parse_chunks({"chunks": {"not": "a list"}})
 
     assert exc_info.value.reason == "invalid_chunks"
+
+
+def test_graph_rag_flags_are_added_to_retrieval_payload(tmp_path: Path) -> None:
+    category_map_path = tmp_path / "category_to_job_type.yaml"
+    category_map_path.write_text("{}", encoding="utf-8")
+    client = RagflowJobSearchClient(
+        RagflowConfig(
+            base_url="https://ragflow.example",
+            api_key="secret",
+            dataset_id="dataset",
+            use_kg=True,
+        ),
+        session=FakeSession([]),
+        category_map_path=category_map_path,
+    )
+
+    payload = client._build_payload("backend developer")
+
+    assert payload["use_kg"] is True
+
+
+def test_graph_rag_flags_are_loaded_from_env(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("RAGFLOW_BASE_URL", "https://ragflow.example")
+    monkeypatch.setenv("RAGFLOW_API_KEY", "secret")
+    monkeypatch.setenv("RAGFLOW_DATASET_ID", "dataset")
+    monkeypatch.setenv("RAGFLOW_USE_KG", "true")
+
+    config = RagflowConfig.from_env()
+
+    assert config.use_kg is True

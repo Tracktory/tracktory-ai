@@ -6,5 +6,6 @@ RAG 검색 boundary (``tracktory.rag``) 와 대칭되는 외부 호출 경계로
 """
 
 from tracktory.llm.llm_client import LLMClient
+from tracktory.llm.openai_client import OpenAILLMClient, OpenAILLMConfig
 
-__all__ = ["LLMClient"]
+__all__ = ["LLMClient", "OpenAILLMClient", "OpenAILLMConfig"]

@@ -1,8 +1,8 @@
 """RAGFlow 기반 ``JobSearchClient`` 구현체.
 
-``job_search.JobSearchClient`` Protocol 의 운영 어댑터. 자연어 질의를 RAGFlow
-retrieval HTTP API (``POST /api/v1/retrieval``) 로 넘겨 채용공고 청크 상위
-``top_k`` 건을 받아와 ``RagSearchResult`` 형식으로 변환해 반환한다.
+``job_search.JobSearchClient`` Protocol 의 운영 어댑터. RAGFlow retrieval HTTP
+코어(``ragflow_client.RagflowClient``)를 상속하여, 도메인 전용 부분 — 공고
+카테고리 → 직무 타입 매핑, 청크 → ``RagSearchResult`` 변환 — 만 특수화한다.
 
 검색된 공고를 **per-posting** 으로 반환하되, ``job_id``/``job_name`` 은 공고
 번호·제목이 아니라 **공고 카테고리를 직무 타입으로 매핑한 값**(``config/
@@ -21,8 +21,6 @@ from __future__ import annotations
 
 import json
 import logging
-import os
-import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, NamedTuple
@@ -32,10 +30,11 @@ import yaml
 
 from tracktory.common.tech_keywords import extract_tech_keywords
 from tracktory.rag.job_search import RagSearchError, RagSearchResult
+from tracktory.rag.ragflow_client import RagflowClient, RagflowConfig, RagflowError
+
+__all__ = ["RagflowConfig", "RagflowJobSearchClient", "RagflowSearchError"]
 
 logger = logging.getLogger(__name__)
-
-_RETRIEVAL_PATH = "/api/v1/retrieval"
 
 # document_metadata 로 받아올 meta_fields (RAGFlow include_metadata).
 _METADATA_FIELDS = ["category", "tech_stack"]
@@ -56,59 +55,13 @@ class _JobType(NamedTuple):
 
 
 @dataclass(frozen=True)
-class RagflowSearchError(RagSearchError):
-    """RAGFlow retrieval 실패를 나타내는 구현체 전용 예외.
+class RagflowSearchError(RagflowError, RagSearchError):
+    """RAGFlow retrieval 실패를 나타내는 직무 검색 전용 예외.
 
-    ``JobSearchClient`` contract 에 맞춰 호출 측에는 ``RagSearchError`` 로
-    잡히며, 문자열에는 status/code/request_id 정도의 안전한 컨텍스트만 담는다.
+    범용 ``RagflowError`` 의 안전 메시지·필드를 그대로 물려받으면서,
+    ``JobSearchClient`` contract 의 ``RagSearchError`` 로도 잡히도록 두 base 를
+    동시에 상속한다. 직무 매칭 노드의 fallback 분기가 본 예외를 catch 한다.
     """
-
-    reason: str = "response_error"
-    status_code: int | None = None
-    code: Any | None = None
-    request_id: str | None = None
-    error_type: str | None = None
-
-    @classmethod
-    def from_response(
-        cls,
-        resp: requests.Response,
-        body: dict[str, Any] | None = None,
-        reason: str = "response_error",
-    ) -> RagflowSearchError:
-        if body is None:
-            try:
-                parsed = resp.json()
-            except ValueError:
-                parsed = None
-            body = parsed if isinstance(parsed, dict) else None
-
-        return cls(
-            reason=reason,
-            status_code=resp.status_code,
-            code=body.get("code") if body else None,
-            request_id=cls._extract_request_id(resp),
-        )
-
-    def __str__(self) -> str:
-        parts = [self.reason]
-        if self.status_code is not None:
-            parts.append(f"status={self.status_code}")
-        if self.code is not None:
-            parts.append(f"code={self.code}")
-        if self.request_id:
-            parts.append(f"request_id={self.request_id}")
-        if self.error_type:
-            parts.append(f"error_type={self.error_type}")
-        return f"RAGFlow retrieval 실패 ({', '.join(parts)})"
-
-    @staticmethod
-    def _extract_request_id(resp: requests.Response) -> str | None:
-        for header in ("X-Request-ID", "X-Request-Id", "Request-ID", "X-Correlation-ID"):
-            value = resp.headers.get(header)
-            if value:
-                return value[:100]
-        return None
 
 
 def _load_category_to_job_type(path: Path) -> dict[str, _JobType]:
@@ -130,45 +83,16 @@ def _load_category_to_job_type(path: Path) -> dict[str, _JobType]:
     return mapping
 
 
-@dataclass(frozen=True)
-class RagflowConfig:
-    """RAGFlow 접속·검색 파라미터.
+class RagflowJobSearchClient(RagflowClient):
+    """``JobSearchClient`` Protocol 의 RAGFlow retrieval 어댑터.
 
-    자격증명은 코드/노트북에 하드코딩하지 않고 ``from_env`` 로 환경변수에서
-    읽는다 (py-test.ipynb 의 API_KEY 하드코딩 패턴 회피).
+    HTTP 호출·재시도·에러 변환·응답 파싱은 ``RagflowClient`` 기반 클래스가
+    담당하고, 본 클래스는 공고 카테고리 → 직무 타입 매핑과 청크 →
+    ``RagSearchResult`` 변환만 특수화한다.
     """
 
-    base_url: str
-    api_key: str
-    dataset_id: str
-    rerank_id: str | None = None
-    timeout: float = 5.0  # contract 2: 외부 호출 타임아웃 ≤ 5초
-    max_retries: int = 2  # contract 2: retry ≤ 2회
-    page_size: int = 100  # 여러 직무 타입(카테고리)을 확보하려면 공고를 넉넉히 retrieve
-    similarity_threshold: float = 0.2
-    vector_similarity_weight: float = 0.3
-    # True 면 RAGFlow 가 질의 키워드 추출용 LLM(gpt-4o-mini)을 호출한다 →
-    keyword: bool = False
-    # metadata_condition 으로 거를 doc_type. 단일 데이터셋에 job_posting/syllabus 가
-    # 혼재하므로 직무만 받으려면 필터가 필요. None 이면 미적용.
-    doc_type: str | None = "job_posting"
-
-    @classmethod
-    def from_env(cls) -> RagflowConfig:
-        """``RAGFLOW_*`` 환경변수에서 설정을 읽는다. 누락 시 즉시 실패한다."""
-        try:
-            return cls(
-                base_url=os.environ["RAGFLOW_BASE_URL"],
-                api_key=os.environ["RAGFLOW_API_KEY"],
-                dataset_id=os.environ["RAGFLOW_DATASET_ID"],
-                rerank_id=os.environ.get("RAGFLOW_RERANKER_ID"),
-            )
-        except KeyError as exc:
-            raise RuntimeError(f"RAGFlow 환경변수 누락: {exc}") from exc
-
-
-class RagflowJobSearchClient:
-    """``JobSearchClient`` Protocol 의 RAGFlow retrieval 어댑터."""
+    # 기반 클래스의 범용 예외를 직무 검색 boundary contract 예외로 좁힌다.
+    _error_cls = RagflowSearchError
 
     def __init__(
         self,
@@ -176,9 +100,7 @@ class RagflowJobSearchClient:
         session: requests.Session | None = None,
         category_map_path: Path | None = None,
     ) -> None:
-        self._cfg = config
-        # 테스트에서 fake session 주입 가능 (contract 의 부작용 격리·DI 원칙).
-        self._session = session or requests.Session()
+        super().__init__(config, session)
         # 공고 카테고리 → 직무 타입 매핑 (생성자에서 1회 로드).
         self._category_map = _load_category_to_job_type(
             category_map_path or _DEFAULT_CATEGORY_MAP_PATH
@@ -192,137 +114,20 @@ class RagflowJobSearchClient:
         타입 값을 쓴다. dedup 없이 전부 반환하며(같은 직무 타입 중복 가능), 추리는
         것은 호출 측 책임이다. 실패는 모두 ``RagSearchError`` 로 변환된다.
         """
-        payload = self._build_payload(query)
+        payload = self._build_payload(
+            query, doc_type=self._cfg.doc_type, metadata_fields=_METADATA_FIELDS
+        )
         data = self._post_retrieval(payload)
         results = self._parse_chunks(data)
-        # contract 5: score 내림차순 정렬 후 상위 top_k.
+        # score 내림차순 정렬 후 상위 top_k.
         results.sort(key=lambda r: r.score, reverse=True)
         return results[:top_k]
 
-    def _build_payload(self, query: str) -> dict[str, Any]:
-        payload: dict[str, Any] = {
-            "question": query,
-            "dataset_ids": [self._cfg.dataset_id],
-            "page": 1,
-            "page_size": self._cfg.page_size,
-            "similarity_threshold": self._cfg.similarity_threshold,
-            "vector_similarity_weight": self._cfg.vector_similarity_weight,
-            "keyword": self._cfg.keyword,
-            "highlight": False,
-            # 청크에 document_metadata(category/tech_stack) 를 붙여 받음, ragflow 측 코드 커스텀으로 같이 받아옴
-            "include_metadata": True,
-            "metadata_fields": _METADATA_FIELDS,
-        }
-        if self._cfg.rerank_id:
-            payload["rerank_id"] = self._cfg.rerank_id
-        if self._cfg.doc_type:
-            payload["metadata_condition"] = {
-                "conditions": [
-                    {
-                        "name": "doc_type",
-                        "comparison_operator": "is",
-                        "value": self._cfg.doc_type,
-                    }
-                ]
-            }
-        return payload
-
-    def _post_retrieval(self, payload: dict[str, Any]) -> dict[str, Any]:
-        """retrieval 엔드포인트를 호출하고 ``data`` 블록을 반환한다.
-
-        네트워크 오류·타임아웃·5xx 는 재시도, 4xx·파싱 실패는 즉시 중단하며,
-        모든 실패는 ``RagSearchError`` 로 변환한다 (contract 1·3: raw 예외
-        전파 금지, 메시지에 자격증명/본문 미포함).
-        """
-        url = f"{self._cfg.base_url.rstrip('/')}{_RETRIEVAL_PATH}"
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {self._cfg.api_key}",
-        }
-        last_response_error: RagflowSearchError | None = None
-        last_network_error_type: str | None = None
-        for attempt in range(self._cfg.max_retries + 1):
-            if attempt > 0:
-                time.sleep(0.2 * attempt)  # 가벼운 선형 backoff
-            try:
-                resp = self._session.post(
-                    url, json=payload, headers=headers, timeout=self._cfg.timeout
-                )
-            except requests.RequestException as exc:
-                last_network_error_type = type(exc).__name__
-                last_response_error = None
-                logger.warning(
-                    "RAGFlow retrieval 호출 실패 (attempt %d/%d): %s",
-                    attempt + 1,
-                    self._cfg.max_retries + 1,
-                    type(exc).__name__,
-                )
-                continue
-
-            if resp.status_code >= 500:
-                last_response_error = self._response_error(resp, reason="http_5xx")
-                last_network_error_type = None
-                logger.warning("RAGFlow 5xx (attempt %d): %s", attempt + 1, resp.status_code)
-                continue
-            if resp.status_code >= 400:
-                # 4xx 는 재시도 무의미 (인증/요청 오류) → 즉시 중단.
-                raise self._response_error(resp, reason="http_4xx")
-
-            return self._parse_response_body(resp)
-
-        if last_response_error is not None:
-            raise RagflowSearchError(
-                reason="http_5xx_retry_exhausted",
-                status_code=last_response_error.status_code,
-                code=last_response_error.code,
-                request_id=last_response_error.request_id,
-            )
-        if last_network_error_type is not None:
-            raise RagflowSearchError(
-                reason="network_retry_exhausted",
-                error_type=last_network_error_type,
-            )
-        raise RagflowSearchError(reason="retry_exhausted")
-
-    @staticmethod
-    def _parse_response_body(resp: requests.Response) -> dict[str, Any]:
-        try:
-            body = resp.json()
-        except ValueError as exc:
-            raise RagflowSearchError.from_response(resp, reason="invalid_json") from exc
-        if not isinstance(body, dict):
-            raise RagflowSearchError.from_response(resp, reason="invalid_body")
-        if body.get("code", 0) != 0:
-            raise RagflowJobSearchClient._response_error(resp, body, reason="ragflow_code_error")
-        data = body.get("data")
-        if not isinstance(data, dict):
-            raise RagflowSearchError.from_response(resp, body, reason="missing_data")
-        return data
-
-    @staticmethod
-    def _response_error(
-        resp: requests.Response,
-        body: dict[str, Any] | None = None,
-        reason: str = "response_error",
-    ) -> RagflowSearchError:
-        """RAGFlow 실패 응답을 안전한 boundary 예외로 변환한다.
-
-        프로젝트 API 핸들러처럼 응답 본문 전체나 요청 본문은 노출하지 않고,
-        ``job_search.py`` contract 에 맞춰 status/code/request_id 정도만 남긴다.
-        """
-        return RagflowSearchError.from_response(resp, body, reason=reason)
-
     def _parse_chunks(self, data: dict[str, Any]) -> list[RagSearchResult]:
-        chunks = data.get("chunks") or []
-        if not isinstance(chunks, list):
-            raise RagflowSearchError(reason="invalid_chunks")
         # 공고를 per-posting 으로 전부 변환해 넘긴다. 같은 직무 타입(카테고리)이
         # 여러 건이어도 dedup 하지 않는다 — 카테고리별로 추리는 건 호출 측 책임.
         results: list[RagSearchResult] = []
-        for chunk in chunks:
-            if not isinstance(chunk, dict):
-                logger.debug("RAGFlow chunk 형식 오류 스킵: %s", type(chunk).__name__)
-                continue
+        for chunk in self._extract_raw_chunks(data):
             result = self._chunk_to_result(chunk)
             if result is not None:
                 results.append(result)
@@ -381,6 +186,6 @@ class RagflowJobSearchClient:
 
     @staticmethod
     def _clamp(value: float) -> float:
-        # contract 4: score 는 [0, 1] 범위 보장. RAGFlow similarity 는 이미
-        # [0, 1] hybrid 점수지만 방어적으로 clamp.
+        # score 는 [0, 1] 범위 보장. RAGFlow similarity 는 이미 [0, 1] hybrid
+        # 점수지만 방어적으로 clamp.
         return max(0.0, min(1.0, value))
