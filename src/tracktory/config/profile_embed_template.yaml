@@ -27,5 +27,7 @@ clauses:
     template: "{value} 분야를 공부한 경험이 있는"
 
 clause_separator: ", "
-value_separator: ", "
+# 한 절 안의 여러 값은 절 구분자(", ")와 다른 기호로 이어 붙여, 값 경계와 절
+# 경계가 시각적으로 섞이지 않게 한다.
+value_separator: " · "
 suffix: " 학생입니다."

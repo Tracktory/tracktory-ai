@@ -99,3 +99,20 @@ def test_embed_output_matches_snapshot() -> None:
         "IT/인터넷 분야에 관심이 많은, AI 개발에 흥미가 있는, "
         "성장성 가치를 중시하는, 대기업 취업을 선호하는 학생입니다."
     )
+
+
+def test_embed_multivalue_uses_distinct_value_separator() -> None:
+    """한 절의 여러 값은 절 구분자(', ')와 다른 기호(' · ')로 이어 붙는다.
+
+    값 경계와 절 경계가 같은 구분자면 읽을 때 섞이므로, 다값 케이스의
+    정확한 출력을 스냅샷으로 잠근다.
+    """
+    node = ProfileEmbedNode()
+    profile = _valid_normalized()
+    profile["dev_interests"] = ["AI", "데이터"]
+    profile["work_values"] = ["성장성", "워라벨"]
+    text = node({"normalized_profile": profile})["profile_text"]
+    assert text == (
+        "IT/인터넷 분야에 관심이 많은, AI · 데이터 개발에 흥미가 있는, "
+        "성장성 · 워라벨 가치를 중시하는, 대기업 취업을 선호하는 학생입니다."
+    )
