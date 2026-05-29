@@ -14,6 +14,7 @@ Pydantic 모델 목록:
 - ``ExplanationSection`` — LLM 자연어 설명의 주제별 단락.
 - ``Explanation`` — LLM 자연어 설명 전체.
 - ``SynergyConfig`` — 시너지 외부화 설정 (4 nested config + 단조 제약).
+- ``CompletedCourseBoostConfig`` — 이수 과목 부스팅 강도 정책.
 - ``JobMatchingConfig`` — 직무 매칭 노드의 외부화 매핑.
 - ``RoadmapConfig`` — 학습 로드맵 외부화 설정 (학기 용량 + 졸업 요건 + 학년별 학점 범위).
 """
@@ -65,19 +66,21 @@ class JobCandidate(BaseModel):
     """직무 매칭 노드의 결과 단건.
 
     ``tech_stacks`` 는 후속 트랙 시너지 계산의 직무 도달도 (job coverage)
-    분모로 흐른다. ``similarity`` 와 ``match_score`` 는 같은 값 (코사인 유사도
-    또는 fallback 시 0.0) 으로 채워지며, 두 필드 동시 보존은 다운스트림
-    노드가 어느 키를 참조해도 동일하게 동작하도록 보장한다.
+    분모로 흐른다. 두 점수 필드는 역할이 분리된다 — ``similarity`` 는 외부
+    검색 단계의 원시 점수이고, ``match_score`` 는 이수 과목 부스팅 같은
+    후처리가 반영된 최종 적합도다. 검색 직후나 부스팅이 0 일 때는 두 값이
+    일치하지만, 항상 같다는 보장은 없다.
 
     Attributes:
         job_id: 직무 식별자.
         job_name: 사용자 표시용 직무명.
         tech_stacks: 채용공고 기술스택.
         competency_tags: 직무가 요구하는 역량 태그.
-        match_score: 사용자-직무 적합도 ([0, 1]). 다운스트림 트랙 시너지
-            노드와의 호환을 유지한다.
-        similarity: 직무 매칭 노드가 채우는 코사인 유사도 또는 fallback 시
-            0.0 ([0, 1]).
+        match_score: 사용자-직무 적합도 ([0, 1]). 검색 점수에서 출발해 이수
+            과목 부스팅이 가산된 최종 값. 후보 정렬·표시의 기준.
+        similarity: 외부 검색 단계의 원시 결합 점수 (hybrid + reranker)
+            ([0, 1]). 이수 과목 부스팅 등 후처리의 영향을 받지 않는다.
+            fallback 시 0.0.
         fallback_used: True 이면 카테고리 사전 매핑 fallback 으로 채택된
             후보. LLM 설명 단계가 사용자에게 캐비잇 메시지를 추가할 때
             본 플래그를 본다.
@@ -449,6 +452,21 @@ class JobMatchingTopKConfig(BaseModel):
     expanded: int = Field(..., ge=1)
 
 
+class CompletedCourseBoostConfig(BaseModel):
+    """이수 과목 부스팅 강도 정책.
+
+    부스팅은 직무 검색 결과의 점수에 ``weight · overlap_ratio`` 만큼 가산하는
+    후처리 신호로, ``weight`` 가 ``overlap_ratio = 1`` (이수 과목이 직무 토큰
+    전부를 덮음) 일 때의 최대 가산량이다. 직관 할당값이며 가중치 ablation
+    대상이다. ``weight = 0`` 이면 부스팅이 완전히 비활성화된다.
+
+    Attributes:
+        weight: 최대 가산량 ([0, 1]). 가산 후 점수는 ``[0, 1]`` 로 clip 된다.
+    """
+
+    weight: float = Field(default=0.15, ge=0.0, le=1.0)
+
+
 class JobMatchingConfig(BaseModel):
     """``synergy.yaml`` 의 ``job_matching`` 섹션 1:1 매핑.
 
@@ -459,10 +477,15 @@ class JobMatchingConfig(BaseModel):
         top_k: 응답 후보 수 정책.
         min_job_similarity: 코사인 유사도 하위 컷. max similarity 가 이 값
             미만이면 카테고리 사전 매핑 fallback 으로 전환된다.
+        completed_course_boost: 이수 과목 부스팅 강도 정책. yaml 에 섹션이
+            없으면 기본값을 사용한다.
     """
 
     top_k: JobMatchingTopKConfig
     min_job_similarity: float = Field(..., ge=0.0, le=1.0)
+    completed_course_boost: CompletedCourseBoostConfig = Field(
+        default_factory=CompletedCourseBoostConfig
+    )
 
     @classmethod
     def load_from_yaml(cls, path: Path) -> Self:
