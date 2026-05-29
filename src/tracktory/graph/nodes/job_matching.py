@@ -12,7 +12,9 @@ fallback 분기로 전환한다.
     2. 직무 검색 boundary 호출 (외부 I/O — 진입점 단 1곳).
        호출 실패 시 fallback 분기로 전환.
     3. 상위 결과 점수 임계값 분기 — ≥ 임계값이면 정상, 미만이면 fallback.
-    4. 정상 → ``RagSearchResult`` → ``JobCandidate`` 매핑.
+       임계값 비교는 raw 검색 점수 기준 (이수 과목 부스팅 이전).
+    4. 정상 → ``RagSearchResult`` → ``JobCandidate`` 매핑 후 이수 과목 부스팅
+       후처리 (점수 가산 + 재정렬, 임베딩 호출 없는 순수 집합 연산).
     5. fallback → 카테고리 매핑에서 후보 구성 (boundary 호출 없음).
 
 부작용 격리:
@@ -91,6 +93,50 @@ def _to_candidate(result: RagSearchResult) -> JobCandidate:
         similarity=result.score,
         fallback_used=False,
     )
+
+
+def _apply_completed_course_boost(
+    candidates: list[JobCandidate],
+    completed_courses: list[str],
+    weight: float,
+) -> list[JobCandidate]:
+    """이수 과목과 직무 토큰의 교집합 비율만큼 점수를 가산하고 재정렬한다.
+
+    boost = weight · |completed ∩ job_tokens| / |job_tokens|
+    new_score = min(base_score + boost, 1.0)
+
+    job_tokens 는 직무의 ``tech_stacks`` 와 ``competency_tags`` 합집합을 소문자
+    정규화한 집합이다. 직무 토큰이 비어 있거나 이수 과목과 겹치지 않으면 가산은 0 이고
+    점수·순서는 변하지 않는다. 가산 후 점수 내림차순으로 안정 정렬하여 동점은
+    원래 검색 순서를 유지한다.
+
+    이수 과목을 의미 임베딩 단계에 절대 투입하지 않는 정책을 보존하기 위해,
+    본 신호는 외부 검색이 끝난 뒤 점수 후처리로만 반영한다 (집합 교집합 연산
+    이며 임베딩 호출이 없다). ``weight = 0`` 이거나 이수 과목이 없으면 입력을
+    그대로 반환한다.
+
+    ``match_score`` 와 ``similarity`` 는 같은 값으로 가산하여 두 필드가 항상
+    동일하다는 다운스트림 호환 계약을 보존한다.
+    """
+    if weight <= 0.0 or not completed_courses:
+        return candidates
+    completed_set = {c.strip().lower() for c in completed_courses if c.strip()}
+    if not completed_set:
+        return candidates
+
+    boosted: list[JobCandidate] = []
+    for cand in candidates:
+        job_tokens = {
+            token.strip().lower()
+            for token in (*cand.tech_stacks, *cand.competency_tags)
+            if token.strip()
+        }
+        overlap_ratio = len(completed_set & job_tokens) / len(job_tokens) if job_tokens else 0.0
+        new_score = min(cand.match_score + weight * overlap_ratio, 1.0)
+        boosted.append(cand.model_copy(update={"match_score": new_score, "similarity": new_score}))
+
+    boosted.sort(key=lambda c: c.match_score, reverse=True)
+    return boosted
 
 
 def _build_fallback_candidates(
@@ -199,10 +245,17 @@ class JobMatchingNode:
             )
             return self._fallback_response(normalized, top_k, max_similarity=0.0, reason="error")
 
-        # 단계 3: 임계값 분기
+        # 단계 3: 임계값 분기 — fallback 결정은 raw 검색 점수 기준.
+        # 이수 과목 부스팅은 정상 후보 사이의 재정렬 신호이지, 의미가 약한
+        # 매칭을 임계값 위로 끌어올려 fallback 을 우회하는 수단이 아니다.
         max_similarity = results[0].score if results else 0.0
         if results and max_similarity >= threshold:
             candidates = [_to_candidate(result) for result in results]
+            candidates = _apply_completed_course_boost(
+                candidates,
+                normalized.get("completed_courses") or [],
+                self._config.completed_course_boost.weight,
+            )
             return {
                 "recommended_jobs": [c.model_dump(mode="json") for c in candidates],
                 "trace": ["job_matching:ok"],

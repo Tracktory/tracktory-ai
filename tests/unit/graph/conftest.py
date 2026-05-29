@@ -258,12 +258,17 @@ def make_job_matching_config() -> Callable[..., JobMatchingConfig]:
         *,
         top_k: dict[str, int] | None = None,
         min_job_similarity: float = 0.3,
+        completed_course_boost_weight: float = 0.15,
     ) -> JobMatchingConfig:
         base_top_k = {"default": 3, "expanded": 5}
         if top_k:
             base_top_k.update(top_k)
         return JobMatchingConfig.model_validate(
-            {"top_k": base_top_k, "min_job_similarity": min_job_similarity}
+            {
+                "top_k": base_top_k,
+                "min_job_similarity": min_job_similarity,
+                "completed_course_boost": {"weight": completed_course_boost_weight},
+            }
         )
 
     return _factory
