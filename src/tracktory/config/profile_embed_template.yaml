@@ -3,9 +3,29 @@
 # 카테고리형 프로필 입력을 결정론적 자연어 문장으로 변환한다.
 # LLM 미사용 — 동일 입력은 항상 동일 출력. 파이프라인 비교 실험의 통제 조건이 되므로
 # 이 파일을 수정하면 임베딩 재생성이 필요하다. 변경 시 version 갱신 필수.
-version: "0.1"
+version: "0.2"
 
-# Python str.format 호환 패턴
-# 사용 가능 placeholder: interests · dev_interests · work_values
-pattern: |
-  {interests} 분야에 관심이 많고, {dev_interests} 개발에 흥미가 있으며 {work_values} 가치를 중시하는 학생입니다.
+# 절 단위 직렬화 규칙.
+#   - 각 절은 정규화 프로필의 한 필드를 자연어 관형구로 표현한다.
+#   - 필드 값이 비어 있으면 해당 절을 건너뛴다 (선택 입력의 누락이 어색한 빈
+#     문구를 만들지 않게).
+#   - 모든 절을 관형형 어미로 통일해 어느 절이 마지막에 오든 suffix 와 자연스럽게
+#     이어진다.
+#   - 절은 선언 순서대로 clause_separator 로 이어 붙이고 마지막에 suffix 를 더한다.
+# 사용 placeholder: 각 template 안의 {value} 는 해당 필드 값 리스트를
+# value_separator 로 이어 붙인 문자열로 치환된다.
+clauses:
+  - field: interests
+    template: "{value} 분야에 관심이 많은"
+  - field: dev_interests
+    template: "{value} 개발에 흥미가 있는"
+  - field: work_values
+    template: "{value} 가치를 중시하는"
+  - field: company_types
+    template: "{value} 취업을 선호하는"
+  - field: ncs_studied
+    template: "{value} 분야를 공부한 경험이 있는"
+
+clause_separator: ", "
+value_separator: ", "
+suffix: " 학생입니다."
