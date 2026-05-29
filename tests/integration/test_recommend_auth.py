@@ -16,8 +16,10 @@ from collections.abc import Iterator
 from typing import Any
 
 import pytest
+from fastapi import HTTPException
 from fastapi.testclient import TestClient
 
+from tracktory.api.auth import verify_internal_token
 from tracktory.api.dependencies import get_recommendation_pipeline
 from tracktory.api.main import app
 from tracktory.common.config import settings as app_settings
@@ -125,6 +127,18 @@ def test_wrong_internal_token_returns_403(fake_graph: _FakeGraph) -> None:
 
     assert response.status_code == 403
     assert fake_graph.received_state is None
+
+
+def test_non_ascii_token_raises_403_not_typeerror() -> None:
+    """비-ASCII 토큰이 와도 ``compare_digest`` 의 TypeError(→500)가 아닌 403.
+
+    HTTP 클라이언트는 비-ASCII 헤더 전송을 막으므로 의존성 함수를 직접 호출해
+    검증한다. bytes 인코딩 없이 비교하면 TypeError 가 새어 나간다.
+    """
+    with pytest.raises(HTTPException) as exc_info:
+        verify_internal_token("tokén")
+
+    assert exc_info.value.status_code == 403
 
 
 def test_server_token_unset_rejects_even_with_header(

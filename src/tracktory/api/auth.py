@@ -42,11 +42,15 @@ def verify_internal_token(
     if not expected:
         logger.warning("AI_INTERNAL_TOKEN 미설정 — 내부 호출을 거부한다")
         raise HTTPException(status_code=403, detail="internal authentication not configured")
-    if x_internal_token is None or not secrets.compare_digest(x_internal_token, expected):
+    # compare_digest 는 비-ASCII str 에 TypeError 를 던지므로 bytes 로 인코딩해
+    # 비교한다 — 어떤 토큰 값이 와도 일관되게 403 으로 거부하기 위함.
+    if x_internal_token is None or not secrets.compare_digest(
+        x_internal_token.encode("utf-8"), expected.encode("utf-8")
+    ):
         raise HTTPException(status_code=403, detail="invalid internal token")
 
 
-def get_user_id(x_user_id: Annotated[str, Header()]) -> str:
+def get_user_id(x_user_id: Annotated[str, Header(min_length=1)]) -> str:
     """메인 백엔드가 전파한 사용자 식별자를 추출한다.
 
     필수 헤더 — 부재 시 FastAPI 요청 검증 단계에서 거부된다. 내부 토큰이
