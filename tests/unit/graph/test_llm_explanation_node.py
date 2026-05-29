@@ -17,7 +17,14 @@ from __future__ import annotations
 from typing import Any
 from unittest.mock import MagicMock
 
-from tracktory.graph.models import Explanation, ExplanationSection
+import pytest
+
+from tracktory.graph.models import (
+    CourseFlow,
+    Explanation,
+    ExplanationSection,
+    SemesterSubtitle,
+)
 from tracktory.graph.nodes.llm_explanation import LLMClient, LLMExplanationNode
 
 
@@ -95,6 +102,50 @@ def _empty_roadmap_dict() -> dict[str, Any]:
             {"stage": "core", "courses": []},
             {"stage": "application", "courses": []},
             {"stage": "industry", "courses": []},
+        ],
+    }
+
+
+def _roadmap_with_semesters() -> dict[str, Any]:
+    """단계별 뷰 + 학기 분산 뷰를 모두 갖춘 로드맵.
+
+    1학기 → 자료구조(기초), 2학기 → 객체지향프로그래밍(핵심) 으로 학기별
+    대표 단계가 달라 학기 부제 치환을 구분 검증할 수 있다.
+    """
+    return {
+        "stages": [
+            {
+                "stage": "foundation",
+                "courses": [{"course_id": "c1", "course_name": "자료구조", "priority": 1}],
+            },
+            {
+                "stage": "core",
+                "courses": [
+                    {"course_id": "c2", "course_name": "객체지향프로그래밍", "priority": 1}
+                ],
+            },
+            {"stage": "application", "courses": []},
+            {"stage": "industry", "courses": []},
+        ],
+        "semesters": [
+            {
+                "semester": 1,
+                "grade": 1,
+                "courses": [{"course_id": "c1", "course_name": "자료구조", "priority": 1}],
+                "credits_total": 3,
+                "cap_reached": False,
+                "graduation_insufficient": False,
+            },
+            {
+                "semester": 2,
+                "grade": 1,
+                "courses": [
+                    {"course_id": "c2", "course_name": "객체지향프로그래밍", "priority": 1}
+                ],
+                "credits_total": 3,
+                "cap_reached": False,
+                "graduation_insufficient": False,
+            },
         ],
     }
 
@@ -236,3 +287,219 @@ def test_explanation_serialization_is_deterministic() -> None:
     rendered_first = _messages_concat(client.invoke.call_args_list[0])
     rendered_second = _messages_concat(client.invoke.call_args_list[1])
     assert rendered_first == rendered_second
+
+
+def test_prompt_substitutes_real_values_for_semester_and_course_outputs() -> None:
+    """학기 부제·과목 인과 흐름 입력에 실제 직무명·트랙 조합·단계명·과목 식별자가 흐른다."""
+    client = MagicMock(spec=LLMClient)
+    client.invoke.return_value = Explanation(text="요약")
+    node = LLMExplanationNode(llm_client=client)
+
+    node(
+        {
+            "recommended_jobs": [_job()],
+            "primary_combos": [_ranked_combo()],
+            "secondary_combos": [],
+            "roadmap": _roadmap_with_semesters(),
+        }
+    )
+
+    rendered = _messages_concat(client.invoke.call_args)
+    # 학기 부제 입력: 학기별 대표 단계명이 한국어 라벨로 치환되어 흐른다.
+    assert "1학기(1학년): 단계명=기초" in rendered
+    assert "2학기(1학년): 단계명=핵심" in rendered
+    # 과목 인과 흐름 입력: course_id + 한국어 단계명이 흐른다.
+    assert "course_id=c1" in rendered
+    assert "course_id=c2" in rendered
+    # 인과 흐름 anchor: 실제 직무명 + 트랙 조합이 흐른다 (placeholder 가 아님).
+    assert "직무명=백엔드 개발자" in rendered
+    assert "트랙 조합=빅데이터 + 모바일소프트웨어" in rendered
+
+
+def test_node_passes_through_semester_subtitles_and_course_flows() -> None:
+    """LLM 이 생성한 두 종류 출력이 explanation dict 로 그대로 흘러나온다."""
+    client = MagicMock(spec=LLMClient)
+    client.invoke.return_value = Explanation(
+        text="요약",
+        semester_subtitles=[
+            SemesterSubtitle(semester=1, subtitle="이번 학기는 트랙 기초 단계입니다"),
+            SemesterSubtitle(semester=2, subtitle="이번 학기는 트랙 핵심 단계입니다"),
+        ],
+        course_flows=[
+            CourseFlow(
+                course_id="c1",
+                flow=(
+                    "당신의 관심사 → 백엔드 개발자 직무 → 빅데이터 + 모바일소프트웨어 트랙"
+                    " → 이 과목이 기초입니다"
+                ),
+            ),
+        ],
+    )
+    node = LLMExplanationNode(llm_client=client)
+
+    result = node(
+        {
+            "recommended_jobs": [_job()],
+            "primary_combos": [_ranked_combo()],
+            "secondary_combos": [],
+            "roadmap": _roadmap_with_semesters(),
+        }
+    )
+
+    explanation = result["explanation"]
+    assert explanation["semester_subtitles"][0]["semester"] == 1
+    assert "기초" in explanation["semester_subtitles"][0]["subtitle"]
+    assert explanation["semester_subtitles"][1]["semester"] == 2
+    assert explanation["course_flows"][0]["course_id"] == "c1"
+    assert "백엔드 개발자" in explanation["course_flows"][0]["flow"]
+
+
+def test_semester_subtitle_uses_dominant_stage_on_mixed_semester() -> None:
+    """한 학기에 단계가 섞이면 최빈 단계가 대표 단계명으로 흐른다."""
+    roadmap = {
+        "stages": [
+            {
+                "stage": "foundation",
+                "courses": [{"course_id": "c1", "course_name": "자료구조", "priority": 1}],
+            },
+            {
+                "stage": "core",
+                "courses": [
+                    {"course_id": "c2", "course_name": "객체지향프로그래밍", "priority": 1},
+                    {"course_id": "c3", "course_name": "알고리즘", "priority": 2},
+                ],
+            },
+            {"stage": "application", "courses": []},
+            {"stage": "industry", "courses": []},
+        ],
+        "semesters": [
+            {
+                "semester": 3,
+                "grade": 2,
+                "courses": [
+                    {"course_id": "c1", "course_name": "자료구조", "priority": 1},
+                    {"course_id": "c2", "course_name": "객체지향프로그래밍", "priority": 1},
+                    {"course_id": "c3", "course_name": "알고리즘", "priority": 2},
+                ],
+                "credits_total": 9,
+                "cap_reached": False,
+                "graduation_insufficient": False,
+            },
+        ],
+    }
+    client = MagicMock(spec=LLMClient)
+    client.invoke.return_value = Explanation(text="요약")
+    node = LLMExplanationNode(llm_client=client)
+
+    node(
+        {
+            "recommended_jobs": [_job()],
+            "primary_combos": [_ranked_combo()],
+            "secondary_combos": [],
+            "roadmap": roadmap,
+        }
+    )
+
+    rendered = _messages_concat(client.invoke.call_args)
+    # 기초 1 + 핵심 2 → 대표 단계 = 핵심.
+    assert "3학기(2학년): 단계명=핵심" in rendered
+
+
+def test_semester_subtitle_tie_break_prefers_earlier_stage() -> None:
+    """단계 동률이면 더 이른 단계가 대표 단계명으로 선택된다 (기초 1 + 핵심 1 → 기초)."""
+    roadmap = {
+        "stages": [
+            {
+                "stage": "foundation",
+                "courses": [{"course_id": "c1", "course_name": "자료구조", "priority": 1}],
+            },
+            {
+                "stage": "core",
+                "courses": [
+                    {"course_id": "c2", "course_name": "객체지향프로그래밍", "priority": 1}
+                ],
+            },
+            {"stage": "application", "courses": []},
+            {"stage": "industry", "courses": []},
+        ],
+        "semesters": [
+            {
+                "semester": 2,
+                "grade": 1,
+                "courses": [
+                    {"course_id": "c1", "course_name": "자료구조", "priority": 1},
+                    {"course_id": "c2", "course_name": "객체지향프로그래밍", "priority": 1},
+                ],
+                "credits_total": 6,
+                "cap_reached": False,
+                "graduation_insufficient": False,
+            },
+        ],
+    }
+    client = MagicMock(spec=LLMClient)
+    client.invoke.return_value = Explanation(text="요약")
+    node = LLMExplanationNode(llm_client=client)
+
+    node(
+        {
+            "recommended_jobs": [_job()],
+            "primary_combos": [_ranked_combo()],
+            "secondary_combos": [],
+            "roadmap": roadmap,
+        }
+    )
+
+    rendered = _messages_concat(client.invoke.call_args)
+    assert "2학기(1학년): 단계명=기초" in rendered
+
+
+def test_empty_roadmap_yields_empty_semester_and_course_context() -> None:
+    """로드맵이 없으면 학기·과목 컨텍스트가 모두 빈 영역 토큰으로 흐른다."""
+    client = MagicMock(spec=LLMClient)
+    client.invoke.return_value = Explanation(text="요약")
+    node = LLMExplanationNode(llm_client=client)
+
+    node(
+        {
+            "recommended_jobs": [_job()],
+            "primary_combos": [_ranked_combo()],
+            "secondary_combos": [],
+            "roadmap": None,
+        }
+    )
+
+    rendered = _messages_concat(client.invoke.call_args)
+    assert "[학기별 단계]" in rendered
+    assert "[과목별 단계]" in rendered
+    # roadmap_context + semesters_context + courses_context 세 영역 모두 빈 토큰.
+    assert rendered.count("데이터 없음") >= 3
+
+
+@pytest.mark.parametrize(
+    ("job_name", "track_a", "track_b"),
+    [
+        ("백엔드 개발자", "빅데이터", "모바일소프트웨어"),
+        ("데이터 분석가", "빅데이터", "웹공학"),
+        ("게임 클라이언트 개발자", "디지털콘텐츠·가상현실", "모바일소프트웨어"),
+    ],
+)
+def test_substitution_robust_across_personas(job_name: str, track_a: str, track_b: str) -> None:
+    """페르소나별 입력이 달라도 실제 값이 두 출력 입력 컨텍스트에 정확히 치환된다."""
+    client = MagicMock(spec=LLMClient)
+    client.invoke.return_value = Explanation(text="요약")
+    node = LLMExplanationNode(llm_client=client)
+
+    node(
+        {
+            "recommended_jobs": [_job(job_name=job_name)],
+            "primary_combos": [_ranked_combo(track_a, track_b)],
+            "secondary_combos": [],
+            "roadmap": _roadmap_with_semesters(),
+        }
+    )
+
+    rendered = _messages_concat(client.invoke.call_args)
+    assert f"직무명={job_name}" in rendered
+    assert f"트랙 조합={track_a} + {track_b}" in rendered
+    assert "course_id=c1" in rendered
+    assert "단계명=기초" in rendered
