@@ -11,12 +11,18 @@ from datetime import datetime
 from tracktory.common.config import config
 
 
-def setup_logging(name: str = "chatbot", verbose: bool = False) -> logging.Logger:
+def setup_logging(
+    name: str = "chatbot",
+    verbose: bool = False,
+    file_name: str | None = None,
+) -> logging.Logger:
     """챗봇 로거 설정 및 반환
 
     Args:
-        name: 로거 이름 (로그 파일 prefix 로도 사용)
+        name: 로거 이름
         verbose: True 면 DEBUG, False 면 INFO
+        file_name: 로그 파일 prefix (지정 시 이 값, 미지정 시 name)
+            — 콘솔/API 진입점별로 파일 분리할 때 사용
 
     Returns:
         설정된 Logger 인스턴스
@@ -42,7 +48,7 @@ def setup_logging(name: str = "chatbot", verbose: bool = False) -> logging.Logge
 
     # 파일 핸들러 — 항상 DEBUG 전부 캡처
     config.LOG_DIR.mkdir(parents=True, exist_ok=True)
-    log_file = config.LOG_DIR / f"{name}_{datetime.now():%Y%m%d}.log"
+    log_file = config.LOG_DIR / f"{file_name or name}_{datetime.now():%Y%m%d}.log"
     file_handler = logging.FileHandler(log_file, encoding="utf-8")
     file_handler.setLevel(logging.DEBUG)
     file_handler.setFormatter(formatter)
