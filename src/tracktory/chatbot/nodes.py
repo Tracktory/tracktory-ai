@@ -8,6 +8,7 @@ from typing import Any
 from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.runnables import Runnable
 
+from tracktory.chatbot.rag.ragflow import RagFlowChatbotRetriever, RagSearchError
 from tracktory.chatbot.state import ChatbotState
 from tracktory.prompts.chatbot.intent import IntentClassification
 
@@ -61,12 +62,40 @@ class ClassifyIntentNode:
         }
 
 
-def retrieve_rag(state: ChatbotState) -> dict:
-    """의도별로 RAGFlow 검색. general_advice 는 우회 (edges).
+class RetrieveRagNode:
+    """챗봇 RAG 검색 노드 — 의도별 데이터셋 분기 + 빈 결과·실패 안전망"""
 
-    TODO: RAGFlow 클라이언트 주입 + 의도별 데이터셋 분기.
-    """
-    return {"retrieved_docs": []}
+    def __init__(self, retriever: RagFlowChatbotRetriever) -> None:
+        self._retriever = retriever
+
+    def __call__(self, state: ChatbotState) -> dict:
+        intent = state.intent
+        keywords = state.search_keywords
+
+        if not intent or intent == "general_advice":
+            # general_advice / None — 정상 경로상 도달 X, 안전망
+            logger.debug("retrieve_rag 우회 (intent=%s)", intent)
+            return {"retrieved_docs": []}
+
+        if not keywords:
+            logger.info("retrieve_rag: 검색 키워드 없음 (intent=%s)", intent)
+            return {"retrieved_docs": []}
+
+        query = ",".join(keywords)
+        try:
+            results = self._retriever.search(query)
+        except RagSearchError:
+            logger.warning(
+                "retrieve_rag: 검색 실패 (intent=%s, query=%r)",
+                intent,
+                query,
+                exc_info=True,
+            )
+            return {"retrieved_docs": []}
+
+        # 본문 빈 청크 제외
+        cleaned = [chunk for chunk in results if chunk["content"].strip()]
+        return {"retrieved_docs": cleaned}
 
 
 def generate_response(state: ChatbotState) -> dict:
