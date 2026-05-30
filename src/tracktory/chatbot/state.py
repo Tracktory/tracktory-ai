@@ -31,3 +31,4 @@ class ChatbotState(BaseModel):
     search_keywords: list[str] = Field(default_factory=list)
     retrieved_docs: list[RetrievedChunk] = Field(default_factory=list)
     response: str | None = None  # API 응답용
+    response_choices: list[str] = Field(default_factory=list)  # 후속 질문 후보
