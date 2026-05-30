@@ -42,8 +42,9 @@ pytestmark = pytest.mark.integration
 
 _EMBED_DIM = 1536
 
-# 추천 API 응답 SLO — functional-spec API-004 의 30초 timeout 과 동일 grain.
-_SLO_SECONDS: float = 30.0
+# 모의 의존성만 쓰는 hermetic happy path 의 wall-clock 상한. 네트워크·실제
+# 임베딩이 끼어들면 깨지는 회귀 가드로, 운영 timeout (30s) 보다 훨씬 엄격하다.
+_FAST_PATH_SECONDS: float = 3.0
 
 # 내부 인증이 추천 엔드포인트에 적용되므로 모든 요청은 토큰 + 사용자 헤더를 동봉한다.
 _RECOMMEND_PATH = "/api/v1/ai/recommend"
@@ -209,13 +210,18 @@ def _build_clients(
     )
 
 
-def _valid_payload() -> dict[str, Any]:
-    """RecommendRequest 검증을 통과하는 유효 페이로드."""
+def _valid_payload(*, current_tracks: list[str] | None = None) -> dict[str, Any]:
+    """RecommendRequest 검증을 통과하는 유효 페이로드.
+
+    Args:
+        current_tracks: 현재 선택 트랙. ``None`` (1학년 — 트랙 미선택) 이면 빈
+            리스트로, 2학년+ 페르소나는 정확히 2 개를 넘긴다.
+    """
     return {
         "admission_year": 2025,
         "college": "C1",
         "department": "컴퓨터공학부",
-        "current_tracks": [],
+        "current_tracks": current_tracks or [],
         "interests": ["IT/인터넷"],
         "dev_interests": ["AI"],
         "work_values": ["성장성"],
@@ -236,14 +242,28 @@ def _override_clients(clients: PipelineClients) -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_recommend_happy_path_returns_four_part_envelope() -> None:
-    """유효 입력 + mock boundary 로 200 + 4 부분 묶음 envelope 을 반환한다."""
+@pytest.mark.parametrize(
+    ("persona", "current_tracks"),
+    [
+        ("1학년 트랙 미선택", []),
+        ("2학년+ 트랙 선택 완료", ["in0", "in1"]),
+    ],
+)
+def test_recommend_happy_path_returns_four_part_envelope(
+    persona: str, current_tracks: list[str]
+) -> None:
+    """유효 입력 + mock boundary 로 200 + 4 부분 묶음 envelope 을 반환한다.
+
+    1학년 (트랙 미선택) 과 2학년+ (트랙 선택 완료) 두 페르소나 모두 동일한
+    4 부분 묶음 응답을 반환하는지 요청부터 응답까지 한 흐름에서 검증한다.
+    """
     clients = _build_clients()
     _override_clients(clients)
 
+    payload = _valid_payload(current_tracks=current_tracks)
     start = time.perf_counter()
     with TestClient(app) as client:
-        response = client.post(_RECOMMEND_PATH, json=_valid_payload(), headers=_AUTH_HEADERS)
+        response = client.post(_RECOMMEND_PATH, json=payload, headers=_AUTH_HEADERS)
     elapsed = time.perf_counter() - start
 
     assert response.status_code == 200
@@ -256,8 +276,8 @@ def test_recommend_happy_path_returns_four_part_envelope() -> None:
     assert data["roadmap"]["stages"], "로드맵 4 단계가 채워져야 한다"
     assert data["explanation"]["text"] == "추천 결과 종합 설명입니다."
 
-    # 30 초 SLO 자동 검증 — mock 환경에서 훨씬 빠르게 통과해야 한다.
-    assert elapsed < _SLO_SECONDS
+    # hermetic 경로 속도 회귀 가드 — 모의 환경에서 3 초 안에 끝나야 한다.
+    assert elapsed < _FAST_PATH_SECONDS
 
 
 def test_recommend_validation_failure_returns_422_envelope() -> None:
