@@ -4,7 +4,21 @@
 순수 직렬화 출력만 비교한다.
 """
 
-from tracktory.graph.nodes.profile_embed import ProfileEmbedNode
+from pathlib import Path
+
+from tracktory.graph.nodes.profile_embed import (
+    ProfileEmbedNode,
+    _expand_dev_interests,
+)
+
+
+def _template_only_node() -> ProfileEmbedNode:
+    """흥미 분야 확장을 끈 노드 — 템플릿 직렬화 자체만 검증하기 위함.
+
+    존재하지 않는 사전 경로를 주면 확장 매핑이 비어 치환이 일어나지 않는다
+    (사전 부재 시 확장 skip 은 노드의 계약).
+    """
+    return ProfileEmbedNode(dev_keywords_path=Path("__no_such_keywords__.yaml"))
 
 
 def _valid_normalized() -> dict[str, object]:
@@ -91,9 +105,9 @@ def test_embed_output_matches_snapshot() -> None:
 
     템플릿 규칙이 의도치 않게 바뀌면 임베딩 공간이 흔들리므로, 정해진 입력에
     대한 출력 문장을 스냅샷으로 잠근다. 템플릿 변경이 의도적이면 본 스냅샷도
-    함께 갱신한다.
+    함께 갱신한다. 흥미 분야 확장은 별도 테스트가 담당하므로 여기서는 끈다.
     """
-    node = ProfileEmbedNode()
+    node = _template_only_node()
     text = node({"normalized_profile": _valid_normalized()})["profile_text"]
     assert text == (
         "IT/인터넷 분야에 관심이 많은, AI 개발에 흥미가 있는, "
@@ -105,9 +119,9 @@ def test_embed_multivalue_uses_distinct_value_separator() -> None:
     """한 절의 여러 값은 절 구분자(', ')와 다른 기호(' · ')로 이어 붙는다.
 
     값 경계와 절 경계가 같은 구분자면 읽을 때 섞이므로, 다값 케이스의
-    정확한 출력을 스냅샷으로 잠근다.
+    정확한 출력을 스냅샷으로 잠근다. 흥미 분야 확장은 끄고 구분자만 본다.
     """
-    node = ProfileEmbedNode()
+    node = _template_only_node()
     profile = _valid_normalized()
     profile["dev_interests"] = ["AI", "데이터"]
     profile["work_values"] = ["성장성", "워라벨"]
@@ -116,3 +130,40 @@ def test_embed_multivalue_uses_distinct_value_separator() -> None:
         "IT/인터넷 분야에 관심이 많은, AI · 데이터 개발에 흥미가 있는, "
         "성장성 · 워라벨 가치를 중시하는, 대기업 취업을 선호하는 학생입니다."
     )
+
+
+def test_embed_expands_known_dev_interest() -> None:
+    """확장 사전에 정의된 흥미 분야는 직무 어휘 키워드로 치환되어 문장에 반영된다."""
+    node = ProfileEmbedNode()
+    text = node({"normalized_profile": _valid_normalized()})["profile_text"]
+    # "AI" 가 직무 검색 어휘(머신러닝 등)를 포함한 키워드로 확장된다.
+    assert "머신러닝" in text
+    assert "AI 개발에 흥미가 있는" not in text
+
+
+def test_embed_passes_through_unknown_dev_interest() -> None:
+    """확장 사전에 없는 흥미 분야는 원본 값 그대로 문장에 남는다 (신규 값 graceful)."""
+    node = ProfileEmbedNode()
+    profile = _valid_normalized()
+    profile["dev_interests"] = ["미정의분야"]
+    text = node({"normalized_profile": profile})["profile_text"]
+    assert "미정의분야 개발에 흥미가 있는" in text
+
+
+def test_missing_keywords_file_disables_expansion() -> None:
+    """확장 사전 파일이 없으면 치환 없이 원본 값으로 직렬화한다 (확장은 선택 기능)."""
+    node = _template_only_node()
+    text = node({"normalized_profile": _valid_normalized()})["profile_text"]
+    assert "AI 개발에 흥미가 있는" in text
+    assert "머신러닝" not in text
+
+
+def test_expand_dev_interests_does_not_mutate_original() -> None:
+    """확장은 사본에만 적용하고 원본 프로필 dict 은 건드리지 않는다.
+
+    다른 노드가 같은 normalized_profile 을 원본 값으로 읽으므로, 흥미 분야
+    치환이 원본을 변형하면 안 된다.
+    """
+    profile = _valid_normalized()
+    _expand_dev_interests(profile, {"AI": "AI(머신러닝)"})
+    assert profile["dev_interests"] == ["AI"]

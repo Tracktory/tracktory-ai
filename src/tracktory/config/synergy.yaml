@@ -61,12 +61,14 @@ slots:
 #
 # top_k.default  : 첫 인상 신뢰도 (k=3, 첫 화면 깔끔)
 # top_k.expanded : UI "더 보기" 요청 시 (k=5, 탐색 욕구)
-# min_job_similarity 직관 할당: 0.3 (synergy [0,1] 의 하위 1/3 컷)
+# min_job_similarity 0.2: 실측으로 정한 컷. 흥미 분야를 직무 어휘로 확장한 프로필은
+#   적합 직무를 약 0.28~0.33 으로, 적합 직무가 없는 경우는 약 0.12~0.14 로 잡는다.
+#   두 분포 사이 갭(0.2)에 컷을 두어 "희석됐지만 진짜 매칭"과 "매칭 없음"을 가른다.
 job_matching:
   top_k:
     default: 3
     expanded: 5
-  min_job_similarity: 0.3
+  min_job_similarity: 0.2
   # ── 이수 과목 부스팅 (검색 결과 후처리 단계) ─────────────────────
   # 이수 과목이 직무의 tech_stacks ∪ competency_tags 와 겹치는 비율만큼
   # 검색 점수를 가산하여 재정렬한다.

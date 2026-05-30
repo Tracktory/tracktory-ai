@@ -9,6 +9,11 @@ LLM 직렬화는 동일 입력에서도 출력이 달라질 수 있어 파이프
 재정렬을 일괄 처리하므로, 자체 코드는 자연어 문장만 다음 단계로 넘긴다.
 ``completed_courses`` 는 이수 과목 집합 필터로만 사용되며 의미 직렬화에는
 포함하지 않는다.
+
+흥미 개발 분야 값은 추상적이라 직무 검색 인덱스의 구체 어휘와 격차가 커
+유사도가 낮게 잡힌다. 직렬화 직전 정적 확장 사전으로 직무 어휘에 가까운
+키워드로 바꿔 질의 신호를 키운다. 사전 확장은 검색 질의에만 영향을 주며
+직렬화의 결정론(동일 입력 = 동일 출력)을 깨지 않는다.
 """
 
 from pathlib import Path
@@ -21,6 +26,9 @@ from tracktory.graph.state import GraphState
 _DEFAULT_TEMPLATE_PATH = (
     Path(__file__).resolve().parents[2] / "config" / "profile_embed_template.yaml"
 )
+_DEFAULT_DEV_KEYWORDS_PATH = (
+    Path(__file__).resolve().parents[2] / "config" / "dev_interest_to_keywords.yaml"
+)
 
 
 class ProfileEmbedNode:
@@ -30,8 +38,13 @@ class ProfileEmbedNode:
     주입 없이 입력 dict 에 대한 직렬화 출력 문자열만 비교한다.
     """
 
-    def __init__(self, template_path: Path | None = None) -> None:
+    def __init__(
+        self,
+        template_path: Path | None = None,
+        dev_keywords_path: Path | None = None,
+    ) -> None:
         self._template = _load_template(template_path or _DEFAULT_TEMPLATE_PATH)
+        self._dev_keywords = _load_dev_keywords(dev_keywords_path or _DEFAULT_DEV_KEYWORDS_PATH)
 
     def __call__(self, state: GraphState) -> dict[str, Any]:
         """정규화된 프로필을 ``profile_text`` 한 필드만 채워 부분 state 로 반환한다.
@@ -54,7 +67,8 @@ class ProfileEmbedNode:
                 "trace": ["profile_embed:skip"],
             }
 
-        text = _serialize_profile(profile, self._template)
+        expanded = _expand_dev_interests(profile, self._dev_keywords)
+        text = _serialize_profile(expanded, self._template)
         return {
             "profile_text": text,
             "trace": ["profile_embed:ok"],
@@ -68,6 +82,38 @@ def _load_template(path: Path) -> dict[str, Any]:
     if not isinstance(loaded, dict):
         raise ValueError(f"Template file {path} must define a top-level mapping")
     return loaded
+
+
+def _load_dev_keywords(path: Path) -> dict[str, str]:
+    """흥미 개발 분야 확장 사전을 ``{원본값: 확장키워드}`` 매핑으로 로드한다.
+
+    파일이 없거나 ``keywords`` 매핑이 비어 있으면 빈 dict 을 반환해 확장을
+    건너뛴다 (확장 없이도 직렬화는 동작해야 하므로 부재를 오류로 보지 않음).
+    """
+    if not path.exists():
+        return {}
+    with path.open("r", encoding="utf-8") as f:
+        loaded = yaml.safe_load(f)
+    if not isinstance(loaded, dict):
+        return {}
+    keywords = loaded.get("keywords")
+    if not isinstance(keywords, dict):
+        return {}
+    return {str(k): str(v) for k, v in keywords.items()}
+
+
+def _expand_dev_interests(profile: dict[str, Any], dev_keywords: dict[str, str]) -> dict[str, Any]:
+    """``dev_interests`` 값을 확장 사전으로 치환한 프로필 사본을 반환한다.
+
+    원본 profile 은 변경하지 않는다 (다른 노드가 같은 normalized_profile 을
+    원본 값으로 읽어야 함). 사전에 없는 값은 그대로 두어 새 흥미 분야가
+    추가돼도 직렬화가 깨지지 않게 한다.
+    """
+    values = profile.get("dev_interests")
+    if not values or not dev_keywords:
+        return profile
+    expanded = [dev_keywords.get(v, v) for v in values]
+    return {**profile, "dev_interests": expanded}
 
 
 def _serialize_profile(profile: dict[str, Any], template: dict[str, Any]) -> str:
