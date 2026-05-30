@@ -29,6 +29,8 @@ def register_exception_handlers(app: FastAPI) -> None:
 
     @app.exception_handler(StarletteHTTPException)
     async def http_exception_handler(request: Request, exc: StarletteHTTPException) -> JSONResponse:
+        if exc.status_code == 403:
+            return _error_response(ErrorResponseCode.FORBIDDEN_ERROR)
         if exc.status_code == 404:
             return _error_response(ErrorResponseCode.NOT_FOUND_ENDPOINT)
         if exc.status_code == 405:
