@@ -30,10 +30,12 @@ class CommonConfig:
 
 
 class Settings(BaseSettings):
-    ragflow_api_key: str = ""
-    ragflow_base_url: str = ""
-    ragflow_dataset_id: str = ""
-    ragflow_reranker_id: str = ""
+    ragflow_api_key: str
+    ragflow_base_url: str
+    ragflow_dataset_id: str
+    ragflow_reranker_id: str
+
+    openai_api_key: str | None = None
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
