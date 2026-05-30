@@ -120,6 +120,17 @@ def format_user_context(user_context: dict[str, Any] | None) -> str:
         ("이수 과목", completed_labels),
     ]
 
+    # 취업 선호 — nested dict (job_preference) 또는 평면 키 모두 대응
+    job_pref = user_context.get("job_preference") or {}
+    company_types = job_pref.get("company_types") if isinstance(job_pref, dict) else None
+    values = job_pref.get("values") if isinstance(job_pref, dict) else None
+    fields.extend(
+        [
+            ("희망 기업 유형", company_types or user_context.get("company_types")),
+            ("중요 가치", values or user_context.get("job_values")),
+        ]
+    )
+
     lines: list[str] = []
     for label, value in fields:
         if not value:
