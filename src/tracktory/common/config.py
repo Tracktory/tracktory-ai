@@ -37,6 +37,10 @@ class Settings(BaseSettings):
 
     openai_api_key: str | None = None
 
+    # 메인 백엔드(Spring)와 공유하는 내부 호출 토큰. 미설정(빈 문자열)이면
+    # 내부 인증 의존성이 deny-by-default 로 모든 호출을 거부한다.
+    ai_internal_token: str = ""
+
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 

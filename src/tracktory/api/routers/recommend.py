@@ -10,17 +10,23 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from langgraph.graph.state import CompiledStateGraph
 
+from tracktory.api.auth import get_user_id, verify_internal_token
 from tracktory.api.dependencies import get_recommendation_pipeline
 from tracktory.api.models.recommend import RecommendRequest, RecommendResponse
 from tracktory.api.response.success import SuccessResponse
 
-router = APIRouter(prefix="/recommend", tags=["recommend"])
+router = APIRouter(
+    prefix="/api/v1/ai/recommend",
+    tags=["recommend"],
+    dependencies=[Depends(verify_internal_token)],
+)
 
 
 @router.post("", response_model=SuccessResponse[RecommendResponse])
 async def recommend(
     request: RecommendRequest,
     graph: Annotated[CompiledStateGraph, Depends(get_recommendation_pipeline)],
+    user_id: Annotated[str, Depends(get_user_id)],
 ) -> SuccessResponse[RecommendResponse]:
     """추천 그래프를 실행하고 4 부분 묶음 응답을 반환한다.
 
@@ -30,7 +36,7 @@ async def recommend(
     """
     final_state = await graph.ainvoke(
         {
-            "user_id": "anonymous",
+            "user_id": user_id,
             "raw_input": request.model_dump(),
         }
     )

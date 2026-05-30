@@ -1,6 +1,6 @@
 """추천 API 엔드포인트의 그래프 파이프라인 연결 통합 테스트.
 
-``POST /recommend`` 가 FastAPI 의 dependency_overrides 를 통해 mock boundary
+``POST /api/v1/ai/recommend`` 가 FastAPI 의 dependency_overrides 를 통해 mock boundary
 4 종을 주입받은 컴파일된 추천 그래프를 실행하고, 4 부분 묶음 응답을 반환하는
 계약을 검증한다. 실제 RAGFlow / LLM / Repository 호출은 발생하지 않는다.
 
@@ -29,6 +29,7 @@ from tracktory.api.dependencies import (
     get_recommendation_pipeline,
 )
 from tracktory.api.main import app
+from tracktory.common.config import settings as app_settings
 from tracktory.graph.models import Course, Explanation, Track
 from tracktory.graph.pipeline import PipelineClients, get_recommendation_graph
 from tracktory.llm.llm_client import LLMClient
@@ -43,6 +44,11 @@ _EMBED_DIM = 1536
 
 # 추천 API 응답 SLO — functional-spec API-004 의 30초 timeout 과 동일 grain.
 _SLO_SECONDS: float = 30.0
+
+# 내부 인증이 추천 엔드포인트에 적용되므로 모든 요청은 토큰 + 사용자 헤더를 동봉한다.
+_RECOMMEND_PATH = "/api/v1/ai/recommend"
+_TEST_TOKEN = "test-internal-token"
+_AUTH_HEADERS = {"X-Internal-Token": _TEST_TOKEN, "X-User-Id": "u-1"}
 
 
 # ---------------------------------------------------------------------------
@@ -63,6 +69,12 @@ def _reset_dependency_overrides() -> Iterator[None]:
     """전역 ``app.dependency_overrides`` 가 테스트 간 누출되지 않도록 격리."""
     yield
     app.dependency_overrides.clear()
+
+
+@pytest.fixture(autouse=True)
+def _set_internal_token(monkeypatch: pytest.MonkeyPatch) -> None:
+    """내부 인증 의존성이 검증하는 서버 토큰을 알려진 값으로 고정한다."""
+    monkeypatch.setattr(app_settings, "ai_internal_token", _TEST_TOKEN)
 
 
 # ---------------------------------------------------------------------------
@@ -231,7 +243,7 @@ def test_recommend_happy_path_returns_four_part_envelope() -> None:
 
     start = time.perf_counter()
     with TestClient(app) as client:
-        response = client.post("/recommend", json=_valid_payload())
+        response = client.post(_RECOMMEND_PATH, json=_valid_payload(), headers=_AUTH_HEADERS)
     elapsed = time.perf_counter() - start
 
     assert response.status_code == 200
@@ -257,7 +269,7 @@ def test_recommend_validation_failure_returns_422_envelope() -> None:
     payload["interests"] = []  # min_length=1 위반
 
     with TestClient(app) as client:
-        response = client.post("/recommend", json=payload)
+        response = client.post(_RECOMMEND_PATH, json=payload, headers=_AUTH_HEADERS)
 
     # 프로젝트 envelope 표준은 RequestValidationError 를 BAD_REQUEST_ERROR (400)
     # 로 매핑한다 (exception_handlers.validation_handler). FastAPI 의 기본 422
@@ -282,7 +294,7 @@ def test_recommend_graph_internal_errors_map_to_500() -> None:
     app.dependency_overrides[get_recommendation_pipeline] = lambda: _FakeGraph()
 
     with TestClient(app) as client:
-        response = client.post("/recommend", json=_valid_payload())
+        response = client.post(_RECOMMEND_PATH, json=_valid_payload(), headers=_AUTH_HEADERS)
 
     assert response.status_code == 500
     body = response.json()
@@ -299,7 +311,7 @@ def test_recommend_boundary_exception_maps_to_500() -> None:
     app.dependency_overrides[get_recommendation_pipeline] = lambda: _ExplodingGraph()
 
     with TestClient(app, raise_server_exceptions=False) as client:
-        response = client.post("/recommend", json=_valid_payload())
+        response = client.post(_RECOMMEND_PATH, json=_valid_payload(), headers=_AUTH_HEADERS)
 
     assert response.status_code == 500
     body = response.json()
@@ -325,7 +337,7 @@ def test_recommend_graph_missing_roadmap_maps_to_500() -> None:
     app.dependency_overrides[get_recommendation_pipeline] = lambda: _PartialGraph()
 
     with TestClient(app) as client:
-        response = client.post("/recommend", json=_valid_payload())
+        response = client.post(_RECOMMEND_PATH, json=_valid_payload(), headers=_AUTH_HEADERS)
 
     assert response.status_code == 500
     body = response.json()
@@ -340,8 +352,8 @@ def test_recommend_compiles_graph_once_across_requests() -> None:
     # lifespan shutdown 이 cache_clear 를 호출하므로 cache_info 검증은
     # ``with`` 블록 내부에서 수행해야 유효한 카운터를 본다.
     with TestClient(app) as client:
-        client.post("/recommend", json=_valid_payload())
-        client.post("/recommend", json=_valid_payload())
+        client.post(_RECOMMEND_PATH, json=_valid_payload(), headers=_AUTH_HEADERS)
+        client.post(_RECOMMEND_PATH, json=_valid_payload(), headers=_AUTH_HEADERS)
 
         info = get_recommendation_graph.cache_info()  # type: ignore[attr-defined]
         assert info.hits >= 1, f"expected cache hit on 2nd request, got {info}"
