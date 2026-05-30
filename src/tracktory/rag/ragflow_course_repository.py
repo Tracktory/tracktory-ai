@@ -23,11 +23,11 @@ from __future__ import annotations
 import logging
 import re
 from dataclasses import dataclass, field
-from typing import Literal
 
 from pydantic import ValidationError
 
 from tracktory.graph.models import Course
+from tracktory.rag.curriculum_lines import CourseTypeLabel, StageLabel, parse_course_line
 from tracktory.rag.hansung_catalog import match_track_name
 from tracktory.rag.ragflow_client import RagflowClient, RagflowDocument, RagflowError
 
@@ -41,27 +41,9 @@ _CURRICULUM_DOC_TYPE = "curriculum"
 # 교육과정 본문 형식:
 #   " 2학년 1학기"                                   ← 학년/학기 섹션 헤더
 #   "  - [전공선택] 공학프로그래밍 (V070044, 3학점)"   ← 과목 줄
+# 과목 줄 파싱·전공 판정은 ``curriculum_lines.parse_course_line`` 으로 트랙
+# 저장소와 공유한다. 본 모듈은 학년/학기 섹션 추적만 별도로 책임진다.
 _SECTION_RE = re.compile(r"(\d)\s*학년\s*(\d)\s*학기")
-_COURSE_LINE_RE = re.compile(r"-\s*\[([^\]]+)\]\s*(.+?)\s*\(([A-Za-z0-9]+)\s*,\s*(\d+)\s*학점\)")
-
-_StageLabel = Literal["foundation", "core", "application", "industry"]
-_CourseTypeLabel = Literal["전공필수", "전공선택", "교양"]
-
-# 과목구분 태그 → 학습 깊이 stage. 교양류는 매핑에 없어 자동 제외된다.
-_STAGE_BY_TAG: dict[str, _StageLabel] = {
-    "전공기초": "foundation",
-    "전공필수": "core",
-    "전공선택": "application",
-    "전공선택(상호인정)": "application",
-}
-# 과목구분 태그 → course_type. roadmap 노드는 {전공필수, 전공선택}만 통과시키므로
-# 전공기초는 전공선택으로 둔다(전공 계열 유지 — stage 가 foundation 으로 구분됨).
-_COURSE_TYPE_BY_TAG: dict[str, _CourseTypeLabel] = {
-    "전공기초": "전공선택",
-    "전공필수": "전공필수",
-    "전공선택": "전공선택",
-    "전공선택(상호인정)": "전공선택",
-}
 
 
 @dataclass
@@ -70,8 +52,8 @@ class _CourseAccum:
 
     course_name: str
     credits: int
-    stage: _StageLabel
-    course_type: _CourseTypeLabel
+    stage: StageLabel
+    course_type: CourseTypeLabel
     track_ids: list[str] = field(default_factory=list)
     grades: set[int] = field(default_factory=set)
     semesters: set[int] = field(default_factory=set)
@@ -149,22 +131,17 @@ class RagflowCourseRepository:
                 term = int(section.group(2))
                 current_semester = (current_grade - 1) * 2 + term
                 continue
-            match = _COURSE_LINE_RE.search(line)
-            if match is None:
-                continue
-            tag = match.group(1).strip()
-            stage = _STAGE_BY_TAG.get(tag)
-            course_type = _COURSE_TYPE_BY_TAG.get(tag)
-            if stage is None or course_type is None:
-                continue  # 교양류 → 추천 대상 아님, 제외.
-            code = match.group(3)
+            parsed = parse_course_line(line)
+            if parsed is None:
+                continue  # 과목 줄 아님 또는 교양류(비전공) → 추천 대상 아님, 제외.
+            code = parsed.course_id
             entry = accum.get(code)
             if entry is None:
                 entry = _CourseAccum(
-                    course_name=match.group(2).strip(),
-                    credits=int(match.group(4)),
-                    stage=stage,
-                    course_type=course_type,
+                    course_name=parsed.course_name,
+                    credits=parsed.credits,
+                    stage=parsed.stage,
+                    course_type=parsed.course_type,
                 )
                 accum[code] = entry
             if track_id not in entry.track_ids:
