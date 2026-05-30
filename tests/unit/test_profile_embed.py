@@ -57,3 +57,62 @@ def test_embed_excludes_completed_courses_from_text() -> None:
     result = node({"normalized_profile": profile})
     assert "자료구조" not in result["profile_text"]
     assert "알고리즘" not in result["profile_text"]
+
+
+def test_embed_reflects_all_semantic_fields() -> None:
+    """관심사·흥미·취업 가치·선호 회사 유형·공부해본 분야 값이 모두 문장에 반영된다."""
+    node = ProfileEmbedNode()
+    profile = _valid_normalized()
+    profile["interests"] = ["IT/인터넷"]
+    profile["dev_interests"] = ["AI"]
+    profile["work_values"] = ["성장성", "워라벨"]
+    profile["company_types"] = ["대기업", "스타트업"]
+    profile["ncs_studied"] = ["정보기술"]
+    text = node({"normalized_profile": profile})["profile_text"]
+    for value in ["IT/인터넷", "AI", "성장성", "워라벨", "대기업", "스타트업", "정보기술"]:
+        assert value in text, f"{value} 가 직렬화 문장에 누락됨"
+
+
+def test_embed_skips_empty_optional_clauses() -> None:
+    """선택 입력(취업 가치·공부해본 분야)이 비어 있으면 해당 절을 건너뛴다."""
+    node = ProfileEmbedNode()
+    profile = _valid_normalized()
+    profile["work_values"] = []
+    profile["ncs_studied"] = []
+    text = node({"normalized_profile": profile})["profile_text"]
+    assert "가치를 중시하는" not in text
+    assert "공부한 경험이 있는" not in text
+    # 필수 입력 절 + suffix 는 항상 남아 문장이 완결된다.
+    assert text.endswith("학생입니다.")
+
+
+def test_embed_output_matches_snapshot() -> None:
+    """결정론적 직렬화 결과를 정확한 문자열로 고정한다 (회귀 방지).
+
+    템플릿 규칙이 의도치 않게 바뀌면 임베딩 공간이 흔들리므로, 정해진 입력에
+    대한 출력 문장을 스냅샷으로 잠근다. 템플릿 변경이 의도적이면 본 스냅샷도
+    함께 갱신한다.
+    """
+    node = ProfileEmbedNode()
+    text = node({"normalized_profile": _valid_normalized()})["profile_text"]
+    assert text == (
+        "IT/인터넷 분야에 관심이 많은, AI 개발에 흥미가 있는, "
+        "성장성 가치를 중시하는, 대기업 취업을 선호하는 학생입니다."
+    )
+
+
+def test_embed_multivalue_uses_distinct_value_separator() -> None:
+    """한 절의 여러 값은 절 구분자(', ')와 다른 기호(' · ')로 이어 붙는다.
+
+    값 경계와 절 경계가 같은 구분자면 읽을 때 섞이므로, 다값 케이스의
+    정확한 출력을 스냅샷으로 잠근다.
+    """
+    node = ProfileEmbedNode()
+    profile = _valid_normalized()
+    profile["dev_interests"] = ["AI", "데이터"]
+    profile["work_values"] = ["성장성", "워라벨"]
+    text = node({"normalized_profile": profile})["profile_text"]
+    assert text == (
+        "IT/인터넷 분야에 관심이 많은, AI · 데이터 개발에 흥미가 있는, "
+        "성장성 · 워라벨 가치를 중시하는, 대기업 취업을 선호하는 학생입니다."
+    )

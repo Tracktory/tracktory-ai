@@ -52,3 +52,27 @@ def test_top_k_default_zero_raises() -> None:
         JobMatchingConfig.model_validate(
             {"top_k": {"default": 0, "expanded": 5}, "min_job_similarity": 0.3}
         )
+
+
+def test_completed_course_boost_loaded_from_real_yaml(real_synergy_yaml_path: Path) -> None:
+    cfg = JobMatchingConfig.load_from_yaml(real_synergy_yaml_path)
+    assert 0.0 <= cfg.completed_course_boost.weight <= 1.0
+
+
+def test_completed_course_boost_defaults_when_section_missing() -> None:
+    """``completed_course_boost`` 섹션이 없어도 기본값으로 검증을 통과한다."""
+    cfg = JobMatchingConfig.model_validate(
+        {"top_k": {"default": 3, "expanded": 5}, "min_job_similarity": 0.3}
+    )
+    assert cfg.completed_course_boost.weight == pytest.approx(0.15)
+
+
+def test_completed_course_boost_weight_above_one_raises() -> None:
+    with pytest.raises(ValidationError):
+        JobMatchingConfig.model_validate(
+            {
+                "top_k": {"default": 3, "expanded": 5},
+                "min_job_similarity": 0.3,
+                "completed_course_boost": {"weight": 1.1},
+            }
+        )

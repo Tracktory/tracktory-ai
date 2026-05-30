@@ -67,3 +67,12 @@ job_matching:
     default: 3
     expanded: 5
   min_job_similarity: 0.3
+  # ── 이수 과목 부스팅 (검색 결과 후처리 단계) ─────────────────────
+  # 이수 과목이 직무의 tech_stacks ∪ competency_tags 와 겹치는 비율만큼
+  # 검색 점수를 가산하여 재정렬한다.
+  #   boost = weight · |이수 과목 ∩ 직무 토큰| / |직무 토큰|
+  #   new_score = min(score + boost, 1.0)
+  # 이수 과목은 의미 임베딩 단계에 절대 투입하지 않으며, 본 신호는 검색이
+  # 끝난 뒤에만 반영한다. weight 는 직관 할당값 (ablation 대상). 0 이면 비활성.
+  completed_course_boost:
+    weight: 0.15
