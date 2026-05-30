@@ -20,109 +20,39 @@ import argparse
 import json
 import logging
 import textwrap
-import time
-from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
-from langchain_core.messages import HumanMessage
-from langchain_core.runnables import RunnableConfig
-from langchain_openai import ChatOpenAI
-from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.checkpoint.sqlite import SqliteSaver
 from langgraph.graph.state import CompiledStateGraph
 
-from tracktory.chatbot.graph import build_chatbot_graph
+from tracktory.chatbot.factory import CHECKPOINT_DB_PATH, build_default_chatbot_graph
 from tracktory.chatbot.logging_setup import setup_logging
-from tracktory.chatbot.rag.ragflow import RagFlowChatbotRetriever
-from tracktory.common.config import config as common_config
-from tracktory.prompts.chatbot.general_advice import GENERAL_ADVICE_PROMPT
-from tracktory.prompts.chatbot.intent import (
-    INTENT_CLASSIFIER_PROMPT,
-    IntentClassification,
-)
-from tracktory.prompts.chatbot.rag_response import (
-    RAG_RESPONSE_PROMPT,
-    ChatbotResponse,
-)
-
-CHECKPOINT_DB_PATH = common_config.PROJECT_ROOT / "data" / "checkpoints" / "chatbot.sqlite"
+from tracktory.chatbot.runner import run_chat_turn
 
 _EXIT_COMMANDS = {"exit", "quit"}
-
-# 노드 출력 dict key 별 한 줄 요약 포맷터
-_FIELD_FORMATTERS: dict[str, Callable[[Any], str]] = {
-    "messages": lambda v: f"messages=+{len(v)}",
-    "retrieved_docs": lambda v: f"retrieved_docs={len(v)}건",
-    "search_keywords": lambda v: f"keywords={v}",
-    "response": lambda v: f"response=({len(v)}자)",
-    "response_choices": lambda v: f"choices={len(v)}개",
-}
-
-
-def _build_graph(checkpointer: BaseCheckpointSaver) -> CompiledStateGraph:
-    """4 종 의존성 + checkpointer 주입해서 그래프 컴파일"""
-    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
-    return build_chatbot_graph(
-        checkpointer=checkpointer,
-        classifier=INTENT_CLASSIFIER_PROMPT | llm.with_structured_output(IntentClassification),
-        retriever=RagFlowChatbotRetriever(),
-        rag_response_chain=RAG_RESPONSE_PROMPT | llm.with_structured_output(ChatbotResponse),
-        general_advice_chain=GENERAL_ADVICE_PROMPT | llm.with_structured_output(ChatbotResponse),
-    )
-
-
-def _summarize(node_output: Any) -> str:
-    """노드 출력 dict 를 한 줄 로그 요약으로 (response 본문은 별도 DEBUG 로깅)"""
-    if not isinstance(node_output, dict):
-        return repr(node_output)
-    parts: list[str] = []
-    for k, v in node_output.items():
-        if formatter := _FIELD_FORMATTERS.get(k):
-            parts.append(formatter(v))
-        elif isinstance(v, str) and len(v) > 60:
-            parts.append(f"{k}={v[:60]!r}...")
-        else:
-            parts.append(f"{k}={v!r}")
-    return ", ".join(parts)
 
 
 def _run_turn(
     graph: CompiledStateGraph,
     query: str,
-    config: RunnableConfig,
+    thread_id: str,
     logger: logging.Logger,
     user_context: dict[str, Any],
 ) -> tuple[str, list[str], float] | None:
-    """한 턴 실행 — (response, choices, elapsed) 반환. 에러 시 None"""
-    logger.info("질문: %s", query)
-    start = time.perf_counter()
-
-    input_state = {
-        "user_context": user_context,
-        "messages": [HumanMessage(content=query)],
-    }
-
+    """공용 runner 호출 + 콘솔 후처리 (에러·빈 응답 폴백, 빈 줄 구분)"""
     try:
-        for event in graph.stream(input_state, config=config):
-            for node_name, node_output in event.items():
-                logger.info("[%s] %s", node_name, _summarize(node_output))
+        response, choices, elapsed = run_chat_turn(
+            graph, message=query, user_context=user_context, thread_id=thread_id
+        )
     except Exception as exc:
         logger.exception("그래프 실행 중 에러")
         print(f"\n[에러] {exc}\n")
         return None
 
-    elapsed = time.perf_counter() - start
-    state = graph.get_state(config).values
-    response = state.get("response") or "(응답 없음)"
-    choices = state.get("response_choices") or []
-
-    logger.info("응답 완료 (%.2fs, choices=%d개)", elapsed, len(choices))
-    # 응답 본문·선택지는 DEBUG — 파일엔 저장, 콘솔엔 verbose 일 때만 (중복 방지)
-    logger.debug("응답 본문:\n%s", response)
-    logger.debug("후속 질문: %s", choices)
-    _log_blank_lines(logger, count=2)  # turn 사이 시각적 구분
-
+    if not response:
+        response = "(응답 없음)"
+    _log_blank_lines(logger, count=2)
     return response, choices, elapsed
 
 
@@ -213,8 +143,7 @@ def main() -> None:
     CHECKPOINT_DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
     with SqliteSaver.from_conn_string(str(CHECKPOINT_DB_PATH)) as saver:
-        graph = _build_graph(checkpointer=saver)
-        config: RunnableConfig = {"configurable": {"thread_id": args.thread_id}}
+        graph = build_default_chatbot_graph(checkpointer=saver)
 
         print("\n챗봇 시작. 'exit' 또는 Ctrl+C 로 종료\n")
 
@@ -231,7 +160,7 @@ def main() -> None:
                 print("\n종료")
                 break
 
-            if result := _run_turn(graph, query, config, logger, user_context):
+            if result := _run_turn(graph, query, args.thread_id, logger, user_context):
                 _print_response(*result)
 
 
