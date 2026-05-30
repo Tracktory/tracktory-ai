@@ -33,6 +33,8 @@ def register_exception_handlers(app: FastAPI) -> None:
             return _error_response(ErrorResponseCode.NOT_FOUND_ENDPOINT)
         if exc.status_code == 405:
             return _error_response(ErrorResponseCode.UNSUPPORTED_HTTP_METHOD)
+        if exc.status_code >= 500:
+            return _error_response(ErrorResponseCode.SERVER_ERROR)
         return _error_response(ErrorResponseCode.BAD_REQUEST_ERROR)
 
     @app.exception_handler(Exception)
