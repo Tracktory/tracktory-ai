@@ -1,0 +1,11012 @@
+courses:
+- course_id: CTA0001
+  course_name: 패션비지니스 이해
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 패션마케팅트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTA0002
+  course_name: 패션디자인
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 패션디자인트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTA0003
+  course_name: 패션 문화 콘텐츠
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 패션크리에이티브디렉션트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTA0005
+  course_name: 영상애니메이션 기초
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTA0009
+  course_name: VMD와 전시무대디자인
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - VMDㆍ전시디자인트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTA0012
+  course_name: 게임그래픽기초
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 게임그래픽디자인트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTA0013
+  course_name: 뷰티디자인기초
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTA0014
+  course_name: UX 디자인의 이해
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - UX/UI디자인트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTA0016
+  course_name: 기초미디어디자인
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 미디어디자인트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTA0017
+  course_name: 기초시각디자인
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 시각디자인트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTE0001
+  course_name: 컴퓨터프로그래밍
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTE0002
+  course_name: 웹프로그래밍기초
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 웹공학트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTE0003
+  course_name: 전자공학의 기초
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 전자트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTE0025
+  course_name: 시스템 반도체의 기초
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 시스템반도체트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTE0028
+  course_name: 산업공학개론
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 산업공학트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTE0029
+  course_name: 데이터리터러시
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 응용산업데이터공학트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTH0010
+  course_name: 무용기본실기
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  - 한국무용전공
+  - 현대무용전공
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTH0013
+  course_name: 동양화 기초회화
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 동양화전공
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTH0014
+  course_name: 서양화 기초회화
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 서양화전공
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTH0016
+  course_name: 디지털과 지식콘텐츠
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 디지털인문정보학트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTH0021
+  course_name: 정보미디어와 리터러시
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 지식정보문화트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTH0022
+  course_name: 역사문화 큐레이션의 이해
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 역사문화큐레이션트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTH0023
+  course_name: 역사콘텐츠의 이해
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 역사콘텐츠트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTH0025
+  course_name: 영화로 읽는 영미문화콘텐츠
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 영미문화콘텐츠트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTH0026
+  course_name: 영어 시스템의 이해
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 영미언어정보트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTH0027
+  course_name: 한국어교육의 이해
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 한국어교육트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTS0001
+  course_name: 글로벌시대의 국제통상
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 국제무역트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTS0002
+  course_name: 글로벌 비즈니스 마인드
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 글로벌비즈니스트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTS0009
+  course_name: 경영학의 이해
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 기업경영트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTS0011
+  course_name: 회계의 이해
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 회계ㆍ재무경영트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTS0013
+  course_name: 경제원론I(미시경제기초)
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 기업ㆍ경제분석트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTS0015
+  course_name: 스마트도시와 교통
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 스마트도시ㆍ교통계획트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTS0016
+  course_name: 경제 금융투자 이해(거시경제기초)
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 경제금융투자트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTS0018
+  course_name: 비즈니스 애널리틱스의 이해
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 비즈니스애널리틱스트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTS0019
+  course_name: AI시대의 공공행정
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 공공행정트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: CTS0020
+  course_name: AI시대의 공공정책
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 법&정책트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: M020004
+  course_name: 인쇄광고 비주얼과 카피
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미디어디자인트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: M020005
+  course_name: 가상현실 애니메이션 캡스톤디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 게임그래픽디자인트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: M020022
+  course_name: 통계로 읽어보는 빅데이터
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 경제금융투자트랙
+  - 공공행정트랙
+  - 국제무역트랙
+  - 글로벌비즈니스트랙
+  - 기업ㆍ경제분석트랙
+  - 기업경영트랙
+  - 법&정책트랙
+  - 비즈니스애널리틱스트랙
+  - 스마트도시ㆍ교통계획트랙
+  - 회계ㆍ재무경영트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: M020025
+  course_name: 스토리텔링으로 본 역사와 문학
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  - 한국무용전공
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: M020026
+  course_name: AI를 이용한 주식가치평가
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  - 회계ㆍ재무경영트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: M020028
+  course_name: 언어와 데이터
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털인문정보학트랙
+  - 영미언어정보트랙
+  - 지식정보문화트랙
+  - 한국어교육트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: M020029
+  course_name: 읽고 보기 쉬운 편집 디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: M020035
+  course_name: 세계 속의 코리아타운 메타버스
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 스마트도시ㆍ교통계획트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: M020036
+  course_name: 언어 데이터와 챗봇
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 지식정보문화트랙
+  - 한국어교육트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: M020037
+  course_name: 비즈니스 데이터 사이언스
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 경제금융투자트랙
+  - 공공행정트랙
+  - 국제무역트랙
+  - 글로벌비즈니스트랙
+  - 기업ㆍ경제분석트랙
+  - 기업경영트랙
+  - 법&정책트랙
+  - 비즈니스애널리틱스트랙
+  - 스마트도시ㆍ교통계획트랙
+  - 회계ㆍ재무경영트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: M020039
+  course_name: 의료 인공지능
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: M020040
+  course_name: 논리적 사고와 프로그래밍
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 웹공학트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: M033013
+  course_name: SAP 구매 프로세스
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 산업공학트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: M033015
+  course_name: SAP 관리회계 프로세스
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 산업공학트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: M037001
+  course_name: 만화 조형과 색채연구
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: M037003
+  course_name: 만화(웹툰) 창작
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: M039001
+  course_name: 영상촬영 스튜디오
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - ICT융합디자인학과
+  - 미디어디자인트랙
+  - 시각디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: M039002
+  course_name: 사진촬영 스튜디오
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - ICT융합디자인학과
+  - 미디어디자인트랙
+  - 시각디자인트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: M039003
+  course_name: 디지털 촬영 입문
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - ICT융합디자인학과
+  - 미디어디자인트랙
+  - 시각디자인트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: M03A002
+  course_name: 디지털 영상 합성
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: M03A003
+  course_name: 시네마틱 제작연구
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: P010021
+  course_name: 한국어의 이해
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 한국어교육트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P010053
+  course_name: 이용자인터페이스
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털인문정보학트랙
+  - 지식정보문화트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P010055
+  course_name: 문화콘텐츠와 저작권
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털인문정보학트랙
+  - 지식정보문화트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P010060
+  course_name: 기록관리의 이해
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털인문정보학트랙
+  - 지식정보문화트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P010075
+  course_name: 정보학의 이해
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털인문정보학트랙
+  - 지식정보문화트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P010077
+  course_name: 분류의 이해
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털인문정보학트랙
+  - 지식정보문화트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P010092
+  course_name: 소셜데이터의 이해
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털인문정보학트랙
+  - 지식정보문화트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P010098
+  course_name: 그리스로마문화와 성서이야기
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 영미문화콘텐츠트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P010115
+  course_name: 한국어교육자료 종합설계
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 한국어교육트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: P010116
+  course_name: 한국어교육실습
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 한국어교육트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: P010119
+  course_name: 데이터베이스 기초
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털인문정보학트랙
+  - 지식정보문화트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P010124
+  course_name: 한국어 이해교육의 원리와 실제
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 한국어교육트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P010125
+  course_name: 한국어 교수법의 이해와 적용
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 한국어교육트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: P010127
+  course_name: 실용영문법Ⅰ
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 영미언어정보트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P010129
+  course_name: Job English
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 영미문화콘텐츠트랙
+  - 영미언어정보트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: P010130
+  course_name: English Writing Skills
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 영미문화콘텐츠트랙
+  - 영미언어정보트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P010133
+  course_name: 한국어 표현교육의 원리와 실제
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 한국어교육트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P010134
+  course_name: 한국어 발음교육의 원리와 실제
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 한국어교육트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P010138
+  course_name: Business English
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 국제무역트랙
+  - 영미문화콘텐츠트랙
+  - 영미언어정보트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: P010141
+  course_name: 영어발음의 실제 캡스톤디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 영미문화콘텐츠트랙
+  - 영미언어정보트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: P010143
+  course_name: 카테고리와 태그
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털인문정보학트랙
+  - 지식정보문화트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P010146
+  course_name: English Pronunciation
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 영미언어정보트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P010147
+  course_name: 영어 데이터 분석 캡스톤디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 영미언어정보트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: P010149
+  course_name: 영미문화 스토리텔링
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 영미문화콘텐츠트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P010150
+  course_name: 드라마로 보는 영미사회
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 영미문화콘텐츠트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P010152
+  course_name: 영어 구문 해석 Ⅰ
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 영미언어정보트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P010153
+  course_name: 영어 구문 해석 Ⅱ
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 영미언어정보트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P010154
+  course_name: 영한 번역
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 영미언어정보트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P010155
+  course_name: 출판과 책 생태계
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털인문정보학트랙
+  - 지식정보문화트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P010156
+  course_name: 문화자원과 아카이브
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털인문정보학트랙
+  - 지식정보문화트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: P010157
+  course_name: 격동의 20세기 서양
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 역사문화큐레이션트랙
+  - 역사콘텐츠트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P010158
+  course_name: 중국고대문명의 탄생
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 역사문화큐레이션트랙
+  - 역사콘텐츠트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P010159
+  course_name: 조선시대의 일상과 문화
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 역사문화큐레이션트랙
+  - 역사콘텐츠트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P010160
+  course_name: 한국 근현대의 일상
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 역사문화큐레이션트랙
+  - 역사콘텐츠트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P010161
+  course_name: 서양 고전 읽기
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 역사문화큐레이션트랙
+  - 역사콘텐츠트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P010162
+  course_name: 한국 문화의 이해
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 한국어교육트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P010164
+  course_name: 지식정보서비스
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털인문정보학트랙
+  - 지식정보문화트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P010165
+  course_name: 공동체 아카이빙
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털인문정보학트랙
+  - 지식정보문화트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P010166
+  course_name: 도서관과 마을공동체
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털인문정보학트랙
+  - 지식정보문화트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P010167
+  course_name: 프로그램 기획과 평가
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털인문정보학트랙
+  - 지식정보문화트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P010168
+  course_name: 정보검색의 이해
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털인문정보학트랙
+  - 지식정보문화트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P010169
+  course_name: 정보시스템 설계와 평가
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털인문정보학트랙
+  - 지식정보문화트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P010170
+  course_name: 어린이청소년 북 큐레이션
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털인문정보학트랙
+  - 지식정보문화트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P010171
+  course_name: 영미콘텐츠와 미디어
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 영미문화콘텐츠트랙
+  - 영미언어정보트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P010173
+  course_name: 쇼군, 사무라이의 역사와 문화
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 역사문화큐레이션트랙
+  - 역사콘텐츠트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P010174
+  course_name: 서양의 건축과 미술
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 역사문화큐레이션트랙
+  - 역사콘텐츠트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P010175
+  course_name: 중국인의 생활문화사
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 역사문화큐레이션트랙
+  - 역사콘텐츠트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P010176
+  course_name: 외국어 습득의 이해
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 한국어교육트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P010177
+  course_name: 한국어 의미 탐구
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 한국어교육트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P010178
+  course_name: 르네상스와 종교개혁
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 역사문화큐레이션트랙
+  - 역사콘텐츠트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P010179
+  course_name: 영미콘텐츠 독해번역
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 영미문화콘텐츠트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P010180
+  course_name: 문화유산 전시, 기획 실습 종합설계
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 역사문화큐레이션트랙
+  - 역사콘텐츠트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P010181
+  course_name: 스마트융합콘텐츠
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: P010182
+  course_name: English Conversation Ⅱ
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 영미문화콘텐츠트랙
+  - 영미언어정보트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P010183
+  course_name: 역사콘텐츠 기획, 제작 실습
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 역사콘텐츠트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P010184
+  course_name: English Conversation Ⅰ
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 영미문화콘텐츠트랙
+  - 영미언어정보트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P010185
+  course_name: 영미콘텐츠 AI활용
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 영미문화콘텐츠트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P010186
+  course_name: 테마로 보는 일본 역사 문화
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 역사문화큐레이션트랙
+  - 역사콘텐츠트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: P010187
+  course_name: 실용영어청취
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 영미언어정보트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P010188
+  course_name: '세미나: 할리우드영화와 미국문화연구'
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 영미문화콘텐츠트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: P012012
+  course_name: 실용영문법 Ⅱ
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 영미언어정보트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P012014
+  course_name: 영어 데이터 활용
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 영미문화콘텐츠트랙
+  - 영미언어정보트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P012016
+  course_name: English Word Elements
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 영미언어정보트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P012019
+  course_name: English Sentence Analysis
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 영미언어정보트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P012020
+  course_name: 영어의 화용과 은유
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 영미언어정보트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: P012021
+  course_name: AI 활용 영어학
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 영미언어정보트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P013010
+  course_name: 한국어 문법교육의 원리와 실제
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 한국어교육트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P013011
+  course_name: 한국어 교재 연구
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 한국어교육트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P013013
+  course_name: 한국어 교육과정의 이해와 적용
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 한국어교육트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P013014
+  course_name: 한국어 평가의 원리와 실제
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 한국어교육트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: P013015
+  course_name: 한국어 문법의 이해
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 한국어교육트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P017011
+  course_name: 문헌정보학 캡스톤디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 지식정보문화트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: P017018
+  course_name: 지식의 세계
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 지식정보문화트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P017019
+  course_name: 지식문화경영
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 지식정보문화트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P017020
+  course_name: 도서관과 지식자원 관리
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 지식정보문화트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P017021
+  course_name: 서지정보의 이해
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 지식정보문화트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P017022
+  course_name: 문헌정보학 현장실습
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 지식정보문화트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: P017023
+  course_name: 도서관 데이터 구축 실습
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 지식정보문화트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: P018004
+  course_name: 메타데이터의 이해
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 디지털인문정보학트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P018010
+  course_name: 디지털인문정보학 캡스톤디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 디지털인문정보학트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: P018013
+  course_name: 학술커뮤니케이션의 이해
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 디지털인문정보학트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P018018
+  course_name: 디지털 자원 큐레이션
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 디지털인문정보학트랙
+  - 미디어디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P018019
+  course_name: 문화자원 데이터 리터러시
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 디지털인문정보학트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: P018020
+  course_name: 인문콘텐츠와 AI
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 디지털인문정보학트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P019001
+  course_name: 유물·유적으로 본 중국문화
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 역사문화큐레이션트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P019002
+  course_name: 한국 근현대의 라이벌
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 역사문화큐레이션트랙
+  - 역사콘텐츠트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P019003
+  course_name: 역사 테마의 탐구와 연습
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 역사문화큐레이션트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P019004
+  course_name: 21세기의 여명, 서양근대
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 역사문화큐레이션트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P019005
+  course_name: 역사와 논쟁
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 역사문화큐레이션트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: P019006
+  course_name: 역사 큐레이션 실습 종합설계
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 역사문화큐레이션트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: P019007
+  course_name: 역사문화 탐색과 활용
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 역사문화큐레이션트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: P01A001
+  course_name: 중세유럽의 전쟁, 섹슈얼리티, 질병
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 역사콘텐츠트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P01A002
+  course_name: 현대 일본의 어제와 오늘
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 역사콘텐츠트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P01A005
+  course_name: 역사 다큐멘터리 제작하기
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 역사콘텐츠트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P01A006
+  course_name: 실크로드의 미술과 종교
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 역사콘텐츠트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P01A007
+  course_name: 일본사 인물 스토리텔링
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 역사콘텐츠트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: P01A008
+  course_name: 한국 고대사 콘텐츠 종합설계
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 역사콘텐츠트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P01A009
+  course_name: 지역사와 콘텐츠 개발 종합설계
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 역사콘텐츠트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: P01B001
+  course_name: 영국문화의 이해
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 영미문화콘텐츠트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P01B002
+  course_name: 현대영미희곡과 대중문화
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 영미문화콘텐츠트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P01B003
+  course_name: 시로 읽는 영국문화
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 영미문화콘텐츠트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P01B004
+  course_name: 미국문화의 이해
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 영미문화콘텐츠트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P01B005
+  course_name: 콘텐츠로서의 셰익스피어
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 영미문화콘텐츠트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P01B006
+  course_name: 영미소설과 콘텐츠기획 캡스톤디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 영미문화콘텐츠트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: P020010
+  course_name: 에디션연구Ⅰ
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: P020012
+  course_name: 에디션워크샵Ⅱ
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P020013
+  course_name: 조형연구Ⅱ
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P020015
+  course_name: 진채기법Ⅱ
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P020020
+  course_name: 현대미술사
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P020021
+  course_name: 회화연구Ⅰ
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P020023
+  course_name: 회화워크샵
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 게임그래픽디자인트랙
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P020025
+  course_name: 레파토리실습1
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  - 한국무용전공
+  - 현대무용전공
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P020027
+  course_name: 무용사
+  credits: 2
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  - 한국무용전공
+  - 현대무용전공
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P020029
+  course_name: 레파토리실습2
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  - 한국무용전공
+  - 현대무용전공
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P020033
+  course_name: 레파토리실습3
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  - 한국무용전공
+  - 현대무용전공
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P020035
+  course_name: 무용교육론
+  credits: 2
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  - 한국무용전공
+  - 현대무용전공
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P020037
+  course_name: 레파토리실습4
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  - 한국무용전공
+  - 현대무용전공
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P020040
+  course_name: 무용교수학습방법
+  credits: 2
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  - 한국무용전공
+  - 현대무용전공
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P020041
+  course_name: 작품제작실습1
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  - 한국무용전공
+  - 현대무용전공
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: P020043
+  course_name: 무용기능학
+  credits: 2
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  - 한국무용전공
+  - 현대무용전공
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: P020045
+  course_name: 작품제작실습2
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  - 한국무용전공
+  - 현대무용전공
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: P020046
+  course_name: 문화예술교육현장의 이해와 실습
+  credits: 2
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  - 한국무용전공
+  - 현대무용전공
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: P020070
+  course_name: 진채형상1
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P020076
+  course_name: 무용장르1(발레)
+  credits: 2
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  - 한국무용전공
+  - 현대무용전공
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P020078
+  course_name: 무용장르2(한국무용)
+  credits: 2
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  - 한국무용전공
+  - 현대무용전공
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P020080
+  course_name: 무용장르3(현대무용)
+  credits: 2
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  - 한국무용전공
+  - 현대무용전공
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P020085
+  course_name: 창작연구Ⅰ
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: P020086
+  course_name: 진채창작연구Ⅰ
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 동양화전공
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: P020087
+  course_name: 무용교육프로그램개발 캡스톤디자인
+  credits: 2
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  - 한국무용전공
+  - 현대무용전공
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: P020088
+  course_name: 미술현장 종합설계
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P020092
+  course_name: 유아발레
+  credits: 2
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  - 한국무용전공
+  - 현대무용전공
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: P020094
+  course_name: 수묵기법Ⅰ
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P020096
+  course_name: 수묵창작연구Ⅱ
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: P020097
+  course_name: 수묵창작연구Ⅰ
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: P020098
+  course_name: 수묵조형실습
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P020101
+  course_name: 서양미술사1
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P020102
+  course_name: 서양미술사2
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P020103
+  course_name: 무용음악의 활용
+  credits: 2
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  - 한국무용전공
+  - 현대무용전공
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P020104
+  course_name: 무용장르4(뮤지컬 댄스)
+  credits: 2
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  - 한국무용전공
+  - 현대무용전공
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P020105
+  course_name: 무용영상의 활용
+  credits: 2
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  - 한국무용전공
+  - 현대무용전공
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P020106
+  course_name: 무대분장
+  credits: 2
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  - 한국무용전공
+  - 현대무용전공
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: P020107
+  course_name: 바디 컨디셔닝
+  credits: 2
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  - 한국무용전공
+  - 현대무용전공
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: P020108
+  course_name: 동작개발과 구성
+  credits: 2
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  - 한국무용전공
+  - 현대무용전공
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P020109
+  course_name: 무대연기
+  credits: 2
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  - 한국무용전공
+  - 현대무용전공
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P020110
+  course_name: 무용 컨디셔닝
+  credits: 2
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  - 한국무용전공
+  - 현대무용전공
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P020111
+  course_name: 무용과 정보활용
+  credits: 2
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  - 한국무용전공
+  - 현대무용전공
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P020112
+  course_name: '동양미술사: 동시대 시각미술 읽기 1'
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P020113
+  course_name: 무대조명 및 장치
+  credits: 2
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  - 한국무용전공
+  - 현대무용전공
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P020114
+  course_name: 무용 감상 및 비평
+  credits: 2
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  - 한국무용전공
+  - 현대무용전공
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: P020115
+  course_name: '동양미술사: 동시대 시각미술 읽기 2'
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P020116
+  course_name: '한국미술사: AI 기반 시각문화 기획'
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P020117
+  course_name: 회화워크샵Ⅱ
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 서양화전공
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P021002
+  course_name: 기초필묵
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: P021004
+  course_name: 진채기법Ⅰ
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P021010
+  course_name: 진채형상2
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P021012
+  course_name: 진채창작연구Ⅱ
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: P021013
+  course_name: 수묵형상Ⅰ
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P021014
+  course_name: 수묵기법Ⅱ
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P022002
+  course_name: 기초드로잉
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: P022005
+  course_name: 에디션워크샵Ⅰ
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P022006
+  course_name: 조형연구Ⅰ
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P022007
+  course_name: 회화연구2
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P022008
+  course_name: 에디션연구Ⅱ
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: P022010
+  course_name: 창작연구Ⅱ(서양화)
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 서양화전공
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: P023001
+  course_name: 무대공연실습(한국무용)
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 한국무용전공
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P023002
+  course_name: 한국무용1-1
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 한국무용전공
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: P023003
+  course_name: 한국무용1-2
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 한국무용전공
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: P023004
+  course_name: 한국무용2-1
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 한국무용전공
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P023005
+  course_name: 한국무용2-2
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 한국무용전공
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P023006
+  course_name: 한국무용3-1
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 한국무용전공
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P024001
+  course_name: 무대공연실습(현대무용)
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 현대무용전공
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P024002
+  course_name: 현대무용1-1
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 발레전공
+  - 현대무용전공
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: P024003
+  course_name: 현대무용1-2
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 현대무용전공
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: P024004
+  course_name: 현대무용2-1
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 현대무용전공
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P024005
+  course_name: 현대무용2-2
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 현대무용전공
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P024006
+  course_name: 현대무용3-1
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 현대무용전공
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P025002
+  course_name: 발레1-1
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 발레전공
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: P025003
+  course_name: 발레1-2
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 발레전공
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: P025004
+  course_name: 발레2-1
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 발레전공
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: P025005
+  course_name: 발레2-2
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 발레전공
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: P025006
+  course_name: 발레3-1
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 발레전공
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: P025007
+  course_name: 무대공연실습(발레) 캡스톤디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 발레전공
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: P026015
+  course_name: 다문화사회의 도시공간 탐구
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 스마트도시ㆍ교통계획트랙
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: R010004
+  course_name: 디지털 경제와 기업전략
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 기업ㆍ경제분석트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: R010005
+  course_name: 계량경제학
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 기업ㆍ경제분석트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: R010009
+  course_name: 금융시장론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 경제금융투자트랙
+  - 기업ㆍ경제분석트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: R010011
+  course_name: 국제경제학
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 경제금융투자트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: R010012
+  course_name: SAS데이터분석
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 경제금융투자트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: R010013
+  course_name: 재무관리
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 기업경영트랙
+  - 비즈니스애널리틱스트랙
+  - 회계ㆍ재무경영트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: R010014
+  course_name: 회계원리
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 기업경영트랙
+  - 비즈니스애널리틱스트랙
+  - 회계ㆍ재무경영트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: R010015
+  course_name: 관리회계
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 기업경영트랙
+  - 비즈니스애널리틱스트랙
+  - 회계ㆍ재무경영트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: R010016
+  course_name: 금융기관론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 기업경영트랙
+  - 비즈니스애널리틱스트랙
+  - 회계ㆍ재무경영트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: R010018
+  course_name: 기업윤리
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 기업경영트랙
+  - 비즈니스애널리틱스트랙
+  - 회계ㆍ재무경영트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: R010019
+  course_name: 경제학원론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 공공행정트랙
+  - 국제무역트랙
+  - 글로벌비즈니스트랙
+  - 법&정책트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: R010020
+  course_name: 데이터통계분석과 비즈니스
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 국제무역트랙
+  - 글로벌비즈니스트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: R010022
+  course_name: 재무관리
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 글로벌비즈니스트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: R010023
+  course_name: 국제무역보험론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 국제무역트랙
+  - 글로벌비즈니스트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: R010024
+  course_name: 국제무역대금결제론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 국제무역트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: R010027
+  course_name: 글로벌비즈니스 케이스스터디
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 글로벌비즈니스트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: R010029
+  course_name: 금융파생상품론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 국제무역트랙
+  - 글로벌비즈니스트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: R010030
+  course_name: 글로벌기업가정신
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 국제무역트랙
+  - 글로벌비즈니스트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: R010045
+  course_name: 지방행정론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 공공행정트랙
+  - 법&정책트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: R010049
+  course_name: 복지정책론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 공공행정트랙
+  - 법&정책트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: R010052
+  course_name: 환경정책론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 공공행정트랙
+  - 법&정책트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: R010054
+  course_name: 정부개혁론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 공공행정트랙
+  - 법&정책트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: R010055
+  course_name: 서비스운영관리
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 기업경영트랙
+  - 비즈니스애널리틱스트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: R010056
+  course_name: 조직행동론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 기업경영트랙
+  - 비즈니스애널리틱스트랙
+  - 회계ㆍ재무경영트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: R010057
+  course_name: 마케팅원론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 기업경영트랙
+  - 비즈니스애널리틱스트랙
+  - 회계ㆍ재무경영트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: R010058
+  course_name: 거시조직론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 기업경영트랙
+  - 비즈니스애널리틱스트랙
+  - 회계ㆍ재무경영트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: R010059
+  course_name: 소비자행동론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 기업경영트랙
+  - 비즈니스애널리틱스트랙
+  - 회계ㆍ재무경영트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: R010061
+  course_name: 경영정보학원론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 기업경영트랙
+  - 비즈니스애널리틱스트랙
+  - 회계ㆍ재무경영트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: R010063
+  course_name: 기업가정신
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 기업경영트랙
+  - 비즈니스애널리틱스트랙
+  - 회계ㆍ재무경영트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: R010064
+  course_name: 공급사슬전략
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 비즈니스애널리틱스트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: R010065
+  course_name: 하이테크마케팅
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 기업경영트랙
+  - 비즈니스애널리틱스트랙
+  - 회계ㆍ재무경영트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: R010066
+  course_name: 서비스사이언스
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 기업경영트랙
+  - 비즈니스애널리틱스트랙
+  - 회계ㆍ재무경영트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: R010071
+  course_name: 정보통신미디어경제학
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 경제금융투자트랙
+  - 기업ㆍ경제분석트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: R010073
+  course_name: 고급회계
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 기업경영트랙
+  - 비즈니스애널리틱스트랙
+  - 회계ㆍ재무경영트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: R010074
+  course_name: 무역시장분석
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 국제무역트랙
+  - 글로벌비즈니스트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: R010075
+  course_name: 국제통상정책론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 국제무역트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: R010076
+  course_name: 무역영어
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 국제무역트랙
+  - 영미언어정보트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: R010079
+  course_name: 도시 및 부동산정책론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 스마트도시ㆍ교통계획트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: R010080
+  course_name: 도시 및 환경법
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 스마트도시ㆍ교통계획트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: R010082
+  course_name: 대중교통계획 및 운영
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 스마트도시ㆍ교통계획트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: R010083
+  course_name: 교통시설과 안전
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 스마트도시ㆍ교통계획트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: R010090
+  course_name: 화폐금융론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 경제금융투자트랙
+  - 기업ㆍ경제분석트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: R010091
+  course_name: 공간지리정보체계론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 스마트도시ㆍ교통계획트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: R010092
+  course_name: 게임이론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 기업ㆍ경제분석트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: R010104
+  course_name: 글로벌비즈니스캡스톤디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 글로벌비즈니스트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: R010107
+  course_name: 도시경제와 입지분석
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 스마트도시ㆍ교통계획트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: R010108
+  course_name: 머신러닝 활용 경제분석
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 기업ㆍ경제분석트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: R010109
+  course_name: 사회과학 프리인턴십
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 공공행정트랙
+  - 국제무역트랙
+  - 글로벌비즈니스트랙
+  - 기업경영트랙
+  - 법&정책트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: R010110
+  course_name: 경제수학
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 경제금융투자트랙
+  - 기업ㆍ경제분석트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: R010111
+  course_name: 산업빅데이터활용 기업경제전략(종합설계)
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 경제금융투자트랙
+  - 기업ㆍ경제분석트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: R010112
+  course_name: 현장주도비즈니스종합설계
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 글로벌비즈니스트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: R010113
+  course_name: 금융투자실무
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 경제금융투자트랙
+  - 기업ㆍ경제분석트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: R010114
+  course_name: 비즈니스 애널리틱스 개론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 기업경영트랙
+  - 비즈니스애널리틱스트랙
+  - 회계ㆍ재무경영트랙
+  available_grades:
+  - 1
+  - 2
+  available_semesters:
+  - 2
+  - 3
+- course_id: R010115
+  course_name: 비즈니스 데이터마이닝 캡스톤디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 기업경영트랙
+  - 비즈니스애널리틱스트랙
+  - 회계ㆍ재무경영트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: R010117
+  course_name: 마케팅프리인턴십
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 기업경영트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: R010118
+  course_name: 경찰행정론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 공공행정트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: R010119
+  course_name: 행정 및 정책사례연구
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 공공행정트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: R010120
+  course_name: AI와 행정통계
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 공공행정트랙
+  - 법&정책트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: R010121
+  course_name: AI시대의 인간개발
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 공공행정트랙
+  - 법&정책트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: R010122
+  course_name: AI와 디지털행정
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 공공행정트랙
+  - 법&정책트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: R010123
+  course_name: AI시대의 행정철학
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 공공행정트랙
+  - 법&정책트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: R010124
+  course_name: 글로벌 거버넌스
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 공공행정트랙
+  - 법&정책트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: R010125
+  course_name: 공공관리자를 위한 행정법II
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 공공행정트랙
+  - 법&정책트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: R010126
+  course_name: 공기업론 프리인턴십
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 법&정책트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: R010127
+  course_name: 정책관리와 AI활용
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 공공행정트랙
+  - 법&정책트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: R011003
+  course_name: 컴퓨터활용과 무역정보처리
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 국제무역트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: R011004
+  course_name: 국제무역실무론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 국제무역트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: R011005
+  course_name: 국제무역운송론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 국제무역트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: R011007
+  course_name: 국제무역학원론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 국제무역트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: R011008
+  course_name: 무역법규론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 국제무역트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: R011009
+  course_name: 무역 시뮬레이션 종합설계
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 국제무역트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: R011010
+  course_name: 무역환경 데이터분석
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 국제무역트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: R012003
+  course_name: 국제경영학
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 글로벌비즈니스트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: R012004
+  course_name: 국제재무관리
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 글로벌비즈니스트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: R012006
+  course_name: 글로벌비즈니스트렌드
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 글로벌비즈니스트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: R012009
+  course_name: 글로벌시대 경영학 프리캡스톤
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 글로벌비즈니스트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: R012010
+  course_name: 국제마케팅캡스톤디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 글로벌비즈니스트랙
+  - 기업경영트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: R012011
+  course_name: 글로벌비즈니스프리인턴십
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 글로벌비즈니스트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: R012012
+  course_name: 디지털마케팅
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 글로벌비즈니스트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: R013006
+  course_name: 법경제학
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 기업ㆍ경제분석트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: R013008
+  course_name: 산업조직이론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 경제금융투자트랙
+  - 기업ㆍ경제분석트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: R013009
+  course_name: 조세경제학
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 경제금융투자트랙
+  - 기업ㆍ경제분석트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: R013012
+  course_name: 미시경제학
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 경제금융투자트랙
+  - 기업ㆍ경제분석트랙
+  available_grades:
+  - 1
+  - 2
+  available_semesters:
+  - 2
+  - 3
+- course_id: R013013
+  course_name: 재정학
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 경제금융투자트랙
+  - 공공행정트랙
+  - 기업ㆍ경제분석트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: R013014
+  course_name: 노동경제학
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 경제금융투자트랙
+  - 기업ㆍ경제분석트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: R013015
+  course_name: 경제정책 종합설계
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 경제금융투자트랙
+  - 기업ㆍ경제분석트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: R015004
+  course_name: 행정조사방법론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 공공행정트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: R015005
+  course_name: 공공조직론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 공공행정트랙
+  - 법&정책트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: R015009
+  course_name: 문제기반 행정학연습
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 공공행정트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: R016005
+  course_name: 정책분석론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 법&정책트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: R016011
+  course_name: 정책형성론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 법&정책트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: R016012
+  course_name: 헌법과 기본권
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 법&정책트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: R016013
+  course_name: AI활용 정책설계프로젝트 캡스톤디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 법&정책트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: R016014
+  course_name: 공공관리자를 위한 행정법I
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 공공행정트랙
+  - 법&정책트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: R016015
+  course_name: AI시대의 공공리더십
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 법&정책트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: R018008
+  course_name: 도시계획론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 스마트도시ㆍ교통계획트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: R018009
+  course_name: 교통분석및설계
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 스마트도시ㆍ교통계획트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: R018011
+  course_name: 도시설계와단지계획
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 스마트도시ㆍ교통계획트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: R018012
+  course_name: 교통계획
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 스마트도시ㆍ교통계획트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: R018014
+  course_name: 지속가능도시개발론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 스마트도시ㆍ교통계획트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: R018015
+  course_name: 지역개발계획과 사회공헌
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 스마트도시ㆍ교통계획트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: R019003
+  course_name: 인적자원관리론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 기업경영트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: R019004
+  course_name: 유통관리론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 기업경영트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: R019005
+  course_name: 경영전략
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 기업경영트랙
+  - 회계ㆍ재무경영트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: R019006
+  course_name: 서비스품질경영
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 기업경영트랙
+  - 비즈니스애널리틱스트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: R019007
+  course_name: 마케팅커뮤니케이션
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 기업경영트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: R019009
+  course_name: 노사관계론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 기업경영트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: R019011
+  course_name: 서비스마케팅 캡스톤디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 기업경영트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: R019012
+  course_name: 신상품 마케팅전략
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 기업경영트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: R01B001
+  course_name: 세무회계실무
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 회계ㆍ재무경영트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: R01B002
+  course_name: 파생금융상품
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 회계ㆍ재무경영트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: R01B003
+  course_name: 원가회계
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 회계ㆍ재무경영트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: R01B004
+  course_name: 투자론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 기업경영트랙
+  - 회계ㆍ재무경영트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: R01B007
+  course_name: 경영분석
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 회계ㆍ재무경영트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: R01B008
+  course_name: 중급회계
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 회계ㆍ재무경영트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: R01B009
+  course_name: 재무정보시스템 종합설계
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 비즈니스애널리틱스트랙
+  - 회계ㆍ재무경영트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: R01C010
+  course_name: 디지털사회의 공공인재
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 공공행정트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: R01C011
+  course_name: AI와 공공재정관리
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 공공행정트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: R01C012
+  course_name: AI기반 공공행정프로젝트 캡스톤디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 공공행정트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: R01E001
+  course_name: 스마트도시 캡스톤디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 스마트도시ㆍ교통계획트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: R01F001
+  course_name: 거시경제학
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 경제금융투자트랙
+  - 기업ㆍ경제분석트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: R01F002
+  course_name: 금융통계학
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 경제금융투자트랙
+  - 기업ㆍ경제분석트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: R01F003
+  course_name: 국제금융론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 경제금융투자트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: R01F004
+  course_name: 보험시장론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 경제금융투자트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: R01G011
+  course_name: e-비즈니스와 웹 애널리틱스
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 비즈니스애널리틱스트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: R01G012
+  course_name: 경영데이터 베이스론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 비즈니스애널리틱스트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: R01G013
+  course_name: 비즈니스 애널리틱스 응용
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 비즈니스애널리틱스트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: R01G014
+  course_name: 기술경영과 혁신전략
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 비즈니스애널리틱스트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: R01G015
+  course_name: 기업재무분석
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 비즈니스애널리틱스트랙
+  - 회계ㆍ재무경영트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: R01G016
+  course_name: 마케팅데이터분석
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 기업경영트랙
+  - 비즈니스애널리틱스트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T010001
+  course_name: 패션드로잉기초
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 패션디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: T010002
+  course_name: 칼라스튜디오
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  - 패션디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: T010003
+  course_name: 패션CAD
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 패션디자인트랙
+  - 패션크리에이티브디렉션트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: T010004
+  course_name: 패션시장조사
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 패션마케팅트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: T010005
+  course_name: 의류소재의이해
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 패션마케팅트랙
+  - 패션크리에이티브디렉션트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: T010006
+  course_name: 서양복식사
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 패션디자인트랙
+  - 패션크리에이티브디렉션트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T010007
+  course_name: 패션일러스트레이션
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 패션디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T010008
+  course_name: 패션브랜드와커뮤니케이션
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 패션마케팅트랙
+  - 패션크리에이티브디렉션트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T010009
+  course_name: 어패럴패턴디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 패션디자인트랙
+  - 패션마케팅트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T010010
+  course_name: 드레이핑
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 패션디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T010011
+  course_name: 현대패션연구
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 패션크리에이티브디렉션트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T010012
+  course_name: 한국복식사
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 패션마케팅트랙
+  - 패션크리에이티브디렉션트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T010014
+  course_name: 의복사회심리
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 패션마케팅트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: T010015
+  course_name: 의복제작실무
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 패션디자인트랙
+  - 패션크리에이티브디렉션트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: T010017
+  course_name: 세계민속복식
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 패션크리에이티브디렉션트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: T010018
+  course_name: 니트디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 패션디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T010019
+  course_name: 소비자행동
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 패션마케팅트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T010021
+  course_name: 테크니컬디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 패션디자인트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: T010023
+  course_name: 글로벌패션시스템
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 패션마케팅트랙
+  - 패션크리에이티브디렉션트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T010026
+  course_name: 한국의복구성
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 패션디자인트랙
+  - 패션크리에이티브디렉션트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: T010029
+  course_name: 패션데이터 어낼리틱스
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 패션마케팅트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T010030
+  course_name: 패션 포토
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 패션마케팅트랙
+  - 패션크리에이티브디렉션트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: T010032
+  course_name: AI패션콘텐츠 크리에이션 캡스톤디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 패션마케팅트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: T010033
+  course_name: AI시대 패션리더십
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 패션마케팅트랙
+  - 패션크리에이티브디렉션트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: T011003
+  course_name: 패션마케팅
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 패션디자인트랙
+  - 패션마케팅트랙
+  - 패션크리에이티브디렉션트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: T011006
+  course_name: 패션유통관리
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 패션마케팅트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: T011007
+  course_name: 패션리테일링
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 패션마케팅트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T011009
+  course_name: 패션소재기획
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 패션마케팅트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T011010
+  course_name: 온라인 패션스타트업 캡스톤디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 패션마케팅트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: T011011
+  course_name: 패션창업 캡스톤디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 패션마케팅트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: T011012
+  course_name: 패션상품기획 캡스톤디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 패션마케팅트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: T012003
+  course_name: 의복구성
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 패션디자인트랙
+  - 패션마케팅트랙
+  - 패션크리에이티브디렉션트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: T012006
+  course_name: 디자인스케치
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 패션디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T012007
+  course_name: 패턴CAD
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 패션디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T012009
+  course_name: 토탈패션소품개발 캡스톤디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 패션디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T012010
+  course_name: 패션스토어플랜
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 패션디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: T012011
+  course_name: 패션디자인포트폴리오
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 패션디자인트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: T012012
+  course_name: AI 패션디자인 프로세스
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 패션디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T013005
+  course_name: 패션스타일링
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 패션크리에이티브디렉션트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T013006
+  course_name: 무대복식디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 패션크리에이티브디렉션트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T013009
+  course_name: 크리에이티브 패션테크놀로지
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 패션크리에이티브디렉션트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: T013010
+  course_name: 어패럴프로페셔널링크 캡스톤디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 패션크리에이티브디렉션트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: T013011
+  course_name: 아트패브릭
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 패션크리에이티브디렉션트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: T013012
+  course_name: 패션 미디어 콘텐츠
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 패션크리에이티브디렉션트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: T013013
+  course_name: AI 디지털패션그래픽
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 패션크리에이티브디렉션트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T020004
+  course_name: 디지털 스튜디오
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 게임그래픽디자인트랙
+  - 동양화전공
+  - 서양화전공
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T020006
+  course_name: 인터랙티브 미디어
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 게임그래픽디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: T020007
+  course_name: 가구디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - UX/UI디자인트랙
+  - VMDㆍ전시디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T020013
+  course_name: 드로잉과 CAD
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - UX/UI디자인트랙
+  - VMDㆍ전시디자인트랙
+  - 동양화전공
+  - 서양화전공
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: T020017
+  course_name: 디자인과 감성공학
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - VMDㆍ전시디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T020018
+  course_name: 컬러와 패턴디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - VMDㆍ전시디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T020022
+  course_name: 컴퓨터그래픽
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - UX/UI디자인트랙
+  - 게임그래픽디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+  - 4
+- course_id: T020023
+  course_name: 디자인컨셉
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - VMDㆍ전시디자인트랙
+  - 게임그래픽디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 1
+  - 2
+  available_semesters:
+  - 2
+  - 3
+- course_id: T020038
+  course_name: 디자인공예 및 논리 논술
+  credits: 2
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미디어디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: T020039
+  course_name: 디자인공예 교육론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - UX/UI디자인트랙
+  - VMDㆍ전시디자인트랙
+  - 게임그래픽디자인트랙
+  - 미디어디자인트랙
+  - 시각디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T020040
+  course_name: 디자인공예 교재연구 및 지도법
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - UX/UI디자인트랙
+  - 게임그래픽디자인트랙
+  - 미디어디자인트랙
+  - 시각디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T020042
+  course_name: 한국전통디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - VMDㆍ전시디자인트랙
+  - 게임그래픽디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: T020043
+  course_name: 게임 드로잉기법연구1
+  credits: 2
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 게임그래픽디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: T020052
+  course_name: 문화콘텐츠기획
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미디어디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T020053
+  course_name: 메타버스와 XR융합콘텐츠
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 게임그래픽디자인트랙
+  - 미디어디자인트랙
+  - 시각디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T020054
+  course_name: UXUI지식재산권
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - UX/UI디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: T020055
+  course_name: 게임 3D 그래픽
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 게임그래픽디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T020056
+  course_name: IOT인터페이스디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - UX/UI디자인트랙
+  - VMDㆍ전시디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T020057
+  course_name: 디자인컨설팅
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - VMDㆍ전시디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T020061
+  course_name: 사진과디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미디어디자인트랙
+  - 시각디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: T020070
+  course_name: 구조와 표현
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미디어디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T020071
+  course_name: 브랜드디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - VMDㆍ전시디자인트랙
+  - 미디어디자인트랙
+  - 시각디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T020073
+  course_name: 디자인과인간심리
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미디어디자인트랙
+  - 시각디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: T020074
+  course_name: 인포그래픽-캡스톤디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미디어디자인트랙
+  - 시각디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: T020075
+  course_name: 커뮤니케이션그래픽디자인-캡스톤디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미디어디자인트랙
+  - 시각디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T020076
+  course_name: 영상디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 게임그래픽디자인트랙
+  - 미디어디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T020077
+  course_name: 레이아웃디자인-캡스톤디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - VMDㆍ전시디자인트랙
+  - 미디어디자인트랙
+  - 시각디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: T020078
+  course_name: 타이포그래피
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 게임그래픽디자인트랙
+  - 미디어디자인트랙
+  - 시각디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T020079
+  course_name: AI게임페인팅기법연구2
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 게임그래픽디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: T020080
+  course_name: AI 기반 공간렌더링
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - VMDㆍ전시디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T020081
+  course_name: 지역문제해결 디자인랩(캡스톤디자인)
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - VMDㆍ전시디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: T022002
+  course_name: 영상애니메이션 스타트업워크샵
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: T022005
+  course_name: 영상커뮤니케이션
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 게임그래픽디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T022007
+  course_name: 컴퓨터 특수시각효과
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 게임그래픽디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: T022008
+  course_name: 영상애니메이션 캡스톤디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: T022009
+  course_name: 디지털애니메이션 동작표현
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 게임그래픽디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: T022010
+  course_name: 캐릭터 개발 프로세스
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - VMDㆍ전시디자인트랙
+  - 게임그래픽디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T022012
+  course_name: AI 영상·이미지 제작 스튜디오
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 게임그래픽디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: T023001
+  course_name: 디자인상품화스튜디오
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - UX/UI디자인트랙
+  - VMDㆍ전시디자인트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: T023007
+  course_name: 제품서비스융합디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - UX/UI디자인트랙
+  - 시각디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T023009
+  course_name: 디자인창업스튜디오 종합설계
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - UX/UI디자인트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: T023010
+  course_name: UX·UI디자인 기초
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - UX/UI디자인트랙
+  - VMDㆍ전시디자인트랙
+  - 미디어디자인트랙
+  - 시각디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T025002
+  course_name: 실내디자인과 창업
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - VMDㆍ전시디자인트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: T025010
+  course_name: 레스토랑디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - VMDㆍ전시디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T026002
+  course_name: 디스플레이 취업
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - VMDㆍ전시디자인트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: T026003
+  course_name: 공간 조형
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - VMDㆍ전시디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: T026008
+  course_name: VMD창업과 실무 캡스톤디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - UX/UI디자인트랙
+  - VMDㆍ전시디자인트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: T026009
+  course_name: VMD스튜디오
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - VMDㆍ전시디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T026010
+  course_name: 전시디자인 스튜디오1
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - VMDㆍ전시디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: T026011
+  course_name: 전시디자인 스튜디오2
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - VMDㆍ전시디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T026012
+  course_name: 브랜드숍디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - VMDㆍ전시디자인트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: T027005
+  course_name: 게임캐릭터콘셉트아트
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 게임그래픽디자인트랙
+  - 시각디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T027008
+  course_name: 소셜미디어작품발표
+  credits: 2
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 게임그래픽디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T027010
+  course_name: 콘셉트아트1
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 게임그래픽디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T027015
+  course_name: 게임그래픽 캡스톤디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 게임그래픽디자인트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: T027016
+  course_name: 게임3D그래픽기초
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 게임그래픽디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: T027018
+  course_name: 게임그래픽콘텐츠워크샵
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 게임그래픽디자인트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: T028014
+  course_name: 인테리어 취업 캡스톤디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - VMDㆍ전시디자인트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: T028015
+  course_name: AI 공간디자인기초
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - UX/UI디자인트랙
+  - VMDㆍ전시디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: T029020
+  course_name: 콘셉트아트2
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 게임그래픽디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: T029021
+  course_name: AI게임디자인&아트
+  credits: 2
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 게임그래픽디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: T02A001
+  course_name: UXUI 디자인프로젝트1
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - UX/UI디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: T02A002
+  course_name: 컴퓨터응용디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - UX/UI디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: T02A004
+  course_name: UX/UI 디자인프로젝트2
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - UX/UI디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T02A005
+  course_name: UXUI 디자인스튜디오1
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - UX/UI디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: T02A007
+  course_name: UXUI 디자인스튜디오2
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - UX/UI디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T02A009
+  course_name: UX/UI 캡스톤디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - UX/UI디자인트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: T02A010
+  course_name: UX/UI 창업스튜디오
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - UX/UI디자인트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: T02B010
+  course_name: AI와 HCI
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 미디어디자인트랙
+  - 시각디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: T02B013
+  course_name: 모바일인터페이스종합설계
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 게임그래픽디자인트랙
+  - 미디어디자인트랙
+  - 시각디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T02B015
+  course_name: 영상디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 시각디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T02B016
+  course_name: 모션그래픽-캡스톤디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 미디어디자인트랙
+  - 시각디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: T02B017
+  course_name: 미디어디자인종합설계1
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 미디어디자인트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: T02B018
+  course_name: 사용자경험디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 미디어디자인트랙
+  - 시각디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T02B019
+  course_name: 미디어디자인종합설계2
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 미디어디자인트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: T02C011
+  course_name: 크리에이티브워크숍
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미디어디자인트랙
+  - 시각디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: T02C015
+  course_name: 패키지디자인-캡스톤디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - VMDㆍ전시디자인트랙
+  - 미디어디자인트랙
+  - 시각디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: T02C016
+  course_name: 시각디자인종합설계1
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 시각디자인트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: T02C017
+  course_name: 시각디자인종합설계2
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 시각디자인트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: T02C018
+  course_name: 그래픽디자인-캡스톤디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - VMDㆍ전시디자인트랙
+  - 게임그래픽디자인트랙
+  - 미디어디자인트랙
+  - 시각디자인트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T02C019
+  course_name: 구조와 표현
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 시각디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T030102
+  course_name: 뷰티일러스트레이션
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T030104
+  course_name: 기초메이크업
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: T030106
+  course_name: 응용메이크업
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T030107
+  course_name: 기초에스테틱
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: T030109
+  course_name: 뷰티상품기획
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  - 뷰티디자인학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T030113
+  course_name: 뷰티글로벌마케팅
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  - 뷰티디자인학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: T030116
+  course_name: 응용에스테틱
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T030117
+  course_name: 캐릭터메이크업
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T030119
+  course_name: 바디트리트먼트
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: T030120
+  course_name: 뷰티포트폴리오
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T030124
+  course_name: 스테이지메이크업
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: T030126
+  course_name: 아로마테라피
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: T030127
+  course_name: 메디컬스킨케어
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: T030128
+  course_name: 아트메이크업
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: T030132
+  course_name: 뷰티현장프리인턴십
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T030133
+  course_name: 헤어스타일링
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: T030134
+  course_name: 응용네일아트
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: T030135
+  course_name: 기초코스메틱
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: T030136
+  course_name: 뷰티콘텐츠제작
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: T030137
+  course_name: 뷰티외국어
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: T030139
+  course_name: 헤어컬러링
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: T030140
+  course_name: 응용헤어커트
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: T030141
+  course_name: 뷰티스튜디오
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: T030142
+  course_name: 기초헤어커트
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T030143
+  course_name: 두피 및 퍼머넌트
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: T030144
+  course_name: 헤어졸업작품연출
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: T030145
+  course_name: 메이크업졸업작품연출
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: T030146
+  course_name: 기초네일아트
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: T030147
+  course_name: 뷰티스타트업 캡스톤디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: T030148
+  course_name: 퍼스널컬러와 뷰티색채
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: V020001
+  course_name: 객체지향언어1
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: V020002
+  course_name: 자료구조
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: V020003
+  course_name: 컴퓨터구조
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: V020004
+  course_name: 프로그래밍랩
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 1
+  - 2
+  available_semesters:
+  - 2
+  - 3
+- course_id: V020005
+  course_name: 프로그래밍언어론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: V020006
+  course_name: 확률및통계
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: V020007
+  course_name: 객체지향언어2
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: V020008
+  course_name: 데이터통신
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: V020009
+  course_name: 선형대수
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: V020010
+  course_name: 알고리즘
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: V020011
+  course_name: 오픈소스소프트웨어
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: V020012
+  course_name: 데이터베이스
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: V020013
+  course_name: 소프트웨어공학
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: V020014
+  course_name: 운영체제
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: V020015
+  course_name: 컴퓨터그래픽스
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: V020016
+  course_name: 시스템프로그래밍
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: V020017
+  course_name: 네트워크프로그래밍
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: V020018
+  course_name: 설계패턴
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: V020019
+  course_name: 컴퓨터비젼
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: V020020
+  course_name: 정보보안
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: V020021
+  course_name: 고급시스템프로그래밍
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: V020022
+  course_name: 컴파일러
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: V020023
+  course_name: 융합캡스톤디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: V020024
+  course_name: SW 통합구현(IPP)
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: V020026
+  course_name: SW설계 및 테스트(IPP)
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: V020027
+  course_name: 데이터베이스 시스템 구현(IPP)
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: V020028
+  course_name: 취창업 세미나
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: V020035
+  course_name: SW온캠퍼스인턴십
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: V020036
+  course_name: XR 온캠퍼스 인턴십
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: V020037
+  course_name: AI/클라우드 온캠퍼스 인턴십
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: V020038
+  course_name: 기업연계 SW캡스톤디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: V020039
+  course_name: 서버구현 및 화면설계(IPP)
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: V021003
+  course_name: 모바일&스마트시스템
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 모바일소프트웨어트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: V021004
+  course_name: 안드로이드프로그래밍
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: V021005
+  course_name: Ios프로그래밍
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 모바일소프트웨어트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: V021006
+  course_name: 고급모바일프로그래밍
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 모바일소프트웨어트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: V021008
+  course_name: 모바일 캡스톤디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 모바일소프트웨어트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: V021009
+  course_name: 모바일시스템응용프로젝트
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 모바일소프트웨어트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: V022003
+  course_name: 데이터마이닝
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 모바일소프트웨어트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: V022004
+  course_name: 데이터베이스설계
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 빅데이터트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: V022005
+  course_name: 빅데이터프로그래밍
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 빅데이터트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: V022006
+  course_name: 빅데이터기초
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 빅데이터트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: V022008
+  course_name: 빅데이터 캡스톤디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 빅데이터트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: V022009
+  course_name: 인공지능
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 빅데이터트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: V023003
+  course_name: 게임그래픽&애니메이션
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 영상ㆍ애니메이션디자인트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: V023004
+  course_name: 영상처리
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 빅데이터트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: V023005
+  course_name: 가상현실
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 모바일소프트웨어트랙
+  - 웹공학트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: V023006
+  course_name: 디지털콘텐츠기획및제작
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: V023008
+  course_name: 디지털콘텐츠·가상현실 캡스톤디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: V023009
+  course_name: XR 프로그래밍
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: V023010
+  course_name: 게임 프로그래밍
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: V024003
+  course_name: 웹프로그래밍
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 빅데이터트랙
+  - 웹공학트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: V024004
+  course_name: 웹서버프로그래밍
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 모바일소프트웨어트랙
+  - 웹공학트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: V024005
+  course_name: 웹프레임워크1
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 웹공학트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: V024006
+  course_name: 웹프레임워크2
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 웹공학트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: V024008
+  course_name: 웹공학 캡스톤디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 웹공학트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: V024009
+  course_name: 클라우드 컴퓨팅
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 웹공학트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: V030021
+  course_name: 전자기학
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 시스템반도체트랙
+  - 전자트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: V030023
+  course_name: 전기전자회로실험
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 시스템반도체트랙
+  - 전자트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: V030025
+  course_name: 마이크로프로세서실험
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 시스템반도체트랙
+  - 전자트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: V030026
+  course_name: 제어공학
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 시스템반도체트랙
+  - 전자트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: V030027
+  course_name: 무선통신공학
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 전자트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: V030037
+  course_name: 인공지능
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 시스템반도체트랙
+  - 전자트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: V030046
+  course_name: 전자종합설계프로젝트
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 전자트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: V030051
+  course_name: 공학수학
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 시스템반도체트랙
+  - 전자트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: V030052
+  course_name: 프로그래밍언어
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 시스템반도체트랙
+  - 전자트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: V030053
+  course_name: 디지털회로 실험
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 시스템반도체트랙
+  - 전자트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: V030055
+  course_name: 회로이론 Ⅱ
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 시스템반도체트랙
+  - 전자트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: V030056
+  course_name: 자료구조
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 시스템반도체트랙
+  - 전자트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: V030058
+  course_name: 디지털 신호처리
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 시스템반도체트랙
+  - 전자트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: V030059
+  course_name: 통신공학 Ⅱ
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 전자트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: V030060
+  course_name: 데이터통신 및 컴퓨터네트워크
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 전자트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: V030061
+  course_name: 디지털영상처리
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 전자트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: V030062
+  course_name: 임베디드시스템
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 시스템반도체트랙
+  - 전자트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: V030063
+  course_name: 시스템반도체설계및실습
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 시스템반도체트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: V030065
+  course_name: SoC캡스톤디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 시스템반도체트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: V030068
+  course_name: 시스템반도체캡스톤디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 시스템반도체트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: V030069
+  course_name: 자바 프로그래밍
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 시스템반도체트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: V031006
+  course_name: 컴퓨터구조
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 전자트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: V031011
+  course_name: 논리회로
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 전자트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: V031012
+  course_name: 통신공학 Ⅰ
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 전자트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: V031013
+  course_name: 신호 및 시스템
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 전자트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: V031014
+  course_name: 회로이론 Ⅰ
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 시스템반도체트랙
+  - 전자트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: V035001
+  course_name: 반도체소자
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 시스템반도체트랙
+  - 전자트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: V035003
+  course_name: 반도체공정
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 시스템반도체트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: V035004
+  course_name: 아날로그집적회로
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 시스템반도체트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: V035005
+  course_name: 반도체센서
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 시스템반도체트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: V035006
+  course_name: 전자회로
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 시스템반도체트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: V035007
+  course_name: 디지털집적회로
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 시스템반도체트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: V053003
+  course_name: 컨설팅방법론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인매니지먼트학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: V070026
+  course_name: 공학확률과 통계
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 산업공학트랙
+  - 응용산업데이터공학트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: V070044
+  course_name: 공학프로그래밍
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 산업공학트랙
+  - 응용산업데이터공학트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: V070045
+  course_name: 데이터베이스 설계 및 활용
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 산업공학트랙
+  - 응용산업데이터공학트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: V070067
+  course_name: 산업시스템공학 캡스톤디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 산업공학트랙
+  - 응용산업데이터공학트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: V070068
+  course_name: 경영과학Ⅱ
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 산업공학트랙
+  - 응용산업데이터공학트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: V070069
+  course_name: 기업데이터프로그래밍1
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 응용산업데이터공학트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: V070070
+  course_name: 기업데이터프로그래밍2
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 응용산업데이터공학트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: V070071
+  course_name: 기업데이터캡스톤디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 응용산업데이터공학트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: V070072
+  course_name: 품질 및 공정관리
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 산업공학트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: V070073
+  course_name: SAP 생산 프로세스
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 산업공학트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: V070074
+  course_name: 제조 공정 및 자동화
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 산업공학트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: V070075
+  course_name: 디자인과 제조
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 산업공학트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: V070077
+  course_name: 프로세스혁신
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 산업공학트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: V070078
+  course_name: CRM
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 산업공학트랙
+  - 응용산업데이터공학트랙
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: V071014
+  course_name: 특허정보 분석 및 활용
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 응용산업데이터공학트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: V072007
+  course_name: 물류경영
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 산업공학트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: V073016
+  course_name: 기술경영
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 산업공학트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: V074005
+  course_name: 안전관리
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 산업공학트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: V074009
+  course_name: 인간공학
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 산업공학트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: V074010
+  course_name: 공학경제개론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 산업공학트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: V074011
+  course_name: 시스템 시뮬레이션
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 산업공학트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: V074012
+  course_name: 경영과학Ⅰ
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 산업공학트랙
+  - 응용산업데이터공학트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: V074013
+  course_name: 생산경영
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 산업공학트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: V074014
+  course_name: 공학통계응용
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 산업공학트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: V076003
+  course_name: 생산 빅데이터
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 응용산업데이터공학트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: V076004
+  course_name: 인공지능의 이해와 활용
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 산업공학트랙
+  - 응용산업데이터공학트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: V076009
+  course_name: 데이터공학 선형대수
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 응용산업데이터공학트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: V076012
+  course_name: 인공지능 응용
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 응용산업데이터공학트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: V076015
+  course_name: 비즈니스 애널리틱스 응용
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 응용산업데이터공학트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: V076016
+  course_name: 데이터 시각화와 비즈니스 인텔리전스
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 응용산업데이터공학트랙
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: V076017
+  course_name: 생성형 AI와 비즈니스 애널리틱스
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 응용산업데이터공학트랙
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: W020003
+  course_name: 세계식문화사
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 호텔외식경영학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: W020004
+  course_name: 서비스품질
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 호텔외식경영학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: W020006
+  course_name: 조리학
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 호텔외식경영학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: W020020
+  course_name: 외식메뉴관리론
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 호텔외식경영학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: W020023
+  course_name: 주장관리
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 호텔외식경영학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: W020029
+  course_name: 외식브랜드경영론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 호텔외식경영학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: W020030
+  course_name: 외식창업세미나
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 호텔외식경영학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: W020031
+  course_name: 단체급식경영론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 호텔외식경영학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: W020032
+  course_name: 푸드스타일링
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 호텔외식경영학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: W020036
+  course_name: 외식 R&D
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 호텔외식경영학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: W020037
+  course_name: 창업아이템개발
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 호텔외식경영학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: W020039
+  course_name: 식음료서비스실무
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 호텔외식경영학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: W020040
+  course_name: 주방관리실무
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 호텔외식경영학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: W020041
+  course_name: 외식창업종합설계1
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 호텔외식경영학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: W020042
+  course_name: 외식온라인창업
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 호텔외식경영학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: W020043
+  course_name: 외식데이터분석
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합행정학과
+  - 호텔외식경영학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: W020045
+  course_name: 외식마케팅원론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 호텔외식경영학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: W020046
+  course_name: 외식상품개발론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 호텔외식경영학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: W020047
+  course_name: 외식회계원리
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 호텔외식경영학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: W020050
+  course_name: 식생활과 건강
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 호텔외식경영학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: W020051
+  course_name: 푸드필드종합설계
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 호텔외식경영학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: W020052
+  course_name: 외식경영원론
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 호텔외식경영학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: W020053
+  course_name: 외식위생관리론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 호텔외식경영학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: W020054
+  course_name: 환대산업론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 호텔외식경영학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: W020055
+  course_name: 프랜차이즈경영론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 호텔외식경영학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: W020056
+  course_name: 외식창업종합설계2
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 호텔외식경영학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: W020057
+  course_name: 외식인적자원관리
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 호텔외식경영학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: W020059
+  course_name: 외식시장조사론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 호텔외식경영학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: W020060
+  course_name: 호텔경영원론
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 호텔외식경영학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: W020061
+  course_name: 연회기획설계
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 호텔외식경영학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: W030001
+  course_name: 미용학개론
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: W030002
+  course_name: 뷰티디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: W030003
+  course_name: 뷰티트렌드
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: W030004
+  course_name: 뷰티이미지메이킹
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: W030005
+  course_name: 커트기초실습
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: W030006
+  course_name: 메이크업기초
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: W030011
+  course_name: 네일뷰티디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: W030014
+  course_name: 뷰티색채학
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: W030015
+  course_name: 뷰티기초실무Ⅰ
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: W030016
+  course_name: 뷰티일러스트레이션
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: W030017
+  course_name: 응용메이크업
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: W030018
+  course_name: 기초헤어컬러
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: W030019
+  course_name: 뷰티기초실무Ⅱ
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: W030020
+  course_name: 뷰티경영학
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: W030021
+  course_name: 뷰티필드스터디1
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: W030022
+  course_name: 기초에스테틱
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: W030023
+  course_name: 메이크업 아트
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: W030024
+  course_name: 공중보건과 안전위생
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: W030026
+  course_name: 응용에스테틱
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: W030028
+  course_name: 뷰티교육설계
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: W030029
+  course_name: 뷰티필드스터디3
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: W030030
+  course_name: 뷰티교육콘텐츠
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: W030031
+  course_name: 뷰티스타트업
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: W030032
+  course_name: 뷰티캡스톤디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: W030033
+  course_name: 뷰티필드스터디4
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: W030034
+  course_name: 뷰티글로벌마케팅
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: W030035
+  course_name: 두피모발과학
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: W030037
+  course_name: 뷰티코스메틱의 이해
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: W030038
+  course_name: 뷰티서비스실무론
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: W030039
+  course_name: 뷰티필드스터디2(캡스톤디자인)
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: W040002
+  course_name: 문제해결방법론
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: W040004
+  course_name: 조사방법론
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: W040005
+  course_name: 프로세스혁신
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+  - 6
+- course_id: W040010
+  course_name: 리스크관리론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: W040011
+  course_name: 지식재산권개론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: W040012
+  course_name: 마케팅전략 컨설팅방법론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: W040013
+  course_name: 성과관리방법론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: W040014
+  course_name: 기업진단방법론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: W040015
+  course_name: 기업가치전략 컨설팅방법론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: W040016
+  course_name: HRM&D 컨설팅방법론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: W040018
+  course_name: 비즈니스 모델 컨설팅방법론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: W040020
+  course_name: 비즈니스프로세스
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: W040022
+  course_name: 생산관리
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: W040023
+  course_name: 기술경영
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+  - 7
+- course_id: W040024
+  course_name: 기업진단 프로젝트 종합설계
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: W040025
+  course_name: 재무회계
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: W040026
+  course_name: 노사관계론과 노동법
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: W040029
+  course_name: 경영전략수립 프로젝트 종합설계
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: W040031
+  course_name: 인사관리
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: W040032
+  course_name: 벤처창업 컨설팅실무
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: W040033
+  course_name: 생산성혁신 컨설팅실무
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: W040034
+  course_name: 관리 및 원가회계
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: W040038
+  course_name: 컨설팅개론
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: W040039
+  course_name: 컨설팅방법론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+  - 6
+- course_id: W040041
+  course_name: ESG경영컨설팅방법론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: W040042
+  course_name: 재무회계시스템컨설팅실무
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: W040043
+  course_name: 경영전략수립컨설팅방법론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: W040044
+  course_name: 중소기업법
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: W040045
+  course_name: 스마트물류 관리
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: W040046
+  course_name: 기업세무컨설팅방법론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 비즈니스컨설팅학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: W050002
+  course_name: 색채와 미디어
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: W050006
+  course_name: 소비자심리와 디자인
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: W050011
+  course_name: 디자인 역사와 문화
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: W050013
+  course_name: 사용자경험 프로토타이핑
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: W050014
+  course_name: 미디어스토리텔링디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: W050015
+  course_name: 브랜드전략
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: W050017
+  course_name: 소셜비즈니스마케팅
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: W050019
+  course_name: 서비스경험디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: W050022
+  course_name: UX디자인 사례분석
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: W050023
+  course_name: 브랜드디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: W050024
+  course_name: 모션그래픽
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: W050026
+  course_name: 레이아웃 디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: W050027
+  course_name: 패키지디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: W050028
+  course_name: 3D컴퓨터그래픽
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: W050029
+  course_name: 디자인 포트폴리오
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: W050030
+  course_name: APP개발 종합설계
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: W050034
+  course_name: 미디어융합프로젝트2
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: W050035
+  course_name: 기초평면디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: W050036
+  course_name: 2D컴퓨터그래픽
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: W050037
+  course_name: 타이포그래피
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: W050038
+  course_name: 영상디자인기초
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: W050039
+  course_name: UX디자인 방법론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: W050040
+  course_name: 기초입체디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: W050041
+  course_name: 인포메이션디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: W050042
+  course_name: GUI
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: W050043
+  course_name: 디자인 직업세계 탐색과 창업(캡스톤디자인)
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: W050044
+  course_name: 편집디자인종합설계
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: W050045
+  course_name: 디자인매니지먼트(캡스톤디자인)
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: W050046
+  course_name: AI와 HCI
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: W050047
+  course_name: 미디어융합프로젝트1(캡스톤디자인)
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - ICT융합디자인학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: W060001
+  course_name: 행정의 이론과 실제
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: W060002
+  course_name: 법학 개론
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: W060003
+  course_name: 민법총칙
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: W060005
+  course_name: 법과 사회
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: W060007
+  course_name: 기초행정통계론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: W060008
+  course_name: 행정사무실무
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: W060011
+  course_name: 조직과 사회
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: W060017
+  course_name: 행정구제실무
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: W060019
+  course_name: 헌법의 이론과 실제
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: W060024
+  course_name: 행정과 빅데이터
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: W060028
+  course_name: 조직데이터 관리 프로젝트
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: W060034
+  course_name: 법과 여성
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: W060036
+  course_name: 법과 사회 종합설계
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: W060037
+  course_name: 환경과 법
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: W060038
+  course_name: 데이터분석 개론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: W060039
+  course_name: 사회보장법 실무
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: W060041
+  course_name: 정책학개론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: W060042
+  course_name: 헌법실무
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: W060043
+  course_name: 지방자치와 법
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: W060044
+  course_name: 공법실무
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: W060045
+  course_name: 행정조사방법론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: W060046
+  course_name: 인사행정론
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: W060048
+  course_name: 행정법1
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: W060050
+  course_name: 조직행동의 이해
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: W060051
+  course_name: 행정법2
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: W060052
+  course_name: 노동법
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: W060053
+  course_name: 정부프로젝트관리 종합설계
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: W060054
+  course_name: 공공정책세미나
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: W060055
+  course_name: 정부와 재정
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: W060056
+  course_name: 전략적 성과관리
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: W060057
+  course_name: 경영정보시각화 Tableau(프리인턴십)
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합행정학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: W080001
+  course_name: 인공지능기초
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - AIㆍ소프트웨어학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: W080002
+  course_name: 파이썬 프로그래밍
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - AIㆍ소프트웨어학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: W080003
+  course_name: AI를 위한 기초수학Ⅱ
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AIㆍ소프트웨어학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: W080004
+  course_name: 데이터마이닝
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - AIㆍ소프트웨어학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: W080008
+  course_name: AI 융합 캡스톤디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - AIㆍ소프트웨어학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: W080010
+  course_name: 생성형 AI의 이해와 활용
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AIㆍ소프트웨어학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: W080012
+  course_name: 웹프로그래밍
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AIㆍ소프트웨어학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: W080013
+  course_name: 컴퓨터구조
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AIㆍ소프트웨어학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: W080015
+  course_name: C프로그래밍
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - AIㆍ소프트웨어학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: W080016
+  course_name: AI를 위한 기초수학Ⅰ
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AIㆍ소프트웨어학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: W080019
+  course_name: 객체지향프로그래밍
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - AIㆍ소프트웨어학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: W080020
+  course_name: 운영체제
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AIㆍ소프트웨어학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: W080021
+  course_name: 자료구조 및 알고리즘
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AIㆍ소프트웨어학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: W080023
+  course_name: 데이터베이스
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - AIㆍ소프트웨어학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: W080024
+  course_name: 데이터통신
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AIㆍ소프트웨어학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: W080025
+  course_name: 데이터사이언스 프로그래밍
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - AIㆍ소프트웨어학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: W080026
+  course_name: 머신러닝과 딥러닝
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - AIㆍ소프트웨어학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: W080027
+  course_name: 웹프레임워크2
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AIㆍ소프트웨어학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: W080028
+  course_name: 소프트웨어공학
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - AIㆍ소프트웨어학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: W080029
+  course_name: 웹프레임워크1
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AIㆍ소프트웨어학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: W080030
+  course_name: 자연어처리
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AIㆍ소프트웨어학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: W080031
+  course_name: 컴퓨터비전
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AIㆍ소프트웨어학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: W080032
+  course_name: 모바일 프로그래밍
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AIㆍ소프트웨어학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: W080033
+  course_name: 오픈소스소프트웨어
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - AIㆍ소프트웨어학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: W080034
+  course_name: NVIDIA DLI(프리인턴십)
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AIㆍ소프트웨어학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: W080035
+  course_name: 데이터사이언스기초
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - AIㆍ소프트웨어학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: W520020
+  course_name: 뷰티 사진
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: W520033
+  course_name: 뷰티이커머스마케팅
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: W520034
+  course_name: 뷰티소셜미디어
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 뷰티디자인학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: Y020001
+  course_name: 문화콘텐츠의 이해
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: Y020003
+  course_name: 디지털콘텐츠기획입문
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: Y020004
+  course_name: 문학기반 대표 콘텐츠 케이스스터디
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: Y020005
+  course_name: 스토리텔링의 세계
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: Y020006
+  course_name: 세계문학 기반 콘텐츠비평
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: Y020007
+  course_name: 콘텐츠 자료로서의 문학문화사 읽기
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: Y020008
+  course_name: 디지털콘텐츠 제작툴의 이해
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: Y020009
+  course_name: 문화 키워드로 읽는 한국 현대시
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: Y020010
+  course_name: 문화콘텐츠산업의 이해
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: Y020011
+  course_name: 방송영상 크리에이터의 세계
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: Y020012
+  course_name: 고전소설의 스토리텔링
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: Y020013
+  course_name: 문학과 문화의 융합적 이해
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: Y020014
+  course_name: 웹콘텐츠와 플랫폼의 이해
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: Y020015
+  course_name: 한류 속의K-콘텐츠와 문화정책
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: Y020016
+  course_name: 영화··드라마 트리트먼트 작성과 피칭 실습
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: Y020017
+  course_name: 미디어와 문화콘텐츠
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: Y020018
+  course_name: 고전문학의 콘텐츠화 전략
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: Y020022
+  course_name: 문화콘텐츠 트렌드 분석
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: Y020023
+  course_name: 디지털콘텐츠 기획 제작 실습
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: Y020024
+  course_name: 디지털스토리텔링 실습
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: Y020025
+  course_name: 우리시대 소설비평과 진로 직무
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: Y020026
+  course_name: 드라마콘텐츠 메이킹실습-캡스톤디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: Y020027
+  course_name: 현대문학의 콘텐츠화 전략
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: Y020028
+  course_name: 공연 엔터테인먼트 산업의 실재
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: Y020029
+  course_name: 원형으로서의 구비문학
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: Y020030
+  course_name: 문화콘텐츠 마케팅
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: Y020031
+  course_name: 현대소설의 스토리텔링
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: Y020032
+  course_name: 지역문화와 콘텐츠-캡스톤 디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: Y020033
+  course_name: 스마트미디어 문화비평
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: Y020035
+  course_name: 문화산업과 콘텐츠기획
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 문학문화콘텐츠학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: Y030002
+  course_name: 선형대수
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: Y030003
+  course_name: 확률 및 통계
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: Y030004
+  course_name: 인공지능 수학
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: Y030005
+  course_name: 디지털 논리 및 회로
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: Y030006
+  course_name: 오픈소스 HW
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: Y030007
+  course_name: 웹프로그래밍
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: Y030008
+  course_name: C프로그래밍
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: Y030009
+  course_name: 객체지향프로그래밍
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: Y030010
+  course_name: 자료구조 및 실습
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: Y030011
+  course_name: 컴퓨터구조
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: Y030012
+  course_name: 데이터베이스
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: Y030013
+  course_name: 머신러닝
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: Y030014
+  course_name: 모바일 프로그래밍
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: Y030015
+  course_name: 알고리즘 및 실습
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: Y030016
+  course_name: 소프트웨어 설계 패턴
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: Y030017
+  course_name: 지능형 임베디드 시스템
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: Y030018
+  course_name: 딥러닝
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: Y030019
+  course_name: 컴퓨터비전
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: Y030020
+  course_name: 시스템 프로그래밍
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: Y030021
+  course_name: 운영체제
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: Y030022
+  course_name: 클라우드 컴퓨팅
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: Y030023
+  course_name: 컴퓨터네트워크
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: Y030024
+  course_name: 시각지능 학습
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: Y030026
+  course_name: 지능형 IoT 통신시스템
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: Y030027
+  course_name: 자연어처리
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: Y030028
+  course_name: 인공지능 캡스톤 디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: Y030029
+  course_name: 소프트웨어공학
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: Y030030
+  course_name: 강화학습
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: Y030033
+  course_name: 산학협력프로젝트
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: Y030034
+  course_name: 로보틱스와 인공지능
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: Y030035
+  course_name: 기업연계 AI캡스톤디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: Y030036
+  course_name: 인공지능 개론
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: Y030037
+  course_name: 지능HCI
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - AI응용학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: Y040001
+  course_name: 정보보안개론
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: Y040002
+  course_name: 선형대수
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: Y040003
+  course_name: 자료구조
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: Y040004
+  course_name: 확률 및 통계
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: Y040005
+  course_name: 컴퓨터 프로그래밍 기초
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: Y040006
+  course_name: 암호학의 기초
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: Y040007
+  course_name: 알고리즘 분석
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: Y040008
+  course_name: 공간정보 응용
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: Y040009
+  course_name: 객체지향언어
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: Y040010
+  course_name: 리눅스 시스템
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: Y040011
+  course_name: 암호학 고급
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: Y040012
+  course_name: 보안프로그래밍
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: Y040013
+  course_name: 데이터베이스
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: Y040014
+  course_name: 위성정보 이해와 처리
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: Y040015
+  course_name: 이산수학
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: Y040016
+  course_name: 웹 프로그래밍
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: Y040017
+  course_name: 데이터 통신
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: Y040018
+  course_name: 암호프로그래밍 기초
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: Y040019
+  course_name: 역공학분석
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: Y040020
+  course_name: 데이터베이스응용
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: Y040021
+  course_name: 데이터 시각화
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: Y040022
+  course_name: 모바일 프로그래밍
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: Y040023
+  course_name: 컴퓨터네트워크
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: Y040024
+  course_name: 악성코드분석
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: Y040025
+  course_name: 암호프로그래밍 고급
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: Y040026
+  course_name: 웹그래픽정보처리
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: Y040027
+  course_name: 융합보안 프리캡스톤 디자인
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: Y040028
+  course_name: 네트워크 해킹 및 보안
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: Y040029
+  course_name: 융합보안 캡스톤 디자인
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: Y040030
+  course_name: 차세대 암호시스템
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: Y040031
+  course_name: 인공지능 보안
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: Y040032
+  course_name: 취창업 세미나
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 융합보안학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: Y050001
+  course_name: 미래모빌리티개론
+  credits: 3
+  stage: foundation
+  course_type: 전공선택
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+  - 2
+- course_id: Y050002
+  course_name: 모빌리티 창의설계
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 1
+- course_id: Y050003
+  course_name: C프로그래밍
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: Y050005
+  course_name: 모빌리티 공학수학
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: Y050006
+  course_name: 모빌리티 프로그래밍 실습
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: Y050007
+  course_name: 모빌리티 전기전자회로
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: Y050008
+  course_name: 논리회로 및 컴퓨터구조
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: Y050009
+  course_name: 인공지능 및 머신러닝개론
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: Y050010
+  course_name: 센서처리와 모터제어
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: Y050011
+  course_name: 임베디드시스템 및 운영체제
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: Y050012
+  course_name: 모빌리티 제어공학
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: Y050013
+  course_name: 기초역학Ⅱ
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: Y050014
+  course_name: 이동로봇과 ROS
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: Y050015
+  course_name: 모빌리티 SW공학
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: Y050016
+  course_name: 드론 및 UAM
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: Y050017
+  course_name: 모빌리티 종합설계 프로젝트
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 7
+- course_id: Y050018
+  course_name: 기초역학Ⅰ
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: Y050019
+  course_name: 선형대수
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: Y050021
+  course_name: 확률 및 랜덤프로세스
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: Y050022
+  course_name: 자료구조 및 알고리즘
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: Y050023
+  course_name: 모빌리티 제어설계
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 4
+- course_id: Y050024
+  course_name: 모빌리티 센서 응용설계
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: Y050025
+  course_name: 인공지능 및 머신러닝 실습
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: Y050026
+  course_name: 모빌리티 전자제어유닛 실습
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: Y050027
+  course_name: 기계제품설계(CAD)
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: Y050028
+  course_name: 자율주행시스템 응용
+  credits: 3
+  stage: core
+  course_type: 전공필수
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6
+- course_id: Y050029
+  course_name: 모빌리티 통신
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: Y050030
+  course_name: 모빌리티 서비스응용
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 4
+  available_semesters:
+  - 8
+- course_id: Y050031
+  course_name: 공학물리
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 2
+  available_semesters:
+  - 3
+- course_id: Y050032
+  course_name: 스마트모빌리티와 지역현안문제해결
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 1
+  available_semesters:
+  - 2
+- course_id: Y050033
+  course_name: 스마트모빌리티실증랩
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 5
+- course_id: Y050034
+  course_name: Physical AI & 로보틱스 시뮬레이션
+  credits: 3
+  stage: application
+  course_type: 전공선택
+  track_ids:
+  - 미래모빌리티학과
+  available_grades:
+  - 3
+  available_semesters:
+  - 6

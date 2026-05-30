@@ -152,9 +152,9 @@ class Course(BaseModel):
           선수 ``course_id`` 리스트를 정규화하여 채운다.
         - ``priority`` 할당 — 낮은 숫자가 우선. 학년·필수 여부·선수 깊이
           등으로 도출되며, 본 노드는 Repository 가 부여한 값을 그대로 사용한다.
-        - ``available_grades`` 채움 — 강의계획서 학년 제약 메타로부터 본
-          과목을 이수할 수 있는 학년 리스트를 채운다. 메타 부재 시 기본값
-          ``[1, 2, 3, 4]`` (모든 학년 가능) 으로 보수적 fallback.
+        - ``available_grades`` / ``available_semesters`` 채움 — 교육과정 메타로부터
+          본 과목을 이수할 수 있는 학년·학기 리스트를 채운다. 메타 부재 시
+          학년은 ``[1, 2, 3, 4]``, 학기는 ``[1, ..., 8]`` 로 보수적 fallback.
         - ``course_type`` 분류 — 학사 커리큘럼 메타로부터 전공필수 / 전공선택 /
           교양 중 하나를 도출한다. 학습 로드맵 추천 대상은 전공 (필수 + 선택)
           만이며, 교양은 추천 전 stream 진입 단계에서 필터링된다.
@@ -169,6 +169,9 @@ class Course(BaseModel):
         priority: 같은 단계 안의 우선순위 (1 이 최우선).
         available_grades: 본 과목을 이수할 수 있는 학년 리스트. 1 학년 전용
             기초 과목은 ``[1]``, 학년 무관 과목은 ``[1, 2, 3, 4]``.
+        available_semesters: 본 과목을 이수할 수 있는 절대 학기 번호 리스트.
+            1 학년 1 학기 = 1, 4 학년 2 학기 = 8. 학기 메타 부재 시
+            ``[1, ..., 8]``.
         course_type: 학사 커리큘럼 분류. 본 시스템 추천 대상은 전공필수 /
             전공선택만이며, 교양은 사용자 자율 구성 영역으로 추천에서 제외한다.
     """
@@ -181,6 +184,7 @@ class Course(BaseModel):
     track_ids: list[str] = Field(default_factory=list)
     priority: int = Field(default=1, ge=1)
     available_grades: list[int] = Field(default_factory=lambda: [1, 2, 3, 4])
+    available_semesters: list[int] = Field(default_factory=lambda: list(range(1, 9)))
     course_type: Literal["전공필수", "전공선택", "교양"] = "전공선택"
 
 
