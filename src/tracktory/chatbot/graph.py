@@ -45,7 +45,9 @@ def build_chatbot_graph(
 
     builder.add_node("classify_intent", ClassifyIntentNode(classifier))
     builder.add_node("retrieve_rag", RetrieveRagNode(retriever))
-    builder.add_node("generate_response", GenerateResponseNode(rag_response_chain, general_advice_chain))
+    builder.add_node(
+        "generate_response", GenerateResponseNode(rag_response_chain, general_advice_chain)
+    )
 
     builder.add_edge(START, "classify_intent")
     builder.add_conditional_edges(

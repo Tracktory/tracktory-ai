@@ -43,3 +43,7 @@ docs/*
 CLAUDE.local.md
 .claude/*
 !.claude/settings.json
+
+# Env
+.env.*
+!.env.example

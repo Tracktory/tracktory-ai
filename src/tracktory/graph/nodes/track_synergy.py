@@ -29,7 +29,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Literal, NamedTuple, Protocol
+from typing import Any, Literal, NamedTuple
 
 import numpy as np
 
@@ -43,27 +43,11 @@ from tracktory.graph.models import (
     WeightsConfig,
 )
 from tracktory.graph.state import GraphState
+from tracktory.rag.track_repository import TrackRepository
 
 _DEFAULT_SYNERGY_CONFIG_PATH = Path(__file__).resolve().parents[2] / "config" / "synergy.yaml"
 
 logger = logging.getLogger(__name__)
-
-
-class TrackRepository(Protocol):
-    """트랙 데이터 접근 인터페이스.
-
-    트랙 시너지 노드는 본 Protocol 만 의존하고 구체 구현은 외부에서 주입받는다.
-    이를 통해 단위 테스트는 mock 으로 교체하여 외부 I/O 없이 검증 가능하며,
-    production 에서는 RAGFlow / DB / 파일 등 어떤 소스로도 교체 가능하다.
-    """
-
-    def list_all(self) -> list[Track]:
-        """전체 트랙 목록을 반환한다."""
-        ...
-
-    def find_by_track_ids(self, track_ids: list[str]) -> list[Track]:
-        """주어진 ``track_ids`` 에 해당하는 트랙만 반환한다."""
-        ...
 
 
 class _ScoredCombo(NamedTuple):
@@ -495,3 +479,6 @@ class TrackSynergyNode:
             "slot3_fallback_level": fallback_level,
             "trace": trace_tokens,
         }
+
+
+__all__ = ["TrackRepository", "TrackSynergyNode"]
