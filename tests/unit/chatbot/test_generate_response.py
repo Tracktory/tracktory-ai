@@ -72,7 +72,7 @@ _CASES: dict[str, dict[str, Any]] = {
         "message": "2 학년 때 뭘 준비하면 좋을까요?",
         "intent": "general_advice",
         "retrieved_docs": [],
-        "user_context": {"entry_year": 2026, "current_year": 2, "interests": ["AI", "데이터분석"]},
+        "user_context": {"entry_year": 2026, "grade": 2, "interests": ["AI", "데이터분석"]},
     },
     "no_data": {
         "message": "AI 트랙 정원이 몇 명이에요?",

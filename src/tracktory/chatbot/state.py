@@ -1,7 +1,7 @@
 """챗봇 LangGraph state schema.
 
 히스토리는 checkpointer 가 thread_id 단위로 자체 관리
-백엔드는 'conversation_id' 만 유지하고 매 요청마다 'user_context' 만 주입
+백엔드는 thread_id 만 유지하고 매 요청마다 user_context 만 주입
 
 갱신 필드는 default_factory / None 기본값을 강제
 호출하는 쪽이 초기값을 누락하거나 노드 순서가 바뀌어도 KeyError 가 나지 않도록 함
@@ -25,10 +25,16 @@ class ChatbotState(BaseModel):
     # --- 누적 (add_messages reducer) ---
     messages: Annotated[list[BaseMessage], add_messages]
 
-    # --- 갱신 ---
+    # --- 갱신 (classify_intent 출력) ---
     intent: ChatbotIntent | None = None
     intent_reason: str | None = None  # 디버깅·평가용
     search_keywords: list[str] = Field(default_factory=list)
+    is_catalog_query: bool = False  # 전체 카탈로그 요청 (트랙 종류 / 직무 종류 등)
+    target_grade: int | None = None  # 질문에 학년 명시 시 1~4, 없으면 None
+
+    # --- 갱신 (retrieve_rag 출력) ---
     retrieved_docs: list[RetrievedChunk] = Field(default_factory=list)
+
+    # --- 갱신 (generate_response 출력) ---
     response: str | None = None  # API 응답용
-    response_choices: list[str] = Field(default_factory=list)  # 후속 질문 후보
+    response_choices: list[str] = Field(default_factory=list)  # 후속 질문 후보 1-3 개

@@ -1,0 +1,21 @@
+{
+  "user_id": 3,
+  "student_id": "2526015",
+  "name": "이학년",
+  "entry_year": 2025,
+  "grade": 2,
+  "college": "IT공과대학",
+  "department": "컴퓨터공학부",
+  "tracks": ["빅데이터트랙", "웹공학트랙"],
+  "interests": ["데이터분석", "웹개발"],
+  "study_fields": ["백엔드", "데이터엔지니어링"],
+  "tech_stacks": ["Python", "Java"],
+  "company_types": ["IT 대기업", "스타트업"],
+  "work_values": ["성장 가능성", "기술적 도전"],
+  "completed_subjects": [
+    { "name": "프로그래밍기초", "year": 1, "semester": 1 },
+    { "name": "이산수학", "year": 1, "semester": 1 },
+    { "name": "객체지향프로그래밍", "year": 1, "semester": 2 },
+    { "name": "자료구조", "year": 2, "semester": 1 }
+  ]
+}

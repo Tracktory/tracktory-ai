@@ -9,25 +9,33 @@
 
 로그 파일:
     logs/chatbot_YYYYMMDD.log (UTF-8)
+
+영속 저장:
+    data/checkpoints/chatbot.sqlite — 같은 thread_id 면 프로세스 재시작 후에도 히스토리 복원
 """
 
 from __future__ import annotations
 
 import argparse
+import json
 import logging
 import textwrap
 import time
 from collections.abc import Callable
+from pathlib import Path
 from typing import Any
 
 from langchain_core.messages import HumanMessage
 from langchain_core.runnables import RunnableConfig
 from langchain_openai import ChatOpenAI
+from langgraph.checkpoint.base import BaseCheckpointSaver
+from langgraph.checkpoint.sqlite import SqliteSaver
 from langgraph.graph.state import CompiledStateGraph
 
 from tracktory.chatbot.graph import build_chatbot_graph
 from tracktory.chatbot.logging_setup import setup_logging
 from tracktory.chatbot.rag.ragflow import RagFlowChatbotRetriever
+from tracktory.common.config import config as common_config
 from tracktory.prompts.chatbot.general_advice import GENERAL_ADVICE_PROMPT
 from tracktory.prompts.chatbot.intent import (
     INTENT_CLASSIFIER_PROMPT,
@@ -37,6 +45,8 @@ from tracktory.prompts.chatbot.rag_response import (
     RAG_RESPONSE_PROMPT,
     ChatbotResponse,
 )
+
+CHECKPOINT_DB_PATH = common_config.PROJECT_ROOT / "data" / "checkpoints" / "chatbot.sqlite"
 
 _EXIT_COMMANDS = {"exit", "quit"}
 
@@ -50,10 +60,11 @@ _FIELD_FORMATTERS: dict[str, Callable[[Any], str]] = {
 }
 
 
-def _build_graph() -> CompiledStateGraph:
-    """4 종 의존성 주입해서 그래프 컴파일"""
+def _build_graph(checkpointer: BaseCheckpointSaver) -> CompiledStateGraph:
+    """4 종 의존성 + checkpointer 주입해서 그래프 컴파일"""
     llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
     return build_chatbot_graph(
+        checkpointer=checkpointer,
         classifier=INTENT_CLASSIFIER_PROMPT | llm.with_structured_output(IntentClassification),
         retriever=RagFlowChatbotRetriever(),
         rag_response_chain=RAG_RESPONSE_PROMPT | llm.with_structured_output(ChatbotResponse),
@@ -81,13 +92,14 @@ def _run_turn(
     query: str,
     config: RunnableConfig,
     logger: logging.Logger,
+    user_context: dict[str, Any],
 ) -> tuple[str, list[str], float] | None:
     """한 턴 실행 — (response, choices, elapsed) 반환. 에러 시 None"""
     logger.info("질문: %s", query)
     start = time.perf_counter()
 
     input_state = {
-        "user_context": {},  # TODO: 백엔드 연동 시 실제 온보딩 정보
+        "user_context": user_context,
         "messages": [HumanMessage(content=query)],
     }
 
@@ -155,34 +167,72 @@ def _parse_args() -> argparse.Namespace:
         default="console-session-1",
         help="대화 세션 ID (같은 ID 면 히스토리 유지)",
     )
+    parser.add_argument(
+        "--user-context-file",
+        type=Path,
+        default=None,
+        help="user_context JSON fixture 경로 (예: src/tracktory/chatbot/fixtures/user_context_sample_year2.json). "
+        "미지정 시 빈 dict — 개인화 없는 일반 응답",
+    )
     return parser.parse_args()
+
+
+def _load_user_context(path: Path | None, logger: logging.Logger) -> dict[str, Any]:
+    """fixture 파일 로드 — 미지정/없음/파싱실패 시 빈 dict 로 안전 폴백"""
+    if path is None:
+        return {}
+    if not path.exists():
+        logger.warning("user_context_file 없음 — 빈 dict 로 진행: %s", path)
+        return {}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        logger.warning("user_context_file 파싱 실패 — 빈 dict 로 진행: %s (%s)", path, exc)
+        return {}
+    if not isinstance(data, dict):
+        logger.warning("user_context_file 이 dict 아님 — 빈 dict 로 진행: %s", path)
+        return {}
+    return data
 
 
 def main() -> None:
     args = _parse_args()
     logger = setup_logging(verbose=args.verbose)
-    logger.info("챗봇 시작 (thread_id=%s, verbose=%s)", args.thread_id, args.verbose)
+    logger.info(
+        "챗봇 시작 (thread_id=%s, verbose=%s, db=%s, user_context_file=%s)",
+        args.thread_id,
+        args.verbose,
+        CHECKPOINT_DB_PATH,
+        args.user_context_file,
+    )
 
-    graph = _build_graph()
-    config: RunnableConfig = {"configurable": {"thread_id": args.thread_id}}
+    user_context = _load_user_context(args.user_context_file, logger)
+    if user_context:
+        logger.info("user_context 로드 완료 — 키 %d개", len(user_context))
 
-    print("\n챗봇 시작. 'exit' 또는 Ctrl+C 로 종료\n")
+    CHECKPOINT_DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
-    while True:
-        try:
-            query = input("> ").strip()
-        except (EOFError, KeyboardInterrupt):
-            print("\n종료")
-            break
+    with SqliteSaver.from_conn_string(str(CHECKPOINT_DB_PATH)) as saver:
+        graph = _build_graph(checkpointer=saver)
+        config: RunnableConfig = {"configurable": {"thread_id": args.thread_id}}
 
-        if not query:
-            continue
-        if query.lower() in _EXIT_COMMANDS:
-            print("\n종료")
-            break
+        print("\n챗봇 시작. 'exit' 또는 Ctrl+C 로 종료\n")
 
-        if result := _run_turn(graph, query, config, logger):
-            _print_response(*result)
+        while True:
+            try:
+                query = input("> ").strip()
+            except (EOFError, KeyboardInterrupt):
+                print("\n종료")
+                break
+
+            if not query:
+                continue
+            if query.lower() in _EXIT_COMMANDS:
+                print("\n종료")
+                break
+
+            if result := _run_turn(graph, query, config, logger, user_context):
+                _print_response(*result)
 
 
 if __name__ == "__main__":
