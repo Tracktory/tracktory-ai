@@ -38,8 +38,8 @@ class ProfileEmbedNode:
 
         반환값 계약:
             정상: ``{"profile_text": str, "trace": [...]}`` — profile_text 는
-                비어 있지 않은 자연어 문장임을 보장한다 (template pattern 이 비어 있지
-                않은 한 빈 문자열은 발생하지 않음).
+                비어 있지 않은 자연어 문장임을 보장한다 (관심사·흥미 개발 분야는
+                필수 입력이라 항상 한 개 이상의 절이 렌더링됨).
             skip: ``{"errors": [...], "trace": [...]}`` — profile_text 키 자체를
                 담지 않아 다음 단계 노드가 ``state.get("profile_text")`` 로 skip
                 여부를 판단할 수 있게 한다.
@@ -73,13 +73,28 @@ def _load_template(path: Path) -> dict[str, Any]:
 def _serialize_profile(profile: dict[str, Any], template: dict[str, Any]) -> str:
     """카테고리형 프로필을 결정론적 자연어 문장으로 변환한다.
 
-    ``completed_courses`` 는 의도적으로 사용하지 않는다. 이수 과목은 관심사·흥미와
-    다른 성격의 정보(집합 필터 대상)이므로 의미 직렬화에 포함하면 의미를 희석한다.
-    LLM 미사용이므로 동일 입력은 항상 동일 문장을 생성한다.
+    템플릿의 절(clause) 정의를 선언 순서대로 순회하며, 값이 비어 있지 않은
+    필드만 자연어 관형구로 만들어 이어 붙인다. 선택 입력(취업 가치·선호 회사
+    유형·공부해본 분야)이 누락돼도 빈 문구 없이 문장이 완결되도록 빈 필드의
+    절은 건너뛴다.
+
+    ``completed_courses`` 및 학적 구조 필드(입학년도·소속·트랙)는 절 정의에
+    없으므로 직렬화 대상에서 자연히 제외된다. 이수 과목은 집합 필터 대상이라
+    의미 직렬화에 넣으면 관심사·흥미 의미를 희석한다.
+
+    LLM 미사용이므로 동일 입력은 항상 동일 문장을 생성한다 (절 순서·값 순서·
+    구분자가 모두 결정론적).
     """
-    pattern: str = template.get("pattern", "")
-    return pattern.format(
-        interests=", ".join(profile.get("interests", [])),
-        dev_interests=", ".join(profile.get("dev_interests", [])),
-        work_values=", ".join(profile.get("work_values", [])),
-    )
+    clauses: list[dict[str, str]] = template.get("clauses", [])
+    value_separator: str = template.get("value_separator", ", ")
+    clause_separator: str = template.get("clause_separator", ", ")
+    suffix: str = template.get("suffix", "")
+
+    rendered: list[str] = []
+    for clause in clauses:
+        values = profile.get(clause["field"]) or []
+        if not values:
+            continue
+        rendered.append(clause["template"].format(value=value_separator.join(values)))
+
+    return clause_separator.join(rendered) + suffix
