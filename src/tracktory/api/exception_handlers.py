@@ -1,9 +1,7 @@
-"""전역 예외 핸들러.
+"""전역 예외 핸들러
 
-FastAPI 기본 응답 포맷(예: 422 RequestValidationError)을 프로젝트 표준
-`ErrorResponse` (BaseResponse 기반) 로 변환한다. Spring 통합 시 성공·실패
-응답이 동일한 shape (is_success / http_status / message / timestamp / data)
-을 유지하도록 보장.
+FastAPI 기본 에러 응답을 명세 표준 envelope `ApiResponse`(success/data/error)로 변환
+성공·실패가 동일 shape 를 갖도록 보장해 Spring 통합을 단순화
 """
 
 from fastapi import FastAPI, Request
@@ -11,35 +9,54 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from tracktory.api.response.codes import ErrorResponseCode
-from tracktory.api.response.error import ErrorResponse
+from tracktory.api.response.base import ApiResponse, ErrorDetail
+from tracktory.api.response.codes import ErrorCode
+
+# Pydantic v2 error type → 명세 reason 표기 매핑 (미정의 시 type 그대로)
+_REASON_ALIASES = {"missing": "required"}
 
 
-def _error_response(code: ErrorResponseCode) -> JSONResponse:
-    payload = ErrorResponse.from_code(code)
-    return JSONResponse(status_code=payload.http_status, content=payload.model_dump())
+def _json(
+    code: ErrorCode,
+    *,
+    message: str | None = None,
+    details: list[ErrorDetail] | None = None,
+) -> JSONResponse:
+    payload: ApiResponse[None] = ApiResponse.fail(code, message=message, details=details)
+    return JSONResponse(status_code=code.http_status, content=payload.model_dump())
+
+
+def _to_details(exc: RequestValidationError) -> list[ErrorDetail]:
+    """Pydantic 검증 오류를 {field, reason} 목록으로 — loc 의 'body' 접두는 제거"""
+    details: list[ErrorDetail] = []
+    for err in exc.errors():
+        loc = [str(part) for part in err["loc"] if part != "body"]
+        reason = _REASON_ALIASES.get(err["type"], err["type"])
+        details.append(ErrorDetail(field=".".join(loc), reason=reason))
+    return details
 
 
 def register_exception_handlers(app: FastAPI) -> None:
-    """앱에 표준 예외 핸들러를 등록한다."""
+    """앱에 표준 예외 핸들러를 등록"""
 
     @app.exception_handler(RequestValidationError)
     async def validation_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
-        return _error_response(ErrorResponseCode.BAD_REQUEST_ERROR)
+        return _json(ErrorCode.VALIDATION_FAILED, details=_to_details(exc))
 
     @app.exception_handler(StarletteHTTPException)
     async def http_exception_handler(request: Request, exc: StarletteHTTPException) -> JSONResponse:
         if exc.status_code == 403:
-            return _error_response(ErrorResponseCode.FORBIDDEN_ERROR)
+            return _json(ErrorCode.FORBIDDEN_ERROR)
         if exc.status_code == 404:
-            return _error_response(ErrorResponseCode.NOT_FOUND_ENDPOINT)
+            return _json(ErrorCode.NOT_FOUND)
         if exc.status_code == 405:
-            return _error_response(ErrorResponseCode.UNSUPPORTED_HTTP_METHOD)
+            return _json(ErrorCode.METHOD_NOT_ALLOWED)
         if exc.status_code >= 500:
-            return _error_response(ErrorResponseCode.SERVER_ERROR)
-        return _error_response(ErrorResponseCode.BAD_REQUEST_ERROR)
+            return _json(ErrorCode.INTERNAL_SERVER_ERROR)
+        message = exc.detail if isinstance(exc.detail, str) else None
+        return _json(ErrorCode.BAD_REQUEST, message=message)
 
     @app.exception_handler(Exception)
     async def generic_handler(request: Request, exc: Exception) -> JSONResponse:
-        # 예측하지 못한 예외 — 500. 실제 traceback 은 uvicorn 로그로.
-        return _error_response(ErrorResponseCode.SERVER_ERROR)
+        # 예측 못 한 예외 — 500, traceback 은 uvicorn 로그로
+        return _json(ErrorCode.INTERNAL_SERVER_ERROR)
