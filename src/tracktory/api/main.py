@@ -1,9 +1,4 @@
-"""tracktory-ai API 진입점.
-
-앱 시작 시 추천 그래프를 1 회 컴파일하여 첫 요청 cold start latency 를
-사용자 경계 밖으로 옮긴다. 운영 boundary 가 아직 조립되지 않은 환경에서는
-warm-up 을 graceful 하게 skip 한다.
-"""
+"""tracktory-ai API 진입점 — startup 에서 챗봇 로거·추천 그래프·챗봇 그래프 1회 구성"""
 
 from __future__ import annotations
 
@@ -12,6 +7,7 @@ from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from langgraph.checkpoint.sqlite import SqliteSaver
 
 from tracktory.api.dependencies import (
     get_pipeline_clients,
@@ -19,37 +15,55 @@ from tracktory.api.dependencies import (
     reset_pipeline_clients,
 )
 from tracktory.api.exception_handlers import register_exception_handlers
+from tracktory.api.request_id import RequestIdLogFilter, request_id_middleware
 from tracktory.api.routers import chat, recommend
+from tracktory.chatbot.factory import CHECKPOINT_DB_PATH, build_default_chatbot_graph
+from tracktory.chatbot.logging_setup import setup_logging
 from tracktory.graph.pipeline import get_recommendation_graph
 
 logger = logging.getLogger(__name__)
 
 
+def _setup_chatbot_logger() -> None:
+    """chatbot 로거 → logs/api_chatbot_YYYYMMDD.log + request_id 박힌 포매터·필터 부착"""
+    chatbot_logger = setup_logging(name="chatbot", file_name="api_chatbot")
+    fmt = logging.Formatter(
+        "%(asctime)s [%(request_id)s] [%(levelname)s] %(name)s: %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
+    filt = RequestIdLogFilter()
+    for h in chatbot_logger.handlers:
+        h.setFormatter(fmt)
+        h.addFilter(filt)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    """운영 boundary 묶음 조립 + 추천 그래프 warm-up 을 startup 에서 1 회 수행한다.
+    """startup: 챗봇 로거 + 추천 warm-up + 챗봇 그래프(`app.state.chatbot_graph`) 구성"""
+    _setup_chatbot_logger()
 
-    boundary 조립과 컴파일은 best-effort 다. 자격증명(``RAGFLOW_*`` /
-    ``OPENAI_API_KEY``)이나 카탈로그 YAML 이 없는 환경에서는 warm-up 을 skip
-    하고 startup 을 막지 않는다 — 첫 요청에서 동일 의존성 주입이 다시 시도되며
-    거기서 표준 envelope 으로 에러가 표면화된다. boundary 가 정상 주입되면 첫
-    요청 cold start latency 가 startup 으로 옮겨진다 (동일 lru_cache 재사용).
-    """
     try:
-        clients = get_pipeline_clients()
-        config = get_pipeline_config()
-        get_recommendation_graph(clients, config)
+        get_recommendation_graph(get_pipeline_clients(), get_pipeline_config())
         logger.info("recommendation graph warmed up")
+    except NotImplementedError:
+        logger.warning("skipping recommendation graph warm-up: boundary clients not configured")
     except Exception:
-        # 미설정(자격증명/카탈로그 부재) 또는 compile/import 실패 모두 startup 을
-        # 막지 않는다. 첫 요청에서 재시도되므로 stack 을 남겨 디버깅 비용만 줄인다.
-        logger.exception("recommendation graph warm-up skipped; continuing startup")
-    yield
+        # boundary 주입 후 compile/config 실패는 첫 요청에서 또 터지므로 stack 남김
+        logger.exception("recommendation graph warm-up failed; continuing startup")
+
+    CHECKPOINT_DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with SqliteSaver.from_conn_string(str(CHECKPOINT_DB_PATH)) as saver:
+        app.state.chatbot_graph = build_default_chatbot_graph(checkpointer=saver)
+        yield
+
     get_recommendation_graph.cache_clear()  # type: ignore[attr-defined]
     reset_pipeline_clients()
 
 
 app = FastAPI(title="Tracktory AI API", lifespan=lifespan)
+
+# 라우트·인증보다 먼저 — 인증 실패 응답에도 X-Request-Id 박히도록
+app.middleware("http")(request_id_middleware)
 
 register_exception_handlers(app)
 
