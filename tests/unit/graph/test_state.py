@@ -25,14 +25,32 @@ def _roadmap_payload() -> dict[str, object]:
             {
                 "stage": "foundation",
                 "courses": [
-                    {"course_id": "cs101", "course_name": "프로그래밍 기초", "priority": 1},
+                    {
+                        "course_id": "cs101",
+                        "course_name": "프로그래밍 기초",
+                        "credits": 3,
+                        "stage": "foundation",
+                        "score": 0.6,
+                    },
                 ],
             },
             {
                 "stage": "core",
                 "courses": [
-                    {"course_id": "cs201", "course_name": "자료구조", "priority": 1},
-                    {"course_id": "cs202", "course_name": "알고리즘", "priority": 2},
+                    {
+                        "course_id": "cs201",
+                        "course_name": "자료구조",
+                        "credits": 3,
+                        "stage": "core",
+                        "score": 0.6,
+                    },
+                    {
+                        "course_id": "cs202",
+                        "course_name": "알고리즘",
+                        "credits": 3,
+                        "stage": "core",
+                        "score": 0.4,
+                    },
                 ],
             },
             {"stage": "application", "courses": []},

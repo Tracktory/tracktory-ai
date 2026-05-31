@@ -163,10 +163,13 @@ class Course(BaseModel):
         course_id: 과목 식별자.
         course_name: 사용자 표시용 과목명.
         credits: 학점 (학기·졸업 학점 cap 의 단위).
-        stage: 4 단계 학습 깊이 분류.
+        stage: 카탈로그가 부여한 4 단계 학습 깊이 분류 (입력 메타). 학습
+            로드맵 출력의 단계 라벨은 본 값이 아니라 과목이 배치된 학기의
+            학년에서 재도출한다 (산학 단계 공백 방지).
         prereq_ids: 선수과목의 정규화된 ``course_id`` 리스트.
         track_ids: 본 과목이 권장되는 트랙 식별자 리스트.
-        priority: 같은 단계 안의 우선순위 (1 이 최우선).
+        priority: 추천 정렬의 보조 tie-break 신호 (1 이 최우선). 1 차 정렬은
+            추천 점수가 담당하며, 점수가 같을 때 본 값으로 순서를 가린다.
         available_grades: 본 과목을 이수할 수 있는 학년 리스트. 1 학년 전용
             기초 과목은 ``[1]``, 학년 무관 과목은 ``[1, 2, 3, 4]``.
         available_semesters: 본 과목을 이수할 수 있는 절대 학기 번호 리스트.
@@ -189,18 +192,28 @@ class Course(BaseModel):
 
 
 class RoadmapCourse(BaseModel):
-    """학습 로드맵 한 단계 안에 노출되는 추천 과목.
+    """학습 로드맵에 노출되는 추천 과목 — 학점·단계·정렬 점수를 함께 싣는다.
+
+    ``stage`` 는 학사 카탈로그가 부여한 분류가 아니라 과목이 실제로 배치된
+    학기의 학년에서 도출한다 (1→foundation, 2→core, 3→application,
+    4→industry). 카탈로그 단계만으로는 산학(industry) 과목 데이터가 비어
+    산학 단계가 항상 공백이 되므로, 배치 학년을 단계 라벨의 단일 진실원으로
+    삼아 모든 단계가 학생의 잔여 학기에 맞춰 채워지도록 한다.
 
     Attributes:
         course_id: 과목 식별자.
         course_name: 사용자 표시용 과목명.
-        priority: 같은 단계 내 우선순위 (1 이 최우선). 사용자 화면의
-            "1순위" / "2순위" 표기에 그대로 매핑된다.
+        credits: 학점. 사용자 화면의 과목 단위 학점 표기에 매핑된다.
+        stage: 배치 학년에서 도출한 학습 깊이 단계.
+        score: 추천 정렬·표시 점수 (0~1). 전공 필수/선택 분류와 두 트랙
+            동시 권장 여부를 합산한 값으로, 고정 순위가 아닌 실제 정렬 근거다.
     """
 
     course_id: str = Field(..., min_length=1)
     course_name: str = Field(..., min_length=1)
-    priority: int = Field(..., ge=1)
+    credits: int = Field(..., ge=1)
+    stage: Literal["foundation", "core", "application", "industry"]
+    score: float = Field(..., ge=0.0, le=1.0)
 
 
 class RoadmapStage(BaseModel):
