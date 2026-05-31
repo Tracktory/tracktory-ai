@@ -13,7 +13,7 @@ from langgraph.graph.state import CompiledStateGraph
 from tracktory.api.auth import get_user_id, verify_internal_token
 from tracktory.api.dependencies import get_recommendation_pipeline
 from tracktory.api.models.recommend import RecommendRequest, RecommendResponse
-from tracktory.api.response.success import SuccessResponse
+from tracktory.api.response.base import ApiResponse
 
 router = APIRouter(
     prefix="/api/v1/ai/recommend",
@@ -22,12 +22,12 @@ router = APIRouter(
 )
 
 
-@router.post("", response_model=SuccessResponse[RecommendResponse])
+@router.post("", response_model=ApiResponse[RecommendResponse])
 async def recommend(
     request: RecommendRequest,
     graph: Annotated[CompiledStateGraph, Depends(get_recommendation_pipeline)],
     user_id: Annotated[str, Depends(get_user_id)],
-) -> SuccessResponse[RecommendResponse]:
+) -> ApiResponse[RecommendResponse]:
     """추천 그래프를 실행하고 4 부분 묶음 응답을 반환한다.
 
     그래프 state 의 errors 누적은 RecommendRequest pydantic 검증을 통과한
@@ -64,4 +64,4 @@ async def recommend(
         roadmap=roadmap,
         explanation=explanation,
     )
-    return SuccessResponse.ok(data=data)
+    return ApiResponse.ok(data=data)
