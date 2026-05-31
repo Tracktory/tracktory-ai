@@ -1,4 +1,4 @@
-"""[offline 생성기] RAGFlow → ``src/tracktory/config/courses.yaml`` 과목 카탈로그 덤프.
+"""[offline 생성기] 전처리 txt → ``src/tracktory/config/courses.yaml`` 과목 카탈로그 덤프.
 
 과목 카탈로그도 정적이므로 추천 요청마다 RAGFlow 를 부르지 않고, 본 스크립트로
 한 번 생성해 둔 YAML 을 런타임(``YamlCourseRepository``)이 읽는다. 교육과정
@@ -18,11 +18,9 @@ from pathlib import Path
 from typing import Any
 
 import yaml
-from dotenv import load_dotenv
 
+from tracktory.rag.preprocessed_catalog_repository import PreprocessedCourseRepository
 from tracktory.rag.prerequisite_resolver import resolve_prereq_ids
-from tracktory.rag.ragflow_client import RagflowClient, RagflowConfig
-from tracktory.rag.ragflow_course_repository import RagflowCourseRepository
 from tracktory.rag.yaml_track_repository import YamlTrackRepository
 
 _ROOT = Path(__file__).resolve().parents[1]
@@ -32,19 +30,15 @@ _PREREQ_PATH = _ROOT / "data" / "processed" / "prerequisites.json"
 
 
 def main() -> None:
-    load_dotenv()
-
     # 트랙 카탈로그의 track_id 를 그대로 써서 course.track_ids 정합 보장.
     track_ids = [t.track_id for t in YamlTrackRepository().list_all()]
-    repo = RagflowCourseRepository(RagflowClient(RagflowConfig.from_env()))
+    repo = PreprocessedCourseRepository()
     courses = repo.list_for_tracks(track_ids)
 
     # prerequisites.json(과목명 키) → 카탈로그 course_id 로 해석. 카탈로그 밖
     # 선수(교양/타과)·자기참조는 드롭되므로 dangling prereq 가 생기지 않는다.
     prerequisites = json.loads(_PREREQ_PATH.read_text(encoding="utf-8"))
-    resolution = resolve_prereq_ids(
-        prerequisites, [(c.course_name, c.course_id) for c in courses]
-    )
+    resolution = resolve_prereq_ids(prerequisites, [(c.course_name, c.course_id) for c in courses])
     prereq_by_id = resolution.prereq_ids_by_course
 
     # priority(1) 는 모델 기본값에 맡기고 의미 있는 필드만 덤프.
