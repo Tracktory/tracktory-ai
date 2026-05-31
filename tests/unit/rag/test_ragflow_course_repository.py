@@ -73,14 +73,17 @@ def test_list_for_tracks_parses_courses_and_excludes_liberal_arts() -> None:
 
     # 교양(G001)은 제외.
     assert set(courses) == {"C001", "C002", "C003"}
-    assert courses["C001"].stage == "foundation"
+    # stage 는 학년 기반 — 과목구분(전공기초/선택/필수)이 아니라 이수 학년이 결정한다.
+    assert courses["C001"].stage == "foundation"  # 1학년
     assert courses["C001"].course_type == "전공선택"  # 전공기초 → 전공선택
     assert courses["C001"].available_grades == [1]
     assert courses["C001"].available_semesters == [1]
-    assert courses["C002"].stage == "application"  # 전공선택
+    # C002·C003 은 둘 다 2학년 → core. 과목구분(전공선택 vs 전공필수)이 달라도
+    # stage 는 학년만 따른다(전공선택이라고 application 으로 가지 않음).
+    assert courses["C002"].stage == "core"  # 2학년
     assert courses["C002"].available_grades == [2]
     assert courses["C002"].available_semesters == [3]
-    assert courses["C003"].stage == "core"  # 전공필수
+    assert courses["C003"].stage == "core"  # 2학년
     assert courses["C003"].course_type == "전공필수"
     assert courses["C003"].available_semesters == [3]
     assert courses["C001"].track_ids == ["트랙A"]
@@ -92,9 +95,9 @@ def test_dedup_unions_track_ids_and_grades_across_tracks() -> None:
     courses = {c.course_id: c for c in repo.list_for_tracks(["트랙A", "트랙B"])}
 
     assert set(courses) == {"C001", "C002", "C003", "C004"}
-    # C001 은 두 트랙에 등장 → track_ids union, stage 는 첫 등장(전공기초) 유지.
+    # C001 은 두 트랙에 등장(둘 다 1학년) → track_ids union, stage 는 최소 학년 기준.
     assert courses["C001"].track_ids == ["트랙A", "트랙B"]
-    assert courses["C001"].stage == "foundation"
+    assert courses["C001"].stage == "foundation"  # min 학년 = 1
     assert courses["C001"].available_grades == [1]
     assert courses["C001"].available_semesters == [1]
     assert courses["C004"].track_ids == ["트랙B"]

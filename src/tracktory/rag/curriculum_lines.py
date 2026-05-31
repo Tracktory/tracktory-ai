@@ -7,13 +7,18 @@
 들고 있으면 규칙이 이중화되어 어긋난다 — 실제로 트랙 저장소가 태그를 보지 않아
 교양·기타 과목코드가 ``Track.course_ids`` 에만 새어 들어가는 불일치가 있었다.
 
-본 모듈이 그 규칙(과목 줄 정규식 + 과목구분 → stage/course_type 매핑)을 단일
-출처로 보유하고, 두 저장소는 ``parse_course_line`` 만 호출한다. 추천 대상은
-전공(기초/필수/선택)뿐이므로 그 외 과목구분(교양류 등)은 ``None`` 으로 제외된다.
+본 모듈이 그 규칙(과목 줄 정규식 + 과목구분 → course_type 매핑)을 단일 출처로
+보유하고, 두 저장소는 ``parse_course_line`` 만 호출한다. 추천 대상은 전공(기초/
+필수/선택)뿐이므로 그 외 과목구분(교양류 등)은 ``None`` 으로 제외된다.
 
 코드 prefix(예: "GEN")가 아니라 **과목구분 태그**로 거른다 — prefix 는 데이터에
 따라 흔들리지만(교양이 아닌 비전공 코드도 섞임), 태그는 학사 분류의 권위 있는
 신호다.
+
+``stage``(학습 깊이)는 과목구분이 아니라 **이수 학년**에서 도출되므로(MVP 결정:
+1↔foundation … 4↔industry) 한 줄만 보는 본 파서가 아니라, 학년/학기 섹션을
+추적하는 ``RagflowCourseRepository`` 가 부여한다. 본 모듈은 stage 의 어휘
+타입(``StageLabel``)만 공유 어휘로 보유한다.
 """
 
 from __future__ import annotations
@@ -34,16 +39,10 @@ _COURSE_LINE_RE = re.compile(
     r"-\s*\[([^\]]+)\]\s*(.+?)\s*\(\s*([A-Za-z0-9]+)\s*,\s*(\d+)\s*학점\s*\)"
 )
 
-# 과목구분 태그 → 학습 깊이 stage. 본 매핑에 없는 태그(교양류 등)는 추천 대상이
-# 아니므로 parse_course_line 이 None 을 돌려준다.
-_STAGE_BY_TAG: dict[str, StageLabel] = {
-    "전공기초": "foundation",
-    "전공필수": "core",
-    "전공선택": "application",
-    "전공선택(상호인정)": "application",
-}
-# 과목구분 태그 → course_type. roadmap 노드는 {전공필수, 전공선택}만 통과시키므로
-# 전공기초는 전공선택으로 둔다(전공 계열 유지 — stage 가 foundation 으로 구분됨).
+# 과목구분 태그 → course_type. 본 매핑에 없는 태그(교양류 등)는 추천 대상이
+# 아니므로 parse_course_line 이 None 을 돌려준다. roadmap 노드는 {전공필수,
+# 전공선택}만 통과시키므로 전공기초는 전공선택으로 둔다(전공 계열 유지 — 학습
+# 깊이 구분은 stage 가 학년 기반으로 따로 표현한다).
 _COURSE_TYPE_BY_TAG: dict[str, CourseTypeLabel] = {
     "전공기초": "전공선택",
     "전공필수": "전공필수",
@@ -54,13 +53,16 @@ _COURSE_TYPE_BY_TAG: dict[str, CourseTypeLabel] = {
 
 @dataclass(frozen=True)
 class ParsedCourseLine:
-    """과목 줄 1건의 파싱 결과(전공 과목으로 확정된 것만)."""
+    """과목 줄 1건의 파싱 결과(전공 과목으로 확정된 것만).
+
+    ``stage`` 는 본 결과에 담기지 않는다 — 학습 깊이는 한 줄이 아니라 이수 학년
+    (학년/학기 섹션 헤더)에서 결정되므로 ``RagflowCourseRepository`` 가 부여한다.
+    """
 
     tag: str
     course_name: str
     course_id: str
     credits: int
-    stage: StageLabel
     course_type: CourseTypeLabel
 
 
@@ -75,15 +77,13 @@ def parse_course_line(line: str) -> ParsedCourseLine | None:
     if match is None:
         return None
     tag = match.group(1).strip()
-    stage = _STAGE_BY_TAG.get(tag)
     course_type = _COURSE_TYPE_BY_TAG.get(tag)
-    if stage is None or course_type is None:
+    if course_type is None:
         return None  # 교양류 등 비전공 → 추천 대상 아님, 제외.
     return ParsedCourseLine(
         tag=tag,
         course_name=match.group(2).strip(),
         course_id=match.group(3),
         credits=int(match.group(4)),
-        stage=stage,
         course_type=course_type,
     )

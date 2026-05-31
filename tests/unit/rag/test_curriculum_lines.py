@@ -5,20 +5,21 @@ import pytest
 from tracktory.rag.curriculum_lines import parse_course_line
 
 
+# stage(학습 깊이)는 과목구분이 아니라 학년에서 도출되므로 본 파서는 더 이상
+# 산출하지 않는다 — 여기서는 전공 판정(None 여부)·course_id·course_type 만 본다.
 @pytest.mark.parametrize(
-    ("line", "code", "stage", "course_type"),
+    ("line", "code", "course_type"),
     [
-        ("  - [전공기초] 데이터리터러시 (CTE0029, 3학점)", "CTE0029", "foundation", "전공선택"),
-        ("  - [전공필수] 데이터공학 선형대수 (V076009, 3학점)", "V076009", "core", "전공필수"),
-        ("  - [전공선택] 공학프로그래밍 (V070044, 3학점)", "V070044", "application", "전공선택"),
-        ("  - [전공선택(상호인정)] 상호인정과목 (X100, 3학점)", "X100", "application", "전공선택"),
+        ("  - [전공기초] 데이터리터러시 (CTE0029, 3학점)", "CTE0029", "전공선택"),
+        ("  - [전공필수] 데이터공학 선형대수 (V076009, 3학점)", "V076009", "전공필수"),
+        ("  - [전공선택] 공학프로그래밍 (V070044, 3학점)", "V070044", "전공선택"),
+        ("  - [전공선택(상호인정)] 상호인정과목 (X100, 3학점)", "X100", "전공선택"),
     ],
 )
-def test_parses_major_course_lines(line: str, code: str, stage: str, course_type: str) -> None:
+def test_parses_major_course_lines(line: str, code: str, course_type: str) -> None:
     parsed = parse_course_line(line)
     assert parsed is not None
     assert parsed.course_id == code
-    assert parsed.stage == stage
     assert parsed.course_type == course_type
 
 

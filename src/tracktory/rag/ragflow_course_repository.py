@@ -38,6 +38,27 @@ logger = logging.getLogger(__name__)
 _CURRICULUM_KEYWORD = "교육과정"
 _CURRICULUM_DOC_TYPE = "curriculum"
 
+# 이수 학년 → 학습 깊이 stage (MVP 결정). 학습 깊이를 과목구분(이수구분)이 아니라
+# 학년으로 근사한다 — 1학년 기초부터 4학년 산학(캡스톤·인턴십)까지 학년이
+# 올라갈수록 깊이가 깊어진다는 가정. 여러 학년에 걸친 과목은 가장 이른 학년
+# (첫 노출 시점)을 stage 로 삼는다.
+_STAGE_BY_GRADE: dict[int, StageLabel] = {
+    1: "foundation",
+    2: "core",
+    3: "application",
+    4: "industry",
+}
+
+
+def _stage_from_grade(grade: int) -> StageLabel:
+    """이수 학년을 학습 깊이 stage 로 매핑한다(MVP: 1↔foundation … 4↔industry).
+
+    한성대 학년은 1~4 이지만, 데이터 이상으로 범위 밖 값이 와도 가장 가까운
+    경계로 clamp 해 안전하게 둔다.
+    """
+    return _STAGE_BY_GRADE[min(max(grade, 1), 4)]
+
+
 # 교육과정 본문 형식:
 #   " 2학년 1학기"                                   ← 학년/학기 섹션 헤더
 #   "  - [전공선택] 공학프로그래밍 (V070044, 3학점)"   ← 과목 줄
@@ -48,11 +69,14 @@ _SECTION_RE = re.compile(r"(\d)\s*학년\s*(\d)\s*학기")
 
 @dataclass
 class _CourseAccum:
-    """``course_id`` 단위 누적기 — 여러 트랙/학기 중복 등장을 합친다."""
+    """``course_id`` 단위 누적기 — 여러 트랙/학기 중복 등장을 합친다.
+
+    ``stage`` 는 누적하지 않는다 — 학습 깊이는 학년에서 도출되므로 누적이 끝난
+    뒤(``_to_courses``) 모인 학년의 최소값으로 한 번에 부여한다.
+    """
 
     course_name: str
     credits: int
-    stage: StageLabel
     course_type: CourseTypeLabel
     track_ids: list[str] = field(default_factory=list)
     grades: set[int] = field(default_factory=set)
@@ -140,7 +164,6 @@ class RagflowCourseRepository:
                 entry = _CourseAccum(
                     course_name=parsed.course_name,
                     credits=parsed.credits,
-                    stage=parsed.stage,
                     course_type=parsed.course_type,
                 )
                 accum[code] = entry
@@ -163,7 +186,8 @@ class RagflowCourseRepository:
                         course_id=code,
                         course_name=entry.course_name,
                         credits=entry.credits,
-                        stage=entry.stage,
+                        # 학습 깊이는 가장 이른 이수 학년(첫 노출)에서 도출.
+                        stage=_stage_from_grade(grades[0]),
                         prereq_ids=[],  # 교육과정에 선수관계 없음 → 보류.
                         track_ids=entry.track_ids,
                         priority=1,  # 도출 보류 → 기본값.
