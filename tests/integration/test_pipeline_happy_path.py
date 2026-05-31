@@ -15,6 +15,7 @@ LLM / Repository 호출은 발생하지 않는다.
 
 from __future__ import annotations
 
+import time
 from collections.abc import Iterator
 from typing import Any
 from unittest.mock import MagicMock
@@ -39,6 +40,10 @@ pytestmark = pytest.mark.integration
 
 
 _EMBED_DIM = 1536
+
+# 모의 의존성만 쓰는 hermetic happy path 의 wall-clock 상한. 네트워크·실제
+# 임베딩이 끼어들면 깨지는 회귀 가드로, 운영 SLO (30s) 보다 훨씬 엄격하다.
+_FAST_PATH_SECONDS: float = 3.0
 
 
 # ---------------------------------------------------------------------------
@@ -212,13 +217,21 @@ def _build_clients(
     )
 
 
-def _valid_onboarding_payload(*, college: str = "C1") -> dict[str, Any]:
-    """입력 정규화 노드가 검증을 통과하는 유효한 온보딩 입력."""
+def _valid_onboarding_payload(
+    *, college: str = "C1", current_tracks: list[str] | None = None
+) -> dict[str, Any]:
+    """입력 정규화 노드가 검증을 통과하는 유효한 온보딩 입력.
+
+    Args:
+        college: 사용자 소속 단과대 ID.
+        current_tracks: 현재 선택 트랙. ``None`` (1학년 — 트랙 미선택) 이면 빈
+            리스트로, 2학년+ 페르소나는 정확히 2 개를 넘긴다.
+    """
     return {
         "admission_year": 2025,
         "college": college,
         "department": "컴퓨터공학부",
-        "current_tracks": [],
+        "current_tracks": current_tracks or [],
         "interests": ["IT/인터넷"],
         "dev_interests": ["AI"],
         "work_values": ["성장성"],
@@ -233,14 +246,33 @@ def _valid_onboarding_payload(*, college: str = "C1") -> dict[str, Any]:
 # ---------------------------------------------------------------------------
 
 
-def test_recommendation_graph_happy_path_runs_six_nodes_in_order() -> None:
-    """유효 입력으로 그래프를 invoke 하면 6 노드가 순차 실행되어 모든 산출 키가 채워진다."""
+@pytest.mark.parametrize(
+    ("persona", "current_tracks"),
+    [
+        ("1학년 트랙 미선택", []),
+        ("2학년+ 트랙 선택 완료", ["in0", "in1"]),
+    ],
+)
+def test_recommendation_graph_happy_path_runs_six_nodes_in_order(
+    persona: str, current_tracks: list[str]
+) -> None:
+    """유효 입력으로 그래프를 invoke 하면 6 노드가 순차 실행되어 모든 산출 키가 채워진다.
+
+    1학년 (트랙 미선택) 과 2학년+ (트랙 선택 완료) 두 페르소나 모두 동일한
+    6 부분 산출을 만들어내는지 검증한다. 트랙 선택 여부는 트랙 시너지 노드의
+    주 추천 후보 풀 생성 분기만 가를 뿐, end-to-end 계약은 동일하다.
+    """
     clients = _build_clients()
     graph = build_recommendation_graph(clients)
 
+    start = time.perf_counter()
     result = graph.invoke(
-        {"user_id": "u1", "raw_input": _valid_onboarding_payload()},
+        {
+            "user_id": "u1",
+            "raw_input": _valid_onboarding_payload(current_tracks=current_tracks),
+        },
     )
+    elapsed = time.perf_counter() - start
 
     # 정규화·직렬화·직무·트랙·로드맵·설명 — 6 영역 모두 키 채워짐
     assert result.get("normalized_profile") is not None
@@ -267,6 +299,9 @@ def test_recommendation_graph_happy_path_runs_six_nodes_in_order() -> None:
     clients.track_repository.list_all.assert_called_once()
     clients.course_repository.list_for_tracks.assert_called_once()
     clients.llm_client.invoke.assert_called_once()
+
+    # hermetic 경로 속도 회귀 가드 — 모의 환경에서 3 초 안에 끝나야 한다.
+    assert elapsed < _FAST_PATH_SECONDS
 
 
 def test_recommendation_graph_invalid_input_short_circuits_to_end() -> None:
