@@ -135,7 +135,7 @@ def _serialize_roadmap(roadmap: dict[str, Any] | None) -> str:
             lines.append(f"[{stage.get('stage', '(단계 없음)')}] (추천 과목 없음)")
             continue
         course_strs = [
-            f"{course.get('course_name', '(이름 없음)')}(우선순위 {course.get('priority', 0)})"
+            f"{course.get('course_name', '(이름 없음)')}({course.get('credits', 0)}학점)"
             for course in courses
         ]
         lines.append(f"[{stage.get('stage', '(단계 없음)')}] " + ", ".join(course_strs))

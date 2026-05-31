@@ -12,14 +12,32 @@ from pydantic import ValidationError
 from tracktory.graph.models import Roadmap, RoadmapCourse, RoadmapStage, SemesterPlan
 
 
-def _course(course_id: str, priority: int = 1) -> RoadmapCourse:
-    return RoadmapCourse(course_id=course_id, course_name=f"과목-{course_id}", priority=priority)
+def _course(
+    course_id: str,
+    *,
+    stage: str = "foundation",
+    score: float = 0.4,
+    credits: int = 3,
+) -> RoadmapCourse:
+    return RoadmapCourse(
+        course_id=course_id,
+        course_name=f"과목-{course_id}",
+        credits=credits,
+        stage=stage,  # type: ignore[arg-type]
+        score=score,
+    )
 
 
 def _full_stages() -> list[RoadmapStage]:
     return [
-        RoadmapStage(stage="foundation", courses=[_course("c1")]),
-        RoadmapStage(stage="core", courses=[_course("c2", priority=1), _course("c3", priority=2)]),
+        RoadmapStage(stage="foundation", courses=[_course("c1", stage="foundation")]),
+        RoadmapStage(
+            stage="core",
+            courses=[
+                _course("c2", stage="core", score=0.6),
+                _course("c3", stage="core", score=0.4),
+            ],
+        ),
         RoadmapStage(stage="application", courses=[]),
         RoadmapStage(stage="industry", courses=[]),
     ]
@@ -76,14 +94,24 @@ def test_roadmap_stage_allows_empty_courses() -> None:
     assert stage.courses == []
 
 
-def test_roadmap_course_rejects_zero_priority() -> None:
+def test_roadmap_course_rejects_zero_credits() -> None:
     with pytest.raises(ValidationError):
-        RoadmapCourse(course_id="c1", course_name="과목", priority=0)
+        RoadmapCourse(course_id="c1", course_name="과목", credits=0, stage="foundation", score=0.4)
+
+
+def test_roadmap_course_rejects_score_below_zero() -> None:
+    with pytest.raises(ValidationError):
+        RoadmapCourse(course_id="c1", course_name="과목", credits=3, stage="foundation", score=-0.1)
+
+
+def test_roadmap_course_rejects_score_above_one() -> None:
+    with pytest.raises(ValidationError):
+        RoadmapCourse(course_id="c1", course_name="과목", credits=3, stage="foundation", score=1.1)
 
 
 def test_roadmap_course_rejects_empty_id() -> None:
     with pytest.raises(ValidationError):
-        RoadmapCourse(course_id="", course_name="과목", priority=1)
+        RoadmapCourse(course_id="", course_name="과목", credits=3, stage="foundation", score=0.4)
 
 
 def test_roadmap_roundtrip_model_dump_validate() -> None:
@@ -94,7 +122,8 @@ def test_roadmap_roundtrip_model_dump_validate() -> None:
 
     assert restored == original
     assert len(restored.stages) == 4
-    assert restored.stages[1].courses[1].priority == 2
+    assert restored.stages[1].courses[0].score == 0.6
+    assert restored.stages[1].courses[1].score == 0.4
 
 
 def test_roadmap_defaults_combo_key_to_none() -> None:

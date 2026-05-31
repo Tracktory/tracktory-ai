@@ -85,7 +85,13 @@ def _roadmap_dict() -> dict[str, Any]:
             {
                 "stage": "foundation",
                 "courses": [
-                    {"course_id": "c1", "course_name": "자료구조", "priority": 1},
+                    {
+                        "course_id": "c1",
+                        "course_name": "자료구조",
+                        "credits": 3,
+                        "stage": "foundation",
+                        "score": 0.6,
+                    },
                 ],
             },
             {"stage": "core", "courses": []},
@@ -116,12 +122,26 @@ def _roadmap_with_semesters() -> dict[str, Any]:
         "stages": [
             {
                 "stage": "foundation",
-                "courses": [{"course_id": "c1", "course_name": "자료구조", "priority": 1}],
+                "courses": [
+                    {
+                        "course_id": "c1",
+                        "course_name": "자료구조",
+                        "credits": 3,
+                        "stage": "foundation",
+                        "score": 0.6,
+                    }
+                ],
             },
             {
                 "stage": "core",
                 "courses": [
-                    {"course_id": "c2", "course_name": "객체지향프로그래밍", "priority": 1}
+                    {
+                        "course_id": "c2",
+                        "course_name": "객체지향프로그래밍",
+                        "credits": 3,
+                        "stage": "core",
+                        "score": 0.6,
+                    }
                 ],
             },
             {"stage": "application", "courses": []},
@@ -131,7 +151,15 @@ def _roadmap_with_semesters() -> dict[str, Any]:
             {
                 "semester": 1,
                 "grade": 1,
-                "courses": [{"course_id": "c1", "course_name": "자료구조", "priority": 1}],
+                "courses": [
+                    {
+                        "course_id": "c1",
+                        "course_name": "자료구조",
+                        "credits": 3,
+                        "stage": "foundation",
+                        "score": 0.6,
+                    }
+                ],
                 "credits_total": 3,
                 "cap_reached": False,
                 "graduation_insufficient": False,
@@ -140,7 +168,13 @@ def _roadmap_with_semesters() -> dict[str, Any]:
                 "semester": 2,
                 "grade": 1,
                 "courses": [
-                    {"course_id": "c2", "course_name": "객체지향프로그래밍", "priority": 1}
+                    {
+                        "course_id": "c2",
+                        "course_name": "객체지향프로그래밍",
+                        "credits": 3,
+                        "stage": "core",
+                        "score": 0.6,
+                    }
                 ],
                 "credits_total": 3,
                 "cap_reached": False,
@@ -360,13 +394,33 @@ def test_semester_subtitle_uses_dominant_stage_on_mixed_semester() -> None:
         "stages": [
             {
                 "stage": "foundation",
-                "courses": [{"course_id": "c1", "course_name": "자료구조", "priority": 1}],
+                "courses": [
+                    {
+                        "course_id": "c1",
+                        "course_name": "자료구조",
+                        "credits": 3,
+                        "stage": "foundation",
+                        "score": 0.6,
+                    }
+                ],
             },
             {
                 "stage": "core",
                 "courses": [
-                    {"course_id": "c2", "course_name": "객체지향프로그래밍", "priority": 1},
-                    {"course_id": "c3", "course_name": "알고리즘", "priority": 2},
+                    {
+                        "course_id": "c2",
+                        "course_name": "객체지향프로그래밍",
+                        "credits": 3,
+                        "stage": "core",
+                        "score": 0.6,
+                    },
+                    {
+                        "course_id": "c3",
+                        "course_name": "알고리즘",
+                        "credits": 3,
+                        "stage": "core",
+                        "score": 0.4,
+                    },
                 ],
             },
             {"stage": "application", "courses": []},
@@ -377,9 +431,27 @@ def test_semester_subtitle_uses_dominant_stage_on_mixed_semester() -> None:
                 "semester": 3,
                 "grade": 2,
                 "courses": [
-                    {"course_id": "c1", "course_name": "자료구조", "priority": 1},
-                    {"course_id": "c2", "course_name": "객체지향프로그래밍", "priority": 1},
-                    {"course_id": "c3", "course_name": "알고리즘", "priority": 2},
+                    {
+                        "course_id": "c1",
+                        "course_name": "자료구조",
+                        "credits": 3,
+                        "stage": "foundation",
+                        "score": 0.6,
+                    },
+                    {
+                        "course_id": "c2",
+                        "course_name": "객체지향프로그래밍",
+                        "credits": 3,
+                        "stage": "core",
+                        "score": 0.6,
+                    },
+                    {
+                        "course_id": "c3",
+                        "course_name": "알고리즘",
+                        "credits": 3,
+                        "stage": "core",
+                        "score": 0.4,
+                    },
                 ],
                 "credits_total": 9,
                 "cap_reached": False,
@@ -411,12 +483,26 @@ def test_semester_subtitle_tie_break_prefers_earlier_stage() -> None:
         "stages": [
             {
                 "stage": "foundation",
-                "courses": [{"course_id": "c1", "course_name": "자료구조", "priority": 1}],
+                "courses": [
+                    {
+                        "course_id": "c1",
+                        "course_name": "자료구조",
+                        "credits": 3,
+                        "stage": "foundation",
+                        "score": 0.6,
+                    }
+                ],
             },
             {
                 "stage": "core",
                 "courses": [
-                    {"course_id": "c2", "course_name": "객체지향프로그래밍", "priority": 1}
+                    {
+                        "course_id": "c2",
+                        "course_name": "객체지향프로그래밍",
+                        "credits": 3,
+                        "stage": "core",
+                        "score": 0.6,
+                    }
                 ],
             },
             {"stage": "application", "courses": []},
@@ -427,8 +513,20 @@ def test_semester_subtitle_tie_break_prefers_earlier_stage() -> None:
                 "semester": 2,
                 "grade": 1,
                 "courses": [
-                    {"course_id": "c1", "course_name": "자료구조", "priority": 1},
-                    {"course_id": "c2", "course_name": "객체지향프로그래밍", "priority": 1},
+                    {
+                        "course_id": "c1",
+                        "course_name": "자료구조",
+                        "credits": 3,
+                        "stage": "foundation",
+                        "score": 0.6,
+                    },
+                    {
+                        "course_id": "c2",
+                        "course_name": "객체지향프로그래밍",
+                        "credits": 3,
+                        "stage": "core",
+                        "score": 0.6,
+                    },
                 ],
                 "credits_total": 6,
                 "cap_reached": False,

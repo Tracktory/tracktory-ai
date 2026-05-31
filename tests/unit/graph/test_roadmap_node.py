@@ -95,15 +95,18 @@ def test_node_returns_both_stages_and_semesters_outputs(
     make_course_repo: Callable[..., CourseRepository],
     real_roadmap_yaml_path: Path,
 ) -> None:
+    # 단계 라벨은 배치 학년에서 도출되므로 학년 제약으로 학년→단계를 고정한다.
     courses_by_track: dict[str, list[Course]] = {
         "T_A": [
-            make_course("c1", credits=3, stage="foundation", priority=1),
-            make_course("c2", credits=3, stage="foundation", priority=2),
-            make_course("c3", credits=3, stage="core", prereq_ids=["c1"], priority=1),
-            make_course("c5", credits=3, stage="application", prereq_ids=["c3"], priority=1),
+            make_course("c1", credits=3, stage="foundation", available_grades=[1]),
+            make_course("c2", credits=3, stage="foundation", available_grades=[1]),
+            make_course("c3", credits=3, stage="core", prereq_ids=["c1"], available_grades=[2]),
+            make_course(
+                "c5", credits=3, stage="application", prereq_ids=["c3"], available_grades=[3]
+            ),
         ],
         "T_B": [
-            make_course("c4", credits=3, stage="industry", priority=1),
+            make_course("c4", credits=3, stage="industry", available_grades=[4]),
         ],
     }
     node = _build_node(courses_by_track, real_roadmap_yaml_path, make_course_repo)
@@ -119,7 +122,7 @@ def test_node_returns_both_stages_and_semesters_outputs(
     assert result["trace"] == ["roadmap:ok"]
     assert result["roadmap"]["derived_from_combo_key"] == "T_A::T_B"
 
-    # 학습 깊이 라벨 출력 — 4 단계 순서 유지
+    # 학습 깊이 라벨 출력 — 4 단계 순서 유지, 단계는 배치 학년에서 도출
     stages = result["roadmap"]["stages"]
     assert [s["stage"] for s in stages] == ["foundation", "core", "application", "industry"]
     assert {c["course_id"] for c in stages[0]["courses"]} == {"c1"}
@@ -190,14 +193,17 @@ def test_completed_course_satisfies_prereq_for_downstream(
     real_roadmap_yaml_path: Path,
 ) -> None:
     """이수 과목은 추천에는 안 나오지만, 후수 과목의 prereq 만족 신호로 사용된다."""
+    # 단계는 배치 학년에서 도출되므로 학년 제약으로 학년→단계를 고정한다.
     courses_by_track: dict[str, list[Course]] = {
         "T_A": [
-            make_course("c1", credits=3, stage="foundation"),
-            make_course("c2", credits=3, stage="core", prereq_ids=["c1"]),
+            make_course("c1", credits=3, stage="foundation", available_grades=[1]),
+            make_course("c2", credits=3, stage="core", prereq_ids=["c1"], available_grades=[2]),
         ],
         "T_B": [
-            make_course("c3", credits=3, stage="application", prereq_ids=["c2"]),
-            make_course("c4", credits=3, stage="industry"),
+            make_course(
+                "c3", credits=3, stage="application", prereq_ids=["c2"], available_grades=[3]
+            ),
+            make_course("c4", credits=3, stage="industry", available_grades=[4]),
         ],
     }
     node = _build_node(courses_by_track, real_roadmap_yaml_path, make_course_repo)
@@ -627,3 +633,137 @@ def test_distribution_starts_at_current_semester(
     assert all(plan["semester"] >= 4 for plan in plans)
     assert plans[0]["semester"] == 4
     assert plans[0]["grade"] == 2
+
+
+# ---------------------------------------------------------------------------
+# 시나리오 16: 과목 단위 출력에 학점·단계·점수 동반 + 산학 단계 채움
+# ---------------------------------------------------------------------------
+
+
+def test_roadmap_courses_carry_credits_stage_score_and_fill_industry(
+    make_course: Callable[..., Course],
+    make_course_repo: Callable[..., CourseRepository],
+    real_roadmap_yaml_path: Path,
+) -> None:
+    """과목 단위 출력에 학점·단계·점수가 실리고, 4 학년 배치 과목이 산학을 채운다.
+
+    단계는 배치 학년에서 도출되므로, 카탈로그에 산학 분류 과목이 없어도 4 학년
+    학기에 놓인 과목이 산학 단계를 채운다. 전공 필수 + 두 트랙 공통 권장 과목은
+    전공 선택 단일 트랙 과목보다 추천 점수가 높다.
+    """
+    courses_by_track: dict[str, list[Course]] = {
+        "T_A": [
+            make_course(
+                "shared",
+                credits=3,
+                course_type="전공필수",
+                track_ids=["T_A", "T_B"],
+                available_grades=[1],
+            ),
+            make_course(
+                "elective",
+                credits=2,
+                course_type="전공선택",
+                track_ids=["T_A"],
+                available_grades=[1],
+            ),
+            # 카탈로그 단계는 foundation 이지만 4 학년에만 수강 가능 → 출력
+            # 단계는 배치 학년에서 industry 로 재도출되어야 한다.
+            make_course(
+                "senior",
+                credits=3,
+                stage="foundation",
+                course_type="전공선택",
+                track_ids=["T_A"],
+                available_grades=[4],
+            ),
+        ],
+        "T_B": [],
+    }
+    node = _build_node(courses_by_track, real_roadmap_yaml_path, make_course_repo)
+
+    result = node(
+        {
+            "normalized_profile": _normalized_profile(current_semester=1),
+            "current_semester": 1,
+            "primary_combos": _primary_combos("T_A", "T_B"),
+        }
+    )
+
+    by_id = {
+        course["course_id"]: course
+        for plan in result["roadmap"]["semesters"]
+        for course in plan["courses"]
+    }
+    # 학점이 과목 단위로 실린다
+    assert by_id["shared"]["credits"] == 3
+    assert by_id["elective"]["credits"] == 2
+    # 전공필수 + 두 트랙 공통 권장 → 단일 트랙 전공선택보다 높은 점수
+    assert by_id["shared"]["score"] > by_id["elective"]["score"]
+    # 카탈로그 단계(foundation) 가 아니라 배치 학년(4)에서 industry 로 재도출
+    assert by_id["senior"]["stage"] == "industry"
+    # 4 학년 배치 과목이 산학 단계를 채운다 (카탈로그에 산학 과목이 없어도)
+    industry = next(s for s in result["roadmap"]["stages"] if s["stage"] == "industry")
+    assert {c["course_id"] for c in industry["courses"]} == {"senior"}
+    assert industry["courses"][0]["stage"] == "industry"
+
+
+# ---------------------------------------------------------------------------
+# 시나리오 17: 점수 순 정렬이 선수 관계를 위반하지 않음
+# ---------------------------------------------------------------------------
+
+
+def test_higher_score_dependent_waits_for_lower_score_prereq(
+    make_course: Callable[..., Course],
+    make_course_repo: Callable[..., CourseRepository],
+    real_roadmap_yaml_path: Path,
+) -> None:
+    """점수가 더 높은 후수 과목이라도 저점수 선수 과목보다 먼저 배치되지 않는다.
+
+    점수 내림차순 정렬이 후수를 stream 앞에 두더라도, 선수 미충족 컷이 후수를
+    다음 학기로 미뤄 선수 → 후수 순서를 강제하는지 검증한다 (점수 순 정렬
+    도입 후의 선수 invariant 회귀 가드).
+    """
+    courses_by_track: dict[str, list[Course]] = {
+        "T_A": [
+            make_course(
+                "prereq",
+                credits=3,
+                course_type="전공선택",
+                track_ids=["T_A"],
+                available_grades=[2, 3, 4],
+            ),
+            make_course(
+                "dependent",
+                credits=3,
+                course_type="전공필수",
+                prereq_ids=["prereq"],
+                track_ids=["T_A"],
+                available_grades=[2, 3, 4],
+            ),
+        ],
+        "T_B": [],
+    }
+    node = _build_node(courses_by_track, real_roadmap_yaml_path, make_course_repo)
+
+    result = node(
+        {
+            "normalized_profile": _normalized_profile(current_semester=3),
+            "current_semester": 3,
+            "primary_combos": _primary_combos("T_A", "T_B"),
+        }
+    )
+
+    sem_by_id = {
+        course["course_id"]: plan["semester"]
+        for plan in result["roadmap"]["semesters"]
+        for course in plan["courses"]
+    }
+    score_by_id = {
+        course["course_id"]: course["score"]
+        for plan in result["roadmap"]["semesters"]
+        for course in plan["courses"]
+    }
+    # 후수가 더 높은 점수임에도 선수가 같거나 이른 학기에 배치된다
+    assert score_by_id["dependent"] > score_by_id["prereq"]
+    assert sem_by_id["prereq"] <= sem_by_id["dependent"]

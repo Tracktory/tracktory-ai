@@ -6,22 +6,25 @@
 
 출력 schema 이중화:
     - ``Roadmap.stages`` — 학습 깊이 4 단계 (foundation / core / application
-      / industry) 라벨. 자연어 설명 생성 노드가 단계별 과목 그룹화에 사용한다.
+      / industry) 라벨. 단계는 과목이 배치된 학기의 학년에서 도출하며
+      (1→foundation … 4→industry), 자연어 설명 생성 노드가 단계별 과목
+      그룹화에 사용한다.
     - ``Roadmap.semesters`` — 학생의 잔여 학기 (current_semester ~ 8) 별 추천
       과목 plan. 사용자 화면의 학기 카드 row 에 직접 매핑된다. 한 학기에는
       여러 단계의 과목이 섞일 수 있다 (예: 학년 후반에 기초 마지막 + 핵심 첫).
 
-알고리즘 — Stage 순서 stream:
-    foundation → core → application → industry 순회. 각 과목을 학생의 현재
-    학기부터 다음 조건을 모두 만족할 때 채택한다.
+알고리즘 — 추천 점수 순 stream:
+    후보를 추천 점수 내림차순 (동점 시 priority → course_id) 으로 정렬한 뒤,
+    학생의 현재 학기부터 각 과목을 다음 조건을 모두 만족할 때 채택한다.
         1. 학년 제약: 현재 학기의 학년이 ``course.available_grades`` 안에 있다.
         2. 선수 만족: ``course.prereq_ids`` 가 누적 이수 + 채택 집합의 부분집합.
         3. 학기 학사 cap: 학기당 18 학점 (한성대 일반 학기 제도) 미초과.
         4. 학년 cap: 학년별 최대 학점 (학년별 학점 범위 yaml) 미초과.
         5. 졸업 cap: 전공 총합 학점 미초과.
     조건 위배 시 (3) (4) 는 다음 학기 후보로 보류, (1) (2) 는 학년이 진행됨에
-    따라 자연 해제된다. 졸업 cap 도달 시 stream 종료하고 해당 학기에
-    ``cap_reached`` 마커를 켠다.
+    따라 자연 해제된다. 점수가 높은 과목일수록 먼저 시도되어 가능한 이른 학기에
+    배치된다. 졸업 cap 도달 시 stream 종료하고 해당 학기에 ``cap_reached``
+    마커를 켠다.
 
 부작용 격리:
     - ``course_repo`` 호출은 ``__call__`` 단 1 곳.
@@ -61,7 +64,48 @@ _MAX_SEMESTER: int = 8
 # stream 진입 단계에서 제외하여 추천 결과의 학기 카드에 노출되지 않도록 한다.
 _RECOMMENDED_COURSE_TYPES: frozenset[str] = frozenset({"전공필수", "전공선택"})
 
+# 배치 학년 → 학습 깊이 단계 라벨. 카탈로그 단계 분류가 아니라 과목이 실제로
+# 놓인 학기의 학년에서 단계를 도출해, 산학(industry) 과목 데이터 부재로 산학
+# 단계가 항상 비던 문제를 없앤다 (4 학년에 놓인 과목이 산학을 채운다).
+_GRADE_TO_STAGE: dict[int, StageLabel] = {
+    1: "foundation",
+    2: "core",
+    3: "application",
+    4: "industry",
+}
+
+# 추천 정렬·표시 점수 가중치. 전공 필수가 선택보다 추천 우선순위가 높고,
+# 두 트랙이 동시에 권장하는 과목은 조합 시너지가 커 가산점을 준다.
+# 모두 직관 할당값으로, 운영 데이터 확보 후 ablation 대상이다.
+_COURSE_TYPE_SCORE: dict[str, float] = {"전공필수": 0.6, "전공선택": 0.4}
+_BOTH_TRACKS_BONUS: float = 0.4
+
 logger = logging.getLogger(__name__)
+
+
+def _compute_course_score(course: Course, primary_track_ids: list[str]) -> float:
+    """과목의 추천 정렬·표시 점수를 0~1 범위로 산출한다.
+
+    전공 필수/선택 기본 점수에 두 1 순위 트랙이 모두 권장하는 과목이면
+    가산점을 더한다. 두 트랙 공통 추천 = 조합 시너지의 핵심 신호다.
+    """
+    base = _COURSE_TYPE_SCORE.get(course.course_type, _COURSE_TYPE_SCORE["전공선택"])
+    shared = len(primary_track_ids) >= 2 and all(
+        tid in course.track_ids for tid in primary_track_ids
+    )
+    return base + (_BOTH_TRACKS_BONUS if shared else 0.0)
+
+
+def _order_candidates(courses: list[Course], score_by_id: dict[str, float]) -> list[Course]:
+    """후보를 추천 점수 내림차순으로 정렬한다 — stage stream 의 입력 순서.
+
+    점수가 같으면 ``priority`` → ``course_id`` 사전식으로 deterministic 순서를
+    보장한다. 점수가 높은 과목일수록 먼저 시도되어 가능한 이른 학기에 배치된다.
+    """
+    return sorted(
+        courses,
+        key=lambda course: (-score_by_id[course.course_id], course.priority, course.course_id),
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -86,27 +130,6 @@ def _filter_recommended_types(courses: list[Course]) -> list[Course]:
     return [c for c in courses if c.course_type in _RECOMMENDED_COURSE_TYPES]
 
 
-def _group_by_stage(courses: list[Course]) -> dict[StageLabel, list[Course]]:
-    """4 단계 라벨로 후보를 그룹화한다. 없는 단계는 빈 리스트를 보장한다."""
-    grouped: dict[StageLabel, list[Course]] = {stage: [] for stage in _STAGE_ORDER}
-    for course in courses:
-        grouped[course.stage].append(course)
-    return grouped
-
-
-def _flatten_in_stage_order(stage_groups: dict[StageLabel, list[Course]]) -> list[Course]:
-    """단계 순서를 보존하면서 priority 오름차순으로 평탄화한다.
-
-    같은 단계 안에서는 ``(priority, course_id)`` 사전식 정렬로 deterministic
-    순서를 보장한다. 단계 stream 의 입력 순서를 결정한다.
-    """
-    flat: list[Course] = []
-    for stage in _STAGE_ORDER:
-        ordered = sorted(stage_groups.get(stage, []), key=lambda c: (c.priority, c.course_id))
-        flat.extend(ordered)
-    return flat
-
-
 def _semester_to_grade(semester: int) -> int:
     """학기 번호 (1~8) 를 학년 번호 (1~4) 로 매핑한다.
 
@@ -116,30 +139,32 @@ def _semester_to_grade(semester: int) -> int:
 
 
 def _distribute_across_semesters(
-    stage_groups: dict[StageLabel, list[Course]],
+    candidates: list[Course],
     *,
     current_semester: int,
     completed_set: set[str],
     config: RoadmapConfig,
+    score_by_id: dict[str, float],
 ) -> list[SemesterPlan]:
-    """Stage 순서 stream 으로 학기에 분산 — 본 노드의 분산 알고리즘 본체.
+    """추천 점수 순 stream 으로 학기에 분산 — 본 노드의 분산 알고리즘 본체.
 
     상세 알고리즘은 모듈 docstring 참조. 본 함수는 학기 단위 plan 만 반환하고
     학습 깊이 라벨 출력은 호출자가 별도로 추출한다 (단일 책임 분리).
 
     Args:
-        stage_groups: 단계별 과목 후보 (이미 stage 분류 + 이수 분리 + 교양 제외
-            완료).
+        candidates: 추천 점수 내림차순으로 이미 정렬된 과목 후보 (이수 분리 +
+            교양 제외 완료).
         current_semester: 학생의 잔여 학기 시작점 (1~8).
         completed_set: 이수 과목 ID 집합. 선수 만족 신호의 출발점으로 사용된다.
         config: 학기 cap + 학년 범위 + 졸업 총 학점.
+        score_by_id: 과목 식별자 → 추천 점수. 학기 plan 의 ``RoadmapCourse`` 에
+            그대로 실어 사용자 표시·정렬에 사용한다.
 
     Returns:
         학기 번호 오름차순 ``SemesterPlan`` 리스트. 졸업 cap 도달 학기에
         ``cap_reached=True``. 잔여 학기가 짧아 졸업 cap 미달 시 마지막 학기에
         ``graduation_insufficient=True``. 후보 자체가 비어 있으면 빈 리스트.
     """
-    candidates = _flatten_in_stage_order(stage_groups)
     if not candidates:
         return []
 
@@ -161,8 +186,8 @@ def _distribute_across_semesters(
         sem_courses: list[Course] = []
         sem_credits = 0
 
-        # 본 학기 단계 stream — 한 번에 한 과목씩 가장 앞 (단계 순서 + priority)
-        # 부터 시도하고, 채택 시 remaining 에서 제거한다.
+        # 본 학기 stream — 한 번에 한 과목씩 추천 점수 순으로 가장 앞부터
+        # 시도하고, 채택 시 remaining 에서 제거한다.
         idx = 0
         while idx < len(remaining):
             if accumulated_total >= grad_total:
@@ -207,7 +232,7 @@ def _distribute_across_semesters(
             SemesterPlan(
                 semester=semester,
                 grade=grade,
-                courses=_to_roadmap_courses(sem_courses),
+                courses=_to_roadmap_courses(sem_courses, grade, score_by_id),
                 credits_total=sem_credits,
                 cap_reached=cap_reached_now,
                 graduation_insufficient=False,
@@ -226,50 +251,45 @@ def _distribute_across_semesters(
     return plans
 
 
-def _to_roadmap_courses(courses: list[Course]) -> list[RoadmapCourse]:
+def _to_roadmap_courses(
+    courses: list[Course], grade: int, score_by_id: dict[str, float]
+) -> list[RoadmapCourse]:
     """``Course`` 를 사용자 노출용 ``RoadmapCourse`` 로 변환한다.
 
-    Repository 가 부여한 ``priority`` 를 그대로 패스하여 "1 순위 / 2 순위" 표기
-    의미를 보존한다. 단계 안 표시 순서를 결정론적으로 만들기 위해 priority →
-    course_id 순으로 재정렬한다.
+    단계 라벨은 과목이 배치된 학기의 학년에서 도출하고 (산학 단계 공백 방지),
+    학점과 추천 점수를 그대로 실어 사용자 화면의 과목 단위 표기에 매핑한다.
+    배치 순서가 이미 점수 내림차순이므로 추가 재정렬은 하지 않는다.
     """
-    ordered = sorted(courses, key=lambda c: (c.priority, c.course_id))
+    stage = _GRADE_TO_STAGE[grade]
     return [
-        RoadmapCourse(course_id=c.course_id, course_name=c.course_name, priority=c.priority)
-        for c in ordered
+        RoadmapCourse(
+            course_id=c.course_id,
+            course_name=c.course_name,
+            credits=c.credits,
+            stage=stage,
+            score=score_by_id[c.course_id],
+        )
+        for c in courses
     ]
 
 
-def _extract_stages_from_semesters(
-    semester_plans: list[SemesterPlan],
-    stage_groups: dict[StageLabel, list[Course]],
-) -> list[RoadmapStage]:
-    """학기 분산 결과에서 학습 깊이 단계 라벨을 재구성한다.
+def _extract_stages_from_semesters(semester_plans: list[SemesterPlan]) -> list[RoadmapStage]:
+    """학기 분산 결과에서 학습 깊이 단계 라벨 출력을 재구성한다.
 
-    학기 단위 plan 안의 ``RoadmapCourse`` 는 단계 정보를 직접 들고 있지 않으므로
-    원본 ``stage_groups`` 의 ``Course.stage`` 를 ``course_id`` 기준으로 lookup
-    하여 단계 그룹을 만든다. 학기 분산이 실제로 채택한 과목만 단계 그룹에
-    포함되며, 어느 단계도 비어 있을 수 있다.
+    학기 plan 의 각 ``RoadmapCourse`` 는 이미 배치 학년에서 도출한 ``stage`` 를
+    들고 있으므로, 그 값으로 그룹화하여 4 단계 뷰를 만든다. 학기 분산이 실제로
+    채택한 과목만 포함되며, 어느 단계도 비어 있을 수 있다.
 
     이 변환이 분산 출력과 단계 출력을 같은 데이터의 두 뷰로 유지한다 — 자연어
     설명 노드가 단계 라벨에 의존하더라도 학기 분산이 발견한 컷 (선수 / 학년 /
     cap) 이 자동으로 반영된다.
     """
-    accepted_ids: set[str] = set()
+    courses_by_stage: dict[StageLabel, list[RoadmapCourse]] = {stage: [] for stage in _STAGE_ORDER}
     for plan in semester_plans:
-        for accepted in plan.courses:
-            accepted_ids.add(accepted.course_id)
+        for course in plan.courses:
+            courses_by_stage[course.stage].append(course)
 
-    courses_by_stage: dict[StageLabel, list[Course]] = {stage: [] for stage in _STAGE_ORDER}
-    for stage in _STAGE_ORDER:
-        for candidate in stage_groups.get(stage, []):
-            if candidate.course_id in accepted_ids:
-                courses_by_stage[stage].append(candidate)
-
-    return [
-        RoadmapStage(stage=stage, courses=_to_roadmap_courses(courses_by_stage[stage]))
-        for stage in _STAGE_ORDER
-    ]
+    return [RoadmapStage(stage=stage, courses=courses_by_stage[stage]) for stage in _STAGE_ORDER]
 
 
 def _empty_roadmap(combo_key: str | None = None) -> Roadmap:
@@ -383,18 +403,20 @@ class RoadmapNode:
                 "trace": ["roadmap:all_completed"],
             }
 
-        # 단계 5: 단계 그룹화 + 잔여 학기 분산
-        grouped = _group_by_stage(remaining)
+        # 단계 5: 추천 점수 산출 + 점수 순 정렬 + 잔여 학기 분산
+        score_by_id = {c.course_id: _compute_course_score(c, track_ids) for c in remaining}
+        ordered = _order_candidates(remaining, score_by_id)
         current_semester = state.get("current_semester") or normalized.get("current_semester") or 1
         semester_plans = _distribute_across_semesters(
-            grouped,
+            ordered,
             current_semester=current_semester,
             completed_set=completed_set,
             config=self._config,
+            score_by_id=score_by_id,
         )
 
         # 단계 6: 학습 깊이 라벨 출력 재구성 (자연어 설명 노드 호환)
-        stages = _extract_stages_from_semesters(semester_plans, grouped)
+        stages = _extract_stages_from_semesters(semester_plans)
 
         # 단계 7: Roadmap 객체로 변환 후 state 부분 반환
         roadmap = Roadmap(
