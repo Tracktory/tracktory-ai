@@ -31,12 +31,6 @@ tracks:
   - W080032
   - W080033
   - W080008
-- track_id: AI로봇융합트랙
-  track_name: AI로봇융합트랙
-  college_id: IT공과대학
-  department_id: 기계전자공학부
-  major_id: 기계전자공학부
-  course_ids: []
 - track_id: AI응용학과
   track_name: AI응용학과
   college_id: 창의융합대학
@@ -116,12 +110,6 @@ tracks:
   - W050034
   - W050043
   - W050044
-- track_id: SW융합학과
-  track_name: SW융합학과
-  college_id: 글로벌인재대학
-  department_id: 글로벌인재대학
-  major_id: 글로벌인재대학
-  course_ids: []
 - track_id: UX/UI디자인트랙
   track_name: UX/UI디자인트랙
   college_id: 디자인대학
@@ -281,12 +269,6 @@ tracks:
   - R010054
   - R010119
   - R01C012
-- track_id: 교양영어과정
-  track_name: 교양영어과정
-  college_id: 상상력교양대학
-  department_id: 기초교양학부
-  major_id: 기초교양학부
-  course_ids: []
 - track_id: 국제무역트랙
   track_name: 국제무역트랙
   college_id: 미래융합사회과학대학
@@ -314,12 +296,6 @@ tracks:
   - R010029
   - R010075
   - R011009
-- track_id: 글로벌K비즈니스학과
-  track_name: 글로벌K비즈니스학과
-  college_id: 글로벌인재대학
-  department_id: 글로벌인재대학
-  major_id: 글로벌인재대학
-  course_ids: []
 - track_id: 글로벌비즈니스트랙
   track_name: 글로벌비즈니스트랙
   college_id: 미래융합사회과학대학
@@ -347,12 +323,6 @@ tracks:
   - R010104
   - R010029
   - R010112
-- track_id: 기계시스템디자인트랙
-  track_name: 기계시스템디자인트랙
-  college_id: IT공과대학
-  department_id: 기계전자공학부
-  major_id: 기계전자공학부
-  course_ids: []
 - track_id: 기업ㆍ경제분석트랙
   track_name: 기업ㆍ경제분석트랙
   college_id: 미래융합사회과학대학
@@ -420,12 +390,6 @@ tracks:
   - R019011
   - R019012
   - R010117
-- track_id: 기초교양학부
-  track_name: 기초교양학부
-  college_id: 상상력교양대학
-  department_id: 기초교양학부
-  major_id: 기초교양학부
-  course_ids: []
 - track_id: 동양화전공
   track_name: 동양화전공
   college_id: 크리에이티브인문예술대학
@@ -779,12 +743,6 @@ tracks:
   - R010124
   - R016013
   - R010054
-- track_id: 부동산트랙
-  track_name: 부동산트랙
-  college_id: 미래융합사회과학대학
-  department_id: 사회과학부
-  major_id: 사회과학부
-  course_ids: []
 - track_id: 뷰티디자인매니지먼트학과
   track_name: 뷰티디자인매니지먼트학과
   college_id: 디자인대학
@@ -986,12 +944,6 @@ tracks:
   - V020036
   - V020037
   - V022009
-- track_id: 사고와표현과정
-  track_name: 사고와표현과정
-  college_id: 상상력교양대학
-  department_id: 기초교양학부
-  major_id: 기초교양학부
-  course_ids: []
 - track_id: 산업공학트랙
   track_name: 산업공학트랙
   college_id: IT공과대학
@@ -1022,12 +974,6 @@ tracks:
   - V074011
   - V070067
   - V070078
-- track_id: 상상력인재학부
-  track_name: 상상력인재학부
-  college_id: 창의융합대학
-  department_id: 창의융합대학
-  major_id: 창의융합대학
-  course_ids: []
 - track_id: 서양화전공
   track_name: 서양화전공
   college_id: 크리에이티브인문예술대학
@@ -1069,12 +1015,6 @@ tracks:
   - P021012
   - P022008
   - P022010
-- track_id: 소양핵심교양학부
-  track_name: 소양핵심교양학부
-  college_id: 상상력교양대학
-  department_id: 소양핵심교양학부
-  major_id: 소양핵심교양학부
-  course_ids: []
 - track_id: 스마트도시ㆍ교통계획트랙
   track_name: 스마트도시ㆍ교통계획트랙
   college_id: 미래융합사회과학대학
@@ -1308,12 +1248,6 @@ tracks:
   - T022010
   - T022008
   - T022002
-- track_id: 영상엔터테인먼트학과
-  track_name: 영상엔터테인먼트학과
-  college_id: 글로벌인재대학
-  department_id: 글로벌인재대학
-  major_id: 글로벌인재대학
-  course_ids: []
 - track_id: 웹공학트랙
   track_name: 웹공학트랙
   college_id: IT공과대학
@@ -1465,18 +1399,6 @@ tracks:
   - V070070
   - V070071
   - V070078
-- track_id: 인테리어디자인트랙
-  track_name: 인테리어디자인트랙
-  college_id: 디자인대학
-  department_id: ICT디자인학부
-  major_id: ICT디자인학부
-  course_ids: []
-- track_id: 자율공학학부
-  track_name: 자율공학학부
-  college_id: 상상력교양대학
-  department_id: 자율교양학부
-  major_id: 자율교양학부
-  course_ids: []
 - track_id: 전자트랙
   track_name: 전자트랙
   college_id: IT공과대학
@@ -1593,12 +1515,6 @@ tracks:
   - T010033
   - T011011
   - T011010
-- track_id: 패션뷰티크리에이션학과
-  track_name: 패션뷰티크리에이션학과
-  college_id: 글로벌인재대학
-  department_id: 글로벌인재대학
-  major_id: 글로벌인재대학
-  course_ids: []
 - track_id: 패션크리에이티브디렉션트랙
   track_name: 패션크리에이티브디렉션트랙
   college_id: 디자인대학
@@ -1692,12 +1608,6 @@ tracks:
   - P013014
   - P010116
   - P010125
-- track_id: 한국언어문화교육학과
-  track_name: 한국언어문화교육학과
-  college_id: 글로벌인재대학
-  department_id: 글로벌인재대학
-  major_id: 글로벌인재대학
-  course_ids: []
 - track_id: 현대무용전공
   track_name: 현대무용전공
   college_id: 크리에이티브인문예술대학
