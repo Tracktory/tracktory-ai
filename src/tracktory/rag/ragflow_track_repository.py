@@ -8,7 +8,9 @@
 조립 출처:
     - 트랙소개(track_intro) 문서 — ``meta_fields`` 에서 트랙명·소속(대학/학부).
     - 교육과정(curriculum) 문서 — 본문 "[과목구분] 과목명 (코드, N학점)" 줄에서
-      과목코드를 추출해 ``course_ids`` 로. 트랙명으로 트랙소개와 짝짓는다.
+      추천 대상(전공) 과목코드를 추출해 ``course_ids`` 로. 전공 판정은 과목
+      저장소와 ``curriculum_lines.parse_course_line`` 을 공유해 교양류가 섞이지
+      않는다. 트랙명으로 트랙소개와 짝짓는다.
 
 ``meta_text`` 는 현재 어떤 노드도 읽지 않아(모델상 "디버깅용 보존") 빈 문자열로
 둔다 — 채우려면 트랙마다 소개 본문 fetch 가 필요한데 소비처가 없다.
@@ -24,11 +26,11 @@ Protocol 타입으로만 주입받는다.
 from __future__ import annotations
 
 import logging
-import re
 
 from pydantic import ValidationError
 
 from tracktory.graph.models import Track
+from tracktory.rag.curriculum_lines import parse_course_line
 from tracktory.rag.hansung_catalog import match_track_name
 from tracktory.rag.ragflow_client import RagflowClient, RagflowDocument, RagflowError
 
@@ -44,10 +46,6 @@ _TRACK_INTRO_KEYWORD = "트랙소개"
 _TRACK_INTRO_DOC_TYPE = "track_intro"
 _CURRICULUM_KEYWORD = "교육과정"
 _CURRICULUM_DOC_TYPE = "curriculum"
-
-# 교육과정 본문의 과목 한 줄: "[전공기초] 데이터리터러시 (CTE0029, 3학점)"
-# → 괄호 안 "코드, N학점" 에서 과목코드만 추출.
-_COURSE_CODE_RE = re.compile(r"\(\s*([A-Za-z0-9]+)\s*,\s*\d+\s*학점\s*\)")
 
 
 class TrackRepositoryError(Exception):
@@ -176,13 +174,22 @@ class RagflowTrackRepository:
 
     @staticmethod
     def _extract_course_ids(curriculum_text: str) -> list[str]:
-        """교육과정 본문에서 과목코드를 등장 순서대로 dedup 하여 추출한다."""
+        """교육과정 본문에서 추천 대상(전공) 과목코드를 등장 순서대로 dedup 추출한다.
+
+        전공 판정은 과목 저장소와 동일한 ``parse_course_line`` 을 쓴다 — 과목구분
+        태그가 전공 계열이 아니면(교양류 등) ``None`` 이 되어 자연히 제외된다.
+        과목 카탈로그에 대응 ``Course`` 가 없는 코드가 ``course_ids`` 에 새어
+        들어가지 않도록 두 저장소가 같은 기준을 공유한다.
+        """
         seen: set[str] = set()
         ordered: list[str] = []
-        for code in _COURSE_CODE_RE.findall(curriculum_text):
-            if code not in seen:
-                seen.add(code)
-                ordered.append(code)
+        for line in curriculum_text.splitlines():
+            parsed = parse_course_line(line)
+            if parsed is None:
+                continue
+            if parsed.course_id not in seen:
+                seen.add(parsed.course_id)
+                ordered.append(parsed.course_id)
         return ordered
 
     @staticmethod

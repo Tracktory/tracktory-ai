@@ -101,6 +101,29 @@ def test_list_all_assembles_track_with_courses() -> None:
     assert track.tech_stacks == []
 
 
+def test_course_ids_exclude_liberal_arts_and_non_major() -> None:
+    # 교양류·비전공 과목은 course_ids 에서 빠져야 한다 — 과목 카탈로그(전공만)와
+    # 정합. 과목 저장소와 동일한 전공 판정 기준(parse_course_line)을 공유한다.
+    body = (
+        "1학년 1학기\n"
+        "  - [전공필수] 전공과목 (MAJ001, 3학점)\n"
+        "  - [일반교양] 교양과목 (GEN0123, 2학점)\n"
+        "  - [선택필수교양] 글쓰기 (GEN0456, 3학점)\n"
+        "  - [교직] 교직과목 (REQ0001, 2학점)\n"
+        "  - [전공선택] 또다른전공 (MAJ002, 3학점)\n"
+    )
+    repo = _repo(
+        {"트랙소개": [_INTRO], "교육과정": [_CURRICULUM]},
+        {"intro1": "소개", "cur1": body},
+    )
+
+    tracks = repo.list_all()
+
+    assert len(tracks) == 1
+    # GEN0123 / GEN0456 / REQ0001 은 비전공 → 제외, 전공만 순서 보존.
+    assert tracks[0].course_ids == ["MAJ001", "MAJ002"]
+
+
 def test_track_without_matching_curriculum_has_empty_course_ids() -> None:
     repo = _repo(
         {"트랙소개": [_INTRO], "교육과정": []},

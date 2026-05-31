@@ -66,6 +66,80 @@ def test_list_for_tracks_unions_across_requested_tracks(tmp_path: Path) -> None:
     assert courses == {"C001", "C002", "C004"}
 
 
+def test_list_for_tracks_pulls_in_prereq_closure(tmp_path: Path) -> None:
+    # P_CORE(트랙X) 의 선수는 P_BASE(트랙Y, 다른 트랙) → 트랙X 만 요청해도
+    # 선수 P_BASE 가 closure 로 끌려와야 로드맵 선수 검증이 끊기지 않는다.
+    catalog = {
+        "courses": [
+            {
+                "course_id": "P_BASE",
+                "course_name": "공통기초",
+                "credits": 3,
+                "stage": "foundation",
+                "course_type": "전공필수",
+                "track_ids": ["트랙Y"],
+                "prereq_ids": [],
+            },
+            {
+                "course_id": "P_CORE",
+                "course_name": "후수과목",
+                "credits": 3,
+                "stage": "core",
+                "course_type": "전공선택",
+                "track_ids": ["트랙X"],
+                "prereq_ids": ["P_BASE"],
+            },
+        ]
+    }
+    repo = YamlCourseRepository(_write(tmp_path, catalog))
+
+    courses = {c.course_id for c in repo.list_for_tracks(["트랙X"])}
+
+    # 트랙X 직접 매칭은 P_CORE 뿐이지만 선수 P_BASE 가 closure 로 포함된다.
+    assert courses == {"P_CORE", "P_BASE"}
+
+
+def test_prereq_closure_is_transitive_and_cycle_safe(tmp_path: Path) -> None:
+    # A→B→C 선수 사슬 + C→A 순환. 트랙X(A) 요청 시 B·C 가 전이적으로 끌려오고,
+    # 순환이 있어도 무한 루프 없이 종료해야 한다.
+    catalog = {
+        "courses": [
+            {
+                "course_id": "A",
+                "course_name": "A",
+                "credits": 3,
+                "stage": "application",
+                "course_type": "전공선택",
+                "track_ids": ["트랙X"],
+                "prereq_ids": ["B"],
+            },
+            {
+                "course_id": "B",
+                "course_name": "B",
+                "credits": 3,
+                "stage": "core",
+                "course_type": "전공선택",
+                "track_ids": ["트랙Y"],
+                "prereq_ids": ["C"],
+            },
+            {
+                "course_id": "C",
+                "course_name": "C",
+                "credits": 3,
+                "stage": "foundation",
+                "course_type": "전공선택",
+                "track_ids": ["트랙Z"],
+                "prereq_ids": ["A"],  # 순환
+            },
+        ]
+    }
+    repo = YamlCourseRepository(_write(tmp_path, catalog))
+
+    courses = {c.course_id for c in repo.list_for_tracks(["트랙X"])}
+
+    assert courses == {"A", "B", "C"}
+
+
 def test_loaded_course_has_model_defaults(tmp_path: Path) -> None:
     repo = YamlCourseRepository(_write(tmp_path, _CATALOG))
 
