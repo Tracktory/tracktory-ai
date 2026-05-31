@@ -5,7 +5,11 @@
 ``scripts/generate_course_catalog.py`` 가 ``RagflowCourseRepository`` 로 생성한다.
 
 ``list_for_tracks(track_ids)`` 는 메모리에 올린 과목 중 ``track_ids`` 와 한 트랙
-이상 겹치는 과목을 반환한다(이미 ``course_id`` dedup 된 카탈로그).
+이상 겹치는 과목에 더해, 그 과목들의 선수과목을 transitive 하게 포함하여
+반환한다(이미 ``course_id`` dedup 된 카탈로그). 선수과목은 다른 트랙·학과의
+공통 기초 과목(예: C프로그래밍·자료구조)인 경우가 많아, 트랙 태깅 과목만
+돌려주면 로드맵 노드의 선수 만족 검증을 통과하지 못해 후수 과목이 영구히
+누락된다. 선수 closure 를 포함시켜 선수 사슬이 끊기지 않도록 한다.
 
 호출 측은 ``YamlCourseRepository`` 를 직접 import 하지 않고 ``CourseRepository``
 Protocol 타입으로만 주입받는다.
@@ -49,17 +53,47 @@ class YamlCourseRepository:
         self._path = catalog_path or _DEFAULT_CATALOG_PATH
         # fail-fast: 카탈로그 부재/손상은 생성 시점에 드러낸다.
         self._courses: list[Course] = self._load()
+        # course_id → Course 인덱스. 선수과목 closure 확장에서 O(1) 조회에 쓴다.
+        self._by_id: dict[str, Course] = {c.course_id: c for c in self._courses}
 
     def list_for_tracks(self, track_ids: list[str]) -> list[Course]:
-        """``track_ids`` 와 한 트랙 이상 겹치는 과목을 반환한다.
+        """``track_ids`` 와 한 트랙 이상 겹치는 과목 + 그 선수과목 closure 를 반환한다.
 
-        카탈로그가 이미 ``course_id`` dedup 되어 있어 추가 dedup 은 불필요하다.
-        입력에 없는 트랙은 자연히 매칭 0건이 된다.
+        트랙에 직접 태깅된 과목만 돌려주면 다른 트랙·학과의 공통 기초 선수과목
+        (예: C프로그래밍·자료구조)이 빠져, 로드맵 노드의 선수 만족 검증을 통과하지
+        못한 후수 과목이 영구히 누락된다. 트랙 매칭 과목을 seed 로 선수과목을
+        transitive 하게 더해 선수 사슬이 끊기지 않도록 한다.
+
+        카탈로그가 이미 ``course_id`` dedup 되어 있고 반환도 set 기반 dedup 이라
+        중복은 발생하지 않는다. 입력에 없는 트랙은 자연히 매칭 0건이 된다.
         """
         wanted = set(track_ids)
         if not wanted:
             return []
-        return [c for c in self._courses if wanted.intersection(c.track_ids)]
+        seed_ids = {c.course_id for c in self._courses if wanted.intersection(c.track_ids)}
+        if not seed_ids:
+            return []
+        selected_ids = self._expand_with_prereqs(seed_ids)
+        # 카탈로그 원본 순서를 보존하면서 selected_ids 로 필터링 (set 으로 dedup).
+        return [c for c in self._courses if c.course_id in selected_ids]
+
+    def _expand_with_prereqs(self, seed_ids: set[str]) -> set[str]:
+        """``seed_ids`` 에 선수과목을 transitive 하게 더한 ``course_id`` 집합을 반환한다.
+
+        카탈로그에 없는 선수 id(교양·타과 등 생성 단계에서 드롭된 잔여)는 무시하고,
+        prereq cycle 은 ``resolved`` 방문 집합으로 종료를 보장한다.
+        """
+        resolved: set[str] = set(seed_ids)
+        stack: list[str] = list(seed_ids)
+        while stack:
+            course = self._by_id.get(stack.pop())
+            if course is None:
+                continue
+            for prereq_id in course.prereq_ids:
+                if prereq_id not in resolved and prereq_id in self._by_id:
+                    resolved.add(prereq_id)
+                    stack.append(prereq_id)
+        return resolved
 
     def _load(self) -> list[Course]:
         try:

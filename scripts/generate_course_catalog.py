@@ -38,7 +38,9 @@ def main() -> None:
     # prerequisites.json(과목명 키) → 카탈로그 course_id 로 해석. 카탈로그 밖
     # 선수(교양/타과)·자기참조는 드롭되므로 dangling prereq 가 생기지 않는다.
     prerequisites = json.loads(_PREREQ_PATH.read_text(encoding="utf-8"))
-    resolution = resolve_prereq_ids(prerequisites, [(c.course_name, c.course_id) for c in courses])
+    resolution = resolve_prereq_ids(
+        prerequisites, [(c.course_name, c.course_id, c.track_ids) for c in courses]
+    )
     prereq_by_id = resolution.prereq_ids_by_course
 
     # priority(1) 는 모델 기본값에 맡기고 의미 있는 필드만 덤프.
