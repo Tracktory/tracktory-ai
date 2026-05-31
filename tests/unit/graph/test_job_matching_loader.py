@@ -36,12 +36,12 @@ def test_fallback_skips_entry_without_job_id() -> None:
     mapping = {
         "IT/인터넷": [
             {"rank": 1},  # job_id 누락 — skip
-            {"job_id": "backend_developer", "job_name": "백엔드 개발자", "rank": 2},
+            {"job_id": "BE", "job_name": "백엔드 개발자", "rank": 2},
         ]
     }
     candidates = _build_fallback_candidates("IT/인터넷", mapping, k=5)
     assert len(candidates) == 1
-    assert candidates[0].job_id == "backend_developer"
+    assert candidates[0].job_id == "BE"
 
 
 def test_fallback_uses_rank_sentinel_when_rank_missing() -> None:

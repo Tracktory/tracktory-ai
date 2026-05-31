@@ -41,7 +41,9 @@ _METADATA_FIELDS = ["category", "tech_stack"]
 
 _MAX_DESCRIPTION_LEN = 10_000
 
-# 공고 카테고리 → 직무 타입 매핑 yaml (job_id 슬러그는 category_to_jobs.yaml 과 정합).
+# 공고 카테고리 → 직무 카탈로그 표준 코드 매핑 yaml. job_id 는 직무 카탈로그
+# 표준 코드(job_tech_stacks.json 의 category_id)이며, fallback
+# category_to_jobs.yaml 과 동일한 표준 코드 어휘를 공유한다.
 _DEFAULT_CATEGORY_MAP_PATH = (
     Path(__file__).resolve().parents[1] / "config" / "category_to_job_type.yaml"
 )

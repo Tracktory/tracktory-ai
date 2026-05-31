@@ -184,7 +184,7 @@ def _build_clients(
     job_search = MagicMock(spec=JobSearchClient)
     job_search.rag_search_jobs.return_value = [
         RagSearchResult(
-            job_id="backend_developer",
+            job_id="BE",
             job_name="백엔드 개발자",
             score=0.85,
             description="서버 사이드 시스템을 설계하고 운영합니다.",
