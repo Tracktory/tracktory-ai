@@ -1,29 +1,32 @@
-# 채용공고 카테고리 → 직무 타입 매핑 (RAGFlow 직무 검색 어댑터)
+# 채용공고 카테고리 → 직무 카탈로그 표준 코드 매핑 (RAGFlow 직무 검색 어댑터)
 #
-# RagflowJobSearchClient 가 검색된 공고의 content `카테고리:` 값을 직무 타입
-# id/name 으로 변환할 때 사용한다. 공고 번호(source_id) 대신 카테고리 기반
-# 식별자를 부여하여 fallback `category_to_jobs.yaml` 과 동일한 granularity
-# (직무 타입)로 맞춘다.
+# RagflowJobSearchClient 가 검색된 공고의 content `카테고리:` 값을 직무 식별자/
+# 표시명으로 변환할 때 사용한다. 공고 번호(source_id) 대신 카테고리 기반 식별자를
+# 부여하되, 그 식별자를 직무 카탈로그 표준 코드(job_tech_stacks.json 의
+# category_id)로 맞춘다. 정상 추천 경로와 fallback(category_to_jobs.yaml) 경로가
+# 동일한 표준 코드 어휘를 공유하므로, 메인 백엔드가 별칭 매핑 없이 직무를 조인할
+# 수 있다.
+#
+# 표준 코드가 없는 공고 카테고리(풀스택·QA·임베디드·블록체인·DBA)는 매핑에서
+# 제외하여, 카탈로그 밖 식별자가 추천 결과로 새지 않도록 한다 — 미매핑 카테고리
+# 청크는 RagflowJobSearchClient 가 스킵한다. 데이터사이언스는 별도 표준 코드가
+# 없어 데이터 분석가(DA)로 흡수하며, 이는 채용공고 정규화(normalize_wanted)의
+# 직무 코드 폴딩과 동일하다.
 #
 # 키       : 공고 카테고리 (common/categories.py 의 IT_JOB_CATEGORIES 와 동일)
-# job_id   : 직무 타입 슬러그 (config/category_to_jobs.yaml 의 job_id 와 정합 필수)
-# job_name : 사용자 표시명
+# job_id   : 직무 카탈로그 표준 코드 (job_tech_stacks.json 의 category_id 와 정합)
+# job_name : 사용자 표시명 (카탈로그 category_name_ko 와 정합)
 #
 # 스키마:
-#   <카테고리>: { job_id: <슬러그>, job_name: <표시명> }
+#   <카테고리>: { job_id: <표준 코드>, job_name: <표시명> }
 
-백엔드: { job_id: backend_developer, job_name: 백엔드 개발자 }
-프론트엔드: { job_id: frontend_developer, job_name: 프론트엔드 개발자 }
-풀스택: { job_id: fullstack_developer, job_name: 풀스택 개발자 }
-데이터엔지니어: { job_id: data_engineer, job_name: 데이터 엔지니어 }
-데이터분석: { job_id: data_analyst, job_name: 데이터 분석가 }
-데이터사이언스: { job_id: data_scientist, job_name: 데이터 사이언티스트 }
-"AI/ML": { job_id: ml_engineer, job_name: 머신러닝 엔지니어 }
-모바일: { job_id: mobile_developer, job_name: 모바일 개발자 }
-"DevOps/인프라": { job_id: devops_engineer, job_name: 데브옵스 엔지니어 }
-보안: { job_id: security_engineer, job_name: 보안 엔지니어 }
-게임: { job_id: game_developer, job_name: 게임 개발자 }
-QA: { job_id: qa_engineer, job_name: QA 엔지니어 }
-임베디드: { job_id: embedded_engineer, job_name: 임베디드 개발자 }
-블록체인: { job_id: blockchain_developer, job_name: 블록체인 개발자 }
-DBA: { job_id: dba, job_name: 데이터베이스 관리자 }
+백엔드: { job_id: BE, job_name: 백엔드 개발자 }
+프론트엔드: { job_id: FE, job_name: 프론트엔드 개발자 }
+데이터엔지니어: { job_id: DE, job_name: 데이터 엔지니어 }
+데이터분석: { job_id: DA, job_name: 데이터 분석가 }
+데이터사이언스: { job_id: DA, job_name: 데이터 분석가 }
+"AI/ML": { job_id: AI, job_name: "AI/ML 엔지니어" }
+모바일: { job_id: MOB, job_name: "모바일 개발자 (Android/iOS)" }
+"DevOps/인프라": { job_id: DEVOPS, job_name: "DevOps/인프라 엔지니어" }
+보안: { job_id: SEC, job_name: "보안 엔지니어/분석가" }
+게임: { job_id: GAME, job_name: 게임 개발자 }

@@ -191,7 +191,7 @@ def test_node_triggers_fallback_when_top_score_below_threshold(
     assert result["trace"] == ["job_matching:fallback_categorized"]
     recommended = result["recommended_jobs"]
     assert all(item["fallback_used"] is True for item in recommended)
-    assert recommended[0]["job_id"] == "backend_developer"
+    assert recommended[0]["job_id"] == "BE"
     assert recommended[0]["job_name"] == "백엔드 개발자"
 
 
