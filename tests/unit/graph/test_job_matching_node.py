@@ -176,9 +176,9 @@ def test_node_triggers_fallback_when_top_score_below_threshold(
     real_synergy_yaml_path: Path,
     real_category_mapping_path: Path,
 ) -> None:
-    """상위 점수 < 0.3 → 카테고리 사전 매핑 fallback."""
+    """상위 점수 < min_job_similarity → 카테고리 사전 매핑 fallback."""
     client = make_fake_job_search_client(
-        results=[make_search_result("low_score_job", score=0.1)],
+        results=[make_search_result("low_score_job", score=0.05)],
     )
     node = _build_node(client, real_synergy_yaml_path, real_category_mapping_path)
 
@@ -243,7 +243,7 @@ def test_node_logger_info_called_once_on_fallback(
     real_category_mapping_path: Path,
     caplog: pytest.LogCaptureFixture,
 ) -> None:
-    client = make_fake_job_search_client(results=[make_search_result("low", score=0.1)])
+    client = make_fake_job_search_client(results=[make_search_result("low", score=0.05)])
     node = _build_node(client, real_synergy_yaml_path, real_category_mapping_path)
 
     with caplog.at_level(logging.INFO, logger="tracktory.graph.nodes.job_matching"):
@@ -265,7 +265,7 @@ def test_node_returns_empty_with_warning_when_category_unmapped(
     real_category_mapping_path: Path,
     caplog: pytest.LogCaptureFixture,
 ) -> None:
-    client = make_fake_job_search_client(results=[make_search_result("low", score=0.1)])
+    client = make_fake_job_search_client(results=[make_search_result("low", score=0.05)])
     node = _build_node(client, real_synergy_yaml_path, real_category_mapping_path)
 
     with caplog.at_level(logging.WARNING, logger="tracktory.graph.nodes.job_matching"):
@@ -377,7 +377,7 @@ def test_completed_courses_do_not_rescue_below_threshold_match(
 ) -> None:
     """임계값 미만 매칭은 이수 과목이 겹쳐도 fallback 으로 전환된다 (부스팅은 raw 점수 이후)."""
     client = make_fake_job_search_client(
-        results=[make_search_result("low", score=0.1, tech_stacks=["자료구조"])]
+        results=[make_search_result("low", score=0.05, tech_stacks=["자료구조"])]
     )
     node = _build_node(client, real_synergy_yaml_path, real_category_mapping_path)
     result = node(

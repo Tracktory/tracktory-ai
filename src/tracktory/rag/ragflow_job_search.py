@@ -2,16 +2,23 @@
 
 ``job_search.JobSearchClient`` Protocol 의 운영 어댑터. RAGFlow retrieval HTTP
 코어(``ragflow_client.RagflowClient``)를 상속하여, 도메인 전용 부분 — 공고
-카테고리 → 직무 타입 매핑, 청크 → ``RagSearchResult`` 변환 — 만 특수화한다.
+카테고리 → 직무 타입 매핑, 청크 → 직무 타입 단위 ``RagSearchResult`` 집계 — 만
+특수화한다.
 
-검색된 공고를 **per-posting** 으로 반환하되, ``job_id``/``job_name`` 은 공고
-번호·제목이 아니라 **공고 카테고리를 직무 타입으로 매핑한 값**(``config/
-category_to_job_type.yaml``)을 쓴다. — 카테고리별로 추리거나
-합치는 것은 호출 측(다운스트림) 책임이다.
+RAGFlow 는 **공고 단위(per-posting)** 로 청크를 내려주므로, 같은 직무 타입
+(공고 카테고리를 ``config/category_to_job_type.yaml`` 로 매핑한 직무 카탈로그
+표준 코드)에 속한 공고들을 boundary 안에서 **한 건으로 dedup·집계**한다. 이
+집계가 ``JobSearchClient`` contract 6 — 직무 카드 중복 방지 — 을 충족한다::
+
+    공고 풀 retrieve  →  job_id 별 그룹핑
+      score          = 그룹 내 최댓값 (가장 강한 매칭 근거)
+      tech_stacks    = 그룹 공고들의 기술스택 누적 (출현 빈도 내림차순)
+      posting_count  = 그룹 크기 (직무 타입 출현 횟수)
+      description    = 최고 점수 공고의 청크 본문 (대표값)
 
 category·tech_stack 은 ``include_metadata=true`` 로 요청해 RAGFlow 가 청크에
 붙여주는 ``document_metadata``에서 읽는다. ``competency_tags`` 는 RAGFlow 에
-없어 빈 리스트로 둔다.
+없어 빈 리스트로 둔다 (별도 오프라인 카탈로그 join 은 호출 측 후속 책임).
 
 호출 측은 ``RagflowJobSearchClient`` 를 직접 import 하지 않고 ``JobSearchClient``
 Protocol 타입으로만 주입받는다.
@@ -21,6 +28,7 @@ from __future__ import annotations
 
 import json
 import logging
+from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, NamedTuple
@@ -56,6 +64,20 @@ class _JobType(NamedTuple):
     job_name: str
 
 
+class _PostingHit(NamedTuple):
+    """집계 이전의 공고 단위 retrieval 적중 단건.
+
+    같은 직무 타입의 ``_PostingHit`` 여러 건이 ``_aggregate_by_job_type`` 에서
+    하나의 ``RagSearchResult`` 로 합쳐진다.
+    """
+
+    job_id: str
+    job_name: str
+    score: float
+    description: str
+    tech_stacks: list[str]
+
+
 @dataclass(frozen=True)
 class RagflowSearchError(RagflowError, RagSearchError):
     """RAGFlow retrieval 실패를 나타내는 직무 검색 전용 예외.
@@ -64,6 +86,53 @@ class RagflowSearchError(RagflowError, RagSearchError):
     ``JobSearchClient`` contract 의 ``RagSearchError`` 로도 잡히도록 두 base 를
     동시에 상속한다. 직무 매칭 노드의 fallback 분기가 본 예외를 catch 한다.
     """
+
+
+def _accumulate_tech_stacks(group: list[_PostingHit]) -> list[str]:
+    """그룹 공고들의 기술스택을 공고 출현 빈도 내림차순으로 누적·정렬한다.
+
+    한 공고 안의 중복 태그는 1회로 세어 (presence count) 공고 단위 빈도를
+    구한다. 빈도가 같으면 처음 등장한 순서를 유지해 결정적(deterministic)
+    이다 — RAGFlow score 순으로 공고를 입력받으므로 동점 시 상위 공고에서
+    먼저 나온 스택이 앞선다.
+    """
+    counter: Counter[str] = Counter()
+    first_seen: dict[str, int] = {}
+    for hit in group:
+        for tech in dict.fromkeys(hit.tech_stacks):  # 공고 내 중복 제거 (순서 보존)
+            counter[tech] += 1
+            if tech not in first_seen:
+                first_seen[tech] = len(first_seen)
+    return sorted(counter, key=lambda tech: (-counter[tech], first_seen[tech]))
+
+
+def _aggregate_by_job_type(hits: list[_PostingHit]) -> list[RagSearchResult]:
+    """공고 단위 적중을 직무 타입(``job_id``) 단위 결과로 dedup·집계한다.
+
+    같은 ``job_id`` 의 공고들을 한 건으로 묶어 ``score`` 는 그룹 최댓값,
+    ``tech_stacks`` 는 빈도 누적, ``posting_count`` 는 그룹 크기, ``description``
+    은 최고 점수 공고 본문으로 채운다. 그룹 출현 순서를 보존해, 정렬 전에도
+    입력 순서가 결정적으로 유지된다.
+    """
+    groups: dict[str, list[_PostingHit]] = {}
+    for hit in hits:
+        groups.setdefault(hit.job_id, []).append(hit)
+
+    results: list[RagSearchResult] = []
+    for job_id, group in groups.items():
+        best = max(group, key=lambda hit: hit.score)
+        results.append(
+            RagSearchResult(
+                job_id=job_id,
+                job_name=best.job_name,
+                score=best.score,
+                description=best.description,
+                tech_stacks=_accumulate_tech_stacks(group),
+                competency_tags=[],  # RAGFlow 미보유 → 호출 측이 필요 시 별도 join.
+                posting_count=len(group),
+            )
+        )
+    return results
 
 
 def _load_category_to_job_type(path: Path) -> dict[str, _JobType]:
@@ -89,8 +158,8 @@ class RagflowJobSearchClient(RagflowClient):
     """``JobSearchClient`` Protocol 의 RAGFlow retrieval 어댑터.
 
     HTTP 호출·재시도·에러 변환·응답 파싱은 ``RagflowClient`` 기반 클래스가
-    담당하고, 본 클래스는 공고 카테고리 → 직무 타입 매핑과 청크 →
-    ``RagSearchResult`` 변환만 특수화한다.
+    담당하고, 본 클래스는 공고 카테고리 → 직무 타입 매핑과 공고 단위 청크 →
+    직무 타입 단위 ``RagSearchResult`` 집계만 특수화한다.
     """
 
     # 기반 클래스의 범용 예외를 직무 검색 boundary contract 예외로 좁힌다.
@@ -109,33 +178,35 @@ class RagflowJobSearchClient(RagflowClient):
         )
 
     def rag_search_jobs(self, query: str, top_k: int = 3) -> list[RagSearchResult]:
-        """자연어 질의에 대한 직무 KB 검색 결과 상위 ``top_k`` 건을 반환한다.
+        """자연어 질의에 대한 직무 KB 검색 결과 상위 ``top_k`` **직무 타입**을 반환한다.
 
-        순수 retrieval 경로 (``keyword=False``). 검색된 공고를
-        per-posting 으로 변환하되 ``job_id``/``job_name`` 은 카테고리 기반 직무
-        타입 값을 쓴다. dedup 없이 전부 반환하며(같은 직무 타입 중복 가능), 추리는
-        것은 호출 측 책임이다. 실패는 모두 ``RagSearchError`` 로 변환된다.
+        순수 retrieval 경로 (``keyword=False``). 공고 풀을 retrieve 한 뒤 ``job_id``
+        (카테고리 → 직무 타입 매핑) 단위로 dedup·집계하므로, ``top_k`` 는 공고 수가
+        아니라 서로 다른 직무 카드 수다. 같은 직무 타입의 공고들은 한 건으로 묶여
+        ``tech_stacks`` 가 누적되고 ``posting_count`` 로 출현 횟수가 보존된다. 실패는
+        모두 ``RagSearchError`` 로 변환된다.
         """
         payload = self._build_payload(
             query, doc_type=self._cfg.doc_type, metadata_fields=_METADATA_FIELDS
         )
         data = self._post_retrieval(payload)
-        results = self._parse_chunks(data)
-        # score 내림차순 정렬 후 상위 top_k.
-        results.sort(key=lambda r: r.score, reverse=True)
+        hits = self._parse_hits(data)
+        results = _aggregate_by_job_type(hits)
+        # 직무 타입 단위 score(그룹 최댓값) 내림차순 정렬 후 상위 top_k.
+        results.sort(key=lambda result: result.score, reverse=True)
         return results[:top_k]
 
-    def _parse_chunks(self, data: dict[str, Any]) -> list[RagSearchResult]:
-        # 공고를 per-posting 으로 전부 변환해 넘긴다. 같은 직무 타입(카테고리)이
-        # 여러 건이어도 dedup 하지 않는다 — 카테고리별로 추리는 건 호출 측 책임.
-        results: list[RagSearchResult] = []
+    def _parse_hits(self, data: dict[str, Any]) -> list[_PostingHit]:
+        # 공고 단위 청크를 적중(_PostingHit)으로 변환한다. dedup·누적은
+        # _aggregate_by_job_type 가 직무 타입 단위로 수행한다.
+        hits: list[_PostingHit] = []
         for chunk in self._extract_raw_chunks(data):
-            result = self._chunk_to_result(chunk)
-            if result is not None:
-                results.append(result)
-        return results
+            hit = self._chunk_to_hit(chunk)
+            if hit is not None:
+                hits.append(hit)
+        return hits
 
-    def _chunk_to_result(self, chunk: dict[str, Any]) -> RagSearchResult | None:
+    def _chunk_to_hit(self, chunk: dict[str, Any]) -> _PostingHit | None:
         raw_content = chunk.get("content")
         if not isinstance(raw_content, str):
             return None
@@ -162,13 +233,12 @@ class RagflowJobSearchClient(RagflowClient):
         except (TypeError, ValueError):
             logger.debug("RAGFlow chunk similarity 파싱 실패: %r", chunk.get("similarity"))
             score = 0.0
-        return RagSearchResult(
+        return _PostingHit(
             job_id=job_type.job_id,
             job_name=job_type.job_name,
             score=score,
             description=content[:_MAX_DESCRIPTION_LEN],
             tech_stacks=self._extract_tech_stacks(meta),
-            competency_tags=[],  # RAGFlow 미보유 → 호출 측이 필요 시 별도 join.
         )
 
     @staticmethod

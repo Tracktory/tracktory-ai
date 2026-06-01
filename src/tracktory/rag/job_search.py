@@ -18,24 +18,34 @@ from pydantic import BaseModel, Field
 
 
 class RagSearchResult(BaseModel):
-    """외부 직무 검색 boundary 의 반환 단건.
+    """외부 직무 검색 boundary 의 반환 단건 — **직무 타입 단위** 집계 결과.
 
     boundary 너머에서 직무 KB 검색 + hybrid retrieval + reranker 결합을 마친
-    뒤 자체 코드로 넘어오는 형태다. ``score`` 는 ``[0, 1]`` 범위로 정규화되며
-    상위가 ``min_job_similarity`` 임계값 비교 기준이 된다 (정규화·정렬 책임은
-    ``JobSearchClient`` 구현체 contract 4·5 참조).
+    뒤, 같은 직무 타입(카테고리 → 직무 카탈로그 표준 코드)으로 매핑된 공고들을
+    한 건으로 dedup·집계하여 자체 코드로 넘어온다. 따라서 반환 리스트에는 동일
+    ``job_id`` 가 중복되지 않으며, ``score`` 는 ``[0, 1]`` 범위로 정규화되어 상위가
+    ``min_job_similarity`` 임계값 비교 기준이 된다 (집계·정규화·정렬 책임은
+    ``JobSearchClient`` 구현체 contract 4·5·6 참조).
 
     Attributes:
-        job_id: 직무 식별자.
+        job_id: 직무 식별자 (직무 카탈로그 표준 코드). 반환 리스트 내 유일.
         job_name: 사용자 표시용 직무명.
-        score: 검색 시스템의 hybrid + reranker 결합 점수 ``[0, 1]``.
-            상위 1 개의 점수가 ``min_job_similarity`` 임계값 미만이면 직무
-            매칭 노드는 카테고리 사전 매핑 fallback 으로 전환한다.
-        description: 직무 설명. boundary 의 청크 텍스트로 dynamic 길이.
-        tech_stacks: 채용공고 기술스택. 후속 트랙 시너지 계산의 직무
-            도달도 분모로 흐른다.
+        score: 직무 타입에 매핑된 공고들 중 **최댓값** hybrid + reranker 결합
+            점수 ``[0, 1]``. 가장 강한 매칭 근거를 대표값으로 쓴다. 상위 1 개의
+            점수가 ``min_job_similarity`` 임계값 미만이면 직무 매칭 노드는
+            카테고리 사전 매핑 fallback 으로 전환한다.
+        description: 대표 직무 설명. 집계 그룹에서 최고 점수 공고의 청크
+            텍스트다 (직무 타입 큐레이션 요약이 아니라 단일 공고 본문).
+        tech_stacks: 직무 타입에 매핑된 공고들의 기술스택을 **누적**한 목록.
+            공고 출현 빈도 내림차순으로 정렬되어, 상위일수록 해당 직무에서
+            자주 요구되는 스택이다. 후속 트랙 시너지 계산의 직무 도달도
+            분모로 흐른다.
         competency_tags: 직무가 요구하는 역량 태그. 후속 트랙 시너지의
-            상호 보완성 계산에 사용한다.
+            상호 보완성 계산에 사용한다. RAGFlow 미보유 → 별도 오프라인
+            카탈로그 join 전까지는 빈 리스트.
+        posting_count: 본 직무 타입으로 집계된 공고 수 (출현 횟수). 검색
+            결과에서 직무 타입의 등장 빈도 신호로, 표시 우선순위 판단에
+            활용한다. 집계 결과이므로 항상 ``>= 1``.
     """
 
     job_id: str = Field(..., min_length=1)
@@ -44,6 +54,7 @@ class RagSearchResult(BaseModel):
     description: str = Field(..., min_length=1, max_length=10_000)
     tech_stacks: list[str] = Field(default_factory=list)
     competency_tags: list[str] = Field(default_factory=list)
+    posting_count: int = Field(default=1, ge=1)
 
 
 @runtime_checkable
@@ -71,13 +82,20 @@ class JobSearchClient(Protocol):
         5. 반환 리스트는 ``score`` 내림차순으로 정렬한다. 직무 매칭 노드는
            상위 1 개를 임계값과 비교하므로 정렬 미보장 시 fallback 분기
            결정이 부정확해진다.
+        6. 반환 리스트는 **직무 타입 단위로 dedup** 한다. 검색 시스템이
+           공고 단위로 내려주면 구현체에서 같은 직무 타입의 공고를 한 건으로
+           집계한다 (``score`` 는 그룹 최댓값, ``tech_stacks`` 는 빈도 누적,
+           ``posting_count`` 는 그룹 크기). 동일 ``job_id`` 가 리스트에 두 번
+           나타나면 직무 카드가 중복되므로 boundary 내부 책임으로 막는다.
     """
 
     def rag_search_jobs(self, query: str, top_k: int = 3) -> list[RagSearchResult]:
-        """자연어 질의에 대한 직무 KB 검색 결과 상위 ``top_k`` 건을 반환한다.
+        """자연어 질의에 대한 직무 KB 검색 결과 상위 ``top_k`` **직무 타입**을 반환한다.
 
-        실패 시 ``RagSearchError`` 를 raise 한다. 직무 매칭 노드는 이 예외를
-        catch 하여 카테고리 사전 매핑 fallback 분기로 전환한다.
+        같은 직무 타입의 공고는 한 건으로 집계되므로 ``top_k`` 는 공고 수가
+        아니라 서로 다른 직무 카드 수다. 실패 시 ``RagSearchError`` 를 raise
+        한다. 직무 매칭 노드는 이 예외를 catch 하여 카테고리 사전 매핑
+        fallback 분기로 전환한다.
         """
         ...
 
