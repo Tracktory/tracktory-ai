@@ -68,7 +68,7 @@ job_matching:
   top_k:
     default: 3
     expanded: 5
-  min_job_similarity: 0.2
+  min_job_similarity: 0.1
   # ── 이수 과목 부스팅 (검색 결과 후처리 단계) ─────────────────────
   # 이수 과목이 직무의 tech_stacks ∪ competency_tags 와 겹치는 비율만큼
   # 검색 점수를 가산하여 재정렬한다.
