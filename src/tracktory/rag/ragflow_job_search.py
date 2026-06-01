@@ -12,13 +12,15 @@ RAGFlow 는 **공고 단위(per-posting)** 로 청크를 내려주므로, 같은
 
     공고 풀 retrieve  →  job_id 별 그룹핑
       score          = 그룹 내 최댓값 (가장 강한 매칭 근거)
-      tech_stacks    = 그룹 공고들의 기술스택 누적 (출현 빈도 내림차순)
+      tech_stacks    = 직무 카테고리별 빈도 상위 N개 집계 (category_to_job_type.yaml)
+      competency_tags= 그룹 공고들이 실제 언급한 기술(빈도 누적) 중 집계에 없는 것
       posting_count  = 그룹 크기 (직무 타입 출현 횟수)
       description    = 최고 점수 공고의 청크 본문 (대표값)
 
 category·tech_stack 은 ``include_metadata=true`` 로 요청해 RAGFlow 가 청크에
-붙여주는 ``document_metadata``에서 읽는다. ``competency_tags`` 는 RAGFlow 에
-없어 빈 리스트로 둔다 (별도 오프라인 카탈로그 join 은 호출 측 후속 책임).
+붙여주는 ``document_metadata``에서 읽는다. ``tech_stacks`` 는 단일 공고 값이 아니라
+``category_to_job_type.yaml`` 의 카테고리별 집계(대표 스택)를 쓰고, ``competency_tags``
+는 그룹 공고들이 실제 언급한 기술(누적) 중 그 집계에 없는 것만 분리해 채운다.
 
 호출 측은 ``RagflowJobSearchClient`` 를 직접 import 하지 않고 ``JobSearchClient``
 Protocol 타입으로만 주입받는다.
@@ -58,10 +60,11 @@ _DEFAULT_CATEGORY_MAP_PATH = (
 
 
 class _JobType(NamedTuple):
-    """공고 카테고리에서 매핑된 직무 타입 식별자."""
+    """공고 카테고리에서 매핑된 직무 타입 식별자와 대표 기술스택."""
 
     job_id: str
     job_name: str
+    tech_stacks: tuple[str, ...]
 
 
 class _PostingHit(NamedTuple):
@@ -76,6 +79,7 @@ class _PostingHit(NamedTuple):
     score: float
     description: str
     tech_stacks: list[str]
+    aggregate: tuple[str, ...]  # 이 공고 카테고리의 대표 기술 집계 (yaml)
 
 
 @dataclass(frozen=True)
@@ -110,9 +114,14 @@ def _aggregate_by_job_type(hits: list[_PostingHit]) -> list[RagSearchResult]:
     """공고 단위 적중을 직무 타입(``job_id``) 단위 결과로 dedup·집계한다.
 
     같은 ``job_id`` 의 공고들을 한 건으로 묶어 ``score`` 는 그룹 최댓값,
-    ``tech_stacks`` 는 빈도 누적, ``posting_count`` 는 그룹 크기, ``description``
-    은 최고 점수 공고 본문으로 채운다. 그룹 출현 순서를 보존해, 정렬 전에도
-    입력 순서가 결정적으로 유지된다.
+    ``tech_stacks`` 는 카테고리 집계(대표 스택), ``competency_tags`` 는 그룹
+    공고들이 실제 언급한 기술(빈도 누적) 중 집계에 없는 것, ``posting_count`` 는
+    그룹 크기, ``description`` 은 최고 점수 공고 본문으로 채운다. 그룹 출현 순서를
+    보존해, 정렬 전에도 입력 순서가 결정적으로 유지된다.
+
+    같은 ``job_id`` 에 여러 카테고리가 매핑될 수 있으므로(예: 데이터분석·
+    데이터사이언스 → DA) 집계는 그룹 공고들의 카테고리 집계를 순서 보존
+    합집합으로 병합한다.
     """
     groups: dict[str, list[_PostingHit]] = {}
     for hit in hits:
@@ -121,14 +130,19 @@ def _aggregate_by_job_type(hits: list[_PostingHit]) -> list[RagSearchResult]:
     results: list[RagSearchResult] = []
     for job_id, group in groups.items():
         best = max(group, key=lambda hit: hit.score)
+        aggregate = list(dict.fromkeys(tech for hit in group for tech in hit.aggregate))
+        aggregate_lower = {tech.lower() for tech in aggregate}
+        competency_tags = [
+            tech for tech in _accumulate_tech_stacks(group) if tech.lower() not in aggregate_lower
+        ]
         results.append(
             RagSearchResult(
                 job_id=job_id,
                 job_name=best.job_name,
                 score=best.score,
                 description=best.description,
-                tech_stacks=_accumulate_tech_stacks(group),
-                competency_tags=[],  # RAGFlow 미보유 → 호출 측이 필요 시 별도 join.
+                tech_stacks=aggregate,
+                competency_tags=competency_tags,
                 posting_count=len(group),
             )
         )
@@ -150,7 +164,13 @@ def _load_category_to_job_type(path: Path) -> dict[str, _JobType]:
         job_id = entry.get("job_id")
         job_name = entry.get("job_name")
         if job_id and job_name:
-            mapping[str(category)] = _JobType(job_id=str(job_id), job_name=str(job_name))
+            raw_stacks = entry.get("tech_stacks") or []
+            tech_stacks = (
+                tuple(str(t) for t in raw_stacks if t) if isinstance(raw_stacks, list) else ()
+            )
+            mapping[str(category)] = _JobType(
+                job_id=str(job_id), job_name=str(job_name), tech_stacks=tech_stacks
+            )
     return mapping
 
 
@@ -233,12 +253,15 @@ class RagflowJobSearchClient(RagflowClient):
         except (TypeError, ValueError):
             logger.debug("RAGFlow chunk similarity 파싱 실패: %r", chunk.get("similarity"))
             score = 0.0
+        # 공고 단위 적중. tech_stacks 는 공고가 실제 언급한 기술(competency 분리용),
+        # aggregate 는 직무 타입 단위 집계 후 대표 tech_stacks 가 된다.
         return _PostingHit(
             job_id=job_type.job_id,
             job_name=job_type.job_name,
             score=score,
             description=content[:_MAX_DESCRIPTION_LEN],
             tech_stacks=self._extract_tech_stacks(meta),
+            aggregate=job_type.tech_stacks,
         )
 
     @staticmethod

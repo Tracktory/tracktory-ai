@@ -13,20 +13,55 @@
 # 없어 데이터 분석가(DA)로 흡수하며, 이는 채용공고 정규화(normalize_wanted)의
 # 직무 코드 폴딩과 동일하다.
 #
-# 키       : 공고 카테고리 (common/categories.py 의 IT_JOB_CATEGORIES 와 동일)
-# job_id   : 직무 카탈로그 표준 코드 (job_tech_stacks.json 의 category_id 와 정합)
-# job_name : 사용자 표시명 (카탈로그 category_name_ko 와 정합)
+# 키          : 공고 카테고리 (common/categories.py 의 IT_JOB_CATEGORIES 와 동일)
+# job_id      : 직무 카탈로그 표준 코드 (job_tech_stacks.json 의 category_id 와 정합)
+# job_name    : 사용자 표시명 (카탈로그 category_name_ko 와 정합)
+# tech_stacks : 카테고리별 채용공고 기술스택 빈도 상위 N개 (extract_tech_keywords 정규화).
+#               scripts/aggregate_category_tech_stacks.py 가 metadata.json 으로 자동 생성.
+#               공고 수가 적은 카테고리(게임·보안)는 스크립트 안에서 수동 큐레이션한다.
+#               RagflowJobSearchClient 가 직무 후보의 대표 tech_stacks 로 쓰며, 매칭된
+#               공고 기술 중 이 목록에 없는 것만 competency_tags 로 분리한다.
 #
 # 스키마:
-#   <카테고리>: { job_id: <표준 코드>, job_name: <표시명> }
+#   <카테고리>: { job_id: <표준 코드>, job_name: <표시명>, tech_stacks: [<기술>, ...] }
 
-백엔드: { job_id: BE, job_name: 백엔드 개발자 }
-프론트엔드: { job_id: FE, job_name: 프론트엔드 개발자 }
-데이터엔지니어: { job_id: DE, job_name: 데이터 엔지니어 }
-데이터분석: { job_id: DA, job_name: 데이터 분석가 }
-데이터사이언스: { job_id: DA, job_name: 데이터 분석가 }
-"AI/ML": { job_id: AI, job_name: "AI/ML 엔지니어" }
-모바일: { job_id: MOB, job_name: "모바일 개발자 (Android/iOS)" }
-"DevOps/인프라": { job_id: DEVOPS, job_name: "DevOps/인프라 엔지니어" }
-보안: { job_id: SEC, job_name: "보안 엔지니어/분석가" }
-게임: { job_id: GAME, job_name: 게임 개발자 }
+백엔드:
+  job_id: BE
+  job_name: 백엔드 개발자
+  tech_stacks: [SQL, AWS, Java, Python, Docker, CI/CD, Kubernetes, Redis]
+프론트엔드:
+  job_id: FE
+  job_name: 프론트엔드 개발자
+  tech_stacks: [React, TypeScript, Next.js, CSS, JavaScript, Vue.js, Git, HTML]
+데이터엔지니어:
+  job_id: DE
+  job_name: 데이터 엔지니어
+  tech_stacks: [SQL, Python, Airflow, AWS, Kafka, Spark, Kubernetes, GCP]
+데이터분석:
+  job_id: DA
+  job_name: 데이터 분석가
+  tech_stacks: [Python, SQL, Tableau, AWS, Airflow, BigQuery, GCP, R]
+데이터사이언스:
+  job_id: DA
+  job_name: 데이터 분석가
+  tech_stacks: [Python, SQL, PyTorch, TensorFlow, LLM, R, scikit-learn, Airflow]
+AI/ML:
+  job_id: AI
+  job_name: AI/ML 엔지니어
+  tech_stacks: [Python, LLM, PyTorch, AWS, RAG, Docker, SQL, TensorFlow]
+모바일:
+  job_id: MOB
+  job_name: 모바일 개발자 (Android/iOS)
+  tech_stacks: [Android, iOS, Kotlin, Swift, Vue.js, CI/CD, Git, React Native]
+DevOps/인프라:
+  job_id: DEVOPS
+  job_name: DevOps/인프라 엔지니어
+  tech_stacks: [AWS, CI/CD, Kubernetes, Python, Linux, Terraform, Grafana, Docker]
+보안:
+  job_id: SEC
+  job_name: 보안 엔지니어/분석가
+  tech_stacks: [Linux, Python, OWASP, Wireshark, Nmap, Burp Suite, SIEM, Metasploit]
+게임:
+  job_id: GAME
+  job_name: 게임 개발자
+  tech_stacks: [Unity, Unreal Engine, C#, C++, Blender, Maya, HLSL, ARKit]
