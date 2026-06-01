@@ -374,7 +374,7 @@ class SaraminCrawler:
             },
         ]
 
-        return [JobPosting(source="saramin", **data) for data in dummy_data]  # type: ignore[arg-type]
+        return [JobPosting(source="saramin", **data) for data in dummy_data]
 
     def _is_api_exhausted(self) -> bool:
         """일일 API 호출 한도에 도달했는지 확인한다.

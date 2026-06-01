@@ -58,10 +58,10 @@ _NULL_STARTS: tuple[str, ...] = (
 )
 
 # 선수과목 조각 구분자 (자유서술 감지용)
-_SPLIT_RE = re.compile(r"[,，/]|또는|및")
+_SPLIT_RE = re.compile(r"[,，/]|또는|및")  # noqa: RUF001  전각 쉼표 포함
 
 # 괄호 패턴
-_PAREN_RE = re.compile(r"[（(（][^）)）]*[）)）]")
+_PAREN_RE = re.compile(r"[（(][^）)]*[）)]")  # noqa: RUF001  전각·반각 괄호 모두 매칭
 
 
 def _normalize_prereq_value(raw: str) -> str:

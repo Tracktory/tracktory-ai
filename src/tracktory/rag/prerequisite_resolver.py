@@ -30,7 +30,7 @@ from dataclasses import dataclass, field
 
 __all__ = ["PrereqResolution", "normalize_course_name", "resolve_prereq_ids"]
 
-_PAREN_RE = re.compile(r"[（(（][^）)）]*[）)）]")
+_PAREN_RE = re.compile(r"[（(][^）)]*[）)]")  # noqa: RUF001  전각·반각 괄호 모두 매칭
 
 
 def normalize_course_name(name: str) -> str:

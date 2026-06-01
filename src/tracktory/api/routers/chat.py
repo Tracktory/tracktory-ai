@@ -1,5 +1,7 @@
 """챗봇 엔드포인트 POST /api/v1/ai/chat — Spring 내부 호출 전용 (X-Internal-Token)"""
 
+from typing import cast
+
 from fastapi import APIRouter, Depends, Request
 from langgraph.graph.state import CompiledStateGraph
 
@@ -17,7 +19,7 @@ router = APIRouter(
 
 def _get_graph(request: Request) -> CompiledStateGraph:
     """테스트에서 dependency_overrides 로 교체 가능한 lifespan 그래프"""
-    return request.app.state.chatbot_graph
+    return cast(CompiledStateGraph, request.app.state.chatbot_graph)
 
 
 @router.post("", response_model=ApiResponse[ChatRes])
