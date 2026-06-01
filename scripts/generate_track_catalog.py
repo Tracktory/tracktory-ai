@@ -21,13 +21,24 @@ from tracktory.rag.preprocessed_catalog_repository import PreprocessedTrackRepos
 
 _OUT_PATH = Path(__file__).resolve().parents[1] / "src" / "tracktory" / "config" / "tracks.yaml"
 
+# 추천 파이프라인에서 영구 제외할 트랙 ID. 교양 과정은 전공 추천 대상이 아님.
+_BLACKLIST: frozenset[str] = frozenset(
+    [
+        "교양영어과정",
+        "기초교양학부",
+        "소양핵심교양학부",
+        "자율공학학부",
+    ]
+)
+
 
 def main() -> None:
     repo = PreprocessedTrackRepository()
     tracks = repo.list_all()
 
-    # 비어있는 필드(meta_text/meta_vector/competencies/tech_stacks)는 모델 기본값에
-    # 맡기고 YAML 에는 의미 있는 식별·소속·과목만 덤프한다.
+    all_tracks = sorted(tracks, key=lambda t: t.track_id)
+    skipped_no_courses = [t.track_name for t in all_tracks if not t.course_ids]
+    skipped_blacklist = [t.track_name for t in all_tracks if t.track_id in _BLACKLIST]
     entries: list[dict[str, Any]] = [
         {
             "track_id": t.track_id,
@@ -37,16 +48,21 @@ def main() -> None:
             "major_id": t.major_id,
             "course_ids": t.course_ids,
         }
-        for t in sorted(tracks, key=lambda t: t.track_id)
+        for t in all_tracks
+        if t.course_ids and t.track_id not in _BLACKLIST
     ]
+
+    if skipped_no_courses:
+        print(f"강의 정보 없어 제외: {len(skipped_no_courses)}건 {skipped_no_courses}")
+    if skipped_blacklist:
+        print(f"블랙리스트 제외: {len(skipped_blacklist)}건 {skipped_blacklist}")
 
     _OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     _OUT_PATH.write_text(
         yaml.safe_dump({"tracks": entries}, allow_unicode=True, sort_keys=False),
         encoding="utf-8",
     )
-    with_courses = sum(1 for e in entries if e["course_ids"])
-    print(f"트랙 카탈로그 {len(entries)}건 (과목목록 있음 {with_courses}건) → {_OUT_PATH}")
+    print(f"트랙 카탈로그 {len(entries)}건 → {_OUT_PATH}")
 
 
 if __name__ == "__main__":
