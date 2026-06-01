@@ -28,6 +28,7 @@ logger = logging.getLogger(__name__)
 _RETRIEVAL_PATH = "/api/v1/retrieval"
 _DOCUMENTS_PATH_TMPL = "/api/v1/datasets/{dataset_id}/documents"
 _CHUNKS_PATH_TMPL = "/api/v1/datasets/{dataset_id}/documents/{document_id}/chunks"
+_DATASET_VECTORS_PATH_TMPL = "/api/v1/datasets/{dataset_id}/chunks/vectors"
 
 
 def _env_bool(value: str | None, *, default: bool = False) -> bool:
@@ -270,6 +271,35 @@ class RagflowClient:
                 break
             page += 1
         return "\n".join(parts)
+
+    def fetch_chunk_vectors(
+        self, *, dataset_id: str | None = None, page_size: int = 50
+    ) -> list[dict[str, Any]]:
+        """데이터셋 전체 청크의 임베딩 벡터를 ``doc_name`` 과 함께 평탄 리스트로 반환한다.
+
+        ``GET /datasets/{id}/chunks/vectors`` 를 ``total`` 까지 페이지네이션한다. 사전
+        적재된 벡터를 그대로 받아 오므로(임베딩 재계산 없음) 트랙 meta_vector 카탈로그
+        생성에 쓴다. ``dataset_id`` 미지정 시 config 의 기본 데이터셋을 쓰며, 트랙 벡터가
+        별도 KB 에 있으면 명시한다. 본문(content)은 받지 않는다(벡터만 필요).
+
+        Returns:
+            ``{"id", "document_id", "doc_name", "vector"}`` 형태 청크 dict 리스트.
+        """
+        ds = dataset_id or self._cfg.dataset_id
+        path = _DATASET_VECTORS_PATH_TMPL.format(dataset_id=ds)
+        chunks: list[dict[str, Any]] = []
+        page = 1
+        while True:
+            data = self._get_data(path, {"page": page, "page_size": page_size}, label="vectors")
+            page_chunks = data.get("chunks")
+            if not isinstance(page_chunks, list):
+                raise self._error_cls(reason="invalid_vectors")
+            chunks.extend(c for c in page_chunks if isinstance(c, dict))
+            total = data.get("total")
+            if not page_chunks or not isinstance(total, int) or len(chunks) >= total:
+                break
+            page += 1
+        return chunks
 
     @staticmethod
     def _to_document(doc: Any) -> RagflowDocument | None:

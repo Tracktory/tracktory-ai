@@ -16,6 +16,7 @@ Protocol 타입으로만 주입받는다.
 
 from __future__ import annotations
 
+import json
 import logging
 from pathlib import Path
 from typing import Any
@@ -31,6 +32,12 @@ logger = logging.getLogger(__name__)
 
 # 패키지 config 디렉터리의 tracks.yaml (src/tracktory/rag/ 기준 parents[1]).
 _DEFAULT_CATALOG_PATH = Path(__file__).resolve().parents[1] / "config" / "tracks.yaml"
+
+# tracks.yaml 옆 사이드카: {track_id: meta_vector}. 1536~ 차원 벡터를 tracks.yaml 에
+# 인라인하면 사람이 못 읽을 만큼 부풀어 별도 파일로 분리한다 (scripts/generate_track_
+# meta_vectors.py 가 생성). 부재 시 meta_vector 는 빈 리스트로 graceful degrade.
+_VECTORS_FILENAME = "track_meta_vectors.yaml"
+_LEGACY_VECTORS_FILENAME = "track_meta_vectors.json"
 
 
 class TrackCatalogError(Exception):
@@ -48,8 +55,11 @@ class YamlTrackRepository:
     ``list_all`` / ``find_by_track_ids`` 는 메모리 조회만 한다.
     """
 
-    def __init__(self, catalog_path: Path | None = None) -> None:
+    def __init__(self, catalog_path: Path | None = None, vectors_path: Path | None = None) -> None:
         self._path = catalog_path or _DEFAULT_CATALOG_PATH
+        # 사이드카는 카탈로그와 같은 디렉터리에서 찾는다(테스트 tmp_path 격리 유지).
+        self._vectors_path = vectors_path or (self._path.parent / _VECTORS_FILENAME)
+        self._legacy_vectors_path = self._path.parent / _LEGACY_VECTORS_FILENAME
         # fail-fast: 카탈로그 부재/손상은 생성 시점에 드러낸다.
         self._tracks: list[Track] = self._load()
 
@@ -81,19 +91,47 @@ class YamlTrackRepository:
         if not isinstance(entries, list):
             raise TrackCatalogError(f"트랙 카탈로그에 'tracks' 리스트가 없음: {self._path}")
 
+        vectors = self._load_vectors()
         tracks: list[Track] = []
         for entry in entries:
-            track = self._to_track(entry)
+            track = self._to_track(entry, vectors)
             if track is not None:
                 tracks.append(track)
         return tracks
 
+    def _load_vectors(self) -> dict[str, list[float]]:
+        """meta_vector 사이드카를 로드한다. 부재·손상 시 빈 dict (graceful degrade)."""
+        path = self._vectors_path
+        if not path.exists() and self._legacy_vectors_path.exists():
+            path = self._legacy_vectors_path
+        if not path.exists():
+            return {}
+        try:
+            text = path.read_text(encoding="utf-8")
+            raw = json.loads(text) if path.suffix == ".json" else yaml.safe_load(text)
+        except (OSError, ValueError) as exc:
+            logger.warning("meta_vector 사이드카 로드 실패(무시): %s: %s", path, exc)
+            return {}
+        except yaml.YAMLError as exc:
+            logger.warning("meta_vector 사이드카 YAML 파싱 실패(무시): %s: %s", path, exc)
+            return {}
+        if not isinstance(raw, dict):
+            logger.warning("meta_vector 사이드카 최상위가 매핑이 아님(무시): %s", path)
+            return {}
+        return raw
+
     @staticmethod
-    def _to_track(entry: Any) -> Track | None:
-        """YAML 항목 1건을 ``Track`` 으로 검증한다. 손상 항목은 스킵."""
+    def _to_track(entry: Any, vectors: dict[str, list[float]]) -> Track | None:
+        """YAML 항목 1건을 ``Track`` 으로 검증한다. 손상 항목은 스킵.
+
+        사이드카에 해당 ``track_id`` 의 meta_vector 가 있으면 주입한다(검증 전 병합).
+        """
         if not isinstance(entry, dict):
             logger.warning("트랙 카탈로그 항목이 매핑이 아님 스킵: %r", entry)
             return None
+        track_id = entry.get("track_id")
+        if isinstance(track_id, str) and track_id in vectors:
+            entry = {**entry, "meta_vector": vectors[track_id]}
         try:
             return Track.model_validate(entry)
         except ValidationError as exc:
