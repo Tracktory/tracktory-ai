@@ -17,9 +17,9 @@ from tracktory.prompts.chatbot.intent import (
 # 1. 순수 단위 — 템플릿·스키마 sanity
 
 
-def test_template_variable_is_message_only() -> None:
-    """프롬프트의 ``{messag}`` 같은 오타를 정의 시점에 잡는다."""
-    assert set(INTENT_CLASSIFIER_PROMPT.input_variables) == {"message"}
+def test_template_variables_are_message_and_history() -> None:
+    """프롬프트의 ``{messag}`` 같은 오타를 정의 시점에 잡는다 — 멀티턴 history 동봉"""
+    assert set(INTENT_CLASSIFIER_PROMPT.input_variables) == {"message", "history"}
 
 
 def test_schema_rejects_invalid_intent_label() -> None:

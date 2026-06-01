@@ -38,6 +38,8 @@ def test_classifier_failure_falls_back_to_general_advice(
         "intent": "general_advice",
         "intent_reason": "분류 실패: RuntimeError",
         "search_keywords": [],
+        "is_catalog_query": False,
+        "target_grade": None,
     }
     assert any("분류 실패" in rec.message for rec in caplog.records), (
         "폴백 발생 시 warning 로그 누락"
@@ -79,6 +81,8 @@ def test_invalid_input_falls_back_to_general_advice(
         "intent": "general_advice",
         "intent_reason": expected_reason,
         "search_keywords": [],
+        "is_catalog_query": False,
+        "target_grade": None,
     }
 
     # 가드 위반 시 LLM 호출 차단
