@@ -34,8 +34,8 @@ def build_default_chatbot_graph(checkpointer: BaseCheckpointSaver) -> CompiledSt
     # with_structured_output 반환 타입이 mypy 에서 generic 으로 안 좁혀짐 (runtime 은 정확)
     return build_chatbot_graph(
         checkpointer=checkpointer,
-        classifier=INTENT_CLASSIFIER_PROMPT | llm.with_structured_output(IntentClassification),
+        classifier=INTENT_CLASSIFIER_PROMPT | llm.with_structured_output(IntentClassification),  # type: ignore[arg-type]
         retriever=RagFlowChatbotRetriever(),
-        rag_response_chain=RAG_RESPONSE_PROMPT | llm.with_structured_output(ChatbotResponse),
-        general_advice_chain=GENERAL_ADVICE_PROMPT | llm.with_structured_output(ChatbotResponse),
+        rag_response_chain=RAG_RESPONSE_PROMPT | llm.with_structured_output(ChatbotResponse),  # type: ignore[arg-type]
+        general_advice_chain=GENERAL_ADVICE_PROMPT | llm.with_structured_output(ChatbotResponse),  # type: ignore[arg-type]
     )

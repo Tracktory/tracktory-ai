@@ -43,7 +43,9 @@ dev = [
     "pytest-cov>=7.1.0",
     "pytest-mock>=3.14",
     "ruff>=0.15.10",
+    "types-beautifulsoup4>=4.12.0.20250516",
     "types-pyyaml>=6.0.12.20260408",
+    "types-requests>=2.33.0.20260518",
 ]
 
 # ---------------------------------------------------------------------------
@@ -92,6 +94,7 @@ docstring-code-format = true  # docstring 안 코드 블록도 포맷
 python_version = "3.13"
 files = ["src"]
 strict = false  # 초기에는 느슨하게, 점진적으로 강화
+plugins = ["pydantic.mypy"]  # BaseSettings 가 .env 로 채워짐을 mypy 에 인지시킴
 
 # 공개 함수에는 타입 힌트 필수
 disallow_untyped_defs = true
