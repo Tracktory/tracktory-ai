@@ -42,8 +42,8 @@ _COURSES_CSV = _ROOT / "data" / "raw" / "hansung" / "courses.csv"
 _ALIAS_MAP_PATH = _ROOT / "data" / "processed" / "prereq_alias.json"
 _OUT_PATH = _ROOT / "data" / "processed" / "prerequisites.json"
 
-_SPLIT_RE = re.compile(r"[,，/]|또는|및")
-_PAREN_RE = re.compile(r"[（(（][^）)）]*[）)）]")
+_SPLIT_RE = re.compile(r"[,，/]|또는|및")  # noqa: RUF001  전각 쉼표 포함
+_PAREN_RE = re.compile(r"[（(][^）)]*[）)]")  # noqa: RUF001  전각·반각 괄호 모두 매칭
 
 
 def _normalize(name: str) -> str:
@@ -208,26 +208,26 @@ def validate_prerequisites(graph: dict[str, list[str]]) -> bool:
             errors.append(f"자기 자신 참조: {course}")
 
     # 2. 순환참조 — DFS (흰색/회색/검정 3색 마킹)
-    WHITE, GRAY, BLACK = 0, 1, 2
-    color: dict[str, int] = {course: WHITE for course in graph}
+    white, gray, black = 0, 1, 2
+    color: dict[str, int] = {course: white for course in graph}
 
     def dfs(node: str, path: list[str]) -> None:
-        color[node] = GRAY
+        color[node] = gray
         for prereq in graph.get(node, []):
             if prereq not in color:
                 # graph 에 노드가 없는 선수과목 — alias/courses.csv 매칭은 됐지만
                 # syllabi 파일이 없어 자체 그래프 항목이 없는 경우.
                 warnings.append(f"존재하지 않는 선수과목 참조: {node} → {prereq}")
                 continue
-            if color[prereq] == GRAY:
-                cycle = path[path.index(prereq) :] + [prereq] if prereq in path else path + [prereq]
+            if color[prereq] == gray:
+                cycle = [*path[path.index(prereq) :], prereq] if prereq in path else [*path, prereq]
                 errors.append(f"순환참조: {' → '.join(cycle)}")
-            elif color[prereq] == WHITE:
-                dfs(prereq, path + [prereq])
-        color[node] = BLACK
+            elif color[prereq] == white:
+                dfs(prereq, [*path, prereq])
+        color[node] = black
 
     for course in graph:
-        if color[course] == WHITE:
+        if color[course] == white:
             dfs(course, [course])
 
     if warnings:
