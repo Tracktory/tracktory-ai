@@ -146,7 +146,7 @@ def test_invalid_chunks_is_structured_error(tmp_path: Path) -> None:
     client, _session = _client(tmp_path, [], max_retries=0)
 
     with pytest.raises(RagflowSearchError) as exc_info:
-        client._parse_chunks({"chunks": {"not": "a list"}})
+        client._parse_hits({"chunks": {"not": "a list"}})
 
     assert exc_info.value.reason == "invalid_chunks"
 

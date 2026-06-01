@@ -86,6 +86,9 @@ class JobCandidate(BaseModel):
         fallback_used: True 이면 카테고리 사전 매핑 fallback 으로 채택된
             후보. LLM 설명 단계가 사용자에게 캐비잇 메시지를 추가할 때
             본 플래그를 본다.
+        posting_count: 직무 검색에서 본 직무 타입으로 집계된 공고 수
+            (출현 횟수). 검색 결과 내 직무 타입의 등장 빈도 신호다. fallback
+            후보는 공고 검색을 거치지 않으므로 0.
     """
 
     job_id: str = Field(..., min_length=1)
@@ -95,6 +98,7 @@ class JobCandidate(BaseModel):
     match_score: float = Field(..., ge=0.0, le=1.0)
     similarity: float = Field(default=0.0, ge=0.0, le=1.0)
     fallback_used: bool = False
+    posting_count: int = Field(default=0, ge=0)
 
 
 class TrackCombo(BaseModel):

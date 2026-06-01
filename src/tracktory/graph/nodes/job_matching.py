@@ -93,6 +93,7 @@ def _to_candidate(result: RagSearchResult) -> JobCandidate:
         match_score=result.score,
         similarity=result.score,
         fallback_used=False,
+        posting_count=result.posting_count,
     )
 
 
