@@ -1,0 +1,48 @@
+name: CD (FastAPI)
+
+on:
+  workflow_run:
+    workflows: ["CI (FastAPI)"] # CI 워크플로 name 과 정확히 일치해야 함
+    types: [completed] # CI가 끝났을 때 트리거
+    branches: ["develop", "main"] # 특정 브랜치에서만
+
+permissions:
+  contents: read
+
+env:
+  IMAGE: ${{ secrets.DOCKER_USERNAME }}/tracktory-ai
+
+jobs:
+  deploy:
+    name: Deploy to Server
+    runs-on: ubuntu-latest
+    # CI가 성공으로 끝났을 때만 배포 (실패/취소 시 스킵)
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # 브랜치별로 pull/run 할 이미지 태그 결정 (main → latest, develop → dev)
+    env:
+      IMAGE_TAG: ${{ github.event.workflow_run.head_branch == 'main' && 'latest' || 'dev' }}
+    steps:
+      # SSH로 서버에 접속해 배포
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: 22
+          script: |
+            echo "${{ secrets.ENV_FILE }}" > /home/${{ secrets.SERVER_USER }}/.env
+            echo "[1/3] Pull latest Docker image..."
+            docker pull ${{ env.IMAGE }}:${{ env.IMAGE_TAG }}
+
+            echo "[2/3] Restart container with new image..."
+            docker stop tracktory-ai || true
+            docker rm tracktory-ai || true
+            docker run -d --name tracktory-ai \
+              --env-file /home/${{ secrets.SERVER_USER }}/.env \
+              -p 8000:8000 \
+              -v /home/${{ secrets.SERVER_USER }}/tracktory-ai-data:/app/data \
+              ${{ env.IMAGE }}:${{ env.IMAGE_TAG }}
+
+            echo "[3/3] Cleanup unused images..."
+            docker image prune -f

@@ -1,0 +1,19 @@
+# 빌드 컨텍스트 최소화 — 이미지 비대화·캐시 무효화 방지
+.git
+.github
+.venv
+__pycache__
+*.pyc
+.mypy_cache
+.ruff_cache
+.pytest_cache
+
+# 데이터·로그·로컬 시크릿은 이미지에 넣지 않음 (런타임에 볼륨/env 로 주입)
+data
+logs
+.env
+.env.*
+
+# 문서·테스트 (런타임 불필요)
+docs
+tests
