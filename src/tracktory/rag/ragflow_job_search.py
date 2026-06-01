@@ -51,6 +51,10 @@ _METADATA_FIELDS = ["category", "tech_stack"]
 
 _MAX_DESCRIPTION_LEN = 10_000
 
+# 매칭 공고가 실제 언급한 competency_tags 가 이 수 미만이면 카테고리
+# competency_fallback(yaml)으로 보충한다. 상한 캡은 두지 않는다(프론트 책임).
+_MIN_COMPETENCY_TAGS = 5
+
 # 공고 카테고리 → 직무 카탈로그 표준 코드 매핑 yaml. job_id 는 직무 카탈로그
 # 표준 코드(job_tech_stacks.json 의 category_id)이며, fallback
 # category_to_jobs.yaml 과 동일한 표준 코드 어휘를 공유한다.
@@ -65,6 +69,7 @@ class _JobType(NamedTuple):
     job_id: str
     job_name: str
     tech_stacks: tuple[str, ...]
+    competency_fallback: tuple[str, ...]  # competency_tags 가 적을 때 채울 보충 풀
 
 
 class _PostingHit(NamedTuple):
@@ -80,6 +85,7 @@ class _PostingHit(NamedTuple):
     description: str
     tech_stacks: list[str]
     aggregate: tuple[str, ...]  # 이 공고 카테고리의 대표 기술 집계 (yaml)
+    competency_fallback: tuple[str, ...]  # competency_tags 부족 시 보충 풀 (yaml)
 
 
 @dataclass(frozen=True)
@@ -110,6 +116,30 @@ def _accumulate_tech_stacks(group: list[_PostingHit]) -> list[str]:
     return sorted(counter, key=lambda tech: (-counter[tech], first_seen[tech]))
 
 
+def _backfill_competency(
+    competency_tags: list[str],
+    group: list[_PostingHit],
+    aggregate_lower: set[str],
+) -> list[str]:
+    """competency_tags 가 적을 때 카테고리 competency_fallback 으로 보충한다.
+
+    매칭 공고가 실제 언급한 기술을 우선 보존하고, ``_MIN_COMPETENCY_TAGS`` 에
+    못 미치는 부족분만 카테고리 집계 하위 기술(yaml ``competency_fallback``)에서
+    채운다. 대표 스택(aggregate)·기존 항목과 중복은 제외한다. 그룹에 여러
+    카테고리가 섞이면(예: DA) fallback 도 순서 보존 합집합으로 본다.
+    """
+    result = list(competency_tags)
+    present = {tech.lower() for tech in result} | aggregate_lower
+    fallback = dict.fromkeys(tech for hit in group for tech in hit.competency_fallback)
+    for tech in fallback:
+        if len(result) >= _MIN_COMPETENCY_TAGS:
+            break
+        if tech.lower() not in present:
+            result.append(tech)
+            present.add(tech.lower())
+    return result
+
+
 def _aggregate_by_job_type(hits: list[_PostingHit]) -> list[RagSearchResult]:
     """공고 단위 적중을 직무 타입(``job_id``) 단위 결과로 dedup·집계한다.
 
@@ -135,6 +165,8 @@ def _aggregate_by_job_type(hits: list[_PostingHit]) -> list[RagSearchResult]:
         competency_tags = [
             tech for tech in _accumulate_tech_stacks(group) if tech.lower() not in aggregate_lower
         ]
+        if len(competency_tags) < _MIN_COMPETENCY_TAGS:
+            competency_tags = _backfill_competency(competency_tags, group, aggregate_lower)
         results.append(
             RagSearchResult(
                 job_id=job_id,
@@ -147,6 +179,13 @@ def _aggregate_by_job_type(hits: list[_PostingHit]) -> list[RagSearchResult]:
             )
         )
     return results
+
+
+def _str_tuple(value: object) -> tuple[str, ...]:
+    """yaml 리스트 값을 빈 항목 제거한 문자열 튜플로 정규화한다."""
+    if not isinstance(value, list):
+        return ()
+    return tuple(str(item) for item in value if item)
 
 
 def _load_category_to_job_type(path: Path) -> dict[str, _JobType]:
@@ -164,12 +203,11 @@ def _load_category_to_job_type(path: Path) -> dict[str, _JobType]:
         job_id = entry.get("job_id")
         job_name = entry.get("job_name")
         if job_id and job_name:
-            raw_stacks = entry.get("tech_stacks") or []
-            tech_stacks = (
-                tuple(str(t) for t in raw_stacks if t) if isinstance(raw_stacks, list) else ()
-            )
             mapping[str(category)] = _JobType(
-                job_id=str(job_id), job_name=str(job_name), tech_stacks=tech_stacks
+                job_id=str(job_id),
+                job_name=str(job_name),
+                tech_stacks=_str_tuple(entry.get("tech_stacks")),
+                competency_fallback=_str_tuple(entry.get("competency_fallback")),
             )
     return mapping
 
@@ -262,6 +300,7 @@ class RagflowJobSearchClient(RagflowClient):
             description=content[:_MAX_DESCRIPTION_LEN],
             tech_stacks=self._extract_tech_stacks(meta),
             aggregate=job_type.tech_stacks,
+            competency_fallback=job_type.competency_fallback,
         )
 
     @staticmethod

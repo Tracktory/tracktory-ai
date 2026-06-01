@@ -16,52 +16,66 @@
 # 키          : 공고 카테고리 (common/categories.py 의 IT_JOB_CATEGORIES 와 동일)
 # job_id      : 직무 카탈로그 표준 코드 (job_tech_stacks.json 의 category_id 와 정합)
 # job_name    : 사용자 표시명 (카탈로그 category_name_ko 와 정합)
-# tech_stacks : 카테고리별 채용공고 기술스택 빈도 상위 N개 (extract_tech_keywords 정규화).
-#               scripts/aggregate_category_tech_stacks.py 가 metadata.json 으로 자동 생성.
-#               공고 수가 적은 카테고리(게임·보안)는 스크립트 안에서 수동 큐레이션한다.
-#               RagflowJobSearchClient 가 직무 후보의 대표 tech_stacks 로 쓰며, 매칭된
-#               공고 기술 중 이 목록에 없는 것만 competency_tags 로 분리한다.
+# tech_stacks         : 카테고리별 채용공고 기술스택 빈도 상위 N개 (extract_tech_keywords 정규화).
+#                       RagflowJobSearchClient 가 직무 후보의 대표 tech_stacks 로 쓰며, 매칭된
+#                       공고 기술 중 이 목록에 없는 것만 competency_tags 로 분리한다.
+# competency_fallback : tech_stacks 다음 순위의 보충 기술. 매칭 공고가 실제 언급한
+#                       competency_tags 가 너무 적을 때 노드가 채워 넣는다.
+#
+# 둘 다 scripts/aggregate_category_tech_stacks.py 가 metadata.json 으로 자동 생성하며,
+# 공고 수가 적은 카테고리(게임·보안)는 스크립트 안에서 수동 큐레이션한다.
 #
 # 스키마:
-#   <카테고리>: { job_id: <표준 코드>, job_name: <표시명>, tech_stacks: [<기술>, ...] }
+#   <카테고리>: { job_id: <표준 코드>, job_name: <표시명>,
+#               tech_stacks: [<기술>, ...], competency_fallback: [<기술>, ...] }
 
 백엔드:
   job_id: BE
   job_name: 백엔드 개발자
   tech_stacks: [SQL, AWS, Java, Python, Docker, CI/CD, Kubernetes, Redis]
+  competency_fallback: [Vue.js, MySQL, Git, Spring Boot, PostgreSQL, Kotlin, REST, Spring, TypeScript, Kafka, GitHub, MSA]
 프론트엔드:
   job_id: FE
   job_name: 프론트엔드 개발자
   tech_stacks: [React, TypeScript, Next.js, CSS, JavaScript, Vue.js, Git, HTML]
+  competency_fallback: [AWS, Zustand, CI/CD, SQL, Redux, REST, GitHub, Java, Tailwind CSS, React Native, Webpack, Jira]
 데이터엔지니어:
   job_id: DE
   job_name: 데이터 엔지니어
   tech_stacks: [SQL, Python, Airflow, AWS, Kafka, Spark, Kubernetes, GCP]
+  competency_fallback: [Docker, dbt, Java, Flink, Snowflake, BigQuery, CI/CD, Hadoop, Grafana, GPT, Prometheus, Azure]
 데이터분석:
   job_id: DA
   job_name: 데이터 분석가
   tech_stacks: [Python, SQL, Tableau, AWS, Airflow, BigQuery, GCP, R]
+  competency_fallback: [MySQL, Pandas, Azure, Snowflake, Power BI, Looker, Spark, dbt, LLM, Metabase, CSS, Superset]
 데이터사이언스:
   job_id: DA
   job_name: 데이터 분석가
   tech_stacks: [Python, SQL, PyTorch, TensorFlow, LLM, R, scikit-learn, Airflow]
+  competency_fallback: [AWS, GCP, Tableau, Pandas, Git, Vue.js, LightGBM, NumPy, BigQuery, Docker, RAG, Spark]
 AI/ML:
   job_id: AI
   job_name: AI/ML 엔지니어
   tech_stacks: [Python, LLM, PyTorch, AWS, RAG, Docker, SQL, TensorFlow]
+  competency_fallback: [Kubernetes, CI/CD, C++, Vue.js, GCP, LangChain, Git, Java, GPT, Azure, C, FastAPI]
 모바일:
   job_id: MOB
   job_name: 모바일 개발자 (Android/iOS)
-  tech_stacks: [Android, iOS, Kotlin, Swift, Vue.js, CI/CD, Git, React Native]
+  tech_stacks: [Android, iOS, Kotlin, Swift, Vue.js, Git, CI/CD, Jetpack Compose]
+  competency_fallback: [React Native, SwiftUI, Java, GitHub, Flutter, C, Jira, React, JavaScript, TypeScript, Firebase, REST]
 DevOps/인프라:
   job_id: DEVOPS
   job_name: DevOps/인프라 엔지니어
   tech_stacks: [AWS, CI/CD, Kubernetes, Python, Linux, Terraform, Grafana, Docker]
+  competency_fallback: [Prometheus, EKS, Helm, GCP, SQL, Go, Jenkins, GitHub Actions, Java, Git, Azure, PostgreSQL]
 보안:
   job_id: SEC
   job_name: 보안 엔지니어/분석가
   tech_stacks: [Linux, Python, OWASP, Wireshark, Nmap, Burp Suite, SIEM, Metasploit]
+  competency_fallback: [SOAR, IDS, IPS, SSL, TLS, OAuth, JWT, Snyk, SonarQube, Nessus]
 게임:
   job_id: GAME
   job_name: 게임 개발자
   tech_stacks: [Unity, Unreal Engine, C#, C++, Blender, Maya, HLSL, ARKit]
+  competency_fallback: [GLSL, OpenXR, ARCore, Lua, Python, Perforce, C, Git]
