@@ -7,7 +7,11 @@ import os
 
 import pandas as pd
 
-from tracktory.rag.preprocessing.tracks.builder import load_college_map
+from tracktory.rag.preprocessing.tracks.builder import (
+    doc_filename,
+    is_excluded_college,
+    load_college_map,
+)
 
 _CATEGORY_LABEL: dict[str, str] = {
     "전기": "전공기초",
@@ -31,6 +35,14 @@ def build_courses(track_csv: str, college_json: str, output_dir: str) -> list[di
     for track_name, group in df.groupby("트랙"):
         info = college_map.get(str(track_name), {"college": "한성대학교", "department": ""})
 
+        filename = doc_filename("교육과정", str(track_name), info["department"])
+        if is_excluded_college(info["college"]):
+            # 제외 단과대 트랙은 산출물을 만들지 않고, 과거 실행에서 남은 stale txt도 제거한다.
+            stale_path = os.path.join(output_dir, filename)
+            if os.path.exists(stale_path):
+                os.remove(stale_path)
+            continue
+
         header_parts = [f"트랙: {track_name}"]
         if info["college"]:
             header_parts.append(f"대학: {info['college']}")
@@ -53,8 +65,7 @@ def build_courses(track_csv: str, college_json: str, output_dir: str) -> list[di
                 lines.append("")
 
         content = "\n".join(lines).strip()
-        safe_name = str(track_name).replace("/", "_").replace("ㆍ", "_").replace("·", "_")
-        out_path = os.path.join(output_dir, f"교육과정_{safe_name}.txt")
+        out_path = os.path.join(output_dir, filename)
         with open(out_path, "w", encoding="utf-8") as f:
             f.write(content)
 

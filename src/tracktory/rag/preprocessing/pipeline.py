@@ -26,7 +26,12 @@ from tracktory.rag.preprocessing.find_syllabus_duplicates import (
 )
 from tracktory.rag.preprocessing.jobs import build_jobs_from_csv
 from tracktory.rag.preprocessing.syllabus import build_syllabi
-from tracktory.rag.preprocessing.tracks.builder import build_all, load_college_map
+from tracktory.rag.preprocessing.tracks.builder import (
+    build_all,
+    doc_filename,
+    is_excluded_college,
+    load_college_map,
+)
 from tracktory.rag.preprocessing.tracks.cleaner import clean
 from tracktory.rag.preprocessing.tracks.parser import parse
 
@@ -76,6 +81,11 @@ def process_tracks(
         track_name: str = str(row["Track_Name"])
         raw_text: str = str(row["Raw_Text"])
 
+        college = college_map.get(track_name, {}).get("college", "")
+        if is_excluded_college(college):
+            skipped.append((track_name, f"제외 단과대 ({college})"))
+            continue
+
         if any(sig in raw_text for sig in _DIRECTORY_PAGE_SIGNALS):
             skipped.append((track_name, "대학 전체 목록 페이지 — 개별 트랙 데이터 없음"))
             continue
@@ -88,8 +98,8 @@ def process_tracks(
         sections_by_track[track_name] = parse(clean_lines)
 
     for name, _ in skipped:
-        safe_name = name.replace("/", "_").replace("ㆍ", "_").replace("·", "_")
-        old_file = os.path.join(output_dir, f"트랙소개_{safe_name}.txt")
+        department = college_map.get(name, {}).get("department", "")
+        old_file = os.path.join(output_dir, doc_filename("트랙소개", name, department))
         if os.path.exists(old_file):
             os.remove(old_file)
 
