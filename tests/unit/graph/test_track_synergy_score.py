@@ -1,6 +1,6 @@
 """``_synergy_score`` 와 3 항 (complementarity / job_coverage / redundancy) 검증.
 
-시너지 식의 정의역 [0, 1] clip · 각 항의 의미적 정합 (Jaccard 거리 / 채용공고
+시너지 식의 정의역 [0, 1] clip · 각 항의 의미적 정합 (직무 토큰 분업도 / 채용공고
 기술스택 도달도 / 과목 중복도) 만 검증한다.
 """
 
@@ -27,12 +27,130 @@ def test_synergy_in_unit_interval(make_track, make_combo, make_job, make_synergy
     assert 0.0 <= score <= 1.0
 
 
-def test_complementarity_zero_when_competencies_identical(make_track, make_combo) -> None:
-    """두 트랙의 역량이 완전 동일하면 complementarity = 0 (대칭 차집합 0)."""
-    a = make_track("a", competencies=["py", "data"])
-    b = make_track("b", competencies=["py", "data"])
+def test_complementarity_zero_when_no_jobs(make_track, make_combo) -> None:
+    """직무 토큰이 없으면 분업할 기준이 없으므로 complementarity = 0."""
+    a = make_track("a", tech_stacks=["py"])
+    b = make_track("b", tech_stacks=["sql"])
     combo = make_combo(a, b)
-    assert _complementarity(combo) == 0.0
+    assert _complementarity(combo, []) == 0.0
+
+
+def test_complementarity_zero_when_one_track_irrelevant(make_track, make_combo, make_job) -> None:
+    """한 트랙이 직무와 무관(직무 기여 0)하면 분업 불성립 → complementarity = 0.
+
+    무관 조합과 보완 조합을 구분하는 핵심 게이트. track_b 의 토큰이 직무 토큰과
+    전혀 겹치지 않으면 두 트랙이 직무를 분업한다고 볼 수 없다.
+    """
+    a = make_track("a", tech_stacks=["py", "sql"])
+    b = make_track("b", tech_stacks=["welding", "plumbing"])
+    combo = make_combo(a, b)
+    jobs = [make_job(tech_stacks=["py", "sql", "go"])]
+    assert _complementarity(combo, jobs) == 0.0
+
+
+def test_complementarity_zero_when_job_contributions_identical(
+    make_track, make_combo, make_job
+) -> None:
+    """두 트랙의 직무 기여가 동일하면 분업이 아니라 중복 → complementarity = 0."""
+    a = make_track("a", tech_stacks=["py", "sql"])
+    b = make_track("b", tech_stacks=["py", "sql"])
+    combo = make_combo(a, b)
+    jobs = [make_job(tech_stacks=["py", "sql", "go"])]
+    assert _complementarity(combo, jobs) == 0.0
+
+
+def test_complementarity_max_when_tracks_split_job_tokens(make_track, make_combo, make_job) -> None:
+    """두 트랙이 직무 토큰을 겹침 없이 나눠 공급하면 complementarity = 1.0 (완전 분업)."""
+    a = make_track("a", tech_stacks=["py"])
+    b = make_track("b", tech_stacks=["sql"])
+    combo = make_combo(a, b)
+    jobs = [make_job(tech_stacks=["py", "sql"])]
+    assert _complementarity(combo, jobs) == 1.0
+
+
+def test_complementarity_partial_when_job_contributions_overlap(
+    make_track, make_combo, make_job
+) -> None:
+    """직무 기여가 일부 겹치면 0 과 1 사이 (부분 분업).
+
+    contrib_a={py, sql}, contrib_b={sql, go} 의 대칭차집합 {py, go}=2,
+    합집합 {py, sql, go}=3 → 2/3.
+    """
+    a = make_track("a", tech_stacks=["py", "sql"])
+    b = make_track("b", tech_stacks=["sql", "go"])
+    combo = make_combo(a, b)
+    jobs = [make_job(tech_stacks=["py", "sql", "go", "rust"])]
+    assert _complementarity(combo, jobs) == 2 / 3
+
+
+def test_complementarity_uses_competency_tags_and_tech_stacks(
+    make_track, make_combo, make_job
+) -> None:
+    """직무 토큰·트랙 토큰 모두 기술스택·역량 두 축을 합쳐 매칭한다.
+
+    track_a 는 역량으로, track_b 는 기술스택으로 각각 직무에 기여하므로 양쪽
+    축이 모두 anchor 에 반영되어야 분업이 성립한다.
+    """
+    a = make_track("a", competencies=["데이터 분석 능력"])
+    b = make_track("b", tech_stacks=["sql"])
+    combo = make_combo(a, b)
+    jobs = [make_job(tech_stacks=["sql"], competency_tags=["데이터 분석 능력"])]
+    assert _complementarity(combo, jobs) == 1.0
+
+
+def test_complementarity_zero_when_both_tracks_irrelevant(make_track, make_combo, make_job) -> None:
+    """두 트랙 모두 직무와 무관하면 complementarity = 0."""
+    a = make_track("a", tech_stacks=["welding"])
+    b = make_track("b", tech_stacks=["plumbing"])
+    combo = make_combo(a, b)
+    jobs = [make_job(tech_stacks=["py", "sql"])]
+    assert _complementarity(combo, jobs) == 0.0
+
+
+def test_complementarity_anchor_filters_track_private_tokens(
+    make_track, make_combo, make_job
+) -> None:
+    """직무 토큰 밖의 트랙 고유 토큰은 anchor 교집합에서 제외된다 (포화 회귀 가드).
+
+    track_a={py, x}, track_b={py, y}, 직무={py} 에서 트랙 고유 x·y 가 필터링되어
+    두 기여가 모두 {py} 로 동일 → 0.0. 고유 토큰이 필터링되지 않았다면 대칭차집합
+    {x, y} 로 2/3 가 나왔을 것이다. 이 차이가 anchor 의 핵심 동작이다.
+    """
+    a = make_track("a", tech_stacks=["py", "track_private_x"])
+    b = make_track("b", tech_stacks=["py", "track_private_y"])
+    combo = make_combo(a, b)
+    jobs = [make_job(tech_stacks=["py"])]
+    assert _complementarity(combo, jobs) == 0.0
+
+
+def test_complementarity_discriminates_related_from_unrelated(
+    make_track, make_combo, make_job
+) -> None:
+    """무관 조합(0)과 실제 보완 조합(>0)이 점수로 구분된다 (포화 회귀 가드)."""
+    jobs = [make_job(tech_stacks=["py", "sql", "go"])]
+    relevant = make_track("a", tech_stacks=["py"])
+    complementary_partner = make_track("b", tech_stacks=["sql"])
+    irrelevant_partner = make_track("c", tech_stacks=["welding"])
+
+    complementary = _complementarity(make_combo(relevant, complementary_partner), jobs)
+    unrelated = _complementarity(make_combo(relevant, irrelevant_partner), jobs)
+    assert complementary > unrelated
+    assert unrelated == 0.0
+
+
+def test_complementarity_canonicalizes_notation_differences(
+    make_track, make_combo, make_job
+) -> None:
+    """직무·트랙이 같은 기술을 다른 표기로 적어도 정합 토큰으로 묶여 분업이 성립한다.
+
+    track_a 는 "ReactJS", 직무는 "React" 로 표기가 달라도 같은 토큰으로 통합돼
+    track_a 가 직무에 기여한다. 통합이 없으면 contrib_a 가 비어 분업이 0 이 됐을 것이다.
+    """
+    a = make_track("a", tech_stacks=["ReactJS"])
+    b = make_track("b", tech_stacks=["sql"])
+    combo = make_combo(a, b)
+    jobs = [make_job(tech_stacks=["React", "sql"])]
+    assert _complementarity(combo, jobs) == 1.0
 
 
 def test_job_coverage_uses_tech_stacks_only(make_track, make_combo, make_job) -> None:
