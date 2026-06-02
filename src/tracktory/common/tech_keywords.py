@@ -10,6 +10,9 @@
     - normalize_tech_tag: 단일 태그 정규화 (원티드 구조화 태그용)
     - normalize_tech_tags: 태그 리스트 일괄 정규화
     - classify_job_category: 채용공고 제목으로 IT 직군 분류
+    - canonical_tech_token: 표기 차이를 흡수한 정합 토큰 (사전 미스 시 원본 표기 보존)
+    - canonical_tech_key: 대소문자 무시 비교 키 (집합 교집합용)
+    - canonical_tech_keys: 태그 묶음을 비교 키 집합으로 변환
 
 사용법:
     from common.tech_keywords import extract_tech_keywords, normalize_tech_tag
@@ -24,6 +27,7 @@
 from __future__ import annotations
 
 import re
+from collections.abc import Iterable
 
 # ---------------------------------------------------------------------------
 # 1. 정규화 맵 (변형 -> 정규 이름)
@@ -564,6 +568,59 @@ def normalize_tech_tags(tags: list[str]) -> list[str]:
             seen.add(normalized)
             result.append(normalized)
     return sorted(result)
+
+
+# ---------------------------------------------------------------------------
+# 4b. 정합 토큰 사전 — 직무·트랙 기술 어휘 통합 (교집합 비교용)
+# ---------------------------------------------------------------------------
+# 직무 채용공고와 트랙 커리큘럼은 같은 기술을 서로 다른 표기로 적어둘 수 있다
+# (예: "ReactJS" vs "React", "spring boot" vs "Spring Boot"). NORMALIZATION_MAP
+# 을 직무 기술 어휘 기준 정합 사전으로 삼아 양쪽 표기를 한 어휘로 통합한다.
+# 직무 매칭·트랙 시너지 등 어느 단계든 같은 사전을 재사용해 교집합을 계산한다.
+_NORMALIZATION_INDEX: dict[str, str] = {
+    variant.casefold(): canonical for variant, canonical in NORMALIZATION_MAP.items()
+}
+
+
+def canonical_tech_token(tag: str) -> str:
+    """기술 태그를 직무 기술 어휘 기준 정규 표기로 통합한다.
+
+    ``normalize_tech_tag`` 와 달리 사전에 없는 태그는 ``.title()`` 로 바꾸지
+    않고 원본 표기를 유지한다. ``"SQL"`` → ``"Sql"``, ``"iOS"`` → ``"Ios"``
+    같은 약어·고유 대소문자 오변환을 막기 위함이다 — 트랙 카탈로그에는 이미
+    정규 표기로 적힌 기술이 많아, 오변환은 오히려 직무 어휘와의 정합을 깬다.
+
+    Args:
+        tag: 원본 기술 태그.
+
+    Returns:
+        ``NORMALIZATION_MAP`` 에 등록된 변형이면 정규 이름, 아니면 공백을 제거한
+        원본 표기.
+    """
+    stripped = tag.strip()
+    if not stripped:
+        return stripped
+    return _NORMALIZATION_INDEX.get(stripped.casefold(), stripped)
+
+
+def canonical_tech_key(tag: str) -> str:
+    """집합 비교용 정규 키를 반환한다 (``canonical_tech_token`` 후 casefold).
+
+    표시는 ``canonical_tech_token`` 으로, 교집합 비교는 본 키로 한다. 별칭
+    차이뿐 아니라 대소문자 차이까지 흡수해 ``"SQL"`` 과 ``"sql"`` 을 같은
+    기술로 본다.
+    """
+    return canonical_tech_token(tag).casefold()
+
+
+def canonical_tech_keys(tags: Iterable[str]) -> set[str]:
+    """기술 태그 목록을 정규 비교 키 집합으로 변환한다 (빈 키 제외)."""
+    keys: set[str] = set()
+    for tag in tags:
+        key = canonical_tech_key(tag)
+        if key:
+            keys.add(key)
+    return keys
 
 
 def classify_job_category(title: str, text: str = "") -> str:
