@@ -1,0 +1,55 @@
+"""정합 토큰 사전 (canonical_tech_token / key / keys) 검증.
+
+직무·트랙 양쪽이 같은 기술을 다르게 적어둔 표기 차이를 한 어휘로 통합하는지,
+약어·고유 대소문자가 .title() 폴백으로 오변환되지 않는지를 검증한다.
+"""
+
+from __future__ import annotations
+
+import pytest
+
+from tracktory.common.tech_keywords import (
+    canonical_tech_key,
+    canonical_tech_keys,
+    canonical_tech_token,
+)
+
+
+@pytest.mark.parametrize(
+    ("variant", "expected"),
+    [
+        ("ReactJS", "React"),
+        ("react.js", "React"),
+        ("SpringBoot", "Spring Boot"),
+        ("자바", "Java"),
+        ("golang", "Go"),
+    ],
+)
+def test_canonical_token_maps_alias(variant: str, expected: str) -> None:
+    """NORMALIZATION_MAP 에 등록된 변형은 직무 어휘 정규 이름으로 통합된다."""
+    assert canonical_tech_token(variant) == expected
+
+
+@pytest.mark.parametrize("tech", ["SQL", "iOS", "TensorFlow", "GPT", "Power BI", "AWS"])
+def test_canonical_token_preserves_casing_on_miss(tech: str) -> None:
+    """사전에 없는 약어·고유 대소문자는 원본을 유지한다 (.title() 오변환 금지)."""
+    assert canonical_tech_token(tech) == tech
+
+
+@pytest.mark.parametrize("blank", ["", "   ", "\t"])
+def test_canonical_token_blank_returns_empty(blank: str) -> None:
+    """공백뿐인 입력은 빈 문자열로 정규화된다."""
+    assert canonical_tech_token(blank) == ""
+
+
+def test_canonical_key_unifies_casing_and_alias() -> None:
+    """비교 키는 대소문자·별칭 차이를 모두 흡수한다."""
+    assert canonical_tech_key("SQL") == canonical_tech_key("sql")
+    assert canonical_tech_key("ReactJS") == canonical_tech_key("react")
+    assert canonical_tech_key("Spring Boot") == canonical_tech_key("springboot")
+
+
+def test_canonical_keys_dedups_and_drops_blank() -> None:
+    """키 집합은 표기 차이를 합치고 빈 값을 제외한다."""
+    keys = canonical_tech_keys(["React", "reactjs", "SQL", "sql", "", "  "])
+    assert keys == {"react", "sql"}

@@ -33,6 +33,7 @@ from typing import Any, Literal, NamedTuple
 
 import numpy as np
 
+from tracktory.common.tech_keywords import canonical_tech_keys
 from tracktory.graph.models import (
     JobCandidate,
     RankedCombo,
@@ -120,14 +121,20 @@ def _complementarity(combo: TrackCombo) -> float:
 
 
 def _job_coverage(combo: TrackCombo, jobs: list[JobCandidate]) -> float:
-    """직무 후보의 채용공고 기술스택 중 두 트랙 합집합으로 커버되는 비율."""
-    job_stacks: set[str] = set()
-    for job in jobs:
-        job_stacks.update(job.tech_stacks)
-    if not job_stacks:
+    """직무 후보의 채용공고 기술스택 중 두 트랙 합집합으로 커버되는 비율.
+
+    직무와 트랙은 같은 기술을 서로 다른 표기로 적어둘 수 있어 (예: "spring boot"
+    vs "Spring Boot", "ReactJS" vs "React"), 양쪽을 정합 토큰 키로 통합한 뒤
+    교집합을 센다. 통합 없이 원본 표기로 비교하면 표기 불일치로 커버율이 0 에
+    수렴해 트랙 간 시너지 점수가 평탄해진다.
+    """
+    job_keys = canonical_tech_keys(stack for job in jobs for stack in job.tech_stacks)
+    if not job_keys:
         return 0.0
-    track_stacks = set(combo.track_a.tech_stacks) | set(combo.track_b.tech_stacks)
-    return len(job_stacks & track_stacks) / len(job_stacks)
+    track_keys = canonical_tech_keys(combo.track_a.tech_stacks) | canonical_tech_keys(
+        combo.track_b.tech_stacks
+    )
+    return len(job_keys & track_keys) / len(job_keys)
 
 
 def _redundancy(combo: TrackCombo) -> float:

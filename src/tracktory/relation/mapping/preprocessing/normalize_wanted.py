@@ -18,11 +18,8 @@ import json
 from collections import Counter
 from pathlib import Path
 
-from tracktory.common.tech_keywords import NORMALIZATION_MAP
+from tracktory.common.tech_keywords import canonical_tech_token
 from tracktory.relation.mapping.config import WANTED_BY_JOB_PATH, WANTED_CLEANED_PATH
-
-# lower-keyed 사본 — 모듈 로드 시 1회 생성하여 _normalize_tag 의 O(1) lookup 에 사용.
-_NORMALIZATION_LOWER: dict[str, str] = {k.lower(): v for k, v in NORMALIZATION_MAP.items()}
 
 # wanted_cleaned.json의 category 값 → job_id
 CATEGORY_TO_JOB_ID: dict[str, str] = {
@@ -38,24 +35,6 @@ CATEGORY_TO_JOB_ID: dict[str, str] = {
     "DevOps/인프라": "DEVOPS",
     "게임": "GAME",
 }
-
-
-def _normalize_tag(tag: str) -> str:
-    """기술 태그를 NORMALIZATION_MAP 기준 정규 이름으로 변환한다.
-
-    맵에 없으면 원본 대소문자를 유지한다. .title() 폴백을 쓰지 않는 이유:
-    "SQL"→"Sql", "AWS"→"Aws" 같은 오변환 방지.
-
-    Args:
-        tag: 원본 기술 태그 문자열.
-
-    Returns:
-        정규화된 태그 이름.
-    """
-    stripped = tag.strip()
-    if not stripped:
-        return stripped
-    return _NORMALIZATION_LOWER.get(stripped.lower(), stripped)
 
 
 def normalize_wanted(
@@ -85,7 +64,7 @@ def normalize_wanted(
         if job_id is not None:
             record["category"] = job_id
         raw_tags: list[str] = record.get("tech_stacks") or []
-        record["tech_stacks"] = [_normalize_tag(str(t)) for t in raw_tags if str(t).strip()]
+        record["tech_stacks"] = [canonical_tech_token(str(t)) for t in raw_tags if str(t).strip()]
         result.append(record)
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
