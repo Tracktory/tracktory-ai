@@ -181,6 +181,8 @@ class Course(BaseModel):
             ``[1, ..., 8]``.
         course_type: 학사 커리큘럼 분류. 본 시스템 추천 대상은 전공필수 /
             전공선택만이며, 교양은 사용자 자율 구성 영역으로 추천에서 제외한다.
+        tech_stacks: 강의계획서 산문에서 추출된 기술 토큰 (직무 기술 어휘와 정합).
+            이수 과목 부스팅 시 직무 토큰과의 교집합 계산에 사용.
     """
 
     course_id: str = Field(..., min_length=1)
@@ -193,6 +195,7 @@ class Course(BaseModel):
     available_grades: list[int] = Field(default_factory=lambda: [1, 2, 3, 4])
     available_semesters: list[int] = Field(default_factory=lambda: list(range(1, 9)))
     course_type: Literal["전공필수", "전공선택", "교양"] = "전공선택"
+    tech_stacks: list[str] = Field(default_factory=list)
 
 
 class RoadmapCourse(BaseModel):

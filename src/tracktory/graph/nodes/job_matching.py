@@ -36,6 +36,7 @@ from typing import Any
 
 import yaml
 
+from tracktory.common.tech_keywords import canonical_tech_keys
 from tracktory.graph.models import JobCandidate, JobMatchingConfig
 from tracktory.graph.state import GraphState
 from tracktory.rag.job_search import JobSearchClient, RagSearchError, RagSearchResult
@@ -44,6 +45,7 @@ _DEFAULT_CONFIG_PATH = Path(__file__).resolve().parents[2] / "config" / "synergy
 _DEFAULT_CATEGORY_MAPPING_PATH = (
     Path(__file__).resolve().parents[2] / "config" / "category_to_jobs.yaml"
 )
+_DEFAULT_COURSE_CATALOG_PATH = Path(__file__).resolve().parents[2] / "config" / "courses.yaml"
 # yaml entry 에 ``rank`` 가 누락된 경우 정렬 시 마지막으로 밀어내는 sentinel.
 # 매직 넘버 회피용 상수 — yaml 스키마가 ``rank`` 를 필수화하면 제거 가능.
 _RANK_SENTINEL = 999
@@ -77,6 +79,86 @@ def _load_category_mapping(path: Path) -> dict[str, list[dict[str, Any]]]:
     return raw
 
 
+def _load_course_tech_index(path: Path) -> dict[str, list[str]]:
+    """과목 카탈로그에서 ``{정규화 과목명: 기술 토큰 목록}`` 색인을 로드한다.
+
+    이수 과목은 사용자가 과목 *이름* (예: "데이터베이스") 으로 입력하지만 직무
+    적합도는 기술 토큰 (예: "MySQL") 어휘로 매겨진다. 카탈로그는 각 과목에
+    커리큘럼 기반 기술 토큰을 미리 부착해 두므로, 본 색인이 이름 → 토큰 변환의
+    출발점이 된다. 키는 ``course_name.strip().casefold()`` 로 정규화해 입력
+    표기 차이를 흡수한다.
+
+    같은 정규화 이름을 가진 과목이 둘 이상이면 기술 토큰을 합집합으로 묶되
+    중복을 제거하고 최초 등장 순서를 보존한다. ``tech_stacks`` 가 비었거나
+    누락된 과목은 토큰을 기여하지 않는다 (키 자체는 만들지 않음) — 카탈로그가
+    토큰을 채우기 전에는 색인이 비어 부스팅이 0 이 되도록 의도한 동작이다.
+
+    Args:
+        path: ``courses.yaml`` 의 경로.
+
+    Returns:
+        ``{정규화 과목명: [기술 토큰, ...]}`` 색인. 토큰이 전혀 없으면 ``{}``.
+
+    Raises:
+        ValueError: yaml 최상위가 ``courses`` 리스트를 담은 mapping 이 아닐 때.
+    """
+    with path.open("r", encoding="utf-8") as f:
+        raw = yaml.safe_load(f)
+    if raw is None:
+        return {}
+    if not isinstance(raw, dict) or not isinstance(raw.get("courses"), list):
+        raise ValueError(f"Course catalog file {path} must contain a 'courses' list")
+
+    index: dict[str, list[str]] = {}
+    for entry in raw["courses"]:
+        if not isinstance(entry, dict):
+            continue
+        name = entry.get("course_name")
+        if not isinstance(name, str) or not name.strip():
+            continue
+        tech_stacks = entry.get("tech_stacks") or []
+        if not isinstance(tech_stacks, list):
+            continue
+        key = name.strip().casefold()
+        bucket = index.setdefault(key, [])
+        for token in tech_stacks:
+            if isinstance(token, str) and token.strip() and token not in bucket:
+                bucket.append(token)
+        if not bucket:
+            # 토큰을 하나도 더하지 못한 빈 버킷은 색인에 남기지 않아,
+            # 토큰 미보유 과목이 부스팅 lookup 의 hit 로 위장하지 않게 한다.
+            del index[key]
+    return index
+
+
+def _resolve_completed_tokens(
+    completed_courses: list[str],
+    course_tech_index: dict[str, list[str]],
+) -> list[str]:
+    """이수 과목 이름을 카탈로그 색인으로 직무 기술 토큰 목록으로 환산한다.
+
+    이수 과목 부스팅의 교집합은 직무 기술 어휘로 계산되므로, 사용자가 입력한
+    과목 *이름* 을 같은 어휘의 토큰으로 먼저 옮겨야 한다. 본 함수가 그 이름 →
+    토큰 다리이며, 색인에 없는 과목 이름은 아무 토큰도 기여하지 않는다 (무관
+    과목이 부스팅에 영향을 주지 않도록).
+
+    Args:
+        completed_courses: 사용자가 입력한 이수 과목 이름 목록.
+        course_tech_index: ``_load_course_tech_index`` 가 만든 이름 → 토큰 색인.
+
+    Returns:
+        모든 이수 과목의 기술 토큰 합집합 (중복 제거, 최초 등장 순서 보존).
+    """
+    tokens: list[str] = []
+    seen: set[str] = set()
+    for course in completed_courses:
+        for token in course_tech_index.get(course.strip().casefold(), []):
+            if token not in seen:
+                seen.add(token)
+                tokens.append(token)
+    return tokens
+
+
 def _to_candidate(result: RagSearchResult) -> JobCandidate:
     """직무 검색 결과 단건을 직무 후보 모델로 변환한다.
 
@@ -99,43 +181,54 @@ def _to_candidate(result: RagSearchResult) -> JobCandidate:
 
 def _apply_completed_course_boost(
     candidates: list[JobCandidate],
-    completed_courses: list[str],
+    completed_tokens: list[str],
     weight: float,
 ) -> list[JobCandidate]:
-    """이수 과목과 직무 토큰의 교집합 비율만큼 점수를 가산하고 재정렬한다.
+    """이수 과목 기술 토큰과 직무 토큰의 교집합 비율만큼 점수를 가산하고 재정렬한다.
 
     boost = weight · |completed ∩ job_tokens| / |job_tokens|
     new_score = min(base_score + boost, 1.0)
 
-    job_tokens 는 직무의 ``tech_stacks`` 와 ``competency_tags`` 합집합을 소문자
-    정규화한 집합이다. 직무 토큰이 비어 있거나 이수 과목과 겹치지 않으면 가산은 0 이고
-    점수·순서는 변하지 않는다. 가산 후 점수 내림차순으로 안정 정렬하여 동점은
-    원래 검색 순서를 유지한다.
+    두 번째 인자는 이수 과목 *이름* 이 아니라 카탈로그로 이미 환산된 기술
+    *토큰* 이다 (``_resolve_completed_tokens`` 참조). 교집합은 직무 기술 어휘로
+    계산되어야 의미가 있으므로, 양쪽 토큰을 모두 ``canonical_tech_keys`` 로
+    정규화한 뒤 비교한다 — "자바" 와 "Java", "spring boot" 와 "Spring Boot" 처럼
+    별칭·대소문자만 다른 표기를 같은 기술로 본다. 이 어휘 정합이 본 부스팅의
+    핵심 계약이다 (직무 채용공고 어휘와 동일한 정합 사전을 재사용).
+
+    job_tokens 는 직무의 ``tech_stacks`` 와 ``competency_tags`` 합집합이다. 직무
+    토큰이 비어 있거나 이수 과목 토큰과 정규 키가 겹치지 않으면 가산은 0 이고
+    점수·순서는 변하지 않는다 (무관 과목은 영향 없음). 가산 후 점수 내림차순으로
+    안정 정렬하여 동점은 원래 검색 순서를 유지한다.
 
     이수 과목을 의미 임베딩 단계에 절대 투입하지 않는 정책을 보존하기 위해,
     본 신호는 외부 검색이 끝난 뒤 점수 후처리로만 반영한다 (집합 교집합 연산
-    이며 임베딩 호출이 없다). ``weight = 0`` 이거나 이수 과목이 없으면 입력을
-    그대로 반환한다.
+    이며 임베딩 호출이 없다). ``weight = 0`` 이거나 이수 과목 토큰이 없으면
+    입력을 그대로 반환한다.
 
     가산은 최종 적합도인 ``match_score`` 에만 반영하고, 검색 원시 점수인
     ``similarity`` 는 보존한다. 두 필드가 갈라지는 지점이 바로 이 후처리다 —
     부스팅이 0 이거나 검색 직후에는 두 값이 일치하지만, 가산이 발생하면
     ``match_score`` 만 올라간다.
+
+    Args:
+        candidates: 직무 검색 결과 후보들 (검색 점수 순).
+        completed_tokens: 이수 과목에서 환산된 기술 토큰 목록 (이름이 아님).
+        weight: 교집합 비율 1 일 때의 최대 가산량.
+
+    Returns:
+        가산·재정렬된 새 후보 리스트 (변경 없으면 입력 그대로).
     """
-    if weight <= 0.0 or not completed_courses:
+    if weight <= 0.0 or not completed_tokens:
         return candidates
-    completed_set = {c.strip().lower() for c in completed_courses if c.strip()}
-    if not completed_set:
+    completed_keys = canonical_tech_keys(completed_tokens)
+    if not completed_keys:
         return candidates
 
     boosted: list[JobCandidate] = []
     for cand in candidates:
-        job_tokens = {
-            token.strip().lower()
-            for token in (*cand.tech_stacks, *cand.competency_tags)
-            if token.strip()
-        }
-        overlap_ratio = len(completed_set & job_tokens) / len(job_tokens) if job_tokens else 0.0
+        job_keys = canonical_tech_keys((*cand.tech_stacks, *cand.competency_tags))
+        overlap_ratio = len(completed_keys & job_keys) / len(job_keys) if job_keys else 0.0
         new_score = min(cand.match_score + weight * overlap_ratio, 1.0)
         boosted.append(cand.model_copy(update={"match_score": new_score}))
 
@@ -197,11 +290,15 @@ class JobMatchingNode:
         job_search_client: JobSearchClient,
         config_path: Path | None = None,
         category_mapping_path: Path | None = None,
+        course_catalog_path: Path | None = None,
     ) -> None:
         self._client = job_search_client
         self._config = JobMatchingConfig.load_from_yaml(config_path or _DEFAULT_CONFIG_PATH)
         self._category_mapping = _load_category_mapping(
             category_mapping_path or _DEFAULT_CATEGORY_MAPPING_PATH
+        )
+        self._course_tech_index = _load_course_tech_index(
+            course_catalog_path or _DEFAULT_COURSE_CATALOG_PATH
         )
 
     def __call__(self, state: GraphState) -> dict[str, Any]:
@@ -255,9 +352,13 @@ class JobMatchingNode:
         max_similarity = results[0].score if results else 0.0
         if results and max_similarity >= threshold:
             candidates = [_to_candidate(result) for result in results]
+            completed_tokens = _resolve_completed_tokens(
+                normalized.get("completed_courses") or [],
+                self._course_tech_index,
+            )
             candidates = _apply_completed_course_boost(
                 candidates,
-                normalized.get("completed_courses") or [],
+                completed_tokens,
                 self._config.completed_course_boost.weight,
             )
             return {

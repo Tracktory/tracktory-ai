@@ -392,7 +392,10 @@ _RAW_TECH_KEYWORDS: list[tuple[str, str]] = [
     (r"타입스크립트", "TypeScript"),
     (r"리액트(?!네이티브|\s*Native)", "React"),
     (r"리액트\s*네이티브", "React Native"),
-    (r"뷰", "Vue.js"),
+    # 한글 단독 "뷰"는 Vue.js 로 추출하지 않는다. "뷰"는 UI·DB 의 "view"(예:
+    # "웨젯(뷰)", "뷰, 저장 프로시저", "뷰 계층 구조")를 가리키는 일반어라
+    # Vue.js 와 구분이 불가능해 오탐이 매우 잦다 ("리뷰"·"뷰티" 포함). 실제
+    # Vue 사용은 영문 "Vue"/"Vue.js"/"VueJS" 로 적히며 그 패턴이 따로 잡는다.
     (r"앵귤러", "Angular"),
     (r"노드", "Node.js"),
     (r"스프링(?!부트|\s*Boot)", "Spring"),

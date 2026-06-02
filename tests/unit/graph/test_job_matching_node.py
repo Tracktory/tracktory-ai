@@ -41,11 +41,13 @@ def _build_node(
     client: JobSearchClient,
     real_synergy_yaml_path: Path,
     real_category_mapping_path: Path,
+    course_catalog_path: Path,
 ) -> JobMatchingNode:
     return JobMatchingNode(
         job_search_client=client,
         config_path=real_synergy_yaml_path,
         category_mapping_path=real_category_mapping_path,
+        course_catalog_path=course_catalog_path,
     )
 
 
@@ -58,9 +60,12 @@ def test_node_skips_when_profile_text_missing(
     make_fake_job_search_client: Callable[..., JobSearchClient],
     real_synergy_yaml_path: Path,
     real_category_mapping_path: Path,
+    tmp_course_catalog_path: Path,
 ) -> None:
     client = make_fake_job_search_client()
-    node = _build_node(client, real_synergy_yaml_path, real_category_mapping_path)
+    node = _build_node(
+        client, real_synergy_yaml_path, real_category_mapping_path, tmp_course_catalog_path
+    )
     result = node({"normalized_profile": _profile()})
     assert result["trace"] == ["job_matching:skip"]
     assert "recommended_jobs" not in result
@@ -70,10 +75,13 @@ def test_node_skips_when_profile_text_empty(
     make_fake_job_search_client: Callable[..., JobSearchClient],
     real_synergy_yaml_path: Path,
     real_category_mapping_path: Path,
+    tmp_course_catalog_path: Path,
 ) -> None:
     """빈 문자열도 skip — None 과 동일 분기."""
     client = make_fake_job_search_client()
-    node = _build_node(client, real_synergy_yaml_path, real_category_mapping_path)
+    node = _build_node(
+        client, real_synergy_yaml_path, real_category_mapping_path, tmp_course_catalog_path
+    )
     result = node({"profile_text": "", "normalized_profile": _profile()})
     assert result["trace"] == ["job_matching:skip"]
 
@@ -82,9 +90,12 @@ def test_node_skips_when_normalized_profile_missing(
     make_fake_job_search_client: Callable[..., JobSearchClient],
     real_synergy_yaml_path: Path,
     real_category_mapping_path: Path,
+    tmp_course_catalog_path: Path,
 ) -> None:
     client = make_fake_job_search_client()
-    node = _build_node(client, real_synergy_yaml_path, real_category_mapping_path)
+    node = _build_node(
+        client, real_synergy_yaml_path, real_category_mapping_path, tmp_course_catalog_path
+    )
     result = node({"profile_text": "AI 에 관심 있는 학생"})
     assert result["trace"] == ["job_matching:skip"]
 
@@ -99,13 +110,16 @@ def test_node_returns_top_k_in_order_when_above_threshold(
     make_search_result: Callable[..., RagSearchResult],
     real_synergy_yaml_path: Path,
     real_category_mapping_path: Path,
+    tmp_course_catalog_path: Path,
 ) -> None:
     results = [
         make_search_result("matched_job", score=0.85),
         make_search_result("second_job", score=0.42),
     ]
     client = make_fake_job_search_client(results=results)
-    node = _build_node(client, real_synergy_yaml_path, real_category_mapping_path)
+    node = _build_node(
+        client, real_synergy_yaml_path, real_category_mapping_path, tmp_course_catalog_path
+    )
 
     result = node(
         {
@@ -126,6 +140,7 @@ def test_node_passes_profile_text_and_top_k_to_client(
     make_search_result: Callable[..., RagSearchResult],
     real_synergy_yaml_path: Path,
     real_category_mapping_path: Path,
+    tmp_course_catalog_path: Path,
 ) -> None:
     """직무 검색 boundary 가 받는 인자가 ``profile_text`` 와 default top_k 인지 검증."""
     client = MagicMock(spec=JobSearchClient)
@@ -134,6 +149,7 @@ def test_node_passes_profile_text_and_top_k_to_client(
         job_search_client=client,
         config_path=real_synergy_yaml_path,
         category_mapping_path=real_category_mapping_path,
+        course_catalog_path=tmp_course_catalog_path,
     )
 
     profile_text = "백엔드 개발에 흥미가 있는 학생"
@@ -150,10 +166,13 @@ def test_node_match_score_equals_similarity_without_boost(
     make_search_result: Callable[..., RagSearchResult],
     real_synergy_yaml_path: Path,
     real_category_mapping_path: Path,
+    tmp_course_catalog_path: Path,
 ) -> None:
     """이수 과목이 없어 부스팅이 0 이면 ``match_score`` 와 ``similarity`` 가 일치한다."""
     client = make_fake_job_search_client(results=[make_search_result("target", score=0.7)])
-    node = _build_node(client, real_synergy_yaml_path, real_category_mapping_path)
+    node = _build_node(
+        client, real_synergy_yaml_path, real_category_mapping_path, tmp_course_catalog_path
+    )
 
     result = node(
         {
@@ -175,12 +194,15 @@ def test_node_triggers_fallback_when_top_score_below_threshold(
     make_search_result: Callable[..., RagSearchResult],
     real_synergy_yaml_path: Path,
     real_category_mapping_path: Path,
+    tmp_course_catalog_path: Path,
 ) -> None:
     """상위 점수 < min_job_similarity → 카테고리 사전 매핑 fallback."""
     client = make_fake_job_search_client(
         results=[make_search_result("low_score_job", score=0.05)],
     )
-    node = _build_node(client, real_synergy_yaml_path, real_category_mapping_path)
+    node = _build_node(
+        client, real_synergy_yaml_path, real_category_mapping_path, tmp_course_catalog_path
+    )
 
     result = node(
         {
@@ -199,10 +221,13 @@ def test_node_triggers_fallback_when_results_empty(
     make_fake_job_search_client: Callable[..., JobSearchClient],
     real_synergy_yaml_path: Path,
     real_category_mapping_path: Path,
+    tmp_course_catalog_path: Path,
 ) -> None:
     """빈 결과도 임계값 미만으로 간주 → fallback 분기."""
     client = make_fake_job_search_client(results=[])
-    node = _build_node(client, real_synergy_yaml_path, real_category_mapping_path)
+    node = _build_node(
+        client, real_synergy_yaml_path, real_category_mapping_path, tmp_course_catalog_path
+    )
 
     result = node(
         {
@@ -217,11 +242,14 @@ def test_node_triggers_fallback_on_rag_search_error(
     make_fake_job_search_client: Callable[..., JobSearchClient],
     real_synergy_yaml_path: Path,
     real_category_mapping_path: Path,
+    tmp_course_catalog_path: Path,
     caplog: pytest.LogCaptureFixture,
 ) -> None:
     """``RagSearchError`` raise 도 fallback 분기로 전환되어야 한다."""
     client = make_fake_job_search_client(raise_error=True)
-    node = _build_node(client, real_synergy_yaml_path, real_category_mapping_path)
+    node = _build_node(
+        client, real_synergy_yaml_path, real_category_mapping_path, tmp_course_catalog_path
+    )
 
     with caplog.at_level(logging.WARNING, logger="tracktory.graph.nodes.job_matching"):
         result = node(
@@ -241,10 +269,13 @@ def test_node_logger_info_called_once_on_fallback(
     make_search_result: Callable[..., RagSearchResult],
     real_synergy_yaml_path: Path,
     real_category_mapping_path: Path,
+    tmp_course_catalog_path: Path,
     caplog: pytest.LogCaptureFixture,
 ) -> None:
     client = make_fake_job_search_client(results=[make_search_result("low", score=0.05)])
-    node = _build_node(client, real_synergy_yaml_path, real_category_mapping_path)
+    node = _build_node(
+        client, real_synergy_yaml_path, real_category_mapping_path, tmp_course_catalog_path
+    )
 
     with caplog.at_level(logging.INFO, logger="tracktory.graph.nodes.job_matching"):
         node(
@@ -263,10 +294,13 @@ def test_node_returns_empty_with_warning_when_category_unmapped(
     make_search_result: Callable[..., RagSearchResult],
     real_synergy_yaml_path: Path,
     real_category_mapping_path: Path,
+    tmp_course_catalog_path: Path,
     caplog: pytest.LogCaptureFixture,
 ) -> None:
     client = make_fake_job_search_client(results=[make_search_result("low", score=0.05)])
-    node = _build_node(client, real_synergy_yaml_path, real_category_mapping_path)
+    node = _build_node(
+        client, real_synergy_yaml_path, real_category_mapping_path, tmp_course_catalog_path
+    )
 
     with caplog.at_level(logging.WARNING, logger="tracktory.graph.nodes.job_matching"):
         result = node(
@@ -287,10 +321,13 @@ def test_node_no_logger_info_on_normal_path(
     make_search_result: Callable[..., RagSearchResult],
     real_synergy_yaml_path: Path,
     real_category_mapping_path: Path,
+    tmp_course_catalog_path: Path,
     caplog: pytest.LogCaptureFixture,
 ) -> None:
     client = make_fake_job_search_client(results=[make_search_result("ok", score=0.9)])
-    node = _build_node(client, real_synergy_yaml_path, real_category_mapping_path)
+    node = _build_node(
+        client, real_synergy_yaml_path, real_category_mapping_path, tmp_course_catalog_path
+    )
 
     with caplog.at_level(logging.INFO, logger="tracktory.graph.nodes.job_matching"):
         node(
@@ -314,6 +351,7 @@ def test_completed_courses_boost_score_on_normal_path(
     make_search_result: Callable[..., RagSearchResult],
     real_synergy_yaml_path: Path,
     real_category_mapping_path: Path,
+    tmp_course_catalog_path: Path,
 ) -> None:
     """이수 과목이 직무 토큰과 겹치면 점수가 raw 검색 점수보다 높아진다."""
 
@@ -326,6 +364,7 @@ def test_completed_courses_boost_score_on_normal_path(
         make_fake_job_search_client(results=[_result()]),
         real_synergy_yaml_path,
         real_category_mapping_path,
+        tmp_course_catalog_path,
     )
     without = node_no_courses(
         {"profile_text": "백엔드", "normalized_profile": _profile(completed_courses=[])}
@@ -335,6 +374,7 @@ def test_completed_courses_boost_score_on_normal_path(
         make_fake_job_search_client(results=[_result()]),
         real_synergy_yaml_path,
         real_category_mapping_path,
+        tmp_course_catalog_path,
     )
     with_courses = node_with_courses(
         {
@@ -354,12 +394,15 @@ def test_completed_courses_without_overlap_keep_raw_score(
     make_search_result: Callable[..., RagSearchResult],
     real_synergy_yaml_path: Path,
     real_category_mapping_path: Path,
+    tmp_course_catalog_path: Path,
 ) -> None:
     """겹치지 않는 이수 과목은 점수를 바꾸지 않는다."""
     client = make_fake_job_search_client(
         results=[make_search_result("backend", score=0.6, tech_stacks=["go"])]
     )
-    node = _build_node(client, real_synergy_yaml_path, real_category_mapping_path)
+    node = _build_node(
+        client, real_synergy_yaml_path, real_category_mapping_path, tmp_course_catalog_path
+    )
     result = node(
         {
             "profile_text": "백엔드",
@@ -374,12 +417,15 @@ def test_completed_courses_do_not_rescue_below_threshold_match(
     make_search_result: Callable[..., RagSearchResult],
     real_synergy_yaml_path: Path,
     real_category_mapping_path: Path,
+    tmp_course_catalog_path: Path,
 ) -> None:
     """임계값 미만 매칭은 이수 과목이 겹쳐도 fallback 으로 전환된다 (부스팅은 raw 점수 이후)."""
     client = make_fake_job_search_client(
         results=[make_search_result("low", score=0.05, tech_stacks=["자료구조"])]
     )
-    node = _build_node(client, real_synergy_yaml_path, real_category_mapping_path)
+    node = _build_node(
+        client, real_synergy_yaml_path, real_category_mapping_path, tmp_course_catalog_path
+    )
     result = node(
         {
             "profile_text": "프로필",
