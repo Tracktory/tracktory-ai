@@ -1,9 +1,11 @@
 """``RagflowJobSearchClient`` 의 직무 타입 단위 집계 동작 테스트.
 
 RAGFlow 는 공고 단위로 청크를 내려주므로, 같은 직무 타입(카테고리 → 직무
-카탈로그 표준 코드)의 공고들이 한 건으로 dedup 되고 tech_stacks 가 누적되며
-posting_count 로 출현 횟수가 보존되는지 검증한다. 외부 HTTP 는 ``FakeSession``
-으로 통제해 네트워크 없이 retrieval 응답을 주입한다.
+카탈로그 표준 코드)의 공고들이 한 건으로 dedup 되고 posting_count 로 출현
+횟수가 보존되는지 검증한다. tech_stacks 는 카테고리 집계(대표 스택)를 쓰고,
+competency_tags 는 그룹 공고들이 실제 언급한 기술(빈도 누적) 중 집계에 없는
+것만 담는다. 외부 HTTP 는 ``FakeSession`` 으로 통제해 네트워크 없이 retrieval
+응답을 주입한다.
 """
 
 from __future__ import annotations
@@ -17,9 +19,9 @@ import requests
 from tracktory.rag.ragflow_job_search import RagflowConfig, RagflowJobSearchClient
 
 _CATEGORY_MAP_YAML = """
-백엔드: { job_id: BE, job_name: 백엔드 개발자 }
-프론트엔드: { job_id: FE, job_name: 프론트엔드 개발자 }
-"AI/ML": { job_id: AI, job_name: "AI/ML 엔지니어" }
+백엔드: { job_id: BE, job_name: 백엔드 개발자, tech_stacks: [Java] }
+프론트엔드: { job_id: FE, job_name: 프론트엔드 개발자, tech_stacks: [React] }
+"AI/ML": { job_id: AI, job_name: "AI/ML 엔지니어", tech_stacks: [PyTorch] }
 """
 
 
@@ -100,8 +102,8 @@ def test_score_is_group_max(tmp_path: Path) -> None:
     assert results[0].score == 0.71
 
 
-def test_tech_stacks_accumulated_by_frequency(tmp_path: Path) -> None:
-    """tech_stacks 는 공고 출현 빈도 내림차순으로 누적된다."""
+def test_tech_stacks_is_aggregate_and_competency_is_remainder(tmp_path: Path) -> None:
+    """tech_stacks 는 카테고리 집계, competency_tags 는 누적 기술 중 집계 제외분."""
     client = _client(
         tmp_path,
         [
@@ -113,8 +115,10 @@ def test_tech_stacks_accumulated_by_frequency(tmp_path: Path) -> None:
 
     results = client.rag_search_jobs("백엔드", top_k=3)
 
-    # Java 3회 → 선두. AWS·Spring 각 1회 → 처음 등장 순서(AWS 먼저).
-    assert results[0].tech_stacks == ["Java", "AWS", "Spring"]
+    # tech_stacks = 백엔드 카테고리 집계(대표 스택).
+    assert results[0].tech_stacks == ["Java"]
+    # 누적 기술 Java(3)·AWS(1)·Spring(1) 중 집계(Java) 제외 → 빈도·등장순(AWS 먼저).
+    assert results[0].competency_tags == ["AWS", "Spring"]
 
 
 def test_top_k_counts_job_types_not_postings(tmp_path: Path) -> None:
