@@ -110,14 +110,44 @@ def _generate_combos(
 # ---------------------------------------------------------------------------
 
 
-def _complementarity(combo: TrackCombo) -> float:
-    """두 트랙의 비중복 역량 합집합 / 전체 역량 풀 비율 (Jaccard distance)."""
-    comp_a = set(combo.track_a.competencies)
-    comp_b = set(combo.track_b.competencies)
-    union = comp_a | comp_b
-    if not union:
+def _complementarity(combo: TrackCombo, jobs: list[JobCandidate]) -> float:
+    """두 트랙이 직무 요구 토큰을 분업하는 정도 (job-anchored division of labor).
+
+    각 트랙의 기여 = 트랙 토큰(역량·기술스택)과 직무 토큰의 교집합. 직무가 요구하는
+    토큰(jobs 의 기술스택·역량 태그)을 공유 기준으로 삼아, 두 트랙이 서로 다른 직무
+    토큰을 공급할수록 높고, 한 트랙이 직무와 무관(기여 0)하거나 둘이 같은 토큰만
+    덮으면(중복) 낮다.
+
+    트랙 내재 역량 집합만의 Jaccard 거리는 역량 태그가 대부분 트랙 고유라 거의 모든
+    조합에서 1.0 으로 포화돼 변별력이 없다(무관 조합과 보완 조합을 둘 다 1.0 로 뭉갬).
+    직무 토큰에 anchor 하면 공유 어휘 위에서 비교돼 포화가 풀리고, 무관 조합과 실제
+    보완 조합이 점수로 갈린다.
+
+    토큰 비교는 직무 커버율과 같은 정합 키로 통일한다 — 직무·트랙이 같은 기술을 다른
+    표기로 적어도(예: "ReactJS" vs "React") 한 토큰으로 묶여야 분업·중복 판정이 표기
+    차이에 흔들리지 않는다. 사전에 없는 역량 구문은 대소문자만 정규화돼 그대로 비교된다.
+
+    Returns:
+        ``[0, 1]``. 직무 토큰이 없거나 한 트랙이라도 직무 기여가 0 이면 0.0(분업의
+        전제는 양쪽 모두의 기여). 둘의 직무 기여가 동일하면 0.0(중복), 서로 다른 직무
+        토큰을 공급할수록 1.0 에 가깝다.
+    """
+    job_tokens: set[str] = set()
+    for job in jobs:
+        job_tokens |= canonical_tech_keys(job.tech_stacks)
+        job_tokens |= canonical_tech_keys(job.competency_tags)
+    if not job_tokens:
         return 0.0
-    return len(comp_a ^ comp_b) / len(union)
+
+    contrib_a = canonical_tech_keys([*combo.track_a.competencies, *combo.track_a.tech_stacks])
+    contrib_a &= job_tokens
+    contrib_b = canonical_tech_keys([*combo.track_b.competencies, *combo.track_b.tech_stacks])
+    contrib_b &= job_tokens
+    if not contrib_a or not contrib_b:
+        return 0.0
+
+    union = contrib_a | contrib_b
+    return len(contrib_a ^ contrib_b) / len(union)
 
 
 def _job_coverage(combo: TrackCombo, jobs: list[JobCandidate]) -> float:
@@ -154,7 +184,7 @@ def _synergy_score(
 ) -> float:
     """가중 합산 후 ``[0, 1]`` 로 clip 한 시너지 점수."""
     raw = (
-        weights.complementarity * _complementarity(combo)
+        weights.complementarity * _complementarity(combo, jobs)
         + weights.coverage * _job_coverage(combo, jobs)
         - weights.redundancy * _redundancy(combo)
     )
