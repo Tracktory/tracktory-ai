@@ -135,6 +135,11 @@ class PreprocessedTrackRepository:
     def list_all(self) -> list[Track]:
         return self._build_tracks(wanted=None)
 
+    def list_track_doc_names(self) -> list[str]:
+        """트랙소개 txt 전체 트랙명. ``list_all`` 은 교육과정·course_id 가 없는 트랙을 조용히
+        드롭하므로, 생성기가 '왜 카탈로그에서 빠졌는지'를 전수 대조·리포팅할 때 모집단으로 쓴다."""
+        return [doc.track_name for doc in _load_track_docs(self._rag_dir)]
+
     def find_by_track_ids(self, track_ids: list[str]) -> list[Track]:
         wanted = set(track_ids)
         if not wanted:

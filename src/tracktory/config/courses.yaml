@@ -47,7 +47,7 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - 영상ㆍ애니메이션디자인트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -61,7 +61,7 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -168,7 +168,7 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 웹공학트랙
   prereq_ids: []
   available_grades:
@@ -428,7 +428,7 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - 회계ㆍ재무경영트랙
+  - 회계·재무경영트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -442,7 +442,7 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - 기업ㆍ경제분석트랙
+  - 기업·경제분석트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -456,7 +456,7 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - 스마트도시ㆍ교통계획트랙
+  - 스마트도시·교통계획트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -542,8 +542,8 @@ courses:
   course_type: 전공선택
   track_ids:
   - 게임그래픽디자인트랙
-  - 디지털콘텐츠ㆍ가상현실트랙
-  - 영상ㆍ애니메이션디자인트랙
+  - 디지털콘텐츠·가상현실트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -561,12 +561,12 @@ courses:
   - 공공행정트랙
   - 국제무역트랙
   - 글로벌비즈니스트랙
-  - 기업ㆍ경제분석트랙
+  - 기업·경제분석트랙
   - 기업경영트랙
   - 법&정책트랙
   - 비즈니스애널리틱스트랙
-  - 스마트도시ㆍ교통계획트랙
-  - 회계ㆍ재무경영트랙
+  - 스마트도시·교통계획트랙
+  - 회계·재무경영트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -596,7 +596,7 @@ courses:
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
-  - 회계ㆍ재무경영트랙
+  - 회계·재무경영트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -627,7 +627,7 @@ courses:
   track_ids:
   - 발레전공
   prereq_ids:
-  - W050037
+  - T020078
   available_grades:
   - 1
   available_semesters:
@@ -639,7 +639,7 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - 스마트도시ㆍ교통계획트랙
+  - 스마트도시·교통계획트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -670,12 +670,12 @@ courses:
   - 공공행정트랙
   - 국제무역트랙
   - 글로벌비즈니스트랙
-  - 기업ㆍ경제분석트랙
+  - 기업·경제분석트랙
   - 기업경영트랙
   - 법&정책트랙
   - 비즈니스애널리틱스트랙
-  - 스마트도시ㆍ교통계획트랙
-  - 회계ㆍ재무경영트랙
+  - 스마트도시·교통계획트랙
+  - 회계·재무경영트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -690,7 +690,6 @@ courses:
   track_ids:
   - AI응용학과
   prereq_ids:
-  - W080016
   - Y030019
   - Y030018
   available_grades:
@@ -743,7 +742,7 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - 영상ㆍ애니메이션디자인트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -756,7 +755,7 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - 영상ㆍ애니메이션디자인트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids:
   - M037001
   available_grades:
@@ -770,10 +769,9 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - ICT융합디자인학과
   - 미디어디자인트랙
   - 시각디자인트랙
-  - 영상ㆍ애니메이션디자인트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -786,7 +784,6 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - ICT융합디자인학과
   - 미디어디자인트랙
   - 시각디자인트랙
   prereq_ids:
@@ -802,7 +799,6 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - ICT융합디자인학과
   - 미디어디자인트랙
   - 시각디자인트랙
   prereq_ids: []
@@ -817,7 +813,7 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - 영상ㆍ애니메이션디자인트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -830,7 +826,7 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - 영상ㆍ애니메이션디자인트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -3393,7 +3389,7 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - 스마트도시ㆍ교통계획트랙
+  - 스마트도시·교통계획트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -3406,7 +3402,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 기업ㆍ경제분석트랙
+  - 기업·경제분석트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -3419,7 +3415,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - 기업ㆍ경제분석트랙
+  - 기업·경제분석트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -3433,7 +3429,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 경제금융투자트랙
-  - 기업ㆍ경제분석트랙
+  - 기업·경제분석트랙
   prereq_ids:
   - R010019
   - CTS0016
@@ -3478,7 +3474,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계ㆍ재무경영트랙
+  - 회계·재무경영트랙
   prereq_ids:
   - CTS0013
   available_grades:
@@ -3494,7 +3490,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계ㆍ재무경영트랙
+  - 회계·재무경영트랙
   prereq_ids:
   - CTS0011
   available_grades:
@@ -3510,7 +3506,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계ㆍ재무경영트랙
+  - 회계·재무경영트랙
   prereq_ids:
   - R010014
   - CTS0011
@@ -3527,7 +3523,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계ㆍ재무경영트랙
+  - 회계·재무경영트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -3542,7 +3538,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계ㆍ재무경영트랙
+  - 회계·재무경영트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -3745,7 +3741,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계ㆍ재무경영트랙
+  - 회계·재무경영트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -3760,7 +3756,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계ㆍ재무경영트랙
+  - 회계·재무경영트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -3775,7 +3771,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계ㆍ재무경영트랙
+  - 회계·재무경영트랙
   prereq_ids:
   - R010056
   - R019003
@@ -3793,7 +3789,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계ㆍ재무경영트랙
+  - 회계·재무경영트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -3808,7 +3804,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계ㆍ재무경영트랙
+  - 회계·재무경영트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -3823,7 +3819,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계ㆍ재무경영트랙
+  - 회계·재무경영트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -3851,7 +3847,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계ㆍ재무경영트랙
+  - 회계·재무경영트랙
   prereq_ids:
   - R010057
   available_grades:
@@ -3867,7 +3863,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계ㆍ재무경영트랙
+  - 회계·재무경영트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -3881,7 +3877,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 경제금융투자트랙
-  - 기업ㆍ경제분석트랙
+  - 기업·경제분석트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -3896,7 +3892,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계ㆍ재무경영트랙
+  - 회계·재무경영트랙
   prereq_ids:
   - CTS0011
   - R010014
@@ -3956,7 +3952,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - 스마트도시ㆍ교통계획트랙
+  - 스마트도시·교통계획트랙
   prereq_ids: []
   available_grades:
   - 4
@@ -3969,7 +3965,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 스마트도시ㆍ교통계획트랙
+  - 스마트도시·교통계획트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -3982,7 +3978,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - 스마트도시ㆍ교통계획트랙
+  - 스마트도시·교통계획트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -3995,7 +3991,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - 스마트도시ㆍ교통계획트랙
+  - 스마트도시·교통계획트랙
   prereq_ids: []
   available_grades:
   - 4
@@ -4009,7 +4005,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 경제금융투자트랙
-  - 기업ㆍ경제분석트랙
+  - 기업·경제분석트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -4022,7 +4018,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - 스마트도시ㆍ교통계획트랙
+  - 스마트도시·교통계획트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -4035,7 +4031,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - 기업ㆍ경제분석트랙
+  - 기업·경제분석트랙
   prereq_ids: []
   available_grades:
   - 4
@@ -4064,7 +4060,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 스마트도시ㆍ교통계획트랙
+  - 스마트도시·교통계획트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -4077,7 +4073,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - 기업ㆍ경제분석트랙
+  - 기업·경제분석트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -4110,7 +4106,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 경제금융투자트랙
-  - 기업ㆍ경제분석트랙
+  - 기업·경제분석트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -4125,7 +4121,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 경제금융투자트랙
-  - 기업ㆍ경제분석트랙
+  - 기업·경제분석트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -4152,7 +4148,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 경제금융투자트랙
-  - 기업ㆍ경제분석트랙
+  - 기업·경제분석트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -4167,7 +4163,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계ㆍ재무경영트랙
+  - 회계·재무경영트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -4184,7 +4180,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계ㆍ재무경영트랙
+  - 회계·재무경영트랙
   prereq_ids:
   - R010114
   - R01G013
@@ -4260,7 +4256,6 @@ courses:
   - 법&정책트랙
   prereq_ids:
   - R015005
-  - W060046
   available_grades:
   - 3
   available_semesters:
@@ -4551,7 +4546,7 @@ courses:
   stage: industry
   course_type: 전공필수
   track_ids:
-  - 기업ㆍ경제분석트랙
+  - 기업·경제분석트랙
   prereq_ids: []
   available_grades:
   - 4
@@ -4565,7 +4560,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 경제금융투자트랙
-  - 기업ㆍ경제분석트랙
+  - 기업·경제분석트랙
   prereq_ids:
   - CTS0013
   available_grades:
@@ -4580,7 +4575,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 경제금융투자트랙
-  - 기업ㆍ경제분석트랙
+  - 기업·경제분석트랙
   prereq_ids:
   - CTS0013
   available_grades:
@@ -4595,7 +4590,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 경제금융투자트랙
-  - 기업ㆍ경제분석트랙
+  - 기업·경제분석트랙
   prereq_ids:
   - CTS0013
   available_grades:
@@ -4613,7 +4608,7 @@ courses:
   track_ids:
   - 경제금융투자트랙
   - 공공행정트랙
-  - 기업ㆍ경제분석트랙
+  - 기업·경제분석트랙
   prereq_ids:
   - CTS0013
   - R013012
@@ -4629,7 +4624,7 @@ courses:
   course_type: 전공필수
   track_ids:
   - 경제금융투자트랙
-  - 기업ㆍ경제분석트랙
+  - 기업·경제분석트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -4643,7 +4638,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 경제금융투자트랙
-  - 기업ㆍ경제분석트랙
+  - 기업·경제분석트랙
   prereq_ids:
   - CTS0013
   - CTS0016
@@ -4700,8 +4695,7 @@ courses:
   course_type: 전공필수
   track_ids:
   - 법&정책트랙
-  prereq_ids:
-  - W060041
+  prereq_ids: []
   available_grades:
   - 3
   available_semesters:
@@ -4781,7 +4775,7 @@ courses:
   stage: core
   course_type: 전공필수
   track_ids:
-  - 스마트도시ㆍ교통계획트랙
+  - 스마트도시·교통계획트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -4796,7 +4790,7 @@ courses:
   stage: application
   course_type: 전공필수
   track_ids:
-  - 스마트도시ㆍ교통계획트랙
+  - 스마트도시·교통계획트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -4809,7 +4803,7 @@ courses:
   stage: application
   course_type: 전공필수
   track_ids:
-  - 스마트도시ㆍ교통계획트랙
+  - 스마트도시·교통계획트랙
   prereq_ids:
   - R018008
   available_grades:
@@ -4823,7 +4817,7 @@ courses:
   stage: core
   course_type: 전공필수
   track_ids:
-  - 스마트도시ㆍ교통계획트랙
+  - 스마트도시·교통계획트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -4836,7 +4830,7 @@ courses:
   stage: application
   course_type: 전공필수
   track_ids:
-  - 스마트도시ㆍ교통계획트랙
+  - 스마트도시·교통계획트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -4849,7 +4843,7 @@ courses:
   stage: application
   course_type: 전공필수
   track_ids:
-  - 스마트도시ㆍ교통계획트랙
+  - 스마트도시·교통계획트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -4891,7 +4885,7 @@ courses:
   course_type: 전공필수
   track_ids:
   - 기업경영트랙
-  - 회계ㆍ재무경영트랙
+  - 회계·재무경영트랙
   prereq_ids:
   - R010056
   - R010063
@@ -4979,7 +4973,7 @@ courses:
   stage: industry
   course_type: 전공필수
   track_ids:
-  - 회계ㆍ재무경영트랙
+  - 회계·재무경영트랙
   prereq_ids:
   - CTS0011
   - R010014
@@ -4995,7 +4989,7 @@ courses:
   stage: industry
   course_type: 전공필수
   track_ids:
-  - 회계ㆍ재무경영트랙
+  - 회계·재무경영트랙
   prereq_ids:
   - R010013
   - R01B004
@@ -5011,7 +5005,7 @@ courses:
   stage: core
   course_type: 전공필수
   track_ids:
-  - 회계ㆍ재무경영트랙
+  - 회계·재무경영트랙
   prereq_ids:
   - CTS0011
   available_grades:
@@ -5026,7 +5020,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 기업경영트랙
-  - 회계ㆍ재무경영트랙
+  - 회계·재무경영트랙
   prereq_ids:
   - R010013
   available_grades:
@@ -5040,7 +5034,7 @@ courses:
   stage: industry
   course_type: 전공필수
   track_ids:
-  - 회계ㆍ재무경영트랙
+  - 회계·재무경영트랙
   prereq_ids:
   - CTS0011
   available_grades:
@@ -5054,7 +5048,7 @@ courses:
   stage: application
   course_type: 전공필수
   track_ids:
-  - 회계ㆍ재무경영트랙
+  - 회계·재무경영트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -5068,7 +5062,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 비즈니스애널리틱스트랙
-  - 회계ㆍ재무경영트랙
+  - 회계·재무경영트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -5120,7 +5114,7 @@ courses:
   stage: industry
   course_type: 전공필수
   track_ids:
-  - 스마트도시ㆍ교통계획트랙
+  - 스마트도시·교통계획트랙
   prereq_ids: []
   available_grades:
   - 4
@@ -5134,7 +5128,7 @@ courses:
   course_type: 전공필수
   track_ids:
   - 경제금융투자트랙
-  - 기업ㆍ경제분석트랙
+  - 기업·경제분석트랙
   prereq_ids:
   - CTS0013
   - CTS0016
@@ -5150,7 +5144,7 @@ courses:
   course_type: 전공필수
   track_ids:
   - 경제금융투자트랙
-  - 기업ㆍ경제분석트랙
+  - 기업·경제분석트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -5246,7 +5240,7 @@ courses:
   course_type: 전공필수
   track_ids:
   - 비즈니스애널리틱스트랙
-  - 회계ㆍ재무경영트랙
+  - 회계·재무경영트랙
   prereq_ids:
   - R010013
   available_grades:
@@ -5900,7 +5894,7 @@ courses:
   - 게임그래픽디자인트랙
   - 동양화전공
   - 서양화전공
-  - 영상ㆍ애니메이션디자인트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -5914,7 +5908,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 게임그래픽디자인트랙
-  - 영상ㆍ애니메이션디자인트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -5928,7 +5922,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - UX/UI디자인트랙
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   prereq_ids:
   - CTA0009
   - T020023
@@ -5944,7 +5938,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - UX/UI디자인트랙
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   - 동양화전공
   - 서양화전공
   prereq_ids: []
@@ -5959,7 +5953,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -5972,7 +5966,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -5987,7 +5981,7 @@ courses:
   track_ids:
   - UX/UI디자인트랙
   - 게임그래픽디자인트랙
-  - 영상ㆍ애니메이션디자인트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -6001,9 +5995,9 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   - 게임그래픽디자인트랙
-  - 영상ㆍ애니메이션디자인트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -6032,11 +6026,11 @@ courses:
   course_type: 전공선택
   track_ids:
   - UX/UI디자인트랙
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   - 게임그래픽디자인트랙
   - 미디어디자인트랙
   - 시각디자인트랙
-  - 영상ㆍ애니메이션디자인트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -6053,7 +6047,7 @@ courses:
   - 게임그래픽디자인트랙
   - 미디어디자인트랙
   - 시각디자인트랙
-  - 영상ㆍ애니메이션디자인트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -6066,7 +6060,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   - 게임그래픽디자인트랙
   prereq_ids:
   - T020007
@@ -6082,7 +6076,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 게임그래픽디자인트랙
-  - 영상ㆍ애니메이션디자인트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -6096,7 +6090,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 미디어디자인트랙
-  - 영상ㆍ애니메이션디자인트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -6112,7 +6106,7 @@ courses:
   - 게임그래픽디자인트랙
   - 미디어디자인트랙
   - 시각디자인트랙
-  - 영상ㆍ애니메이션디자인트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -6139,7 +6133,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 게임그래픽디자인트랙
-  - 영상ㆍ애니메이션디자인트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -6153,7 +6147,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - UX/UI디자인트랙
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -6166,7 +6160,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -6208,7 +6202,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   - 미디어디자인트랙
   - 시각디자인트랙
   prereq_ids: []
@@ -6281,10 +6275,10 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   - 미디어디자인트랙
   - 시각디자인트랙
-  - 영상ㆍ애니메이션디자인트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids:
   - T020078
   available_grades:
@@ -6301,7 +6295,7 @@ courses:
   - 게임그래픽디자인트랙
   - 미디어디자인트랙
   - 시각디자인트랙
-  - 영상ㆍ애니메이션디자인트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -6315,9 +6309,8 @@ courses:
   course_type: 전공선택
   track_ids:
   - 게임그래픽디자인트랙
-  - 영상ㆍ애니메이션디자인트랙
-  prereq_ids:
-  - W050036
+  - 영상·애니메이션디자인트랙
+  prereq_ids: []
   available_grades:
   - 3
   available_semesters:
@@ -6329,7 +6322,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -6342,7 +6335,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -6356,7 +6349,7 @@ courses:
   stage: industry
   course_type: 전공필수
   track_ids:
-  - 영상ㆍ애니메이션디자인트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 4
@@ -6370,7 +6363,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 게임그래픽디자인트랙
-  - 영상ㆍ애니메이션디자인트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -6384,7 +6377,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 게임그래픽디자인트랙
-  - 영상ㆍ애니메이션디자인트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids:
   - T020004
   available_grades:
@@ -6398,7 +6391,7 @@ courses:
   stage: industry
   course_type: 전공필수
   track_ids:
-  - 영상ㆍ애니메이션디자인트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 4
@@ -6412,7 +6405,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 게임그래픽디자인트랙
-  - 영상ㆍ애니메이션디자인트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids:
   - CTA0005
   available_grades:
@@ -6426,9 +6419,9 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   - 게임그래픽디자인트랙
-  - 영상ㆍ애니메이션디자인트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -6442,7 +6435,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 게임그래픽디자인트랙
-  - 영상ㆍ애니메이션디자인트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -6457,7 +6450,7 @@ courses:
   course_type: 전공필수
   track_ids:
   - UX/UI디자인트랙
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   prereq_ids: []
   available_grades:
   - 4
@@ -6498,7 +6491,7 @@ courses:
   course_type: 전공필수
   track_ids:
   - UX/UI디자인트랙
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   - 미디어디자인트랙
   - 시각디자인트랙
   prereq_ids: []
@@ -6513,7 +6506,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   prereq_ids:
   - Y050027
   available_grades:
@@ -6527,7 +6520,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   prereq_ids:
   - Y050027
   available_grades:
@@ -6541,7 +6534,7 @@ courses:
   stage: industry
   course_type: 전공필수
   track_ids:
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   prereq_ids: []
   available_grades:
   - 4
@@ -6554,7 +6547,7 @@ courses:
   stage: core
   course_type: 전공필수
   track_ids:
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   prereq_ids:
   - CTA0009
   available_grades:
@@ -6569,7 +6562,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - UX/UI디자인트랙
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   prereq_ids: []
   available_grades:
   - 4
@@ -6582,7 +6575,7 @@ courses:
   stage: core
   course_type: 전공필수
   track_ids:
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -6595,7 +6588,7 @@ courses:
   stage: application
   course_type: 전공필수
   track_ids:
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -6609,7 +6602,7 @@ courses:
   stage: application
   course_type: 전공필수
   track_ids:
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   prereq_ids:
   - T026010
   available_grades:
@@ -6623,7 +6616,7 @@ courses:
   stage: industry
   course_type: 전공필수
   track_ids:
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   prereq_ids:
   - T026009
   available_grades:
@@ -6639,7 +6632,7 @@ courses:
   track_ids:
   - 게임그래픽디자인트랙
   - 시각디자인트랙
-  - 영상ㆍ애니메이션디자인트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -6721,7 +6714,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   prereq_ids: []
   available_grades:
   - 4
@@ -6735,7 +6728,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - UX/UI디자인트랙
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -6970,7 +6963,7 @@ courses:
   track_ids:
   - 미디어디자인트랙
   - 시각디자인트랙
-  - 영상ㆍ애니메이션디자인트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -6983,10 +6976,10 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   - 미디어디자인트랙
   - 시각디자인트랙
-  - 영상ㆍ애니메이션디자인트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -7025,7 +7018,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - VMDㆍ전시디자인트랙
+  - VMD·전시디자인트랙
   - 게임그래픽디자인트랙
   - 미디어디자인트랙
   - 시각디자인트랙
@@ -7057,8 +7050,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 뷰티디자인매니지먼트학과
-  prereq_ids:
-  - W030006
+  prereq_ids: []
   available_grades:
   - 2
   available_semesters:
@@ -7113,7 +7105,6 @@ courses:
   course_type: 전공선택
   track_ids:
   - 뷰티디자인매니지먼트학과
-  - 뷰티디자인학과
   prereq_ids: []
   available_grades:
   - 3
@@ -7127,7 +7118,6 @@ courses:
   course_type: 전공선택
   track_ids:
   - 뷰티디자인매니지먼트학과
-  - 뷰티디자인학과
   prereq_ids: []
   available_grades:
   - 4
@@ -7468,12 +7458,12 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
   prereq_ids:
-  - W080015
+  - Y030008
   - Y040009
   available_grades:
   - 2
@@ -7488,7 +7478,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7505,7 +7495,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7522,13 +7512,13 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
   prereq_ids:
   - CTE0001
-  - W080015
+  - Y030008
   available_grades:
   - 1
   - 2
@@ -7543,7 +7533,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7568,7 +7558,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7586,7 +7576,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7602,7 +7592,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7619,7 +7609,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7635,13 +7625,13 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
   prereq_ids:
   - V020002
-  - W080015
+  - Y030008
   available_grades:
   - 2
   available_semesters:
@@ -7653,7 +7643,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7670,7 +7660,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7690,7 +7680,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7708,7 +7698,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7729,7 +7719,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7748,7 +7738,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7765,7 +7755,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7781,7 +7771,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7797,7 +7787,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7813,7 +7803,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7832,7 +7822,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7848,14 +7838,13 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
   prereq_ids:
   - CTE0001
   - V020001
-  - W080002
   available_grades:
   - 4
   available_semesters:
@@ -7870,7 +7859,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7886,14 +7875,14 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
   prereq_ids:
   - V020012
   - V020014
-  - W080015
+  - Y030008
   available_grades:
   - 4
   available_semesters:
@@ -7908,7 +7897,7 @@ courses:
   stage: industry
   course_type: 전공필수
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7927,7 +7916,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7944,7 +7933,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7960,7 +7949,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7976,7 +7965,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7992,7 +7981,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -8008,7 +7997,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -8024,7 +8013,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -8060,7 +8049,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -8191,7 +8180,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 빅데이터트랙
   prereq_ids: []
   available_grades:
@@ -8220,8 +8209,7 @@ courses:
   course_type: 전공필수
   track_ids:
   - 빅데이터트랙
-  prereq_ids:
-  - W080016
+  prereq_ids: []
   available_grades:
   - 4
   available_semesters:
@@ -8233,8 +8221,8 @@ courses:
   stage: core
   course_type: 전공필수
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
-  - 영상ㆍ애니메이션디자인트랙
+  - 디지털콘텐츠·가상현실트랙
+  - 영상·애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -8247,7 +8235,7 @@ courses:
   stage: application
   course_type: 전공필수
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 빅데이터트랙
   prereq_ids: []
   available_grades:
@@ -8261,7 +8249,7 @@ courses:
   stage: application
   course_type: 전공필수
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 모바일소프트웨어트랙
   - 웹공학트랙
   prereq_ids: []
@@ -8276,7 +8264,7 @@ courses:
   stage: industry
   course_type: 전공필수
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   prereq_ids:
   - V020015
   available_grades:
@@ -8292,7 +8280,7 @@ courses:
   stage: industry
   course_type: 전공필수
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   prereq_ids: []
   available_grades:
   - 4
@@ -8305,7 +8293,7 @@ courses:
   stage: application
   course_type: 전공필수
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   prereq_ids:
   - V030052
   available_grades:
@@ -8320,7 +8308,7 @@ courses:
   stage: industry
   course_type: 전공필수
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   prereq_ids:
   - V020015
   available_grades:
@@ -8334,7 +8322,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
+  - 디지털콘텐츠·가상현실트랙
   - 빅데이터트랙
   - 웹공학트랙
   prereq_ids:
@@ -8480,7 +8468,7 @@ courses:
   - 전자트랙
   prereq_ids:
   - V031006
-  - W080015
+  - Y030008
   available_grades:
   - 3
   available_semesters:
@@ -8524,8 +8512,7 @@ courses:
   track_ids:
   - 시스템반도체트랙
   - 전자트랙
-  prereq_ids:
-  - W080016
+  prereq_ids: []
   available_grades:
   - 4
   available_semesters:
@@ -8567,8 +8554,7 @@ courses:
   track_ids:
   - 시스템반도체트랙
   - 전자트랙
-  prereq_ids:
-  - W080002
+  prereq_ids: []
   available_grades:
   - 2
   available_semesters:
@@ -8630,7 +8616,7 @@ courses:
   - 전자트랙
   prereq_ids:
   - V031013
-  - W080015
+  - Y030008
   available_grades:
   - 3
   available_semesters:
@@ -8686,8 +8672,7 @@ courses:
   - 전자트랙
   prereq_ids:
   - V030052
-  - W080002
-  - W080015
+  - Y030008
   available_grades:
   - 3
   available_semesters:
@@ -9276,8 +9261,7 @@ courses:
   track_ids:
   - 산업공학트랙
   - 응용산업데이터공학트랙
-  prereq_ids:
-  - W080002
+  prereq_ids: []
   available_grades:
   - 3
   available_semesters:
@@ -9354,2478 +9338,6 @@ courses:
   tech_stacks:
   - Python
   - R
-- course_id: W020003
-  course_name: 세계식문화사
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - 호텔외식경영학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 1
-  tech_stacks: []
-- course_id: W020004
-  course_name: 서비스품질
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - 호텔외식경영학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 1
-  tech_stacks: []
-- course_id: W020006
-  course_name: 조리학
-  credits: 3
-  stage: foundation
-  course_type: 전공필수
-  track_ids:
-  - 호텔외식경영학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 2
-  tech_stacks: []
-- course_id: W020020
-  course_name: 외식메뉴관리론
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - 호텔외식경영학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 3
-  tech_stacks: []
-- course_id: W020023
-  course_name: 주장관리
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - 호텔외식경영학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 3
-  tech_stacks: []
-- course_id: W020029
-  course_name: 외식브랜드경영론
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - 호텔외식경영학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 4
-  tech_stacks: []
-- course_id: W020030
-  course_name: 외식창업세미나
-  credits: 3
-  stage: industry
-  course_type: 전공선택
-  track_ids:
-  - 호텔외식경영학과
-  prereq_ids: []
-  available_grades:
-  - 4
-  available_semesters:
-  - 8
-  tech_stacks: []
-- course_id: W020031
-  course_name: 단체급식경영론
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - 호텔외식경영학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 2
-  tech_stacks: []
-- course_id: W020032
-  course_name: 푸드스타일링
-  credits: 3
-  stage: industry
-  course_type: 전공선택
-  track_ids:
-  - 호텔외식경영학과
-  prereq_ids: []
-  available_grades:
-  - 4
-  available_semesters:
-  - 7
-  tech_stacks: []
-- course_id: W020036
-  course_name: 외식 R&D
-  credits: 3
-  stage: industry
-  course_type: 전공선택
-  track_ids:
-  - 호텔외식경영학과
-  prereq_ids: []
-  available_grades:
-  - 4
-  available_semesters:
-  - 8
-  tech_stacks: []
-- course_id: W020037
-  course_name: 창업아이템개발
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - 호텔외식경영학과
-  prereq_ids: []
-  available_grades:
-  - 3
-  available_semesters:
-  - 5
-  tech_stacks: []
-- course_id: W020039
-  course_name: 식음료서비스실무
-  credits: 3
-  stage: core
-  course_type: 전공필수
-  track_ids:
-  - 호텔외식경영학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 3
-  tech_stacks: []
-- course_id: W020040
-  course_name: 주방관리실무
-  credits: 3
-  stage: foundation
-  course_type: 전공필수
-  track_ids:
-  - 호텔외식경영학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 2
-  tech_stacks: []
-- course_id: W020041
-  course_name: 외식창업종합설계1
-  credits: 3
-  stage: application
-  course_type: 전공필수
-  track_ids:
-  - 호텔외식경영학과
-  prereq_ids: []
-  available_grades:
-  - 3
-  available_semesters:
-  - 6
-  tech_stacks: []
-- course_id: W020042
-  course_name: 외식온라인창업
-  credits: 3
-  stage: industry
-  course_type: 전공선택
-  track_ids:
-  - 호텔외식경영학과
-  prereq_ids: []
-  available_grades:
-  - 4
-  available_semesters:
-  - 7
-  tech_stacks: []
-- course_id: W020043
-  course_name: 외식데이터분석
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - 융합행정학과
-  - 호텔외식경영학과
-  prereq_ids: []
-  available_grades:
-  - 3
-  available_semesters:
-  - 6
-  tech_stacks: []
-- course_id: W020045
-  course_name: 외식마케팅원론
-  credits: 3
-  stage: core
-  course_type: 전공필수
-  track_ids:
-  - 호텔외식경영학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 4
-  tech_stacks: []
-- course_id: W020046
-  course_name: 외식상품개발론
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - 호텔외식경영학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 4
-  tech_stacks: []
-- course_id: W020047
-  course_name: 외식회계원리
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - 호텔외식경영학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 4
-  tech_stacks: []
-- course_id: W020050
-  course_name: 식생활과 건강
-  credits: 3
-  stage: industry
-  course_type: 전공선택
-  track_ids:
-  - 호텔외식경영학과
-  prereq_ids: []
-  available_grades:
-  - 4
-  available_semesters:
-  - 7
-  tech_stacks: []
-- course_id: W020051
-  course_name: 푸드필드종합설계
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - 호텔외식경영학과
-  prereq_ids: []
-  available_grades:
-  - 3
-  available_semesters:
-  - 5
-  tech_stacks: []
-- course_id: W020052
-  course_name: 외식경영원론
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - 호텔외식경영학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 1
-  tech_stacks: []
-- course_id: W020053
-  course_name: 외식위생관리론
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - 호텔외식경영학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 3
-  tech_stacks: []
-- course_id: W020054
-  course_name: 환대산업론
-  credits: 3
-  stage: application
-  course_type: 전공필수
-  track_ids:
-  - 호텔외식경영학과
-  prereq_ids: []
-  available_grades:
-  - 3
-  available_semesters:
-  - 5
-  tech_stacks: []
-- course_id: W020055
-  course_name: 프랜차이즈경영론
-  credits: 3
-  stage: application
-  course_type: 전공필수
-  track_ids:
-  - 호텔외식경영학과
-  prereq_ids:
-  - W020052
-  available_grades:
-  - 3
-  available_semesters:
-  - 5
-  tech_stacks: []
-- course_id: W020056
-  course_name: 외식창업종합설계2
-  credits: 3
-  stage: industry
-  course_type: 전공필수
-  track_ids:
-  - 호텔외식경영학과
-  prereq_ids: []
-  available_grades:
-  - 4
-  available_semesters:
-  - 7
-  tech_stacks: []
-- course_id: W020057
-  course_name: 외식인적자원관리
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - 호텔외식경영학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 2
-  tech_stacks: []
-- course_id: W020059
-  course_name: 외식시장조사론
-  credits: 3
-  stage: application
-  course_type: 전공필수
-  track_ids:
-  - 호텔외식경영학과
-  prereq_ids: []
-  available_grades:
-  - 3
-  available_semesters:
-  - 6
-  tech_stacks: []
-- course_id: W020060
-  course_name: 호텔경영원론
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - 호텔외식경영학과
-  prereq_ids:
-  - CTS0009
-  available_grades:
-  - 1
-  available_semesters:
-  - 1
-  tech_stacks: []
-- course_id: W020061
-  course_name: 연회기획설계
-  credits: 3
-  stage: industry
-  course_type: 전공선택
-  track_ids:
-  - 호텔외식경영학과
-  prereq_ids: []
-  available_grades:
-  - 4
-  available_semesters:
-  - 8
-  tech_stacks: []
-- course_id: W030001
-  course_name: 미용학개론
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 1
-  tech_stacks: []
-- course_id: W030002
-  course_name: 뷰티디자인
-  credits: 3
-  stage: foundation
-  course_type: 전공필수
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 1
-  tech_stacks: []
-- course_id: W030003
-  course_name: 뷰티트렌드
-  credits: 3
-  stage: foundation
-  course_type: 전공필수
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids:
-  - W030001
-  available_grades:
-  - 1
-  available_semesters:
-  - 1
-  tech_stacks: []
-- course_id: W030004
-  course_name: 뷰티이미지메이킹
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids:
-  - V070078
-  available_grades:
-  - 1
-  available_semesters:
-  - 1
-  tech_stacks: []
-- course_id: W030005
-  course_name: 커트기초실습
-  credits: 3
-  stage: foundation
-  course_type: 전공필수
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 2
-  tech_stacks: []
-- course_id: W030006
-  course_name: 메이크업기초
-  credits: 3
-  stage: foundation
-  course_type: 전공필수
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids:
-  - CTA0013
-  available_grades:
-  - 1
-  available_semesters:
-  - 2
-  tech_stacks: []
-- course_id: W030011
-  course_name: 네일뷰티디자인
-  credits: 3
-  stage: foundation
-  course_type: 전공필수
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids:
-  - W030002
-  available_grades:
-  - 1
-  available_semesters:
-  - 2
-  tech_stacks: []
-- course_id: W030014
-  course_name: 뷰티색채학
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids:
-  - W030016
-  - W030006
-  available_grades:
-  - 2
-  available_semesters:
-  - 3
-  tech_stacks: []
-- course_id: W030015
-  course_name: 뷰티기초실무Ⅰ
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 3
-  tech_stacks: []
-- course_id: W030016
-  course_name: 뷰티일러스트레이션
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids:
-  - W030006
-  available_grades:
-  - 2
-  available_semesters:
-  - 3
-  tech_stacks: []
-- course_id: W030017
-  course_name: 응용메이크업
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids:
-  - T030104
-  available_grades:
-  - 2
-  available_semesters:
-  - 4
-  tech_stacks: []
-- course_id: W030018
-  course_name: 기초헤어컬러
-  credits: 3
-  stage: core
-  course_type: 전공필수
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 4
-  tech_stacks: []
-- course_id: W030019
-  course_name: 뷰티기초실무Ⅱ
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 4
-  tech_stacks: []
-- course_id: W030020
-  course_name: 뷰티경영학
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 4
-  tech_stacks: []
-- course_id: W030021
-  course_name: 뷰티필드스터디1
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids: []
-  available_grades:
-  - 3
-  available_semesters:
-  - 5
-  tech_stacks: []
-- course_id: W030022
-  course_name: 기초에스테틱
-  credits: 3
-  stage: application
-  course_type: 전공필수
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids:
-  - W030026
-  available_grades:
-  - 3
-  available_semesters:
-  - 5
-  tech_stacks: []
-- course_id: W030023
-  course_name: 메이크업 아트
-  credits: 3
-  stage: application
-  course_type: 전공필수
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids:
-  - W030006
-  available_grades:
-  - 3
-  available_semesters:
-  - 5
-  tech_stacks: []
-- course_id: W030024
-  course_name: 공중보건과 안전위생
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids: []
-  available_grades:
-  - 3
-  available_semesters:
-  - 5
-  tech_stacks: []
-- course_id: W030026
-  course_name: 응용에스테틱
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids:
-  - W030022
-  available_grades:
-  - 3
-  available_semesters:
-  - 6
-  tech_stacks: []
-- course_id: W030028
-  course_name: 뷰티교육설계
-  credits: 3
-  stage: application
-  course_type: 전공필수
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids: []
-  available_grades:
-  - 3
-  available_semesters:
-  - 6
-  tech_stacks: []
-- course_id: W030029
-  course_name: 뷰티필드스터디3
-  credits: 3
-  stage: industry
-  course_type: 전공선택
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids:
-  - W030003
-  - W030004
-  - T030113
-  available_grades:
-  - 4
-  available_semesters:
-  - 7
-  tech_stacks: []
-- course_id: W030030
-  course_name: 뷰티교육콘텐츠
-  credits: 3
-  stage: industry
-  course_type: 전공선택
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids: []
-  available_grades:
-  - 4
-  available_semesters:
-  - 7
-  tech_stacks: []
-- course_id: W030031
-  course_name: 뷰티스타트업
-  credits: 3
-  stage: industry
-  course_type: 전공선택
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids: []
-  available_grades:
-  - 4
-  available_semesters:
-  - 7
-  tech_stacks: []
-- course_id: W030032
-  course_name: 뷰티캡스톤디자인
-  credits: 3
-  stage: industry
-  course_type: 전공필수
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids:
-  - W030006
-  - W030017
-  available_grades:
-  - 4
-  available_semesters:
-  - 7
-  tech_stacks: []
-- course_id: W030033
-  course_name: 뷰티필드스터디4
-  credits: 3
-  stage: industry
-  course_type: 전공선택
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids: []
-  available_grades:
-  - 4
-  available_semesters:
-  - 8
-  tech_stacks: []
-- course_id: W030034
-  course_name: 뷰티글로벌마케팅
-  credits: 3
-  stage: industry
-  course_type: 전공선택
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids: []
-  available_grades:
-  - 4
-  available_semesters:
-  - 8
-  tech_stacks: []
-- course_id: W030035
-  course_name: 두피모발과학
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids:
-  - W030001
-  available_grades:
-  - 2
-  available_semesters:
-  - 3
-  tech_stacks: []
-- course_id: W030037
-  course_name: 뷰티코스메틱의 이해
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids:
-  - W030003
-  available_grades:
-  - 3
-  available_semesters:
-  - 6
-  tech_stacks: []
-- course_id: W030038
-  course_name: 뷰티서비스실무론
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids:
-  - W030004
-  available_grades:
-  - 1
-  available_semesters:
-  - 2
-  tech_stacks: []
-- course_id: W030039
-  course_name: 뷰티필드스터디2(캡스톤디자인)
-  credits: 3
-  stage: application
-  course_type: 전공필수
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids: []
-  available_grades:
-  - 3
-  available_semesters:
-  - 6
-  tech_stacks: []
-- course_id: W040002
-  course_name: 문제해결방법론
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 1
-  tech_stacks: []
-- course_id: W040004
-  course_name: 조사방법론
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 1
-  tech_stacks: []
-- course_id: W040005
-  course_name: 프로세스혁신
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 2
-  tech_stacks: []
-- course_id: W040010
-  course_name: 리스크관리론
-  credits: 3
-  stage: foundation
-  course_type: 전공필수
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids:
-  - CTS0009
-  available_grades:
-  - 1
-  available_semesters:
-  - 2
-  tech_stacks: []
-- course_id: W040011
-  course_name: 지식재산권개론
-  credits: 3
-  stage: foundation
-  course_type: 전공필수
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 2
-  tech_stacks: []
-- course_id: W040012
-  course_name: 마케팅전략 컨설팅방법론
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids:
-  - W040039
-  - T010019
-  - CTS0009
-  available_grades:
-  - 3
-  available_semesters:
-  - 5
-  tech_stacks: []
-- course_id: W040013
-  course_name: 성과관리방법론
-  credits: 3
-  stage: application
-  course_type: 전공필수
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids: []
-  available_grades:
-  - 3
-  available_semesters:
-  - 5
-  tech_stacks: []
-- course_id: W040014
-  course_name: 기업진단방법론
-  credits: 3
-  stage: application
-  course_type: 전공필수
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids:
-  - W040025
-  available_grades:
-  - 3
-  available_semesters:
-  - 5
-  tech_stacks: []
-- course_id: W040015
-  course_name: 기업가치전략 컨설팅방법론
-  credits: 3
-  stage: application
-  course_type: 전공필수
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids: []
-  available_grades:
-  - 3
-  available_semesters:
-  - 6
-  tech_stacks: []
-- course_id: W040016
-  course_name: HRM&D 컨설팅방법론
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids:
-  - W040031
-  - W040026
-  available_grades:
-  - 3
-  available_semesters:
-  - 6
-  tech_stacks: []
-- course_id: W040018
-  course_name: 비즈니스 모델 컨설팅방법론
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids: []
-  available_grades:
-  - 3
-  available_semesters:
-  - 6
-  tech_stacks: []
-- course_id: W040020
-  course_name: 비즈니스프로세스
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 1
-  tech_stacks: []
-- course_id: W040022
-  course_name: 생산관리
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 3
-  tech_stacks: []
-- course_id: W040023
-  course_name: 기술경영
-  credits: 3
-  stage: core
-  course_type: 전공필수
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 3
-  tech_stacks:
-  - R
-- course_id: W040024
-  course_name: 기업진단 프로젝트 종합설계
-  credits: 3
-  stage: application
-  course_type: 전공필수
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids:
-  - W040038
-  - W040039
-  - W040014
-  available_grades:
-  - 3
-  available_semesters:
-  - 6
-  tech_stacks: []
-- course_id: W040025
-  course_name: 재무회계
-  credits: 3
-  stage: core
-  course_type: 전공필수
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 3
-  tech_stacks: []
-- course_id: W040026
-  course_name: 노사관계론과 노동법
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 4
-  tech_stacks: []
-- course_id: W040029
-  course_name: 경영전략수립 프로젝트 종합설계
-  credits: 3
-  stage: industry
-  course_type: 전공필수
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids:
-  - W040038
-  - W040039
-  - W040014
-  available_grades:
-  - 4
-  available_semesters:
-  - 7
-  tech_stacks: []
-- course_id: W040031
-  course_name: 인사관리
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 3
-  tech_stacks: []
-- course_id: W040032
-  course_name: 벤처창업 컨설팅실무
-  credits: 3
-  stage: industry
-  course_type: 전공선택
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids: []
-  available_grades:
-  - 4
-  available_semesters:
-  - 7
-  tech_stacks: []
-- course_id: W040033
-  course_name: 생산성혁신 컨설팅실무
-  credits: 3
-  stage: industry
-  course_type: 전공선택
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids:
-  - CTS0009
-  - W040022
-  - R010061
-  available_grades:
-  - 4
-  available_semesters:
-  - 7
-  tech_stacks:
-  - SIEM
-- course_id: W040034
-  course_name: 관리 및 원가회계
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids:
-  - W040025
-  available_grades:
-  - 2
-  available_semesters:
-  - 4
-  tech_stacks: []
-- course_id: W040038
-  course_name: 컨설팅개론
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 1
-  tech_stacks: []
-- course_id: W040039
-  course_name: 컨설팅방법론
-  credits: 3
-  stage: foundation
-  course_type: 전공필수
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 2
-  tech_stacks: []
-- course_id: W040041
-  course_name: ESG경영컨설팅방법론
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 4
-  tech_stacks: []
-- course_id: W040042
-  course_name: 재무회계시스템컨설팅실무
-  credits: 3
-  stage: industry
-  course_type: 전공선택
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids:
-  - W040025
-  available_grades:
-  - 4
-  available_semesters:
-  - 7
-  tech_stacks: []
-- course_id: W040043
-  course_name: 경영전략수립컨설팅방법론
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids: []
-  available_grades:
-  - 3
-  available_semesters:
-  - 6
-  tech_stacks: []
-- course_id: W040044
-  course_name: 중소기업법
-  credits: 3
-  stage: application
-  course_type: 전공필수
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids: []
-  available_grades:
-  - 3
-  available_semesters:
-  - 6
-  tech_stacks: []
-- course_id: W040045
-  course_name: 스마트물류 관리
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 4
-  tech_stacks: []
-- course_id: W040046
-  course_name: 기업세무컨설팅방법론
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - 비즈니스컨설팅학과
-  prereq_ids: []
-  available_grades:
-  - 3
-  available_semesters:
-  - 5
-  tech_stacks: []
-- course_id: W050002
-  course_name: 색채와 미디어
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 1
-  tech_stacks: []
-- course_id: W050006
-  course_name: 소비자심리와 디자인
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 1
-  tech_stacks: []
-- course_id: W050011
-  course_name: 디자인 역사와 문화
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 1
-  tech_stacks: []
-- course_id: W050013
-  course_name: 사용자경험 프로토타이핑
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 4
-  tech_stacks: []
-- course_id: W050014
-  course_name: 미디어스토리텔링디자인
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 4
-  tech_stacks: []
-- course_id: W050015
-  course_name: 브랜드전략
-  credits: 3
-  stage: core
-  course_type: 전공필수
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 4
-  tech_stacks: []
-- course_id: W050017
-  course_name: 소셜비즈니스마케팅
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 3
-  tech_stacks: []
-- course_id: W050019
-  course_name: 서비스경험디자인
-  credits: 3
-  stage: application
-  course_type: 전공필수
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids: []
-  available_grades:
-  - 3
-  available_semesters:
-  - 5
-  tech_stacks:
-  - GPT
-- course_id: W050022
-  course_name: UX디자인 사례분석
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids: []
-  available_grades:
-  - 3
-  available_semesters:
-  - 6
-  tech_stacks: []
-- course_id: W050023
-  course_name: 브랜드디자인
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids: []
-  available_grades:
-  - 3
-  available_semesters:
-  - 6
-  tech_stacks: []
-- course_id: W050024
-  course_name: 모션그래픽
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids: []
-  available_grades:
-  - 3
-  available_semesters:
-  - 6
-  tech_stacks: []
-- course_id: W050026
-  course_name: 레이아웃 디자인
-  credits: 3
-  stage: core
-  course_type: 전공필수
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids:
-  - CTA0017
-  - W050037
-  - T020061
-  available_grades:
-  - 2
-  available_semesters:
-  - 3
-  tech_stacks: []
-- course_id: W050027
-  course_name: 패키지디자인
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids:
-  - W050040
-  available_grades:
-  - 2
-  available_semesters:
-  - 3
-  tech_stacks: []
-- course_id: W050028
-  course_name: 3D컴퓨터그래픽
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids: []
-  available_grades:
-  - 3
-  available_semesters:
-  - 5
-  tech_stacks:
-  - Blender
-- course_id: W050029
-  course_name: 디자인 포트폴리오
-  credits: 3
-  stage: industry
-  course_type: 전공선택
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids: []
-  available_grades:
-  - 4
-  available_semesters:
-  - 7
-  tech_stacks: []
-- course_id: W050030
-  course_name: APP개발 종합설계
-  credits: 3
-  stage: industry
-  course_type: 전공선택
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids: []
-  available_grades:
-  - 4
-  available_semesters:
-  - 7
-  tech_stacks: []
-- course_id: W050034
-  course_name: 미디어융합프로젝트2
-  credits: 3
-  stage: industry
-  course_type: 전공선택
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids: []
-  available_grades:
-  - 4
-  available_semesters:
-  - 8
-  tech_stacks: []
-- course_id: W050035
-  course_name: 기초평면디자인
-  credits: 3
-  stage: foundation
-  course_type: 전공필수
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 1
-  tech_stacks: []
-- course_id: W050036
-  course_name: 2D컴퓨터그래픽
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 2
-  tech_stacks: []
-- course_id: W050037
-  course_name: 타이포그래피
-  credits: 3
-  stage: foundation
-  course_type: 전공필수
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 2
-  tech_stacks: []
-- course_id: W050038
-  course_name: 영상디자인기초
-  credits: 3
-  stage: core
-  course_type: 전공필수
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 3
-  tech_stacks: []
-- course_id: W050039
-  course_name: UX디자인 방법론
-  credits: 3
-  stage: application
-  course_type: 전공필수
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids:
-  - W050046
-  available_grades:
-  - 3
-  available_semesters:
-  - 5
-  tech_stacks: []
-- course_id: W050040
-  course_name: 기초입체디자인
-  credits: 3
-  stage: foundation
-  course_type: 전공필수
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids:
-  - W050027
-  available_grades:
-  - 1
-  available_semesters:
-  - 2
-  tech_stacks: []
-- course_id: W050041
-  course_name: 인포메이션디자인
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids: []
-  available_grades:
-  - 3
-  available_semesters:
-  - 6
-  tech_stacks: []
-- course_id: W050042
-  course_name: GUI
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 4
-  tech_stacks: []
-- course_id: W050043
-  course_name: 디자인 직업세계 탐색과 창업(캡스톤디자인)
-  credits: 3
-  stage: industry
-  course_type: 전공선택
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids: []
-  available_grades:
-  - 4
-  available_semesters:
-  - 8
-  tech_stacks: []
-- course_id: W050044
-  course_name: 편집디자인종합설계
-  credits: 3
-  stage: industry
-  course_type: 전공선택
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids:
-  - W050037
-  available_grades:
-  - 4
-  available_semesters:
-  - 8
-  tech_stacks: []
-- course_id: W050045
-  course_name: 디자인매니지먼트(캡스톤디자인)
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids: []
-  available_grades:
-  - 3
-  available_semesters:
-  - 5
-  tech_stacks: []
-- course_id: W050046
-  course_name: AI와 HCI
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids:
-  - CTA0016
-  available_grades:
-  - 1
-  available_semesters:
-  - 2
-  tech_stacks: []
-- course_id: W050047
-  course_name: 미디어융합프로젝트1(캡스톤디자인)
-  credits: 3
-  stage: industry
-  course_type: 전공선택
-  track_ids:
-  - ICT융합디자인학과
-  prereq_ids: []
-  available_grades:
-  - 4
-  available_semesters:
-  - 7
-  tech_stacks: []
-- course_id: W060001
-  course_name: 행정의 이론과 실제
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - 융합행정학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 1
-  tech_stacks: []
-- course_id: W060002
-  course_name: 법학 개론
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - 융합행정학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 1
-  tech_stacks: []
-- course_id: W060003
-  course_name: 민법총칙
-  credits: 3
-  stage: foundation
-  course_type: 전공필수
-  track_ids:
-  - 융합행정학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 1
-  tech_stacks: []
-- course_id: W060005
-  course_name: 법과 사회
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - 융합행정학과
-  prereq_ids:
-  - W060002
-  available_grades:
-  - 1
-  available_semesters:
-  - 2
-  tech_stacks: []
-- course_id: W060007
-  course_name: 기초행정통계론
-  credits: 3
-  stage: foundation
-  course_type: 전공필수
-  track_ids:
-  - 융합행정학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 2
-  tech_stacks: []
-- course_id: W060008
-  course_name: 행정사무실무
-  credits: 3
-  stage: foundation
-  course_type: 전공필수
-  track_ids:
-  - 융합행정학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 2
-  tech_stacks: []
-- course_id: W060011
-  course_name: 조직과 사회
-  credits: 3
-  stage: core
-  course_type: 전공필수
-  track_ids:
-  - 융합행정학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 3
-  tech_stacks: []
-- course_id: W060017
-  course_name: 행정구제실무
-  credits: 3
-  stage: core
-  course_type: 전공필수
-  track_ids:
-  - 융합행정학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 4
-  tech_stacks: []
-- course_id: W060019
-  course_name: 헌법의 이론과 실제
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - 융합행정학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 2
-  tech_stacks: []
-- course_id: W060024
-  course_name: 행정과 빅데이터
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - 융합행정학과
-  prereq_ids: []
-  available_grades:
-  - 3
-  available_semesters:
-  - 6
-  tech_stacks: []
-- course_id: W060028
-  course_name: 조직데이터 관리 프로젝트
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - 융합행정학과
-  prereq_ids:
-  - W060038
-  available_grades:
-  - 2
-  available_semesters:
-  - 4
-  tech_stacks: []
-- course_id: W060034
-  course_name: 법과 여성
-  credits: 3
-  stage: industry
-  course_type: 전공선택
-  track_ids:
-  - 융합행정학과
-  prereq_ids:
-  - W060002
-  - W060005
-  - W060003
-  available_grades:
-  - 4
-  available_semesters:
-  - 8
-  tech_stacks: []
-- course_id: W060036
-  course_name: 법과 사회 종합설계
-  credits: 3
-  stage: industry
-  course_type: 전공필수
-  track_ids:
-  - 융합행정학과
-  prereq_ids: []
-  available_grades:
-  - 4
-  available_semesters:
-  - 8
-  tech_stacks: []
-- course_id: W060037
-  course_name: 환경과 법
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - 융합행정학과
-  prereq_ids:
-  - W060048
-  - W060043
-  available_grades:
-  - 3
-  available_semesters:
-  - 6
-  tech_stacks: []
-- course_id: W060038
-  course_name: 데이터분석 개론
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - 융합행정학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 3
-  tech_stacks:
-  - Big Data
-- course_id: W060039
-  course_name: 사회보장법 실무
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - 융합행정학과
-  prereq_ids:
-  - W060019
-  - W060042
-  available_grades:
-  - 2
-  available_semesters:
-  - 4
-  tech_stacks: []
-- course_id: W060041
-  course_name: 정책학개론
-  credits: 3
-  stage: foundation
-  course_type: 전공필수
-  track_ids:
-  - 융합행정학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 1
-  tech_stacks: []
-- course_id: W060042
-  course_name: 헌법실무
-  credits: 3
-  stage: core
-  course_type: 전공필수
-  track_ids:
-  - 융합행정학과
-  prereq_ids:
-  - W060002
-  available_grades:
-  - 2
-  available_semesters:
-  - 3
-  tech_stacks: []
-- course_id: W060043
-  course_name: 지방자치와 법
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - 융합행정학과
-  prereq_ids:
-  - W060048
-  available_grades:
-  - 3
-  available_semesters:
-  - 5
-  tech_stacks: []
-- course_id: W060044
-  course_name: 공법실무
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - 융합행정학과
-  prereq_ids:
-  - W060019
-  - W060042
-  available_grades:
-  - 3
-  available_semesters:
-  - 6
-  tech_stacks: []
-- course_id: W060045
-  course_name: 행정조사방법론
-  credits: 3
-  stage: core
-  course_type: 전공필수
-  track_ids:
-  - 융합행정학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 4
-  tech_stacks: []
-- course_id: W060046
-  course_name: 인사행정론
-  credits: 3
-  stage: industry
-  course_type: 전공선택
-  track_ids:
-  - 융합행정학과
-  prereq_ids:
-  - W060001
-  available_grades:
-  - 4
-  available_semesters:
-  - 7
-  tech_stacks: []
-- course_id: W060048
-  course_name: 행정법1
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - 융합행정학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 3
-  tech_stacks: []
-- course_id: W060050
-  course_name: 조직행동의 이해
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - 융합행정학과
-  prereq_ids:
-  - W060011
-  available_grades:
-  - 3
-  available_semesters:
-  - 5
-  tech_stacks: []
-- course_id: W060051
-  course_name: 행정법2
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - 융합행정학과
-  prereq_ids:
-  - W060048
-  available_grades:
-  - 3
-  available_semesters:
-  - 5
-  tech_stacks: []
-- course_id: W060052
-  course_name: 노동법
-  credits: 3
-  stage: industry
-  course_type: 전공선택
-  track_ids:
-  - 융합행정학과
-  prereq_ids:
-  - W060002
-  - W060005
-  available_grades:
-  - 4
-  available_semesters:
-  - 7
-  tech_stacks: []
-- course_id: W060053
-  course_name: 정부프로젝트관리 종합설계
-  credits: 3
-  stage: industry
-  course_type: 전공선택
-  track_ids:
-  - 융합행정학과
-  prereq_ids: []
-  available_grades:
-  - 4
-  available_semesters:
-  - 8
-  tech_stacks: []
-- course_id: W060054
-  course_name: 공공정책세미나
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - 융합행정학과
-  prereq_ids:
-  - W060011
-  available_grades:
-  - 3
-  available_semesters:
-  - 6
-  tech_stacks: []
-- course_id: W060055
-  course_name: 정부와 재정
-  credits: 3
-  stage: industry
-  course_type: 전공선택
-  track_ids:
-  - 융합행정학과
-  prereq_ids:
-  - W060001
-  available_grades:
-  - 4
-  available_semesters:
-  - 7
-  tech_stacks: []
-- course_id: W060056
-  course_name: 전략적 성과관리
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - 융합행정학과
-  prereq_ids: []
-  available_grades:
-  - 3
-  available_semesters:
-  - 5
-  tech_stacks: []
-- course_id: W060057
-  course_name: 경영정보시각화 Tableau(프리인턴십)
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - 융합행정학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 3
-  tech_stacks:
-  - Tableau
-- course_id: W080001
-  course_name: 인공지능기초
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - AIㆍ소프트웨어학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 1
-  tech_stacks:
-  - Deep Learning
-  - Machine Learning
-- course_id: W080002
-  course_name: 파이썬 프로그래밍
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - AIㆍ소프트웨어학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 1
-  tech_stacks:
-  - Machine Learning
-  - Python
-- course_id: W080003
-  course_name: AI를 위한 기초수학Ⅱ
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - AIㆍ소프트웨어학과
-  prereq_ids:
-  - W080016
-  available_grades:
-  - 2
-  available_semesters:
-  - 3
-  tech_stacks:
-  - Python
-- course_id: W080004
-  course_name: 데이터마이닝
-  credits: 3
-  stage: core
-  course_type: 전공필수
-  track_ids:
-  - AIㆍ소프트웨어학과
-  prereq_ids:
-  - V022006
-  available_grades:
-  - 2
-  available_semesters:
-  - 3
-  tech_stacks:
-  - Python
-- course_id: W080008
-  course_name: AI 융합 캡스톤디자인
-  credits: 3
-  stage: industry
-  course_type: 전공필수
-  track_ids:
-  - AIㆍ소프트웨어학과
-  prereq_ids: []
-  available_grades:
-  - 4
-  available_semesters:
-  - 7
-  tech_stacks: []
-- course_id: W080010
-  course_name: 생성형 AI의 이해와 활용
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - AIㆍ소프트웨어학과
-  prereq_ids: []
-  available_grades:
-  - 2
-  available_semesters:
-  - 4
-  tech_stacks: []
-- course_id: W080012
-  course_name: 웹프로그래밍
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - AIㆍ소프트웨어학과
-  prereq_ids:
-  - CTE0002
-  available_grades:
-  - 1
-  available_semesters:
-  - 2
-  tech_stacks: []
-- course_id: W080013
-  course_name: 컴퓨터구조
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - AIㆍ소프트웨어학과
-  prereq_ids:
-  - Y030005
-  available_grades:
-  - 1
-  available_semesters:
-  - 1
-  tech_stacks: []
-- course_id: W080015
-  course_name: C프로그래밍
-  credits: 3
-  stage: foundation
-  course_type: 전공필수
-  track_ids:
-  - AIㆍ소프트웨어학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 2
-  tech_stacks: []
-- course_id: W080016
-  course_name: AI를 위한 기초수학Ⅰ
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - AIㆍ소프트웨어학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 2
-  tech_stacks: []
-- course_id: W080019
-  course_name: 객체지향프로그래밍
-  credits: 3
-  stage: core
-  course_type: 전공필수
-  track_ids:
-  - AIㆍ소프트웨어학과
-  prereq_ids:
-  - W080015
-  - W080002
-  available_grades:
-  - 2
-  available_semesters:
-  - 3
-  tech_stacks:
-  - C
-  - Java
-  - Python
-- course_id: W080020
-  course_name: 운영체제
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - AIㆍ소프트웨어학과
-  prereq_ids:
-  - W080013
-  - Y040010
-  available_grades:
-  - 2
-  available_semesters:
-  - 3
-  tech_stacks:
-  - Ubuntu
-- course_id: W080021
-  course_name: 자료구조 및 알고리즘
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - AIㆍ소프트웨어학과
-  prereq_ids:
-  - W080015
-  - W080016
-  available_grades:
-  - 2
-  available_semesters:
-  - 4
-  tech_stacks: []
-- course_id: W080023
-  course_name: 데이터베이스
-  credits: 3
-  stage: core
-  course_type: 전공필수
-  track_ids:
-  - AIㆍ소프트웨어학과
-  prereq_ids:
-  - CTE0001
-  - V020002
-  available_grades:
-  - 2
-  available_semesters:
-  - 4
-  tech_stacks: []
-- course_id: W080024
-  course_name: 데이터통신
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - AIㆍ소프트웨어학과
-  prereq_ids:
-  - V031013
-  available_grades:
-  - 1
-  available_semesters:
-  - 1
-  tech_stacks: []
-- course_id: W080025
-  course_name: 데이터사이언스 프로그래밍
-  credits: 3
-  stage: application
-  course_type: 전공필수
-  track_ids:
-  - AIㆍ소프트웨어학과
-  prereq_ids: []
-  available_grades:
-  - 3
-  available_semesters:
-  - 5
-  tech_stacks:
-  - Machine Learning
-  - Pandas
-  - Python
-- course_id: W080026
-  course_name: 머신러닝과 딥러닝
-  credits: 3
-  stage: application
-  course_type: 전공필수
-  track_ids:
-  - AIㆍ소프트웨어학과
-  prereq_ids:
-  - W080002
-  available_grades:
-  - 3
-  available_semesters:
-  - 5
-  tech_stacks:
-  - Deep Learning
-  - Machine Learning
-  - Python
-- course_id: W080027
-  course_name: 웹프레임워크2
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - AIㆍ소프트웨어학과
-  prereq_ids:
-  - V020007
-  - V024004
-  - W080029
-  available_grades:
-  - 3
-  available_semesters:
-  - 5
-  tech_stacks:
-  - CSS
-  - JPA
-  - Java
-  - JavaScript
-  - Node.js
-  - REST
-  - React
-  - Spring
-  - Spring Boot
-  - Vite
-  - iOS
-- course_id: W080028
-  course_name: 소프트웨어공학
-  credits: 3
-  stage: application
-  course_type: 전공필수
-  track_ids:
-  - AIㆍ소프트웨어학과
-  prereq_ids:
-  - V020001
-  - V020007
-  available_grades:
-  - 3
-  available_semesters:
-  - 5
-  tech_stacks:
-  - Java
-- course_id: W080029
-  course_name: 웹프레임워크1
-  credits: 3
-  stage: core
-  course_type: 전공선택
-  track_ids:
-  - AIㆍ소프트웨어학과
-  prereq_ids:
-  - CTE0002
-  - W080012
-  - V024004
-  available_grades:
-  - 2
-  available_semesters:
-  - 4
-  tech_stacks: []
-- course_id: W080030
-  course_name: 자연어처리
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - AIㆍ소프트웨어학과
-  prereq_ids:
-  - Y030002
-  - Y050021
-  - Y030018
-  - Y030013
-  available_grades:
-  - 3
-  available_semesters:
-  - 6
-  tech_stacks: []
-- course_id: W080031
-  course_name: 컴퓨터비전
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - AIㆍ소프트웨어학과
-  prereq_ids:
-  - W080016
-  available_grades:
-  - 3
-  available_semesters:
-  - 6
-  tech_stacks: []
-- course_id: W080032
-  course_name: 모바일 프로그래밍
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - AIㆍ소프트웨어학과
-  prereq_ids:
-  - Y040005
-  - Y040009
-  available_grades:
-  - 3
-  available_semesters:
-  - 6
-  tech_stacks: []
-- course_id: W080033
-  course_name: 오픈소스소프트웨어
-  credits: 3
-  stage: application
-  course_type: 전공필수
-  track_ids:
-  - AIㆍ소프트웨어학과
-  prereq_ids:
-  - CTE0002
-  available_grades:
-  - 3
-  available_semesters:
-  - 6
-  tech_stacks: []
-- course_id: W080034
-  course_name: NVIDIA DLI(프리인턴십)
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - AIㆍ소프트웨어학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 1
-  tech_stacks: []
-- course_id: W080035
-  course_name: 데이터사이언스기초
-  credits: 3
-  stage: foundation
-  course_type: 전공선택
-  track_ids:
-  - AIㆍ소프트웨어학과
-  prereq_ids: []
-  available_grades:
-  - 1
-  available_semesters:
-  - 2
-  tech_stacks: []
-- course_id: W520020
-  course_name: 뷰티 사진
-  credits: 3
-  stage: industry
-  course_type: 전공선택
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids: []
-  available_grades:
-  - 4
-  available_semesters:
-  - 8
-  tech_stacks: []
-- course_id: W520033
-  course_name: 뷰티이커머스마케팅
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids: []
-  available_grades:
-  - 3
-  available_semesters:
-  - 6
-  tech_stacks: []
-- course_id: W520034
-  course_name: 뷰티소셜미디어
-  credits: 3
-  stage: application
-  course_type: 전공선택
-  track_ids:
-  - 뷰티디자인학과
-  prereq_ids: []
-  available_grades:
-  - 3
-  available_semesters:
-  - 5
-  tech_stacks: []
 - course_id: Y020001
   course_name: 문화콘텐츠의 이해
   credits: 3
@@ -12252,8 +9764,7 @@ courses:
   course_type: 전공필수
   track_ids:
   - AI응용학과
-  prereq_ids:
-  - W080016
+  prereq_ids: []
   available_grades:
   - 2
   available_semesters:
@@ -12331,7 +9842,6 @@ courses:
   - AI응용학과
   prereq_ids:
   - Y030008
-  - W080002
   available_grades:
   - 2
   available_semesters:
@@ -12389,7 +9899,6 @@ courses:
   - AI응용학과
   prereq_ids:
   - Y030002
-  - W080002
   available_grades:
   - 2
   available_semesters:
@@ -12486,8 +9995,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - AI응용학과
-  prereq_ids:
-  - W080016
+  prereq_ids: []
   available_grades:
   - 3
   available_semesters:
@@ -12547,7 +10055,7 @@ courses:
   track_ids:
   - AI응용학과
   prereq_ids:
-  - W080024
+  - V020008
   available_grades:
   - 4
   available_semesters:
@@ -12561,7 +10069,6 @@ courses:
   track_ids:
   - AI응용학과
   prereq_ids:
-  - W080002
   - Y030002
   - Y030013
   - Y030018
@@ -12616,8 +10123,7 @@ courses:
   course_type: 전공필수
   track_ids:
   - AI응용학과
-  prereq_ids:
-  - W080008
+  prereq_ids: []
   available_grades:
   - 4
   available_semesters:
@@ -12648,7 +10154,6 @@ courses:
   track_ids:
   - AI응용학과
   prereq_ids:
-  - W080016
   - V022009
   - Y030018
   available_grades:
@@ -12676,8 +10181,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - AI응용학과
-  prereq_ids:
-  - W080016
+  prereq_ids: []
   available_grades:
   - 4
   available_semesters:
@@ -12852,7 +10356,6 @@ courses:
   track_ids:
   - 융합보안학과
   prereq_ids:
-  - W040002
   - V030052
   - Y040005
   available_grades:
@@ -12869,7 +10372,7 @@ courses:
   track_ids:
   - 융합보안학과
   prereq_ids:
-  - W080015
+  - Y030008
   available_grades:
   - 2
   available_semesters:
@@ -12899,7 +10402,7 @@ courses:
   track_ids:
   - 융합보안학과
   prereq_ids:
-  - W080015
+  - Y030008
   available_grades:
   - 2
   available_semesters:
@@ -12999,7 +10502,7 @@ courses:
   track_ids:
   - 융합보안학과
   prereq_ids:
-  - W080015
+  - Y030008
   available_grades:
   - 3
   available_semesters:
@@ -13069,7 +10572,7 @@ courses:
   track_ids:
   - 융합보안학과
   prereq_ids:
-  - W080015
+  - Y030008
   available_grades:
   - 3
   available_semesters:
@@ -13452,7 +10955,6 @@ courses:
   - 미래모빌리티학과
   prereq_ids:
   - Y050003
-  - W080016
   available_grades:
   - 2
   available_semesters:

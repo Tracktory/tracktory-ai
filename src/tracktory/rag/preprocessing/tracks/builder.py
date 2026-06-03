@@ -4,6 +4,19 @@ import json
 import os
 from typing import Any
 
+# 추천·RAG·카탈로그에서 영구 제외할 단과대. 계약학과(미래플러스대학)는 일반 전공
+# 추천 대상이 아니므로 전처리 단계에서부터 산출물을 생성하지 않는다. 다른 단과대를
+# 추가로 빼야 하면 이 튜플에만 단과대명(접두사)을 추가하면 전 경로에 반영된다.
+EXCLUDED_COLLEGES: tuple[str, ...] = ("미래플러스대학",)
+
+
+def is_excluded_college(college: str | None) -> bool:
+    """제외 단과대 여부. ``미래플러스대학(계약학과)`` 처럼 접미사가 붙는 표기를 흡수하려 prefix 매칭한다."""
+    if not college:
+        return False
+    return any(college.startswith(prefix) for prefix in EXCLUDED_COLLEGES)
+
+
 _SECTION_ORDER: list[tuple[str, str]] = [
     ("소개", "소개"),
     ("교육목표", "교육목표"),
@@ -46,6 +59,22 @@ def _normalize_name(name: str) -> str:
     return name.replace("ㆍ", "·")
 
 
+def safe_filename_part(name: str) -> str:
+    """파일명에 못 쓰는 구분자(`/`, 가운뎃점류)를 `_` 로 치환."""
+    return name.replace("/", "_").replace("ㆍ", "_").replace("·", "_")
+
+
+def doc_filename(prefix: str, track_name: str, department: str) -> str:
+    """전처리 산출물 파일명 단일 규칙: ``{prefix}_{트랙}_{학부}.txt`` (학부 없으면 트랙만).
+
+    트랙소개·교육과정·스킵 제거가 모두 이 규칙을 공유해야 재실행 시 stale orphan 이
+    남지 않는다. 학부는 college_map 에 트랙이 있을 때만 채워지며, 없으면 트랙명만 쓴다.
+    """
+    stem = safe_filename_part(track_name)
+    dept = safe_filename_part(department.strip()) if department else ""
+    return f"{prefix}_{stem}_{dept}.txt" if dept else f"{prefix}_{stem}.txt"
+
+
 def build_document(
     track_name: str,
     sections: dict[str, str],
@@ -85,8 +114,9 @@ def build_all(
         college_info = college_map.get(track_name, {"college": "한성대학교", "department": ""})
         doc_text = build_document(track_name, sections, college_info)
 
-        safe_name = track_name.replace("/", "_").replace("ㆍ", "_").replace("·", "_")
-        file_path = os.path.join(output_dir, f"트랙소개_{safe_name}.txt")
+        file_path = os.path.join(
+            output_dir, doc_filename("트랙소개", track_name, college_info.get("department", ""))
+        )
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(doc_text)
 

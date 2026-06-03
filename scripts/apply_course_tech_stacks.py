@@ -77,9 +77,13 @@ def main() -> None:
     if not args.write:
         raise SystemExit("pass --write to modify courses.yaml, or --dry-run to inspect only")
 
+    # 카탈로그 생성기가 CRLF 로 산출하므로 같은 줄바꿈으로 되써야 한다. LF 로
+    # 쓰면 토큰 몇 줄만 바뀌어도 전 줄이 diff 로 잡혀 (CRLF↔LF) 리뷰 불가 +
+    # 다음 카탈로그 재생성 때 도로 뒤집히는 churn 이 난다.
     args.courses_yaml.write_text(
         yaml.safe_dump(catalog, allow_unicode=True, sort_keys=False),
         encoding="utf-8",
+        newline="\r\n",
     )
     print(f"updated: {args.courses_yaml}")
 
