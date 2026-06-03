@@ -11,7 +11,9 @@
 
 충족도 정의:
     - current  = target ∩ (이수 과목 기술 토큰)
-    - expected = target ∩ (이수 과목 + 추천 로드맵 과목 기술 토큰)
+    - expected = target ∩ (이수 과목 + 추천 로드맵 과목 전체 기술 토큰)
+    - next_actions = target ∩ (이수 과목 + 다음 액션 shortlist 과목 토큰)
+      (합집합 — 노출한 shortlist 만 이수했을 때 도달. current <= next_actions <= expected)
     - 과목별 기여 = (target ∩ 과목 토큰) - current  (현재 미충족분 중 새로 덮는 분)
 
 부작용 격리:
@@ -104,6 +106,8 @@ def compute_coverage(
 
     Returns:
         ``CoverageAnalysis``. 비율 필드는 [0, 1], 목표 토큰 부재 시 모두 0.0.
+        ``next_actions_ratio`` 는 노출한 다음 액션 과목까지 이수했을 때의 합집합
+        도달 충족도로 ``current_ratio <= next_actions_ratio <= expected_ratio``.
     """
     target_display = _token_display_map([token for job in jobs for token in _job_tokens(job)])
     target_keys = set(target_display)
@@ -149,12 +153,26 @@ def compute_coverage(
         if contribution.contribution_ratio > 0.0
     ][:_MAX_NEXT_ACTIONS]
 
+    # 노출한 다음 액션 과목을 모두 이수했을 때 도달하는 충족도. 과목별
+    # contribution_ratio 는 토큰이 겹치면 합이 (expected - current) 를 넘으므로,
+    # "이 N개 이수 시 도달" 표기는 합집합으로 따로 계산해 over-claim 을 막는다.
+    next_action_ids = {action.course_id for action in next_actions}
+    next_action_keys = {
+        key
+        for course_id, _name, keys in course_keys
+        if course_id in next_action_ids
+        for key in keys & target_keys
+    }
+    next_actions_reachable = current_keys | next_action_keys
+
     return CoverageAnalysis(
         required_count=required_count,
         current_covered=len(current_keys),
         expected_covered=len(expected_keys),
         current_ratio=len(current_keys) / required_count,
         expected_ratio=len(expected_keys) / required_count,
+        next_actions_covered=len(next_actions_reachable),
+        next_actions_ratio=len(next_actions_reachable) / required_count,
         jobs=jobs_coverage,
         course_contributions=contributions,
         next_actions=next_actions,

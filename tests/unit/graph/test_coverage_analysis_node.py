@@ -218,6 +218,8 @@ def test_empty_target_returns_empty_analysis() -> None:
     assert analysis.jobs == []
     assert analysis.course_contributions == []
     assert analysis.next_actions == []
+    assert analysis.next_actions_covered == 0
+    assert analysis.next_actions_ratio == pytest.approx(0.0)
 
 
 def test_competency_tags_included_in_target() -> None:
@@ -233,6 +235,47 @@ def test_competency_tags_included_in_target() -> None:
     )
     assert analysis.required_count == 2  # MySQL + 문제해결능력
     assert analysis.expected_covered == 1  # 문제해결능력만 로드맵으로 도달
+
+
+def test_next_actions_ratio_is_union_not_sum_of_contributions() -> None:
+    """다음 액션 과목을 모두 이수했을 때 도달 충족도는 합집합(중복 제거)이다.
+
+    과목별 독립 기여의 합과 달리, 토큰이 겹치면 합집합이 작아 over-claim 을 막는다.
+    """
+    jobs = [_job("be", tech_stacks=["A", "B", "C", "D"])]
+    index = {"c1": ["A", "B"], "c2": ["B", "C"], "c3": ["D"]}
+
+    analysis = compute_coverage(
+        jobs,
+        completed_course_names=[],
+        roadmap_courses=[("ID1", "c1"), ("ID2", "c2"), ("ID3", "c3")],
+        course_tech_index=index,
+    )
+
+    # 독립 기여 합 = 2/4 + 2/4 + 1/4 = 1.25 (>1) — 토큰 B 중복 때문
+    assert sum(a.contribution_ratio for a in analysis.next_actions) > 1.0
+    # 합집합 {A, B, C, D} → 4/4
+    assert analysis.next_actions_covered == 4
+    assert analysis.next_actions_ratio == pytest.approx(1.0)
+    # 불변: current <= next_actions <= expected
+    assert analysis.current_ratio <= analysis.next_actions_ratio <= analysis.expected_ratio
+
+
+def test_next_actions_ratio_equals_current_when_no_contributing_courses() -> None:
+    """기여 과목이 없으면 다음 액션 도달 충족도는 현재 충족도와 같다."""
+    jobs = [_job("be", tech_stacks=["MySQL", "Docker"])]
+    index = {"데이터베이스": ["MySQL"], "교양글쓰기": ["무관기술"]}
+
+    analysis = compute_coverage(
+        jobs,
+        completed_course_names=["데이터베이스"],  # 현재 MySQL 충족
+        roadmap_courses=[("GE", "교양글쓰기")],  # 목표와 무관 → 기여 0
+        course_tech_index=index,
+    )
+
+    assert analysis.next_actions == []
+    assert analysis.next_actions_covered == analysis.current_covered == 1
+    assert analysis.next_actions_ratio == pytest.approx(analysis.current_ratio)
 
 
 # ---------------------------------------------------------------------------
@@ -321,6 +364,8 @@ def test_node_returns_coverage_analysis_with_ok_trace(tmp_path: Path) -> None:
     assert analysis["expected_ratio"] == pytest.approx(1.0)
     assert analysis["course_contributions"][0]["course_id"] == "OPS"
     assert analysis["next_actions"][0]["course_id"] == "OPS"
+    assert analysis["next_actions_covered"] == 2
+    assert analysis["next_actions_ratio"] == pytest.approx(1.0)
     assert analysis["jobs"][0]["job_id"] == "be"
 
 

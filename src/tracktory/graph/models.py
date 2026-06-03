@@ -448,7 +448,10 @@ class NextActionSuggestion(BaseModel):
     Attributes:
         course_id: 제안 과목 식별자.
         course_name: 사용자 표시용 과목명.
-        contribution_ratio: 이 과목 이수 시 전체 충족도 증가분 ([0, 1]).
+        contribution_ratio: 이 과목을 *단독으로* 이수했을 때의 독립 충족도 증가분 ([0, 1]).
+            토큰이 겹치면 여러 과목의 값이 같은 토큰을 각자 세므로 합이 실제 누적
+            증가분을 넘을 수 있다. 표시 shortlist 전체를 이수했을 때의 누적 도달은
+            ``CoverageAnalysis.next_actions_ratio`` 를 쓴다 (합집합으로 중복 제거).
         message: 사용자 표시용 제안 문구.
     """
 
@@ -475,6 +478,12 @@ class CoverageAnalysis(BaseModel):
         expected_covered: 추천 로드맵 이수 후 덮게 되는 목표 토큰 수.
         current_ratio: ``current_covered / required_count`` ([0, 1]). 분모 0 이면 0.0.
         expected_ratio: ``expected_covered / required_count`` ([0, 1]). 분모 0 이면 0.0.
+        next_actions_covered: 다음 액션(``next_actions`` 에 노출된 shortlist) 과목까지
+            이수했을 때 덮는 목표 토큰 수. 합집합으로 계산해 ``current_covered <=
+            next_actions_covered <= expected_covered`` 를 만족한다.
+        next_actions_ratio: ``next_actions_covered / required_count`` ([0, 1]). 분모 0 이면 0.0.
+            "다음 N개 과목 이수 시 도달 충족도" 표기의 근거. 과목별 ``contribution_ratio``
+            의 합과 달리 토큰 중복을 합집합으로 제거해 over-claim 을 막는다.
         jobs: 분야(추천 직무)별 현재/예상 충족도.
         course_contributions: 잔여(추천) 과목별 충족도 기여도.
         next_actions: 추천 기반 다음 액션 (기여도 상위 과목).
@@ -486,6 +495,8 @@ class CoverageAnalysis(BaseModel):
     expected_covered: int = Field(..., ge=0)
     current_ratio: float = Field(..., ge=0.0, le=1.0)
     expected_ratio: float = Field(..., ge=0.0, le=1.0)
+    next_actions_covered: int = Field(default=0, ge=0)
+    next_actions_ratio: float = Field(default=0.0, ge=0.0, le=1.0)
     jobs: list[JobCoverage] = Field(default_factory=list)
     course_contributions: list[CourseCoverageContribution] = Field(default_factory=list)
     next_actions: list[NextActionSuggestion] = Field(default_factory=list)

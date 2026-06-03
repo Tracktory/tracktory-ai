@@ -24,6 +24,8 @@ def test_coverage_analysis_accepts_valid_payload() -> None:
         expected_covered=3,
         current_ratio=0.25,
         expected_ratio=0.75,
+        next_actions_covered=2,
+        next_actions_ratio=0.5,
         jobs=[
             JobCoverage(
                 job_id="be",
@@ -58,6 +60,7 @@ def test_coverage_analysis_accepts_valid_payload() -> None:
     assert analysis.current_ratio == pytest.approx(0.25)
     assert analysis.jobs[0].missing_tokens == ["Docker"]
     assert analysis.next_actions[0].course_id == "c1"
+    assert analysis.next_actions_ratio == pytest.approx(0.5)
 
 
 def test_coverage_analysis_defaults_lists_empty() -> None:
@@ -73,6 +76,8 @@ def test_coverage_analysis_defaults_lists_empty() -> None:
     assert analysis.course_contributions == []
     assert analysis.next_actions == []
     assert analysis.gap_tokens == []
+    assert analysis.next_actions_covered == 0
+    assert analysis.next_actions_ratio == 0.0
 
 
 @pytest.mark.parametrize("ratio", [-0.01, 1.01, 2.0])
