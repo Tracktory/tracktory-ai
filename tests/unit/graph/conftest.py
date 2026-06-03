@@ -12,6 +12,7 @@ from typing import Any
 
 import numpy as np
 import pytest
+import yaml
 
 from tracktory.graph.models import (
     Course,
@@ -175,6 +176,25 @@ def real_category_mapping_path() -> Path:
         / "config"
         / "category_to_jobs.yaml"
     )
+
+
+@pytest.fixture
+def tmp_course_catalog_path(tmp_path: Path) -> Path:
+    """이수 과목 → 기술 토큰 색인용 소형 ``courses.yaml`` fixture.
+
+    실 카탈로그 (대용량 · 기술 토큰 미부착) 대신 부스팅 경로 검증에 필요한
+    최소 과목만 담아, 노드 생성 비용을 줄이고 이름 → 토큰 다리를 결정적으로
+    통제한다. "자료구조" 과목이 같은 표기의 기술 토큰을 가지므로 직무
+    ``tech_stacks=["자료구조"]`` 와 정규 키로 매칭된다.
+    """
+    path = tmp_path / "courses.yaml"
+    catalog = {
+        "courses": [
+            {"course_id": "DS", "course_name": "자료구조", "tech_stacks": ["자료구조"]},
+        ]
+    }
+    path.write_text(yaml.safe_dump(catalog, allow_unicode=True), encoding="utf-8")
+    return path
 
 
 # ---------------------------------------------------------------------------

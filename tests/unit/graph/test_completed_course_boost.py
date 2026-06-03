@@ -1,7 +1,10 @@
 """``_apply_completed_course_boost`` 순수 헬퍼 단위 테스트.
 
 부스팅 공식 ``boost = weight · |completed ∩ job_tokens| / |job_tokens|`` 의
-정확한 가산량·재정렬·경계 조건을 외부 I/O 없이 검증한다.
+정확한 가산량·재정렬·경계 조건을 외부 I/O 없이 검증한다. 교집합은 이수 과목
+기술 토큰과 직무 토큰을 모두 정규 키 (별칭·대소문자 흡수) 로 환산한 뒤 계산
+하므로, "자바" 와 "Java" 처럼 표기만 다른 기술이 같은 토큰으로 매칭되는지도
+함께 검증한다. 두 번째 인자는 과목 이름이 아니라 환산된 기술 토큰이다.
 """
 
 from __future__ import annotations
@@ -85,6 +88,21 @@ def test_token_match_is_case_insensitive() -> None:
     cand = _candidate("x", score=0.5, tech_stacks=["Python"], competency_tags=[])
     result = _apply_completed_course_boost([cand], ["  python  "], weight=0.2)
     assert result[0].match_score == pytest.approx(0.7)
+
+
+def test_alias_aligned_token_boosts_canonical_job_token() -> None:
+    """별칭 표기 "자바" 가 직무의 정규 표기 "Java" 와 같은 정규 키로 매칭된다."""
+    cand = _candidate("x", score=0.5, tech_stacks=["Java"], competency_tags=[])
+    result = _apply_completed_course_boost([cand], ["자바"], weight=0.2)
+    # 정규 키 매칭 → overlap_ratio = 1.0 → boost = 0.2
+    assert result[0].match_score == pytest.approx(0.7)
+
+
+def test_unrelated_token_yields_no_boost() -> None:
+    """직무 어휘와 무관한 토큰은 정규 키 교집합이 비어 점수를 바꾸지 않는다."""
+    cand = _candidate("x", score=0.5, tech_stacks=["Java"], competency_tags=[])
+    result = _apply_completed_course_boost([cand], ["회계"], weight=0.2)
+    assert result[0].match_score == pytest.approx(0.5)
 
 
 def test_empty_job_tokens_yields_zero_boost() -> None:
