@@ -1,10 +1,10 @@
 """추천 파이프라인 그래프 조립 + 컴파일 진입점.
 
-여섯 개 노드 (입력 정규화 / 프로필 직렬화 / 직무 매칭 / 트랙 시너지 /
-학습 로드맵 / 자연어 설명) 를 단일 ``StateGraph`` 로 묶어 사용자 요청
-단위로 호출 가능한 컴파일된 그래프를 반환한다. 외부 검색 / 저장소 / LLM
-의존성은 ``PipelineClients`` 로 주입되어 운영용과 테스트용을 교체할 수
-있다.
+일곱 개 노드 (입력 정규화 / 프로필 직렬화 / 직무 매칭 / 트랙 시너지 /
+학습 로드맵 / 역량 커버리지 분석 / 자연어 설명) 를 단일 ``StateGraph`` 로
+묶어 사용자 요청 단위로 호출 가능한 컴파일된 그래프를 반환한다. 외부 검색 /
+저장소 / LLM 의존성은 ``PipelineClients`` 로 주입되어 운영용과 테스트용을
+교체할 수 있다.
 
 토폴로지::
 
@@ -17,8 +17,13 @@
       → job_matching
       → track_synergy
       → roadmap
+      → coverage_analysis
       → llm_explanation
       → END
+
+역량 커버리지 분석은 직무(목표 토큰)·로드맵(잔여 과목)·이수 과목이 모두
+채워진 뒤에야 충족도를 계산할 수 있으므로 로드맵 다음에 둔다. 자연어 설명은
+표현 변환 단계라 토폴로지의 종단을 유지한다.
 
 조건부 라우팅은 입력 정규화 직후 한 번만 두어 검증 실패를 안전하게
 종료시킨다. 후속 노드들은 각자 ``state.get(...)`` 부재 시 조용히 skip
@@ -43,6 +48,7 @@ from langgraph.graph import END, START, StateGraph
 from tracktory.graph.edges import route_after_input_normalize
 from tracktory.graph.nodes import (
     CourseRepository,
+    CoverageAnalysisNode,
     JobMatchingNode,
     LLMClient,
     LLMExplanationNode,
@@ -98,13 +104,14 @@ class PipelineConfig:
     job_matching_category_mapping_path: Path | None = None
     synergy_config_path: Path | None = None
     roadmap_config_path: Path | None = None
+    coverage_course_catalog_path: Path | None = None
 
 
 def build_recommendation_graph(
     clients: PipelineClients,
     config: PipelineConfig | None = None,
 ) -> CompiledStateGraph:
-    """6 개 노드를 묶어 컴파일된 LangGraph 인스턴스를 반환한다.
+    """7 개 노드를 묶어 컴파일된 LangGraph 인스턴스를 반환한다.
 
     노드는 모두 ``(state) -> dict`` 시그니처를 따르므로 LangGraph 가
     부분 state dict 를 자동으로 reducer / overwrite 결합한다. 본 함수는
@@ -134,6 +141,9 @@ def build_recommendation_graph(
         course_repo=clients.course_repository,
         config_path=resolved_config.roadmap_config_path,
     )
+    coverage_analysis_node = CoverageAnalysisNode(
+        course_catalog_path=resolved_config.coverage_course_catalog_path,
+    )
     llm_explanation_node = LLMExplanationNode(llm_client=clients.llm_client)
 
     graph = StateGraph(GraphState)
@@ -142,6 +152,7 @@ def build_recommendation_graph(
     graph.add_node("job_matching", job_matching_node)
     graph.add_node("track_synergy", track_synergy_node)
     graph.add_node("roadmap", roadmap_node)
+    graph.add_node("coverage_analysis", coverage_analysis_node)
     graph.add_node("llm_explanation", llm_explanation_node)
 
     graph.add_edge(START, "input_normalize")
@@ -153,7 +164,8 @@ def build_recommendation_graph(
     graph.add_edge("profile_embed", "job_matching")
     graph.add_edge("job_matching", "track_synergy")
     graph.add_edge("track_synergy", "roadmap")
-    graph.add_edge("roadmap", "llm_explanation")
+    graph.add_edge("roadmap", "coverage_analysis")
+    graph.add_edge("coverage_analysis", "llm_explanation")
     graph.add_edge("llm_explanation", END)
 
     return graph.compile()

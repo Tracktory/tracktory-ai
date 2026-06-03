@@ -36,7 +36,7 @@ class OpenAILLMConfig:
     api_key: str
     model: str = _DEFAULT_MODEL
     temperature: float = 0.0
-    timeout: float = 30.0  # 외부 호출 타임아웃
+    timeout: float = 45.0  # 외부 호출 타임아웃
     max_retries: int = 2  # rate limit / 일시 네트워크 오류 재시도
 
     @classmethod

@@ -1,6 +1,12 @@
 from pydantic import BaseModel, Field, field_validator
 
-from tracktory.graph.models import Explanation, JobCandidate, RankedCombo, Roadmap
+from tracktory.graph.models import (
+    CoverageAnalysis,
+    Explanation,
+    JobCandidate,
+    RankedCombo,
+    Roadmap,
+)
 from tracktory.graph.nodes.input_normalize import CompanyType, WorkValue
 
 
@@ -28,10 +34,11 @@ class RecommendRequest(BaseModel):
 
 
 class RecommendResponse(BaseModel):
-    """추천 그래프의 4 부분 묶음 응답. 도메인 모델 (`Job`, `RankedCombo`, `Roadmap`, `Explanation`) 을 직접 재사용하여 state ↔ response drift 를 차단한다."""
+    """추천 그래프의 5 부분 묶음 응답. 도메인 모델 (`JobCandidate`, `RankedCombo`, `Roadmap`, `CoverageAnalysis`, `Explanation`) 을 직접 재사용하여 state ↔ response drift 를 차단한다."""
 
     jobs: list[JobCandidate]
     primary_combos: list[RankedCombo]
     secondary_combos: list[RankedCombo]
     roadmap: Roadmap
+    coverage_analysis: CoverageAnalysis
     explanation: Explanation

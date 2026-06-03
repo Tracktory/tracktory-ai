@@ -4,6 +4,7 @@
 새 노드 추가 시 본 ``__all__`` 에도 함께 등록한다.
 """
 
+from tracktory.graph.nodes.coverage_analysis import CoverageAnalysisNode
 from tracktory.graph.nodes.input_normalize import NormalizedProfile, normalize_input
 from tracktory.graph.nodes.job_matching import JobMatchingNode
 from tracktory.graph.nodes.llm_explanation import LLMClient, LLMExplanationNode
@@ -13,6 +14,7 @@ from tracktory.graph.nodes.track_synergy import TrackRepository, TrackSynergyNod
 
 __all__ = [
     "CourseRepository",
+    "CoverageAnalysisNode",
     "JobMatchingNode",
     "LLMClient",
     "LLMExplanationNode",
