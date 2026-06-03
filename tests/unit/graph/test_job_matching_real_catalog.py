@@ -18,10 +18,8 @@ from pathlib import Path
 import pytest
 import yaml
 
-from tracktory.graph.nodes.job_matching import (
-    JobMatchingNode,
-    _load_course_tech_index,
-)
+from tracktory.graph.course_tech import load_course_tech_index
+from tracktory.graph.nodes.job_matching import JobMatchingNode
 from tracktory.rag.job_search import RagSearchResult
 
 _REAL_CATALOG_PATH = (
@@ -56,14 +54,14 @@ def _profile(completed_courses: list[str]) -> dict[str, object]:
 
 def test_shipped_catalog_carries_boost_tokens() -> None:
     """배포 카탈로그가 부스팅에 쓸 기술 토큰을 1건 이상 담고 있어야 한다."""
-    index = _load_course_tech_index(_REAL_CATALOG_PATH)
+    index = load_course_tech_index(_REAL_CATALOG_PATH)
     courses_with_tokens = {name: toks for name, toks in index.items() if toks}
     assert courses_with_tokens, "배포 courses.yaml 에 tech_stacks 토큰이 전혀 없음 (#159 회귀)"
 
 
 def test_real_completed_course_boosts_matching_job() -> None:
     """카탈로그에서 토큰을 가진 과목 1개를 골라, 그 토큰을 가진 직무가 부스팅되는지 검증."""
-    index = _load_course_tech_index(_REAL_CATALOG_PATH)
+    index = load_course_tech_index(_REAL_CATALOG_PATH)
     course_name, tokens = next((n, t) for n, t in index.items() if t)
 
     result = RagSearchResult(
@@ -120,7 +118,7 @@ def test_real_course_without_tokens_does_not_boost() -> None:
     토큰-없는 과목으로 criterion 4(무관한 과목은 영향 없음)를 고정한다.
     """
     catalog = yaml.safe_load(_REAL_CATALOG_PATH.read_text(encoding="utf-8"))["courses"]
-    index = _load_course_tech_index(_REAL_CATALOG_PATH)
+    index = load_course_tech_index(_REAL_CATALOG_PATH)
     # 색인은 토큰 없는 과목을 버리므로(부스팅 lookup 위장 방지), 색인에 없는
     # 실제 과목명 = 토큰을 한 개도 기여하지 않는 배포 카탈로그 과목이다.
     empty_course = next(

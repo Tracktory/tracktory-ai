@@ -1,4 +1,4 @@
-"""``_load_course_tech_index`` / ``_resolve_completed_tokens`` 순수 헬퍼 단위 테스트.
+"""``load_course_tech_index`` / ``resolve_course_tokens`` 순수 헬퍼 단위 테스트.
 
 이수 과목 *이름* → 직무 기술 *토큰* 다리의 색인 로딩·이름 정규화·중복 합집합·
 미보유 처리와, 색인 lookup 의 이름 정합·미지 과목 무영향을 외부 I/O 없이
@@ -12,9 +12,9 @@ from pathlib import Path
 import pytest
 import yaml
 
-from tracktory.graph.nodes.job_matching import (
-    _load_course_tech_index,
-    _resolve_completed_tokens,
+from tracktory.graph.course_tech import (
+    load_course_tech_index,
+    resolve_course_tokens,
 )
 
 
@@ -25,7 +25,7 @@ def _write_catalog(tmp_path: Path, courses: object) -> Path:
 
 
 # ---------------------------------------------------------------------------
-# _load_course_tech_index
+# load_course_tech_index
 # ---------------------------------------------------------------------------
 
 
@@ -35,7 +35,7 @@ def test_index_normalizes_course_name_key(tmp_path: Path) -> None:
         tmp_path,
         [{"course_id": "C1", "course_name": "  데이터베이스 ", "tech_stacks": ["MySQL"]}],
     )
-    index = _load_course_tech_index(path)
+    index = load_course_tech_index(path)
     assert index == {"데이터베이스": ["MySQL"]}
 
 
@@ -48,7 +48,7 @@ def test_index_unions_duplicate_names_dedup_preserve_order(tmp_path: Path) -> No
             {"course_id": "C2", "course_name": "프로그래밍", "tech_stacks": ["Spring", "MySQL"]},
         ],
     )
-    index = _load_course_tech_index(path)
+    index = load_course_tech_index(path)
     assert index == {"프로그래밍": ["Java", "Spring", "MySQL"]}
 
 
@@ -63,21 +63,21 @@ def test_index_skips_missing_or_empty_tech_stacks(tmp_path: Path) -> None:
             {"course_id": "C4", "course_name": "정상", "tech_stacks": ["Python"]},
         ],
     )
-    index = _load_course_tech_index(path)
+    index = load_course_tech_index(path)
     assert index == {"정상": ["Python"]}
 
 
 def test_index_empty_catalog_returns_empty(tmp_path: Path) -> None:
     """과목이 없으면 빈 색인."""
     path = _write_catalog(tmp_path, [])
-    assert _load_course_tech_index(path) == {}
+    assert load_course_tech_index(path) == {}
 
 
 def test_index_none_yaml_returns_empty(tmp_path: Path) -> None:
     """빈 yaml (``None``) 은 빈 색인으로 관대 처리."""
     path = tmp_path / "courses.yaml"
     path.write_text("", encoding="utf-8")
-    assert _load_course_tech_index(path) == {}
+    assert load_course_tech_index(path) == {}
 
 
 def test_index_raises_when_top_level_not_courses_mapping(tmp_path: Path) -> None:
@@ -85,45 +85,45 @@ def test_index_raises_when_top_level_not_courses_mapping(tmp_path: Path) -> None
     path = tmp_path / "courses.yaml"
     path.write_text(yaml.safe_dump(["not", "a", "mapping"]), encoding="utf-8")
     with pytest.raises(ValueError, match="courses"):
-        _load_course_tech_index(path)
+        load_course_tech_index(path)
 
 
 def test_index_raises_when_courses_key_missing(tmp_path: Path) -> None:
     path = tmp_path / "courses.yaml"
     path.write_text(yaml.safe_dump({"other": []}, allow_unicode=True), encoding="utf-8")
     with pytest.raises(ValueError, match="courses"):
-        _load_course_tech_index(path)
+        load_course_tech_index(path)
 
 
 # ---------------------------------------------------------------------------
-# _resolve_completed_tokens
+# resolve_course_tokens
 # ---------------------------------------------------------------------------
 
 
 def test_resolve_unions_tokens_across_courses() -> None:
     """여러 이수 과목의 토큰을 합집합으로 묶되 중복 제거·최초 순서 보존."""
     index = {"데이터베이스": ["MySQL", "SQL"], "웹프로그래밍": ["Spring", "MySQL"]}
-    tokens = _resolve_completed_tokens(["데이터베이스", "웹프로그래밍"], index)
+    tokens = resolve_course_tokens(["데이터베이스", "웹프로그래밍"], index)
     assert tokens == ["MySQL", "SQL", "Spring"]
 
 
 def test_resolve_unknown_name_contributes_nothing() -> None:
     """색인에 없는 과목 이름은 토큰을 기여하지 않는다."""
     index = {"데이터베이스": ["MySQL"]}
-    tokens = _resolve_completed_tokens(["없는과목", "데이터베이스"], index)
+    tokens = resolve_course_tokens(["없는과목", "데이터베이스"], index)
     assert tokens == ["MySQL"]
 
 
 def test_resolve_robust_to_whitespace_and_casing() -> None:
     """이름 lookup 은 입력의 공백·대소문자 차이를 흡수한다."""
     index = {"database": ["MySQL"]}
-    tokens = _resolve_completed_tokens(["  DataBase  "], index)
+    tokens = resolve_course_tokens(["  DataBase  "], index)
     assert tokens == ["MySQL"]
 
 
 def test_resolve_empty_input_returns_empty() -> None:
-    assert _resolve_completed_tokens([], {"데이터베이스": ["MySQL"]}) == []
+    assert resolve_course_tokens([], {"데이터베이스": ["MySQL"]}) == []
 
 
 def test_resolve_empty_index_returns_empty() -> None:
-    assert _resolve_completed_tokens(["데이터베이스"], {}) == []
+    assert resolve_course_tokens(["데이터베이스"], {}) == []

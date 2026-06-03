@@ -45,11 +45,16 @@ async def recommend(
         raise HTTPException(status_code=500, detail=final_state["errors"])
 
     roadmap = final_state.get("roadmap")
+    coverage_analysis = final_state.get("coverage_analysis")
     explanation = final_state.get("explanation")
-    if roadmap is None or explanation is None:
+    if roadmap is None or coverage_analysis is None or explanation is None:
         missing = [
             name
-            for name, value in (("roadmap", roadmap), ("explanation", explanation))
+            for name, value in (
+                ("roadmap", roadmap),
+                ("coverage_analysis", coverage_analysis),
+                ("explanation", explanation),
+            )
             if value is None
         ]
         raise HTTPException(
@@ -62,6 +67,7 @@ async def recommend(
         primary_combos=final_state.get("primary_combos") or [],
         secondary_combos=final_state.get("secondary_combos") or [],
         roadmap=roadmap,
+        coverage_analysis=coverage_analysis,
         explanation=explanation,
     )
     return ApiResponse.ok(data=data)

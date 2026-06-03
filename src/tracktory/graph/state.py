@@ -37,6 +37,8 @@ class GraphState(TypedDict, total=False):
             slot3_fallback_level
         학습 로드맵 출력:
             roadmap (Roadmap.model_dump(mode="json") 결과 dict)
+        역량 커버리지 출력:
+            coverage_analysis (CoverageAnalysis.model_dump(mode="json") 결과 dict)
         LLM 설명 출력:
             explanation (Explanation.model_dump(mode="json") 결과 dict)
         누적:
@@ -68,6 +70,9 @@ class GraphState(TypedDict, total=False):
 
     # --- 학습 로드맵 출력 (overwrite) ---
     roadmap: dict[str, Any] | None
+
+    # --- 역량 커버리지 분석 출력 (overwrite) ---
+    coverage_analysis: dict[str, Any] | None
 
     # --- LLM 설명 출력 (overwrite) ---
     explanation: dict[str, Any] | None

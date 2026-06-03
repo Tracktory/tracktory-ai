@@ -17,11 +17,13 @@ from __future__ import annotations
 
 import time
 from collections.abc import Iterator
+from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock
 
 import numpy as np
 import pytest
+import yaml
 
 from tracktory.graph import pipeline as graph_pipeline
 from tracktory.graph.models import Course, Explanation, Track
@@ -253,13 +255,13 @@ def _valid_onboarding_payload(
         ("2학년+ 트랙 선택 완료", ["in0", "in1"]),
     ],
 )
-def test_recommendation_graph_happy_path_runs_six_nodes_in_order(
+def test_recommendation_graph_happy_path_runs_seven_nodes_in_order(
     persona: str, current_tracks: list[str]
 ) -> None:
-    """유효 입력으로 그래프를 invoke 하면 6 노드가 순차 실행되어 모든 산출 키가 채워진다.
+    """유효 입력으로 그래프를 invoke 하면 7 노드가 순차 실행되어 모든 산출 키가 채워진다.
 
     1학년 (트랙 미선택) 과 2학년+ (트랙 선택 완료) 두 페르소나 모두 동일한
-    6 부분 산출을 만들어내는지 검증한다. 트랙 선택 여부는 트랙 시너지 노드의
+    7 부분 산출을 만들어내는지 검증한다. 트랙 선택 여부는 트랙 시너지 노드의
     주 추천 후보 풀 생성 분기만 가를 뿐, end-to-end 계약은 동일하다.
     """
     clients = _build_clients()
@@ -283,7 +285,14 @@ def test_recommendation_graph_happy_path_runs_six_nodes_in_order(
     assert result["roadmap"]["stages"]
     assert result["explanation"]["text"] == "추천 결과 종합 설명입니다."
 
-    # 6 노드 trace 흔적 (각 노드는 자체 trace prefix 를 남긴다)
+    # 역량 커버리지 분석 — 추천 직무 토큰(py/sql/문제해결능력)이 목표로 잡힌다
+    coverage = result["coverage_analysis"]
+    assert coverage is not None
+    assert coverage["required_count"] == 3
+    assert 0.0 <= coverage["current_ratio"] <= 1.0
+    assert 0.0 <= coverage["expected_ratio"] <= 1.0
+
+    # 7 노드 trace 흔적 (각 노드는 자체 trace prefix 를 남긴다)
     trace_prefixes = {token.split(":", 1)[0] for token in result["trace"]}
     assert {
         "input_normalize",
@@ -291,6 +300,7 @@ def test_recommendation_graph_happy_path_runs_six_nodes_in_order(
         "job_matching",
         "track_synergy",
         "roadmap",
+        "coverage_analysis",
         "llm_explanation",
     } <= trace_prefixes
 
@@ -319,6 +329,7 @@ def test_recommendation_graph_invalid_input_short_circuits_to_end() -> None:
     assert result.get("recommended_jobs") is None
     assert result.get("primary_combos") is None
     assert result.get("roadmap") is None
+    assert result.get("coverage_analysis") is None
     assert result.get("explanation") is None
 
     # trace 에 input_normalize 실패만 흐름
@@ -365,3 +376,40 @@ def test_get_recommendation_graph_normalizes_none_config(
 
     assert graph_from_none is graph_from_default  # 캐시 키 정규화 → 동일 인스턴스
     assert wrapped.call_count == 1
+
+
+def test_coverage_analysis_flows_through_graph_with_real_signal(tmp_path: Path) -> None:
+    """완료 과목 + 로드맵 과목이 추천 직무 토큰을 덮어 충족도가 상승하는 흐름을 검증.
+
+    합성 과목 카탈로그를 ``PipelineConfig`` 로 주입해, 커버리지 노드가 실제로
+    완료 과목(현재 충족)과 로드맵 과목(예상 충족)을 직무 목표 토큰에 매칭하는
+    데이터 경로를 end-to-end 로 고정한다. mock course_repo 가 돌려주는 과목명
+    (``f"{course_id} 강의"``)을 그대로 토큰에 매핑한다.
+    """
+    catalog = {
+        "courses": [
+            {"course_id": "CS101", "course_name": "CS101 강의", "tech_stacks": ["py"]},
+            {"course_id": "CS102", "course_name": "CS102 강의", "tech_stacks": ["sql"]},
+        ]
+    }
+    catalog_path = tmp_path / "courses.yaml"
+    catalog_path.write_text(yaml.safe_dump(catalog, allow_unicode=True), encoding="utf-8")
+
+    clients = _build_clients()  # 직무 tech_stacks=["py","sql"], 역량=["문제해결능력"]
+    config = PipelineConfig(coverage_course_catalog_path=catalog_path)
+    graph = build_recommendation_graph(clients, config)
+
+    payload = _valid_onboarding_payload(current_tracks=["in0", "in1"])
+    payload["completed_courses"] = ["CS101 강의"]  # py 현재 충족
+
+    result = graph.invoke({"user_id": "u1", "raw_input": payload})
+
+    coverage = result["coverage_analysis"]
+    assert coverage["required_count"] == 3  # py, sql, 문제해결능력
+    assert coverage["current_covered"] == 1  # 완료 과목 → py
+    # 로드맵의 CS102(sql) 가 예상 충족도를 끌어올린다
+    assert coverage["expected_covered"] >= 2
+    assert coverage["current_ratio"] < coverage["expected_ratio"]
+    # 추천 기반 다음 액션 제안이 비어 있지 않다
+    assert coverage["next_actions"]
+    assert "%" in coverage["next_actions"][0]["message"]

@@ -383,6 +383,116 @@ class Explanation(BaseModel):
 
 
 # ---------------------------------------------------------------------------
+# CoverageAnalysis — 역량 커버리지 분석 도메인 모델
+# ---------------------------------------------------------------------------
+
+
+class JobCoverage(BaseModel):
+    """추천 직무 한 건에 대한 역량 충족도 — 현재 / 예상.
+
+    각 추천 직무를 하나의 목표 분야로 보고, 그 직무가 요구하는 기술·역량 토큰을
+    학생이 현재(이수 과목) 얼마나 덮는지와 추천 로드맵을 모두 이수했을 때 얼마나
+    덮게 되는지를 분리해 보여준다.
+
+    Attributes:
+        job_id: 직무 식별자.
+        job_name: 사용자 표시용 직무명.
+        required_count: 직무가 요구하는 정규화 토큰 수 (표기 정합 후 중복 제거).
+        current_covered: 현재(이수 과목) 덮는 토큰 수.
+        expected_covered: 추천 로드맵 이수 후 덮게 되는 토큰 수.
+        current_ratio: ``current_covered / required_count`` ([0, 1]).
+            ``required_count == 0`` 이면 0.0.
+        expected_ratio: ``expected_covered / required_count`` ([0, 1]).
+            ``required_count == 0`` 이면 0.0.
+        missing_tokens: 추천 로드맵 이수 후에도 못 덮는 토큰 (사용자 표시 표기).
+    """
+
+    job_id: str = Field(..., min_length=1)
+    job_name: str = Field(..., min_length=1)
+    required_count: int = Field(..., ge=0)
+    current_covered: int = Field(..., ge=0)
+    expected_covered: int = Field(..., ge=0)
+    current_ratio: float = Field(..., ge=0.0, le=1.0)
+    expected_ratio: float = Field(..., ge=0.0, le=1.0)
+    missing_tokens: list[str] = Field(default_factory=list)
+
+
+class CourseCoverageContribution(BaseModel):
+    """추천 로드맵의 잔여 과목 한 건이 전체 역량 충족도에 더하는 기여.
+
+    기여도는 *현재 충족도 기준* 독립 한계 기여다 — 이 과목 하나만 이수했을 때
+    새로 덮는 목표 토큰의 비율이다. 과목 간 토큰이 겹칠 수 있어 모든 과목의
+    기여도 합은 (예상 - 현재) 충족도 증가분을 넘을 수 있다. 사용자 화면에서
+    과목별 "+X%" 를 직관적으로 보여주기 위한 정의다.
+
+    Attributes:
+        course_id: 과목 식별자.
+        course_name: 사용자 표시용 과목명.
+        added_tokens: 이 과목이 새로 덮는 목표 토큰 (현재 미충족분 중, 표시 표기).
+        contribution_ratio: ``len(added_tokens) / required_count`` ([0, 1]).
+            목표 토큰이 없으면 0.0.
+    """
+
+    course_id: str = Field(..., min_length=1)
+    course_name: str = Field(..., min_length=1)
+    added_tokens: list[str] = Field(default_factory=list)
+    contribution_ratio: float = Field(..., ge=0.0, le=1.0)
+
+
+class NextActionSuggestion(BaseModel):
+    """추천 기반 다음 액션 — 충족도를 가장 많이 올리는 과목 제안.
+
+    잔여 과목 중 현재 충족도를 가장 크게 끌어올리는 과목을 우선 제안해, 학생이
+    "다음에 무엇을 들어야 효과가 큰지" 를 한눈에 알 수 있게 한다.
+
+    Attributes:
+        course_id: 제안 과목 식별자.
+        course_name: 사용자 표시용 과목명.
+        contribution_ratio: 이 과목 이수 시 전체 충족도 증가분 ([0, 1]).
+        message: 사용자 표시용 제안 문구.
+    """
+
+    course_id: str = Field(..., min_length=1)
+    course_name: str = Field(..., min_length=1)
+    contribution_ratio: float = Field(..., ge=0.0, le=1.0)
+    message: str = Field(..., min_length=1)
+
+
+class CoverageAnalysis(BaseModel):
+    """추천 직무 요구 역량 대비 현재 → 예상 충족도 분석 전체.
+
+    추천 결과(직무·트랙·로드맵)를 일회성 결과가 아닌 채워가는 지도로 만들기
+    위해, 추천 직무가 요구하는 기술·역량 토큰을 목표로 삼아 학생의 현재 충족도와
+    추천 로드맵을 모두 이수했을 때의 예상 충족도를 산출한다.
+
+    비율 필드는 모두 [0, 1] 이며 사용자 화면에서 백분율로 렌더링한다. 목표 토큰이
+    하나도 없으면(추천 직무 부재 또는 직무 토큰 미보유) 모든 비율은 0.0, 리스트는
+    비어 graceful 종료한다.
+
+    Attributes:
+        required_count: 전체 목표 토큰 수 (추천 직무 토큰 합집합, 표기 정합 후 중복 제거).
+        current_covered: 현재(이수 과목) 덮는 목표 토큰 수.
+        expected_covered: 추천 로드맵 이수 후 덮게 되는 목표 토큰 수.
+        current_ratio: ``current_covered / required_count`` ([0, 1]). 분모 0 이면 0.0.
+        expected_ratio: ``expected_covered / required_count`` ([0, 1]). 분모 0 이면 0.0.
+        jobs: 분야(추천 직무)별 현재/예상 충족도.
+        course_contributions: 잔여(추천) 과목별 충족도 기여도.
+        next_actions: 추천 기반 다음 액션 (기여도 상위 과목).
+        gap_tokens: 추천 로드맵 이수 후에도 못 덮는 전체 목표 토큰 (사용자 표시 표기).
+    """
+
+    required_count: int = Field(..., ge=0)
+    current_covered: int = Field(..., ge=0)
+    expected_covered: int = Field(..., ge=0)
+    current_ratio: float = Field(..., ge=0.0, le=1.0)
+    expected_ratio: float = Field(..., ge=0.0, le=1.0)
+    jobs: list[JobCoverage] = Field(default_factory=list)
+    course_contributions: list[CourseCoverageContribution] = Field(default_factory=list)
+    next_actions: list[NextActionSuggestion] = Field(default_factory=list)
+    gap_tokens: list[str] = Field(default_factory=list)
+
+
+# ---------------------------------------------------------------------------
 # SynergyConfig — synergy.yaml 외부화 매핑
 # ---------------------------------------------------------------------------
 
