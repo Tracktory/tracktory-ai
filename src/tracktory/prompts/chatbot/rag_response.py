@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from collections.abc import Sequence
 from typing import Any
 
@@ -74,7 +75,7 @@ _USER_PROFILE_BLOCK = "[사용자 프로필]\n{user_context_block}"
 _CONTEXT_BLOCK = """[검색된 자료]
 {retrieved_context}
 
-위 자료의 사실만 사용해 답하세요. 없으면 "해당 데이터 없음" 명시. choices 1-3 개 필수."""
+위 자료의 사실만 사용해 답하세요. 자료가 없으면 rule 2 대로 자료 부족을 솔직히 안내합니다. choices 1-3 개 필수."""
 
 
 RAG_RESPONSE_PROMPT: ChatPromptTemplate = ChatPromptTemplate.from_messages(
@@ -85,6 +86,15 @@ RAG_RESPONSE_PROMPT: ChatPromptTemplate = ChatPromptTemplate.from_messages(
         ("system", _CONTEXT_BLOCK),
     ]
 )
+
+
+# 본문 끝의 `[근거: #1, #3]` / `[근거: 없음]` 줄 — 프롬프트가 본문 마지막 줄로 강제하는 표기.
+_GROUNDING_LINE_RE = re.compile(r"\n*[ \t]*\[근거:[^\]]*\][ \t]*$")
+
+
+def strip_grounding(text: str) -> str:
+    """본문 끝의 `[근거: ...]` 검증 표기를 제거 — 히스토리 누적 시 다음 턴 컨텍스트 오염 방지용"""
+    return _GROUNDING_LINE_RE.sub("", text.rstrip()).rstrip()
 
 
 def format_retrieved_docs(docs: Sequence[RetrievedChunk]) -> str:

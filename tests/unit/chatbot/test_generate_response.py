@@ -29,6 +29,7 @@ from tracktory.prompts.chatbot.general_advice import GENERAL_ADVICE_PROMPT
 from tracktory.prompts.chatbot.rag_response import (
     RAG_RESPONSE_PROMPT,
     ChatbotResponse,
+    strip_grounding,
 )
 
 # 실 RAGFlow 출력에서 떼어온 canned 청크
@@ -84,16 +85,12 @@ _CASES: dict[str, dict[str, Any]] = {
 
 
 def _state(case: dict[str, Any]) -> ChatbotState:
-    return {
-        "user_context": case["user_context"],
-        "messages": [HumanMessage(content=case["message"])],
-        "intent": case["intent"],  # type: ignore[typeddict-item]
-        "intent_reason": None,
-        "search_keywords": [],
-        "retrieved_docs": case["retrieved_docs"],
-        "response": None,
-        "response_choices": [],
-    }
+    return ChatbotState(
+        user_context=case["user_context"],
+        messages=[HumanMessage(content=case["message"])],
+        intent=case["intent"],
+        retrieved_docs=case["retrieved_docs"],
+    )
 
 
 @pytest.mark.integration
@@ -132,12 +129,15 @@ def test_generate_response(case_name: str) -> None:
     assert 1 <= len(result["response_choices"]) <= 3, (
         f"choices 1-3 강제 위반: {len(result['response_choices'])}개"
     )
-    # AIMessage 가 messages 에 append 되는지
-    assert result["messages"] and result["messages"][0].content == result["response"]
+    # 히스토리(AIMessage)는 `[근거:]` 제거본
+    assert result["messages"]
+    assert "[근거:" not in result["messages"][0].content
+    assert result["messages"][0].content == strip_grounding(result["response"])
 
-    # 자료 없을 때 "해당 데이터 없음" 명시 검증 — RAG 케이스에 한정
-    # (general_advice 는 자료 미사용이 정상이라 안내 문구 없이 일반 조언 답해야 함)
+    # 자료 없으면 "자료 부족" 안내 — RAG 케이스 한정 (general_advice 는 자료 미사용이 정상)
+    # LLM 문구는 매번 달라지므로 정확 문자열이 아닌 자료-없음 신호 중 하나로 검증
     if case_name == "no_data":
-        assert "해당 데이터 없음" in result["response"] or "[근거: 없음]" in result["response"], (
+        no_data_markers = ("현재 자료", "자료로는", "제공되지 않", "[근거: 없음]")
+        assert any(m in result["response"] for m in no_data_markers), (
             f"자료 없는 RAG 케이스인데 안내 문구 없음: {result['response']}"
         )
