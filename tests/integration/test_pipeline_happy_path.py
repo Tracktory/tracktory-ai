@@ -287,11 +287,11 @@ def test_recommendation_graph_happy_path_runs_seven_nodes_in_order(
 
     # 역량 커버리지 분석 — 분모는 도달 가능(이수·로드맵) 토큰으로 좁혀진다.
     # 본 해피패스는 기본 과목 카탈로그를 쓰고 합성 로드맵 과목명이 카탈로그에
-    # 없어 도달 가능 토큰이 비므로 reachable_required_count 는 0 이다 (분모 산식 자체의
+    # 없어 도달 가능 토큰이 비므로 required_count 는 0 이다 (분모 산식 자체의
     # 검증은 test_coverage_analysis_flows_through_graph_with_real_signal 가 맡는다).
     coverage = result["coverage_analysis"]
     assert coverage is not None
-    assert coverage["reachable_required_count"] == 0  # 도달 가능 토큰 없음 (합성 과목 미매핑)
+    assert coverage["required_count"] == 0  # 도달 가능 토큰 없음 (합성 과목 미매핑)
     assert 0.0 <= coverage["current_ratio"] <= 1.0
     assert 0.0 <= coverage["expected_ratio"] <= 1.0
 
@@ -410,7 +410,7 @@ def test_coverage_analysis_flows_through_graph_with_real_signal(tmp_path: Path) 
     coverage = result["coverage_analysis"]
     # 분모는 도달 가능 토큰뿐 — py(완료)·sql(로드맵)만. 문제해결능력은 가르치는
     # 과목이 없어 분모에서 빠지고 gap 으로 보고된다.
-    assert coverage["reachable_required_count"] == 2
+    assert coverage["required_count"] == 2
     assert "문제해결능력" in coverage["gap_tokens"]
     assert coverage["current_covered"] == 1  # 완료 과목 → py
     # 로드맵의 CS102(sql) 가 예상 충족도를 끌어올린다

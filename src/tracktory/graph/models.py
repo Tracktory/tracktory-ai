@@ -397,23 +397,19 @@ class JobCoverage(BaseModel):
     Attributes:
         job_id: 직무 식별자.
         job_name: 사용자 표시용 직무명.
-        total_required_count: 직무가 요구하는 전체 토큰 수 (표기 정합 후 중복 제거).
+        required_count: 직무가 요구하는 정규화 토큰 수 (표기 정합 후 중복 제거).
         current_covered: 현재(이수 과목) 덮는 토큰 수.
         expected_covered: 추천 로드맵 이수 후 덮게 되는 토큰 수.
-        current_ratio: ``current_covered / total_required_count`` ([0, 1]).
-            ``total_required_count == 0`` 이면 0.0.
-        expected_ratio: ``expected_covered / total_required_count`` ([0, 1]).
-            ``total_required_count == 0`` 이면 0.0.
+        current_ratio: ``current_covered / required_count`` ([0, 1]).
+            ``required_count == 0`` 이면 0.0.
+        expected_ratio: ``expected_covered / required_count`` ([0, 1]).
+            ``required_count == 0`` 이면 0.0.
         missing_tokens: 추천 로드맵 이수 후에도 못 덮는 토큰 (사용자 표시 표기).
     """
 
     job_id: str = Field(..., min_length=1)
     job_name: str = Field(..., min_length=1)
-    total_required_count: int = Field(
-        ...,
-        ge=0,
-        description="직무가 요구하는 전체 토큰 수 (도달 가능 여부 무관, 표기 정합 후 중복 제거)",
-    )
+    required_count: int = Field(..., ge=0)
     current_covered: int = Field(..., ge=0)
     expected_covered: int = Field(..., ge=0)
     current_ratio: float = Field(..., ge=0.0, le=1.0)
@@ -433,7 +429,7 @@ class CourseCoverageContribution(BaseModel):
         course_id: 과목 식별자.
         course_name: 사용자 표시용 과목명.
         added_tokens: 이 과목이 새로 덮는 목표 토큰 (현재 미충족분 중, 표시 표기).
-        contribution_ratio: ``len(added_tokens) / reachable_required_count`` ([0, 1]).
+        contribution_ratio: ``len(added_tokens) / required_count`` ([0, 1]).
             목표 토큰이 없으면 0.0.
     """
 
@@ -492,29 +488,29 @@ class CoverageAnalysis(BaseModel):
     비율 필드는 모두 [0, 1] 이며 사용자 화면에서 백분율로 렌더링한다. 추천 직무
     자체가 없거나 기준 직무가 토큰을 전혀 안 가지면 모든 비율 0.0 + 리스트 빈
     채로 ``anchor_job_id == ""`` 로 종료한다. 기준 직무는 있으나 도달 가능 토큰이
-    하나도 없으면(요구 토큰을 어떤 과목도 안 가르침) ``reachable_required_count == 0`` +
+    하나도 없으면(요구 토큰을 어떤 과목도 안 가르침) ``required_count == 0`` +
     비율 0.0 이되 ``anchor_job_id`` 와 ``gap_tokens`` (전부 도달 불가)는 채워
     반환한다 — 분모가 도달 가능 토큰으로 좁혀진 결과라 ``anchor_job_id != ""``
-    여도 ``reachable_required_count == 0`` 일 수 있다.
+    여도 ``required_count == 0`` 일 수 있다.
 
     Attributes:
         anchor_job_id: 충족도 산출의 기준이 된 직무 식별자. 추천 직무 부재 또는
             기준 직무 토큰 미보유 시에만 빈 문자열.
         anchor_job_name: 기준 직무명 (사용자 표시용 "○○ 직무 기준" 라벨).
-        reachable_required_count: 도달 가능 목표 토큰 수 (기준 직무 요구 토큰 중 이수·로드맵
+        required_count: 도달 가능 목표 토큰 수 (기준 직무 요구 토큰 중 이수·로드맵
             과목으로 학습 가능한 토큰, 표기 정합 후 중복 제거; 과다 시 학습 빈도
-            상위 N 개로 캡). 게이지 분모.
+            상위 N 개로 캡).
         current_covered: 현재(이수 과목) 덮는 도달 가능 목표 토큰 수.
         expected_covered: 추천 로드맵 이수 후 덮게 되는 도달 가능 목표 토큰 수.
-            분모가 도달 가능 토큰뿐이라 ``reachable_required_count > 0`` 이면 분모와 같다.
-        current_ratio: ``current_covered / reachable_required_count`` ([0, 1]). 분모 0 이면 0.0.
-        expected_ratio: ``expected_covered / reachable_required_count`` ([0, 1]). 분모 0 이면 0.0.
-            도달 가능 분모이므로 ``reachable_required_count > 0`` 일 때 1.0 (전체 로드맵 이수
+            분모가 도달 가능 토큰뿐이라 ``required_count > 0`` 이면 분모와 같다.
+        current_ratio: ``current_covered / required_count`` ([0, 1]). 분모 0 이면 0.0.
+        expected_ratio: ``expected_covered / required_count`` ([0, 1]). 분모 0 이면 0.0.
+            도달 가능 분모이므로 ``required_count > 0`` 일 때 1.0 (전체 로드맵 이수
             시 도달 가능 역량 100% 충족 — 게이지 상단 표기).
         next_actions_covered: 다음 액션(``next_actions`` 에 노출된 shortlist) 과목까지
             이수했을 때 덮는 목표 토큰 수. 합집합으로 계산해 ``current_covered <=
             next_actions_covered <= expected_covered`` 를 만족한다.
-        next_actions_ratio: ``next_actions_covered / reachable_required_count`` ([0, 1]). 분모 0 이면 0.0.
+        next_actions_ratio: ``next_actions_covered / required_count`` ([0, 1]). 분모 0 이면 0.0.
             "다음 N개 과목 이수 시 도달 충족도" 표기의 근거. 과목별 ``contribution_ratio``
             의 합과 달리 토큰 중복을 합집합으로 제거해 over-claim 을 막는다.
         jobs: 분야별 분석 — 전 추천 직무의 per-job 현재/예상 충족도 (직무 비교 카드용,
@@ -529,11 +525,7 @@ class CoverageAnalysis(BaseModel):
 
     anchor_job_id: str = Field(default="")
     anchor_job_name: str = Field(default="")
-    reachable_required_count: int = Field(
-        ...,
-        ge=0,
-        description="기준 직무 요구 토큰 중 이수·로드맵 과목으로 학습 가능한(도달 가능) 토큰 수 = 게이지 분모",
-    )
+    required_count: int = Field(..., ge=0)
     current_covered: int = Field(..., ge=0)
     expected_covered: int = Field(..., ge=0)
     current_ratio: float = Field(..., ge=0.0, le=1.0)

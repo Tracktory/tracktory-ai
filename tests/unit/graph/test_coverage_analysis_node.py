@@ -50,7 +50,7 @@ def test_current_and_expected_ratio_basic() -> None:
         course_tech_index=index,
     )
 
-    assert analysis.reachable_required_count == 2
+    assert analysis.required_count == 2
     assert analysis.current_covered == 1
     assert analysis.expected_covered == 2
     assert analysis.current_ratio == pytest.approx(0.5)
@@ -82,7 +82,7 @@ def test_default_anchor_is_top_match_and_target_is_anchor_tokens_only() -> None:
     assert analysis.anchor_job_name == "백엔드"
     # 분모는 anchor(be) 토큰 {MySQL, Docker} 중 도달 가능한 {MySQL} 뿐.
     # Docker 는 어떤 과목도 안 가르쳐 분모에서 빠지고 gap 으로 보고된다.
-    assert analysis.reachable_required_count == 1
+    assert analysis.required_count == 1
     assert analysis.current_covered == 1  # MySQL
     assert analysis.current_ratio == pytest.approx(1.0)  # 도달 가능 분모 기준 완전 충족
     assert analysis.gap_tokens == ["Docker"]  # 도달 불가 — fe 의 React 는 anchor 무관
@@ -122,7 +122,7 @@ def test_explicit_anchor_recomputes_against_specified_job() -> None:
     )
 
     assert analysis.anchor_job_id == "fe"
-    assert analysis.reachable_required_count == 1  # fe 토큰 {React} 뿐
+    assert analysis.required_count == 1  # fe 토큰 {React} 뿐
     assert analysis.current_ratio == pytest.approx(1.0)  # React 이수 완료
 
 
@@ -172,7 +172,7 @@ def test_anchor_bound_subobjects_align_to_anchor_job() -> None:
 
     # 게이지(목표 토큰 수)가 anchor 직무 토큰에 정렬된다.
     assert analysis.anchor_job_id == "be"
-    assert analysis.reachable_required_count == len(anchor_tokens)
+    assert analysis.required_count == len(anchor_tokens)
 
     # 잔여 과목 기여·다음 액션이 더하는 토큰은 모두 anchor 목표 토큰 안에 있다.
     for contribution in analysis.course_contributions:
@@ -213,9 +213,9 @@ def test_jobs_field_holds_all_recommended_jobs_independent_of_anchor() -> None:
     by_job = {coverage.job_id: coverage for coverage in analysis.jobs}
     assert set(by_job) == {"be", "fe"}  # anchor 와 무관하게 전 직무
     # 각 직무는 자기 토큰 기준으로 평가된다.
-    assert by_job["be"].total_required_count == 2  # MySQL, Docker
+    assert by_job["be"].required_count == 2  # MySQL, Docker
     assert by_job["be"].current_covered == 0  # 프론트개론은 be 와 무관
-    assert by_job["fe"].total_required_count == 1  # React
+    assert by_job["fe"].required_count == 1  # React
     assert by_job["fe"].current_covered == 1  # 프론트개론 → React
     # 현재 충족률 내림차순: fe(1.0) → be(0.0)
     assert [coverage.job_id for coverage in analysis.jobs] == ["fe", "be"]
@@ -281,7 +281,7 @@ def test_token_alias_normalization_matches_across_notation() -> None:
         roadmap_courses=[],
         course_tech_index=index,
     )
-    assert analysis.reachable_required_count == 1
+    assert analysis.required_count == 1
     assert analysis.current_covered == 1
     assert analysis.current_ratio == pytest.approx(1.0)
 
@@ -349,7 +349,7 @@ def test_empty_target_returns_empty_analysis() -> None:
         roadmap_courses=[("OPS", "데브옵스")],
         course_tech_index={"데이터베이스": ["MySQL"]},
     )
-    assert analysis.reachable_required_count == 0
+    assert analysis.required_count == 0
     assert analysis.current_ratio == pytest.approx(0.0)
     assert analysis.expected_ratio == pytest.approx(0.0)
     assert analysis.jobs == []
@@ -374,7 +374,7 @@ def test_competency_tags_included_in_target() -> None:
         roadmap_courses=[("PS", "문제해결입문")],
         course_tech_index=index,
     )
-    assert analysis.reachable_required_count == 1  # 도달 가능한 문제해결능력만 (MySQL 은 gap)
+    assert analysis.required_count == 1  # 도달 가능한 문제해결능력만 (MySQL 은 gap)
     assert analysis.expected_covered == 1  # 문제해결능력만 로드맵으로 도달
     assert analysis.gap_tokens == ["MySQL"]
 
@@ -437,7 +437,7 @@ def test_denominator_limited_to_reachable_tokens() -> None:
         course_tech_index=index,
     )
 
-    assert analysis.reachable_required_count == 2  # {MySQL, Docker} — Kubernetes 는 도달 불가 제외
+    assert analysis.required_count == 2  # {MySQL, Docker} — Kubernetes 는 도달 불가 제외
     assert analysis.current_covered == 1  # MySQL
     assert analysis.expected_covered == 2  # 도달 가능 전부 → 로드맵 이수 후 100%
     assert analysis.expected_ratio == pytest.approx(1.0)
@@ -453,7 +453,7 @@ def test_coverage_rises_when_completed_courses_reflected() -> None:
     before = compute_coverage(jobs, [], roadmap, index)
     after = compute_coverage(jobs, ["데이터베이스"], roadmap, index)
 
-    assert before.reachable_required_count == after.reachable_required_count == 2  # 분모 안정
+    assert before.required_count == after.required_count == 2  # 분모 안정
     assert before.current_ratio == pytest.approx(0.0)
     assert after.current_ratio == pytest.approx(0.5)  # 이수 반영 시 상승
     assert after.current_covered > before.current_covered
@@ -471,7 +471,7 @@ def test_three_tier_invariant_with_reachable_denominator() -> None:
         course_tech_index=index,
     )
 
-    assert analysis.reachable_required_count == 3  # A,B,C 도달 가능 / Unreachable 은 gap
+    assert analysis.required_count == 3  # A,B,C 도달 가능 / Unreachable 은 gap
     assert analysis.gap_tokens == ["Unreachable"]
     assert analysis.current_ratio <= analysis.next_actions_ratio <= analysis.expected_ratio
     assert analysis.expected_ratio == pytest.approx(1.0)
@@ -491,7 +491,7 @@ def test_reachable_target_capped_at_thirty_by_frequency() -> None:
         course_tech_index=index,
     )
 
-    assert analysis.reachable_required_count == 30  # 35 도달 가능 → 상위 30 캡
+    assert analysis.required_count == 30  # 35 도달 가능 → 상위 30 캡
     # 분모 토큰 재구성: completed 가 비어 모든 목표 토큰이 미충족분 = 기여 added_tokens 합집합.
     target_tokens: set[str] = set()
     for contribution in analysis.course_contributions:
@@ -512,7 +512,7 @@ def test_reachable_target_not_capped_at_boundary() -> None:
         roadmap_courses=[("ALL", "전부수업")],
         course_tech_index=index,
     )
-    assert analysis.reachable_required_count == 30
+    assert analysis.required_count == 30
 
 
 def test_completed_tokens_preserved_when_cap_triggers() -> None:
@@ -534,13 +534,13 @@ def test_completed_tokens_preserved_when_cap_triggers() -> None:
     )
 
     # 35 도달 가능 → 30 캡. 이수 충족 3 개 우선 보존 + 나머지 27 은 고빈도로 채움.
-    assert analysis.reachable_required_count == 30
+    assert analysis.required_count == 30
     assert analysis.current_covered == 3  # 이수 토큰 보존 (보존 없으면 0)
     assert analysis.current_ratio == pytest.approx(0.1)
 
 
 def test_anchor_with_no_reachable_tokens_keeps_anchor_and_gap() -> None:
-    """기준 직무는 있으나 도달 가능 토큰이 없으면 reachable_required_count 0 + anchor·gap 보존."""
+    """기준 직무는 있으나 도달 가능 토큰이 없으면 required_count 0 + anchor·gap 보존."""
     jobs = [_job("be", job_name="백엔드", tech_stacks=["MySQL", "Docker"])]
     index = {"교양글쓰기": ["무관기술"]}  # anchor 토큰 가르치는 과목 없음
 
@@ -553,7 +553,7 @@ def test_anchor_with_no_reachable_tokens_keeps_anchor_and_gap() -> None:
 
     assert analysis.anchor_job_id == "be"  # 추천 직무는 있으니 anchor 보존
     assert analysis.anchor_job_name == "백엔드"
-    assert analysis.reachable_required_count == 0
+    assert analysis.required_count == 0
     assert analysis.current_ratio == pytest.approx(0.0)
     assert analysis.expected_ratio == pytest.approx(0.0)  # 분모 0 → 0.0 (1.0 아님)
     assert set(analysis.gap_tokens) == {"MySQL", "Docker"}  # 전부 도달 불가
@@ -571,9 +571,9 @@ def test_jobs_field_uses_full_job_tokens_not_reachable_scoped() -> None:
 
     analysis = compute_coverage(jobs, ["데이터베이스"], [], index)
 
-    assert analysis.reachable_required_count == 1  # 메인 게이지 분모 = 도달 가능 {MySQL}
+    assert analysis.required_count == 1  # 메인 게이지 분모 = 도달 가능 {MySQL}
     by_job = {coverage.job_id: coverage for coverage in analysis.jobs}
-    assert by_job["be"].total_required_count == 2  # 분야별 카드는 직무 전체 토큰 기준
+    assert by_job["be"].required_count == 2  # 분야별 카드는 직무 전체 토큰 기준
     assert by_job["be"].current_covered == 1
     assert by_job["be"].missing_tokens == ["Unreachable"]
 
@@ -657,7 +657,7 @@ def test_node_returns_coverage_analysis_with_ok_trace(tmp_path: Path) -> None:
 
     assert result["trace"] == ["coverage_analysis:ok"]
     analysis = result["coverage_analysis"]
-    assert analysis["reachable_required_count"] == 2
+    assert analysis["required_count"] == 2
     assert analysis["current_covered"] == 1
     assert analysis["expected_covered"] == 2
     assert analysis["current_ratio"] == pytest.approx(0.5)
@@ -697,7 +697,7 @@ def test_node_uses_anchor_job_id_from_state(tmp_path: Path) -> None:
 
     # 게이지는 anchor(fe) 에 정렬된다.
     assert analysis["anchor_job_id"] == "fe"
-    assert analysis["reachable_required_count"] == 1  # fe 토큰 {React} 뿐
+    assert analysis["required_count"] == 1  # fe 토큰 {React} 뿐
     assert analysis["current_covered"] == 1
     # 분야별 분석(jobs)은 anchor 와 무관하게 전 직무를 담는다.
     assert {coverage["job_id"] for coverage in analysis["jobs"]} == {"be", "fe"}
@@ -718,7 +718,7 @@ def test_node_empty_when_no_recommended_jobs(tmp_path: Path) -> None:
     )
 
     assert result["trace"] == ["coverage_analysis:empty"]
-    assert result["coverage_analysis"]["reachable_required_count"] == 0
+    assert result["coverage_analysis"]["required_count"] == 0
     assert result["coverage_analysis"]["jobs"] == []
 
 
@@ -778,5 +778,5 @@ def test_node_emits_no_reachable_tokens_trace(tmp_path: Path) -> None:
     assert result["trace"] == ["coverage_analysis:no_reachable_tokens"]
     analysis = result["coverage_analysis"]
     assert analysis["anchor_job_id"] == "be"  # anchor 는 보존
-    assert analysis["reachable_required_count"] == 0
+    assert analysis["required_count"] == 0
     assert set(analysis["gap_tokens"]) == {"MySQL", "Docker"}
