@@ -703,3 +703,272 @@ def test_node_passes_through_job_and_track_rationales() -> None:
     track = explanation["track_rationales"][0]
     assert track["combo_rationale"] != track["track_a_rationale"]
     assert track["track_a_rationale"] != track["track_b_rationale"]
+
+
+def _combo_with_key(
+    track_a_name: str,
+    track_b_name: str,
+    combo_key: str,
+    *,
+    slot_type: str = "mmr",
+    rank: int = 3,
+) -> dict[str, Any]:
+    """combo_key 와 트랙명을 명시한 보조 조합 fixture."""
+    combo = _ranked_combo(track_a_name, track_b_name, slot_type=slot_type, rank=rank)
+    combo["combo"]["combo_key"] = combo_key
+    combo["combo"]["track_a"]["track_id"] = combo_key + "_a"
+    combo["combo"]["track_b"]["track_id"] = combo_key + "_b"
+    return combo
+
+
+def test_secondary_combos_get_rationales_when_llm_omits_them() -> None:
+    """LLM 이 주 추천 조합 근거만 내도 보조 조합 전부가 combo_key 근거로 채워진다."""
+    client = MagicMock(spec=LLMClient)
+    # LLM 은 최상위(주 추천) 조합만 근거를 생성하고 보조 2개를 누락.
+    client.invoke.return_value = Explanation(
+        text="요약",
+        track_rationales=[
+            TrackRationale(
+                combo_key="t_a::t_b",
+                combo_rationale="주 추천 조합 시너지 근거.",
+                track_a_rationale="주 1트랙 근거.",
+                track_b_rationale="주 2트랙 근거.",
+            ),
+        ],
+    )
+    node = LLMExplanationNode(llm_client=client)
+
+    result = node(
+        {
+            "recommended_jobs": [_job()],
+            "primary_combos": [_ranked_combo()],
+            "secondary_combos": [
+                _combo_with_key("웹공학", "한국어교육", "t_web::t_kor", rank=3),
+                _combo_with_key("디지털콘텐츠·가상현실", "역사문화큐레이션", "t_dc::t_his", rank=4),
+            ],
+            "roadmap": _roadmap_dict(),
+        }
+    )
+
+    rationales = result["explanation"]["track_rationales"]
+    keys = {r["combo_key"] for r in rationales}
+    # 주 추천 1 + 보조 2 = 세 조합 모두 combo_key 근거가 존재.
+    assert keys == {"t_a::t_b", "t_web::t_kor", "t_dc::t_his"}
+    # 두 보조 조합 fallback 의 조합 근거 문구가 서로 다르다 (동일 폴백 중복 방지).
+    by_key = {r["combo_key"]: r for r in rationales}
+    assert by_key["t_web::t_kor"]["combo_rationale"] != by_key["t_dc::t_his"]["combo_rationale"]
+    # 합성된 조합 근거 안에서도 세 필드가 서로 구분된다.
+    web = by_key["t_web::t_kor"]
+    assert web["combo_rationale"] != web["track_a_rationale"]
+    assert web["track_a_rationale"] != web["track_b_rationale"]
+
+
+def test_llm_track_rationales_are_preserved_when_complete() -> None:
+    """LLM 이 모든 조합 근거를 생성하면 fallback 으로 덮어쓰지 않고 그대로 보존된다."""
+    client = MagicMock(spec=LLMClient)
+    client.invoke.return_value = Explanation(
+        text="요약",
+        track_rationales=[
+            TrackRationale(
+                combo_key="t_a::t_b",
+                combo_rationale="주 추천 조합 시너지 (LLM).",
+                track_a_rationale="주 1트랙 (LLM).",
+                track_b_rationale="주 2트랙 (LLM).",
+            ),
+            TrackRationale(
+                combo_key="t_web::t_kor",
+                combo_rationale="보조 조합 시너지 (LLM).",
+                track_a_rationale="보조 1트랙 (LLM).",
+                track_b_rationale="보조 2트랙 (LLM).",
+            ),
+        ],
+    )
+    node = LLMExplanationNode(llm_client=client)
+
+    result = node(
+        {
+            "recommended_jobs": [_job()],
+            "primary_combos": [_ranked_combo()],
+            "secondary_combos": [_combo_with_key("웹공학", "한국어교육", "t_web::t_kor")],
+            "roadmap": _roadmap_dict(),
+        }
+    )
+
+    rationales = result["explanation"]["track_rationales"]
+    assert len(rationales) == 2
+    by_key = {r["combo_key"]: r for r in rationales}
+    # LLM 원문이 보존된다 (fallback 문구로 치환되지 않음).
+    assert by_key["t_web::t_kor"]["combo_rationale"] == "보조 조합 시너지 (LLM)."
+
+
+def test_fallback_track_rationale_passes_validation_with_empty_tags() -> None:
+    """역량·기술스택이 비어 있어도 fallback 근거가 min_length 검증을 통과한다."""
+    client = MagicMock(spec=LLMClient)
+    client.invoke.return_value = Explanation(text="요약")
+    node = LLMExplanationNode(llm_client=client)
+
+    # _ranked_combo / _combo_with_key 의 트랙은 competencies/tech_stacks 가 빈 리스트.
+    result = node(
+        {
+            "recommended_jobs": [_job()],
+            "primary_combos": [_ranked_combo()],
+            "secondary_combos": [_combo_with_key("웹공학", "한국어교육", "t_web::t_kor")],
+            "roadmap": _roadmap_dict(),
+        }
+    )
+
+    rationales = result["explanation"]["track_rationales"]
+    assert {r["combo_key"] for r in rationales} == {"t_a::t_b", "t_web::t_kor"}
+    for r in rationales:
+        assert r["combo_rationale"]
+        assert r["track_a_rationale"]
+        assert r["track_b_rationale"]
+
+
+def test_llm_generation_failure_still_returns_covered_explanation() -> None:
+    """LLM 호출이 예외로 실패해도 추천 응답은 살아 있고 모든 조합 근거가 채워진다."""
+    client = MagicMock(spec=LLMClient)
+    client.invoke.side_effect = RuntimeError("LLM down")
+    node = LLMExplanationNode(llm_client=client)
+
+    result = node(
+        {
+            "recommended_jobs": [_job()],
+            "primary_combos": [_ranked_combo()],
+            "secondary_combos": [
+                _combo_with_key("웹공학", "한국어교육", "t_web::t_kor", rank=3),
+                _combo_with_key("디지털콘텐츠·가상현실", "역사문화큐레이션", "t_dc::t_his", rank=4),
+            ],
+            "roadmap": _roadmap_dict(),
+        }
+    )
+
+    explanation = result["explanation"]
+    # 응답 구조 자체는 유지된다 (예외 전파로 500 이 되지 않음).
+    assert result["trace"] == ["llm_explanation:fallback"]
+    assert explanation["text"]
+    # 트랙 근거는 폴백으로 모든 조합 combo_key 가 채워진다.
+    keys = {r["combo_key"] for r in explanation["track_rationales"]}
+    assert keys == {"t_a::t_b", "t_web::t_kor", "t_dc::t_his"}
+
+
+def test_hallucinated_and_duplicate_combo_keys_are_sanitized() -> None:
+    """추천 조합에 없는 키는 버리고, 중복 키는 첫 건만 남겨 조합과 1:1 로 맞춘다."""
+    client = MagicMock(spec=LLMClient)
+    client.invoke.return_value = Explanation(
+        text="요약",
+        track_rationales=[
+            TrackRationale(
+                combo_key="t_a::t_b",
+                combo_rationale="첫 번째 근거.",
+                track_a_rationale="1트랙 근거.",
+                track_b_rationale="2트랙 근거.",
+            ),
+            # 같은 키 중복 — 버려져야 한다.
+            TrackRationale(
+                combo_key="t_a::t_b",
+                combo_rationale="중복 근거.",
+                track_a_rationale="중복 1.",
+                track_b_rationale="중복 2.",
+            ),
+            # 추천 조합에 없는 hallucinated 키 — 버려져야 한다.
+            TrackRationale(
+                combo_key="ghost::combo",
+                combo_rationale="유령 근거.",
+                track_a_rationale="유령 1.",
+                track_b_rationale="유령 2.",
+            ),
+        ],
+    )
+    node = LLMExplanationNode(llm_client=client)
+
+    result = node(
+        {
+            "recommended_jobs": [_job()],
+            "primary_combos": [_ranked_combo()],
+            "secondary_combos": [_combo_with_key("웹공학", "한국어교육", "t_web::t_kor")],
+            "roadmap": _roadmap_dict(),
+        }
+    )
+
+    rationales = result["explanation"]["track_rationales"]
+    # 추천 조합과 정확히 1:1 — 중복·유령 키 제거 후 누락 보조 조합 보강.
+    assert [r["combo_key"] for r in rationales] == ["t_a::t_b", "t_web::t_kor"]
+    by_key = {r["combo_key"]: r for r in rationales}
+    # 중복 중 첫 건만 보존.
+    assert by_key["t_a::t_b"]["combo_rationale"] == "첫 번째 근거."
+
+
+def test_combo_key_middle_dot_drift_is_matched_and_corrected() -> None:
+    """LLM 이 가운뎃점을 다른 변형으로 옮겨도 원본 키로 교정하고 LLM 문구를 보존한다."""
+    # 추천 조합 키는 한글 아래아(U+318D ㆍ) 를 쓴다 (학사 원본 트랙명).
+    auth_key = "디지털콘텐츠ㆍ가상현실트랙::역사문화큐레이션트랙"
+    # LLM 은 일반 가운뎃점(U+00B7 ·) 으로 옮겼다 — byte 매칭은 빗나간다.
+    drifted_key = "디지털콘텐츠·가상현실트랙::역사문화큐레이션트랙"
+    assert auth_key != drifted_key
+
+    client = MagicMock(spec=LLMClient)
+    client.invoke.return_value = Explanation(
+        text="요약",
+        track_rationales=[
+            TrackRationale(
+                combo_key=drifted_key,
+                combo_rationale="LLM 이 생성한 보조 조합 시너지.",
+                track_a_rationale="LLM 1트랙.",
+                track_b_rationale="LLM 2트랙.",
+            ),
+        ],
+    )
+    node = LLMExplanationNode(llm_client=client)
+
+    result = node(
+        {
+            "recommended_jobs": [_job()],
+            "primary_combos": [
+                _combo_with_key(
+                    "디지털콘텐츠ㆍ가상현실트랙",
+                    "역사문화큐레이션트랙",
+                    auth_key,
+                    slot_type="primary",
+                    rank=1,
+                )
+            ],
+            "secondary_combos": [],
+            "roadmap": _roadmap_dict(),
+        }
+    )
+
+    rationales = result["explanation"]["track_rationales"]
+    assert len(rationales) == 1
+    # 출력 키는 원본(U+318D) 으로 교정된다 — 백엔드 byte 매칭이 맞는다.
+    assert rationales[0]["combo_key"] == auth_key
+    # LLM 이 생성한 문구는 폐기되지 않고 보존된다 (fallback 으로 치환 X).
+    assert rationales[0]["combo_rationale"] == "LLM 이 생성한 보조 조합 시너지."
+
+
+def test_no_combos_clears_dangling_track_rationales() -> None:
+    """추천 조합이 없으면 LLM 이 만든 트랙 근거는 바인딩 대상이 없어 비운다."""
+    client = MagicMock(spec=LLMClient)
+    client.invoke.return_value = Explanation(
+        text="요약",
+        track_rationales=[
+            TrackRationale(
+                combo_key="ghost::combo",
+                combo_rationale="유령 근거.",
+                track_a_rationale="유령 1.",
+                track_b_rationale="유령 2.",
+            ),
+        ],
+    )
+    node = LLMExplanationNode(llm_client=client)
+
+    result = node(
+        {
+            "recommended_jobs": [_job()],
+            "primary_combos": [],
+            "secondary_combos": [],
+            "roadmap": _roadmap_dict(),
+        }
+    )
+
+    assert result["explanation"]["track_rationales"] == []

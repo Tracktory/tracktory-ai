@@ -71,9 +71,12 @@ You must follow these rules.
   ``기술스택`` / ``역량``. Each job's rationale must be distinct — do not reuse
   the same wording across jobs or copy the top job's rationale to the others.
   If [Jobs context] is ``데이터 없음``, leave this an empty list.
-- Per-track rationale (``track_rationales``): Create one item for each track
-  combination that appears in the [Tracks context]. Set ``combo_key`` to that
-  combination's ``combo_key`` verbatim. Write ``combo_rationale`` (1-2
+- Per-track rationale (``track_rationales``): Create one item for EVERY track
+  combination that appears in the [Tracks context] — this includes both the
+  주 추천 (primary) combinations and ALL 보조 추천 (secondary, slot
+  cross_college / mmr) combinations. Do not stop after the top combination.
+  Set ``combo_key`` to that combination's ``combo_key`` verbatim. Write
+  ``combo_rationale`` (1-2
   sentences) for the synergy of choosing the two tracks together, and write
   ``track_a_rationale`` / ``track_b_rationale`` (1 sentence each) for the
   individual value of the 1트랙 and 2트랙 respectively, grounded in each
