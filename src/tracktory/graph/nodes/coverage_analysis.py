@@ -1,11 +1,23 @@
-"""추천 직무 요구 역량 대비 현재 → 예상 충족도를 산출한다.
+"""단일 기준 직무(anchor) 요구 역량 대비 현재 → 예상 충족도를 산출한다.
 
 추천 결과를 일회성 결과가 아닌 "채워가는 지도" 로 만드는 노드. 상위 노드가
-채워 둔 추천 직무(목표 토큰), 학습 로드맵(잔여 추천 과목), 이수 과목만으로
-충족도를 계산하며 별도 검색·LLM 호출을 하지 않는다.
+채워 둔 추천 직무, 학습 로드맵(잔여 추천 과목), 이수 과목만으로 충족도를
+계산하며 별도 검색·LLM 호출을 하지 않는다.
+
+기준 직무(anchor):
+    게이지(현재/예상 충족도)·잔여 과목 기여도·다음 액션·gap 토큰은 추천 직무를
+    합치지 않고 **하나의 기준 직무**에 대해 산출한다. 합집합·평균은 "무엇의 몇
+    %인지" 를 모호하게 만들기 때문이다. 기본값은 매칭도 1순위(``match_score``
+    최댓값, 동률은 입력 순서 우선) 직무이며, 호출자가 ``anchor_job_id`` 로 다른
+    추천 직무를 지정하면 그 직무로 다시 산출한다.
+
+분야별 분석(``jobs``)은 예외 — anchor 와 무관:
+    추천 직무를 나란히 비교하는 카드 데이터라 **전 추천 직무**의 per-job 충족도를
+    각자 자기 토큰 기준으로 담는다. 사용자가 직무 간 충족도를 비교해 기준 직무를
+    바꿀지 판단하는 데 쓰이므로 anchor 한 건으로 좁히지 않는다.
 
 목표 토큰 정의:
-    추천 직무들의 기술스택 + 역량 태그를 표기 정합 키로 통합한 집합. 직무·트랙·
+    기준 직무의 기술스택 + 역량 태그를 표기 정합 키로 통합한 집합. 직무·트랙·
     과목이 같은 기술을 다른 표기로 적어도(예: "ReactJS" vs "React") 한 토큰으로
     묶이도록 직무 매칭·트랙 시너지와 같은 정합 사전을 재사용한다.
 
@@ -80,6 +92,38 @@ def _job_tokens(job: JobCandidate) -> list[str]:
     return [*job.tech_stacks, *job.competency_tags]
 
 
+def _select_anchor(jobs: list[JobCandidate], anchor_job_id: str | None) -> JobCandidate | None:
+    """충족도 산출의 기준 직무(anchor)를 고른다.
+
+    지정한 ``anchor_job_id`` 가 추천 직무에 있으면 그 직무를, 없으면 매칭도
+    1순위(``match_score`` 최댓값)를 기본 anchor 로 한다. 동률은 입력 순서를
+    보존하므로(``max`` 의 first-max 성질) 상위 노드가 정렬해 둔 순위를 그대로
+    따른다. 지정 식별자가 추천 직무에 없으면(예: stale 토글 입력) 기본 anchor
+    로 graceful fallback 한다.
+
+    Returns:
+        기준 직무. 추천 직무가 하나도 없으면 ``None``.
+    """
+    if not jobs:
+        return None
+    if anchor_job_id:
+        for job in jobs:
+            if job.job_id == anchor_job_id:
+                return job
+    return max(jobs, key=lambda job: job.match_score)
+
+
+def _empty_analysis() -> CoverageAnalysis:
+    """목표 토큰 부재 시의 graceful 빈 분석. 비율 0.0, 리스트 빈 채로 종료한다."""
+    return CoverageAnalysis(
+        required_count=0,
+        current_covered=0,
+        expected_covered=0,
+        current_ratio=0.0,
+        expected_ratio=0.0,
+    )
+
+
 def _format_action_message(course_name: str, contribution_ratio: float) -> str:
     """다음 액션 제안 문구 — 과목 이수 시 충족도 증가분을 백분율로 안내."""
     percent = round(contribution_ratio * 100)
@@ -91,36 +135,41 @@ def compute_coverage(
     completed_course_names: list[str],
     roadmap_courses: list[tuple[str, str]],
     course_tech_index: dict[str, list[str]],
+    anchor_job_id: str | None = None,
 ) -> CoverageAnalysis:
-    """추천 직무 요구 역량 대비 현재/예상 충족도 분석을 산출한다.
+    """단일 기준 직무(anchor) 요구 역량 대비 현재/예상 충족도 분석을 산출한다.
 
-    색인을 인자로 받는 순수 함수라 파일 I/O 없이 검증 가능하다. 목표 토큰이
-    하나도 없으면(추천 직무 부재 또는 직무 토큰 미보유) 빈 분석을 반환한다.
+    색인을 인자로 받는 순수 함수라 파일 I/O 없이 검증 가능하다. 게이지·잔여 과목
+    기여도·다음 액션·gap 토큰은 하나의 기준 직무에 정렬되고, 분야별 분석
+    (``jobs``)만 예외로 전 추천 직무의 per-job 충족도를 담는다 (직무 비교용,
+    anchor 무관). 추천 직무가 없거나 기준 직무 토큰이 비면 빈 분석을 반환한다.
 
     Args:
-        jobs: 추천 직무 후보. ``tech_stacks`` + ``competency_tags`` 가 목표 토큰.
+        jobs: 추천 직무 후보. 그중 한 건을 기준 직무로 고른다.
         completed_course_names: 이수 과목 이름 목록 (현재 충족도 산출).
         roadmap_courses: 추천 로드맵의 잔여 과목 ``(course_id, course_name)`` 목록
             (예상 충족도·과목별 기여도 산출). course_id 기준 중복 없음 가정.
         course_tech_index: 과목 이름 → 기술 토큰 색인.
+        anchor_job_id: 기준 직무 식별자. ``None`` 또는 추천 직무에 없는 값이면
+            매칭도 1순위 직무를 기본 anchor 로 한다.
 
     Returns:
-        ``CoverageAnalysis``. 비율 필드는 [0, 1], 목표 토큰 부재 시 모두 0.0.
-        ``next_actions_ratio`` 는 노출한 다음 액션 과목까지 이수했을 때의 합집합
-        도달 충족도로 ``current_ratio <= next_actions_ratio <= expected_ratio``.
+        ``CoverageAnalysis``. ``anchor_job_id`` / ``anchor_job_name`` 으로 기준
+        직무를 함께 싣는다. 비율 필드는 [0, 1], 목표 토큰 부재 시 모두 0.0 +
+        ``anchor_job_id == ""``. ``next_actions_ratio`` 는 노출한 다음 액션
+        과목까지 이수했을 때의 합집합 도달 충족도로
+        ``current_ratio <= next_actions_ratio <= expected_ratio``.
     """
-    target_display = _token_display_map([token for job in jobs for token in _job_tokens(job)])
+    anchor = _select_anchor(jobs, anchor_job_id)
+    if anchor is None:
+        return _empty_analysis()
+
+    target_display = _token_display_map(_job_tokens(anchor))
     target_keys = set(target_display)
     required_count = len(target_keys)
 
     if required_count == 0:
-        return CoverageAnalysis(
-            required_count=0,
-            current_covered=0,
-            expected_covered=0,
-            current_ratio=0.0,
-            expected_ratio=0.0,
-        )
+        return _empty_analysis()
 
     completed_keys = canonical_tech_keys(
         resolve_course_tokens(completed_course_names, course_tech_index)
@@ -138,7 +187,12 @@ def compute_coverage(
     reachable_keys = completed_keys | roadmap_all_keys
     expected_keys = target_keys & reachable_keys
 
-    jobs_coverage = [_job_coverage(job, completed_keys, reachable_keys) for job in jobs]
+    # 분야별 분석은 anchor 와 무관 — 전 추천 직무를 각자 토큰 기준으로 담아
+    # 직무 간 비교 카드에 쓴다. 현재 충족률 내림차순(동률은 job_id) 정렬.
+    jobs_coverage = sorted(
+        (_job_coverage(job, completed_keys, reachable_keys) for job in jobs),
+        key=lambda coverage: (-coverage.current_ratio, coverage.job_id),
+    )
     contributions = _course_contributions(course_keys, target_keys, current_keys, target_display)
     next_actions = [
         NextActionSuggestion(
@@ -166,6 +220,8 @@ def compute_coverage(
     next_actions_reachable = current_keys | next_action_keys
 
     return CoverageAnalysis(
+        anchor_job_id=anchor.job_id,
+        anchor_job_name=anchor.job_name,
         required_count=required_count,
         current_covered=len(current_keys),
         expected_covered=len(expected_keys),
@@ -284,6 +340,7 @@ class CoverageAnalysisNode:
             completed_courses,
             roadmap_courses,
             self._course_tech_index,
+            anchor_job_id=state.get("anchor_job_id"),
         )
         trace = "coverage_analysis:ok" if analysis.required_count > 0 else "coverage_analysis:empty"
         return {

@@ -24,7 +24,7 @@ class GraphState(TypedDict, total=False):
 
     필드 그룹:
         입력:
-            user_id, raw_input
+            user_id, raw_input, anchor_job_id (역량 커버리지 기준 직무, 선택)
         정규화 출력:
             normalized_profile (dict 형태로 NormalizedProfile.model_dump 결과),
             current_semester (사용자 입력 또는 fallback 추정값)
@@ -55,6 +55,11 @@ class GraphState(TypedDict, total=False):
     # 학생의 현재 학기 (1~8). 정규화 노드가 사용자 입력 또는 입학년도 기반
     # fallback 추정으로 채운다. 학습 로드맵 노드의 잔여 학기 분산 시작점.
     current_semester: int | None
+
+    # 역량 커버리지 산출의 기준 직무. 사용자가 추천 직무 중 하나를 "기준
+    # 직무로 선택" 했을 때 그 식별자가 흐른다. 미지정(None) 이면 커버리지
+    # 노드가 매칭도 1순위 직무를 기본 기준으로 삼는다.
+    anchor_job_id: str | None
 
     # --- 임베딩 출력 ---
     profile_text: str | None

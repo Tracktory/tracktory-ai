@@ -22,13 +22,14 @@ def _job(
     job_name: str | None = None,
     tech_stacks: list[str] | None = None,
     competency_tags: list[str] | None = None,
+    match_score: float = 0.8,
 ) -> JobCandidate:
     return JobCandidate(
         job_id=job_id,
         job_name=job_name or job_id,
         tech_stacks=tech_stacks or [],
         competency_tags=competency_tags or [],
-        match_score=0.8,
+        match_score=match_score,
     )
 
 
@@ -57,11 +58,14 @@ def test_current_and_expected_ratio_basic() -> None:
     assert analysis.gap_tokens == []
 
 
-def test_per_field_job_levels_current_and_expected() -> None:
-    """분야(직무)별 현재/예상 역량 수준을 제공한다 (issue 조건 2)."""
+def test_default_anchor_is_top_match_and_target_is_anchor_tokens_only() -> None:
+    """기준 직무 미지정 시 매칭도 1순위 직무 토큰만 목표로 삼는다 (issue 조건 1).
+
+    합집합이 아니라 단일 anchor 라, 비-anchor 직무(fe)의 토큰은 목표에서 빠진다.
+    """
     jobs = [
-        _job("be", job_name="백엔드", tech_stacks=["MySQL", "Docker"]),
-        _job("fe", job_name="프론트", tech_stacks=["React"]),
+        _job("be", job_name="백엔드", tech_stacks=["MySQL", "Docker"], match_score=0.9),
+        _job("fe", job_name="프론트", tech_stacks=["React"], match_score=0.6),
     ]
     index = {"데이터베이스": ["MySQL"], "프론트개론": ["React"]}
 
@@ -72,16 +76,145 @@ def test_per_field_job_levels_current_and_expected() -> None:
         course_tech_index=index,
     )
 
-    by_job = {job.job_id: job for job in analysis.jobs}
-    assert by_job["be"].required_count == 2
-    assert by_job["be"].current_covered == 1  # MySQL
-    assert by_job["be"].expected_covered == 1  # Docker 미공급 → 그대로
-    assert by_job["be"].missing_tokens == ["Docker"]
-    assert by_job["fe"].required_count == 1
-    assert by_job["fe"].current_covered == 0
-    assert by_job["fe"].expected_covered == 1  # 로드맵 프론트개론 → React
-    assert by_job["fe"].current_ratio == pytest.approx(0.0)
-    assert by_job["fe"].expected_ratio == pytest.approx(1.0)
+    assert analysis.anchor_job_id == "be"
+    assert analysis.anchor_job_name == "백엔드"
+    # 목표는 anchor(be) 토큰 {MySQL, Docker} 뿐 — fe 의 React 는 미포함.
+    assert analysis.required_count == 2
+    assert analysis.current_covered == 1  # MySQL
+    assert analysis.gap_tokens == ["Docker"]  # 로드맵 프론트개론(React)은 목표 무관
+
+
+def test_default_anchor_respects_input_order_on_score_tie() -> None:
+    """매칭도 동률이면 입력 순서(상위 노드 정렬)를 보존해 첫 직무를 anchor 로 둔다."""
+    jobs = [
+        _job("be", job_name="백엔드", tech_stacks=["MySQL"], match_score=0.8),
+        _job("fe", job_name="프론트", tech_stacks=["React"], match_score=0.8),
+    ]
+    index = {"데이터베이스": ["MySQL"]}
+
+    analysis = compute_coverage(
+        jobs,
+        completed_course_names=["데이터베이스"],
+        roadmap_courses=[],
+        course_tech_index=index,
+    )
+    assert analysis.anchor_job_id == "be"
+
+
+def test_explicit_anchor_recomputes_against_specified_job() -> None:
+    """기준 직무를 지정하면 1순위가 아니어도 그 직무 기준으로 다시 산출한다 (issue 조건 2)."""
+    jobs = [
+        _job("be", job_name="백엔드", tech_stacks=["MySQL", "Docker"], match_score=0.9),
+        _job("fe", job_name="프론트", tech_stacks=["React"], match_score=0.6),
+    ]
+    index = {"프론트개론": ["React"]}
+
+    analysis = compute_coverage(
+        jobs,
+        completed_course_names=["프론트개론"],
+        roadmap_courses=[],
+        course_tech_index=index,
+        anchor_job_id="fe",
+    )
+
+    assert analysis.anchor_job_id == "fe"
+    assert analysis.required_count == 1  # fe 토큰 {React} 뿐
+    assert analysis.current_ratio == pytest.approx(1.0)  # React 이수 완료
+
+
+def test_invalid_anchor_falls_back_to_default_top_match() -> None:
+    """추천 직무에 없는 기준 직무 식별자는 매칭도 1순위로 graceful fallback 한다."""
+    jobs = [
+        _job("be", job_name="백엔드", tech_stacks=["MySQL"], match_score=0.9),
+        _job("fe", job_name="프론트", tech_stacks=["React"], match_score=0.6),
+    ]
+    index = {"데이터베이스": ["MySQL"]}
+
+    analysis = compute_coverage(
+        jobs,
+        completed_course_names=["데이터베이스"],
+        roadmap_courses=[],
+        course_tech_index=index,
+        anchor_job_id="nonexistent",
+    )
+    assert analysis.anchor_job_id == "be"
+
+
+def test_anchor_bound_subobjects_align_to_anchor_job() -> None:
+    """게이지·잔여 과목 기여도·다음 액션·gap 이 모두 같은 anchor 직무 토큰에 정렬된다.
+
+    분야별 분석(``jobs``)은 anchor 와 무관한 별개 축이라 여기서 검증하지 않는다
+    (``test_jobs_field_holds_all_recommended_jobs_independent_of_anchor`` 참조).
+    """
+    jobs = [
+        _job("be", job_name="백엔드", tech_stacks=["MySQL", "Docker", "Kafka"], match_score=0.9),
+        _job("fe", job_name="프론트", tech_stacks=["React", "TypeScript"], match_score=0.6),
+    ]
+    index = {
+        "데이터베이스": ["MySQL"],
+        "데브옵스": ["Docker", "Kafka"],
+        "프론트개론": ["React"],  # anchor(be) 와 무관 — 기여 0 이어야
+    }
+
+    analysis = compute_coverage(
+        jobs,
+        completed_course_names=["데이터베이스"],
+        roadmap_courses=[("OPS", "데브옵스"), ("FE", "프론트개론")],
+        course_tech_index=index,
+        anchor_job_id="be",
+    )
+
+    anchor_tokens = {"MySQL", "Docker", "Kafka"}
+
+    # 게이지(목표 토큰 수)가 anchor 직무 토큰에 정렬된다.
+    assert analysis.anchor_job_id == "be"
+    assert analysis.required_count == len(anchor_tokens)
+
+    # 잔여 과목 기여·다음 액션이 더하는 토큰은 모두 anchor 목표 토큰 안에 있다.
+    for contribution in analysis.course_contributions:
+        assert set(contribution.added_tokens) <= anchor_tokens
+    next_action_ids = {action.course_id for action in analysis.next_actions}
+    contribution_ids = {c.course_id for c in analysis.course_contributions}
+    assert next_action_ids <= contribution_ids
+
+    # anchor 와 무관한 과목(프론트개론/React)은 기여 0 — 다른 직무 토큰을 끌어오지 않는다.
+    contrib_by_id = {c.course_id: c for c in analysis.course_contributions}
+    assert contrib_by_id["FE"].contribution_ratio == pytest.approx(0.0)
+    assert contrib_by_id["FE"].added_tokens == []
+
+    # gap 토큰도 anchor 목표 토큰 안에서만 보고된다 (다른 직무 토큰 누출 없음).
+    assert set(analysis.gap_tokens) <= anchor_tokens
+
+
+def test_jobs_field_holds_all_recommended_jobs_independent_of_anchor() -> None:
+    """분야별 분석(``jobs``)은 anchor 와 무관하게 전 추천 직무를 각자 토큰 기준으로 담는다.
+
+    직무 간 비교 카드의 데이터원이라, 비-1순위 직무를 anchor 로 지정해도 jobs 에는
+    전 직무가 남고 현재 충족률 내림차순으로 정렬된다.
+    """
+    jobs = [
+        _job("be", job_name="백엔드", tech_stacks=["MySQL", "Docker"], match_score=0.9),
+        _job("fe", job_name="프론트", tech_stacks=["React"], match_score=0.6),
+    ]
+    index = {"데이터베이스": ["MySQL"], "프론트개론": ["React"]}
+
+    analysis = compute_coverage(
+        jobs,
+        completed_course_names=["프론트개론"],  # fe 의 React 충족 → fe 현재 충족률 높음
+        roadmap_courses=[],
+        course_tech_index=index,
+        anchor_job_id="fe",  # 비-1순위 anchor 여도 jobs 는 전 직무 유지
+    )
+
+    by_job = {coverage.job_id: coverage for coverage in analysis.jobs}
+    assert set(by_job) == {"be", "fe"}  # anchor 와 무관하게 전 직무
+    # 각 직무는 자기 토큰 기준으로 평가된다.
+    assert by_job["be"].required_count == 2  # MySQL, Docker
+    assert by_job["be"].current_covered == 0  # 프론트개론은 be 와 무관
+    assert by_job["fe"].required_count == 1  # React
+    assert by_job["fe"].current_covered == 1  # 프론트개론 → React
+    # 현재 충족률 내림차순: fe(1.0) → be(0.0)
+    assert [coverage.job_id for coverage in analysis.jobs] == ["fe", "be"]
 
 
 def test_per_course_contribution_and_next_actions() -> None:
@@ -366,7 +499,41 @@ def test_node_returns_coverage_analysis_with_ok_trace(tmp_path: Path) -> None:
     assert analysis["next_actions"][0]["course_id"] == "OPS"
     assert analysis["next_actions_covered"] == 2
     assert analysis["next_actions_ratio"] == pytest.approx(1.0)
+    assert analysis["anchor_job_id"] == "be"
+    assert analysis["anchor_job_name"] == "백엔드"
     assert analysis["jobs"][0]["job_id"] == "be"
+
+
+def test_node_uses_anchor_job_id_from_state(tmp_path: Path) -> None:
+    """state 의 anchor_job_id 가 기준 직무를 1순위가 아닌 지정 직무로 바꾼다."""
+    catalog = _write_catalog(
+        tmp_path,
+        [{"course_id": "FE", "course_name": "프론트개론", "tech_stacks": ["React"]}],
+    )
+    node = CoverageAnalysisNode(course_catalog_path=catalog)
+
+    state = {
+        "recommended_jobs": [
+            _job("be", job_name="백엔드", tech_stacks=["MySQL"], match_score=0.9).model_dump(
+                mode="json"
+            ),
+            _job("fe", job_name="프론트", tech_stacks=["React"], match_score=0.6).model_dump(
+                mode="json"
+            ),
+        ],
+        "roadmap": _roadmap_state([]),
+        "normalized_profile": _normalized_profile(completed_courses=["프론트개론"]),
+        "anchor_job_id": "fe",
+    }
+
+    analysis = node(state)["coverage_analysis"]
+
+    # 게이지는 anchor(fe) 에 정렬된다.
+    assert analysis["anchor_job_id"] == "fe"
+    assert analysis["required_count"] == 1  # fe 토큰 {React} 뿐
+    assert analysis["current_covered"] == 1
+    # 분야별 분석(jobs)은 anchor 와 무관하게 전 직무를 담는다.
+    assert {coverage["job_id"] for coverage in analysis["jobs"]} == {"be", "fe"}
 
 
 def test_node_empty_when_no_recommended_jobs(tmp_path: Path) -> None:
