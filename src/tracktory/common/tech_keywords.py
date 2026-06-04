@@ -616,13 +616,42 @@ def canonical_tech_key(tag: str) -> str:
     return canonical_tech_token(tag).casefold()
 
 
+_PAREN_CLAUSE = re.compile(r"\s*\([^)]*\)")
+_COMPOUND_SEPARATOR = re.compile(r"\s+[/+]\s+")
+
+
+def _atomize_tech_token(tag: str) -> list[str]:
+    """복합 표기 기술 라벨을 원자 토큰으로 분해한다.
+
+    직무 데이터는 한 항목에 여러 기술을 묶어 적는다 (예: ``"AWS / GCP"``,
+    ``"Docker + Kubernetes"``, ``"dbt (data build tool)"``). 트랙 토큰은 원자
+    단위라, 분해하지 않으면 ``"AWS / GCP"`` 전체가 한 키가 돼 ``"AWS"`` 와
+    매칭되지 않고 직무 커버율이 0 에 수렴한다.
+
+    분리 기준은 **공백으로 둘러싸인** ``/`` ``+`` 뿐이다 — ``"C++"`` ``"C#"``
+    ``"A/B"`` ``"CI/CD"`` ``"VR/AR"`` 처럼 구분자가 토큰 일부인 단일 기술은
+    쪼개지 않는다. 괄호절(별칭·부연·도구 나열)은 제거하고 머리 토큰만 남긴다.
+
+    Returns:
+        분해된 토큰 리스트. 복합 표기가 아니면 ``[tag]`` 그대로.
+    """
+    no_paren = _PAREN_CLAUSE.sub("", tag)
+    return [part for part in _COMPOUND_SEPARATOR.split(no_paren) if part.strip()]
+
+
 def canonical_tech_keys(tags: Iterable[str]) -> set[str]:
-    """기술 태그 목록을 정규 비교 키 집합으로 변환한다 (빈 키 제외)."""
+    """기술 태그 목록을 정규 비교 키 집합으로 변환한다 (빈 키 제외).
+
+    각 태그는 먼저 원자 토큰으로 분해된다 (``_atomize_tech_token``) — 직무
+    데이터의 복합 표기(``"AWS / GCP"``)를 원자 단위 트랙 토큰과 같은 grain 으로
+    맞춰, 교집합 비교가 표기 묶음 때문에 어긋나지 않게 한다.
+    """
     keys: set[str] = set()
     for tag in tags:
-        key = canonical_tech_key(tag)
-        if key:
-            keys.add(key)
+        for atom in _atomize_tech_token(tag):
+            key = canonical_tech_key(atom)
+            if key:
+                keys.add(key)
     return keys
 
 
