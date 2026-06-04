@@ -15,6 +15,7 @@ from tracktory.prompts.chatbot.rag_response import (
     ChatbotResponse,
     format_retrieved_docs,
     format_user_context,
+    strip_grounding,
 )
 
 logger = logging.getLogger("chatbot")
@@ -275,8 +276,9 @@ class GenerateResponseNode:
                 }
             )
 
+        # 히스토리에서만 `[근거:]` 제거 (response·로그엔 유지)
         return {
             "response": result.text,
             "response_choices": result.choices,
-            "messages": [AIMessage(content=result.text)],
+            "messages": [AIMessage(content=strip_grounding(result.text))],
         }
