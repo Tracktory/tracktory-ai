@@ -27,17 +27,19 @@ def test_generate_combos_filters_by_user_college_for_freshman(make_track) -> Non
 
 def test_generate_combos_uses_current_tracks_for_upperclass(make_track) -> None:
     """2학년+ (current_tracks 비어있지 않음): 1트랙 풀 = current_tracks."""
-    user_track = make_track("user_t", college_id="C1")
+    user_a = make_track("user_a", college_id="C1")
+    user_b = make_track("user_b", college_id="C1")
     other = make_track("o1", college_id="C2")
     another = make_track("o2", college_id="C2")
 
     combos = _generate_combos(
-        tracks=[user_track, other, another],
+        tracks=[user_a, user_b, other, another],
         user_college_id="C1",
-        current_tracks=["user_t"],
+        current_tracks=["user_a", "user_b"],
     )
     primary_track_ids = {c.track_a.track_id for c in combos}
-    assert primary_track_ids == {"user_t"}
+    assert primary_track_ids == {"user_a", "user_b"}
+    assert "user_a::user_b" in {c.combo_key for c in combos}
 
 
 def test_generate_combos_excludes_self_pairs(make_track) -> None:
