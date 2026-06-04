@@ -462,11 +462,15 @@ class NextActionSuggestion(BaseModel):
 
 
 class CoverageAnalysis(BaseModel):
-    """단일 기준 직무(anchor) 요구 역량 대비 현재 → 예상 충족도 분석 전체.
+    """단일 기준 직무(anchor)의 도달 가능 역량 대비 현재 → 예상 충족도 분석 전체.
 
     추천 결과(직무·트랙·로드맵)를 일회성 결과가 아닌 채워가는 지도로 만들기
-    위해, **하나의 기준 직무**가 요구하는 기술·역량 토큰을 목표로 삼아 학생의
-    현재 충족도와 추천 로드맵을 모두 이수했을 때의 예상 충족도를 산출한다.
+    위해, **하나의 기준 직무**가 요구하는 기술·역량 토큰 중 학생이 이수·추천
+    로드맵 과목으로 학습 가능한(도달 가능) 토큰만 분모로 삼아 현재 충족도와
+    추천 로드맵을 모두 이수했을 때의 예상 충족도를 산출한다. 분모를 도달 가능
+    토큰으로 좁혀 게이지가 "닿을 수 있는 역량 대비 충족" 을 나타내고 수강
+    행동에 반응하게 한다 (요구 토큰 전체를 분모로 쓰면 트랙으로 학습 불가능한
+    토큰 탓에 충족도가 구조적으로 낮은 값에 갇힌다).
 
     기준 직무를 하나로 고정하는 이유:
         추천 직무가 여럿일 때 충족도를 합집합·평균으로 섞으면 "무엇의 몇 %인지"
@@ -481,19 +485,28 @@ class CoverageAnalysis(BaseModel):
         ``anchor_job_name`` 으로 어느 직무를 기준으로 했는지 함께 싣는다
         (커버리지 모달의 "○○ 직무 기준" 라벨).
 
-    비율 필드는 모두 [0, 1] 이며 사용자 화면에서 백분율로 렌더링한다. 목표 토큰이
-    하나도 없으면(추천 직무 부재 또는 기준 직무 토큰 미보유) 모든 비율은 0.0,
-    리스트는 비고 ``anchor_job_id`` 는 빈 문자열로 graceful 종료한다.
+    비율 필드는 모두 [0, 1] 이며 사용자 화면에서 백분율로 렌더링한다. 추천 직무
+    자체가 없거나 기준 직무가 토큰을 전혀 안 가지면 모든 비율 0.0 + 리스트 빈
+    채로 ``anchor_job_id == ""`` 로 종료한다. 기준 직무는 있으나 도달 가능 토큰이
+    하나도 없으면(요구 토큰을 어떤 과목도 안 가르침) ``required_count == 0`` +
+    비율 0.0 이되 ``anchor_job_id`` 와 ``gap_tokens`` (전부 도달 불가)는 채워
+    반환한다 — 분모가 도달 가능 토큰으로 좁혀진 결과라 ``anchor_job_id != ""``
+    여도 ``required_count == 0`` 일 수 있다.
 
     Attributes:
-        anchor_job_id: 충족도 산출의 기준이 된 직무 식별자. 목표 토큰 부재 시
-            빈 문자열(``anchor_job_id == "" ⟺ required_count == 0``).
+        anchor_job_id: 충족도 산출의 기준이 된 직무 식별자. 추천 직무 부재 또는
+            기준 직무 토큰 미보유 시에만 빈 문자열.
         anchor_job_name: 기준 직무명 (사용자 표시용 "○○ 직무 기준" 라벨).
-        required_count: 기준 직무 목표 토큰 수 (표기 정합 후 중복 제거).
-        current_covered: 현재(이수 과목) 덮는 목표 토큰 수.
-        expected_covered: 추천 로드맵 이수 후 덮게 되는 목표 토큰 수.
+        required_count: 도달 가능 목표 토큰 수 (기준 직무 요구 토큰 중 이수·로드맵
+            과목으로 학습 가능한 토큰, 표기 정합 후 중복 제거; 과다 시 학습 빈도
+            상위 N 개로 캡).
+        current_covered: 현재(이수 과목) 덮는 도달 가능 목표 토큰 수.
+        expected_covered: 추천 로드맵 이수 후 덮게 되는 도달 가능 목표 토큰 수.
+            분모가 도달 가능 토큰뿐이라 ``required_count > 0`` 이면 분모와 같다.
         current_ratio: ``current_covered / required_count`` ([0, 1]). 분모 0 이면 0.0.
         expected_ratio: ``expected_covered / required_count`` ([0, 1]). 분모 0 이면 0.0.
+            도달 가능 분모이므로 ``required_count > 0`` 일 때 1.0 (전체 로드맵 이수
+            시 도달 가능 역량 100% 충족 — 게이지 상단 표기).
         next_actions_covered: 다음 액션(``next_actions`` 에 노출된 shortlist) 과목까지
             이수했을 때 덮는 목표 토큰 수. 합집합으로 계산해 ``current_covered <=
             next_actions_covered <= expected_covered`` 를 만족한다.
@@ -505,7 +518,9 @@ class CoverageAnalysis(BaseModel):
             내림차순으로 정렬한다. 목표 토큰 부재 시 빈 리스트.
         course_contributions: 잔여(추천) 과목별 기준 직무 충족도 기여도.
         next_actions: 추천 기반 다음 액션 (기여도 상위 과목).
-        gap_tokens: 추천 로드맵 이수 후에도 못 덮는 기준 직무 목표 토큰 (사용자 표시 표기).
+        gap_tokens: 기준 직무 요구 토큰 중 이수·로드맵 과목으로 학습 불가한(도달
+            불가) 토큰 (사용자 표시 표기). 분모에서는 빠지지만 "이 트랙에서 못
+            채우는 역량" 정보로 보존한다.
     """
 
     anchor_job_id: str = Field(default="")

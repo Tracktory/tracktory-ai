@@ -16,17 +16,28 @@
     각자 자기 토큰 기준으로 담는다. 사용자가 직무 간 충족도를 비교해 기준 직무를
     바꿀지 판단하는 데 쓰이므로 anchor 한 건으로 좁히지 않는다.
 
-목표 토큰 정의:
-    기준 직무의 기술스택 + 역량 태그를 표기 정합 키로 통합한 집합. 직무·트랙·
-    과목이 같은 기술을 다른 표기로 적어도(예: "ReactJS" vs "React") 한 토큰으로
-    묶이도록 직무 매칭·트랙 시너지와 같은 정합 사전을 재사용한다.
+목표 토큰(분모) 정의 — 도달 가능 토큰으로 한정:
+    기준 직무의 기술스택 + 역량 태그를 표기 정합 키로 통합하되, 그중 학생이
+    이수 과목 또는 추천 로드맵 과목으로 **실제 학습 가능한(도달 가능) 토큰만**
+    분모로 삼는다. 직무가 요구하는 토큰 중 어떤 과목도 가르치지 않는 토큰은
+    분모에서 빼 게이지가 "닿을 수 있는 역량 대비 충족" 을 나타내게 한다. 직무·
+    트랙·과목이 같은 기술을 다른 표기로 적어도(예: "ReactJS" vs "React") 한
+    토큰으로 묶이도록 직무 매칭·트랙 시너지와 같은 정합 사전을 재사용한다.
+    도달 가능 토큰이 과다하면(상한 초과) 학습 빈도(토큰을 가르치는 도달 과목
+    수) 상위 N 개만 분모로 남기되, 이수로 이미 충족한 토큰은 우선 보존한다
+    (캡 탓에 현재 충족이 과소집계되지 않도록). 캡으로 제외된 토큰은 도달
+    가능하지만 분모·gap 어디에도 노출하지 않는 의도적 절단이다.
 
-충족도 정의:
+충족도 정의(target = 도달 가능 목표 토큰):
     - current  = target ∩ (이수 과목 기술 토큰)
     - expected = target ∩ (이수 과목 + 추천 로드맵 과목 전체 기술 토큰)
+      = target (분모가 도달 가능 토큰뿐이라 로드맵 전부 이수 시 100% 도달).
+      게이지 상단(전체 충족) 표기의 근거다.
     - next_actions = target ∩ (이수 과목 + 다음 액션 shortlist 과목 토큰)
       (합집합 — 노출한 shortlist 만 이수했을 때 도달. current <= next_actions <= expected)
     - 과목별 기여 = (target ∩ 과목 토큰) - current  (현재 미충족분 중 새로 덮는 분)
+    - gap = 기준 직무 요구 토큰 중 도달 불가(어떤 과목도 안 가르침) 토큰. 분모에선
+      빠지지만 "이 트랙에서 못 채우는 역량" 정보로 보존한다.
 
 부작용 격리:
     과목 이름 → 기술 토큰 색인은 생성자에서 1 회 로드하고, 호출 경로(``__call__``)
@@ -34,13 +45,16 @@
     색인을 주입하면 파일 I/O 없이 단위 테스트가 가능하다.
 
 Trace 토큰:
-    - ``coverage_analysis:ok`` — 목표 토큰이 1 개 이상이라 분석을 산출.
-    - ``coverage_analysis:empty`` — 목표 토큰 부재(추천 직무 없음 또는 직무
-      토큰 미보유)로 빈 분석을 반환.
+    - ``coverage_analysis:ok`` — 도달 가능 목표 토큰이 1 개 이상이라 분석을 산출.
+    - ``coverage_analysis:no_reachable_tokens`` — 기준 직무는 있으나 요구 토큰을
+      가르치는 과목이 없어 도달 가능 분모가 0 (anchor·gap·분야별 분석은 채워 반환).
+    - ``coverage_analysis:empty`` — 추천 직무 부재 또는 기준 직무 토큰 미보유로
+      빈 분석을 반환.
 """
 
 from __future__ import annotations
 
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
@@ -66,6 +80,11 @@ from tracktory.graph.state import GraphState
 # 다음 액션 제안 노출 상한. 충족도를 가장 크게 올리는 상위 과목만 제안해 사용자
 # 화면의 인지 부하를 줄인다 (전체 기여도는 course_contributions 로 별도 제공).
 _MAX_NEXT_ACTIONS = 3
+
+# 도달 가능 목표 토큰(분모)의 상한. 한 직무의 요구 토큰이 방대해 게이지 분모가
+# 휩쓸리는 것을 막기 위해, 도달 가능 토큰이 이 값을 넘으면 학습 빈도(토큰을
+# 가르치는 도달 과목 수) 상위 N 개만 분모로 남긴다.
+_MAX_TARGET_TOKENS = 30
 
 
 # ---------------------------------------------------------------------------
@@ -130,6 +149,62 @@ def _format_action_message(course_name: str, contribution_ratio: float) -> str:
     return f"{course_name}을(를) 이수하면 역량 충족도가 약 {percent}% 오릅니다."
 
 
+def _ratio(covered: int, required: int) -> float:
+    """충족 토큰 수를 분모로 나눈 비율. 분모 0(도달 가능 토큰 부재)이면 0.0."""
+    return covered / required if required else 0.0
+
+
+def _select_target_keys(
+    anchor_keys: set[str],
+    reachable_keys: set[str],
+    completed_keys: set[str],
+    reachable_course_keys: list[set[str]],
+) -> set[str]:
+    """게이지 분모로 쓸 도달 가능 목표 토큰을 고른다.
+
+    기준 직무 요구 토큰 중 학생이 이수·로드맵 과목으로 학습 가능한(도달 가능)
+    토큰만 남긴다. 도달 가능 토큰이 상한(``_MAX_TARGET_TOKENS``)을 넘으면 학습
+    빈도(토큰을 가르치는 도달 과목 수) 상위 N 개만 분모로 채택해, 한 직무의
+    방대한 요구 토큰에 게이지 분모가 휩쓸리지 않게 한다.
+
+    캡이 걸려도 **이수 과목으로 이미 충족한 토큰은 분모에서 빼지 않는다**. 그래야
+    (a) 현재 충족(``current``)이 캡 탓에 과소집계돼 "수강 반응" 의도가 깨지는 일을
+    막고, (b) ``current <= required`` 불변을 보장한다. 이미 충족한 토큰이 상한을
+    넘는 드문 경우(요구 토큰이 방대하고 그만큼 이수)에는 그 집합을 그대로 반환해
+    상한보다 큰 분모를 허용한다 — 불변 보장이 표시 상한보다 우선이다.
+
+    캡으로 제외된 토큰은 도달 가능하지만 분모에도 ``gap_tokens`` 에도 나타나지
+    않는다 (gap 은 "도달 불가" 전용). 상위 N 개만 노출하려는 의도적 절단이다.
+
+    Args:
+        anchor_keys: 기준 직무 요구 토큰의 정합 키 전체.
+        reachable_keys: 이수 + 로드맵 과목이 가르치는 토큰의 정합 키 합집합.
+        completed_keys: 이수 과목이 가르치는 토큰의 정합 키 합집합. 캡에서 우선
+            보존할 "이미 충족한 목표 토큰" 식별에 쓴다.
+        reachable_course_keys: 도달 과목(이수 + 로드맵) 각각의 토큰 정합 키 집합.
+            학습 빈도(토큰별 등장 과목 수) 산정에 쓴다.
+
+    Returns:
+        분모로 채택한 도달 가능 목표 토큰 키 집합. 상한 초과 시 이미 충족한
+        토큰을 우선 보존하고 남은 슬롯을 학습 빈도 상위로 채운다. 동률 빈도는
+        토큰 키 사전순으로 끊어 deterministic 하다.
+    """
+    reachable_target = anchor_keys & reachable_keys
+    if len(reachable_target) <= _MAX_TARGET_TOKENS:
+        return reachable_target
+    guaranteed = reachable_target & completed_keys
+    if len(guaranteed) >= _MAX_TARGET_TOKENS:
+        return guaranteed
+    frequency: Counter[str] = Counter()
+    for keys in reachable_course_keys:
+        for key in keys & reachable_target:
+            frequency[key] += 1
+    fill_candidates = reachable_target - guaranteed
+    ranked = sorted(fill_candidates, key=lambda key: (-frequency[key], key))
+    budget = _MAX_TARGET_TOKENS - len(guaranteed)
+    return guaranteed | set(ranked[:budget])
+
+
 def compute_coverage(
     jobs: list[JobCandidate],
     completed_course_names: list[str],
@@ -137,12 +212,15 @@ def compute_coverage(
     course_tech_index: dict[str, list[str]],
     anchor_job_id: str | None = None,
 ) -> CoverageAnalysis:
-    """단일 기준 직무(anchor) 요구 역량 대비 현재/예상 충족도 분석을 산출한다.
+    """단일 기준 직무(anchor)의 도달 가능 역량 대비 현재/예상 충족도를 산출한다.
 
-    색인을 인자로 받는 순수 함수라 파일 I/O 없이 검증 가능하다. 게이지·잔여 과목
-    기여도·다음 액션·gap 토큰은 하나의 기준 직무에 정렬되고, 분야별 분석
-    (``jobs``)만 예외로 전 추천 직무의 per-job 충족도를 담는다 (직무 비교용,
-    anchor 무관). 추천 직무가 없거나 기준 직무 토큰이 비면 빈 분석을 반환한다.
+    색인을 인자로 받는 순수 함수라 파일 I/O 없이 검증 가능하다. 분모는 기준 직무
+    요구 토큰 *전체* 가 아니라 그중 학생이 이수·로드맵 과목으로 학습 가능한(도달
+    가능) 토큰뿐이라, 게이지가 "닿을 수 있는 역량 대비 충족" 을 나타내고 수강
+    행동에 반응한다. 게이지·잔여 과목 기여도·다음 액션·gap 토큰은 하나의 기준
+    직무에 정렬되고, 분야별 분석(``jobs``)만 예외로 전 추천 직무의 per-job 충족도를
+    담는다 (직무 비교용, anchor 무관 + 각 직무 전체 토큰 기준). 추천 직무가 없거나
+    기준 직무가 요구 토큰을 전혀 안 가지면 빈 분석을 반환한다.
 
     Args:
         jobs: 추천 직무 후보. 그중 한 건을 기준 직무로 고른다.
@@ -155,9 +233,15 @@ def compute_coverage(
 
     Returns:
         ``CoverageAnalysis``. ``anchor_job_id`` / ``anchor_job_name`` 으로 기준
-        직무를 함께 싣는다. 비율 필드는 [0, 1], 목표 토큰 부재 시 모두 0.0 +
-        ``anchor_job_id == ""``. ``next_actions_ratio`` 는 노출한 다음 액션
-        과목까지 이수했을 때의 합집합 도달 충족도로
+        직무를 함께 싣는다 (커버리지 모달의 "○○ 직무 기준" 라벨용). 비율 필드는
+        [0, 1]. ``required_count`` 는 도달 가능 목표 토큰 수이며, 분모가 도달
+        가능 토큰뿐이라 ``expected_ratio`` 는 ``required_count > 0`` 일 때 1.0
+        (전체 로드맵 이수 시 도달 가능 역량 100% 충족). 기준 직무는 있으나 도달
+        가능 토큰이 하나도 없으면 ``required_count == 0`` + 비율 0.0 이되
+        ``anchor_job_id`` 와 ``gap_tokens`` (전부 도달 불가)는 채워 반환한다.
+        추천 직무 자체가 없거나 기준 직무가 토큰을 전혀 안 가지면 ``anchor_job_id
+        == ""`` 의 빈 분석으로 종료한다. ``next_actions_ratio`` 는 노출한 다음
+        액션 과목까지 이수했을 때의 합집합 도달 충족도로
         ``current_ratio <= next_actions_ratio <= expected_ratio``.
     """
     anchor = _select_anchor(jobs, anchor_job_id)
@@ -165,18 +249,21 @@ def compute_coverage(
         return _empty_analysis()
 
     target_display = _token_display_map(_job_tokens(anchor))
-    target_keys = set(target_display)
-    required_count = len(target_keys)
-
-    if required_count == 0:
+    anchor_keys = set(target_display)
+    if not anchor_keys:
+        # 기준 직무가 요구 토큰 자체를 안 가짐 → 산출 불가, graceful 빈 분석.
         return _empty_analysis()
 
-    completed_keys = canonical_tech_keys(
-        resolve_course_tokens(completed_course_names, course_tech_index)
+    # 이수·로드맵 과목 정합 키를 과목 단위로 보존한다(중복 lookup 회피). 도달
+    # 집합·학습 빈도(분모 캡)·예상 충족도가 모두 이 per-course 키를 공유한다.
+    completed_course_keys = [
+        canonical_tech_keys(resolve_course_tokens([name], course_tech_index))
+        for name in completed_course_names
+    ]
+    completed_keys: set[str] = (
+        set().union(*completed_course_keys) if completed_course_keys else set()
     )
-    current_keys = target_keys & completed_keys
 
-    # 과목별 정합 키를 미리 구해 두고(중복 lookup 회피) 합집합으로 예상 충족도를 잡는다.
     course_keys: list[tuple[str, str, set[str]]] = []
     roadmap_all_keys: set[str] = set()
     for course_id, course_name in roadmap_courses:
@@ -185,7 +272,19 @@ def compute_coverage(
         roadmap_all_keys |= keys
 
     reachable_keys = completed_keys | roadmap_all_keys
-    expected_keys = target_keys & reachable_keys
+
+    # 분모 = 기준 직무 요구 토큰 중 도달 가능한 토큰(과다 시 학습 빈도 상위 N,
+    # 단 이수로 충족한 토큰은 우선 보존).
+    target_keys = _select_target_keys(
+        anchor_keys,
+        reachable_keys,
+        completed_keys,
+        [*completed_course_keys, *(keys for _id, _name, keys in course_keys)],
+    )
+    required_count = len(target_keys)
+    current_keys = target_keys & completed_keys
+    # 분모가 도달 가능 토큰뿐이라 expected(로드맵 전부 이수 후 도달) == 분모.
+    expected_keys = target_keys
 
     # 분야별 분석은 anchor 와 무관 — 전 추천 직무를 각자 토큰 기준으로 담아
     # 직무 간 비교 카드에 쓴다. 현재 충족률 내림차순(동률은 job_id) 정렬.
@@ -225,14 +324,14 @@ def compute_coverage(
         required_count=required_count,
         current_covered=len(current_keys),
         expected_covered=len(expected_keys),
-        current_ratio=len(current_keys) / required_count,
-        expected_ratio=len(expected_keys) / required_count,
+        current_ratio=_ratio(len(current_keys), required_count),
+        expected_ratio=_ratio(len(expected_keys), required_count),
         next_actions_covered=len(next_actions_reachable),
-        next_actions_ratio=len(next_actions_reachable) / required_count,
+        next_actions_ratio=_ratio(len(next_actions_reachable), required_count),
         jobs=jobs_coverage,
         course_contributions=contributions,
         next_actions=next_actions,
-        gap_tokens=sorted(target_display[key] for key in target_keys - expected_keys),
+        gap_tokens=sorted(target_display[key] for key in anchor_keys - reachable_keys),
     )
 
 
@@ -342,7 +441,13 @@ class CoverageAnalysisNode:
             self._course_tech_index,
             anchor_job_id=state.get("anchor_job_id"),
         )
-        trace = "coverage_analysis:ok" if analysis.required_count > 0 else "coverage_analysis:empty"
+        if analysis.required_count > 0:
+            trace = "coverage_analysis:ok"
+        elif analysis.anchor_job_id:
+            # 기준 직무는 있으나 요구 토큰을 가르치는 과목이 없어 도달 가능 분모 0.
+            trace = "coverage_analysis:no_reachable_tokens"
+        else:
+            trace = "coverage_analysis:empty"
         return {
             "coverage_analysis": analysis.model_dump(mode="json"),
             "trace": [trace],
