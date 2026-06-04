@@ -18,7 +18,11 @@ import yaml
 
 from tracktory.common.tech_keywords import canonical_tech_keys, canonical_tech_token
 from tracktory.graph.models import JobCandidate, Track, WeightsConfig
-from tracktory.graph.nodes.track_synergy import _generate_combos, _synergy_score
+from tracktory.graph.nodes.track_synergy import (
+    _generate_combos,
+    _single_department_ids,
+    _synergy_score,
+)
 from tracktory.rag.yaml_track_repository import YamlTrackRepository
 
 pytestmark = pytest.mark.integration
@@ -200,6 +204,55 @@ def test_primary_recommendations_sorted_by_score() -> None:
     primary_scores = [c["synergy_score"] for c in result["primary_combos"]]
     assert primary_scores == sorted(primary_scores, reverse=True)
     assert primary_scores[0] > 0.0, "최상위 주 추천 점수가 0 — 신호 공백 회귀"
+
+
+# 트랙 구분이 없는 단일 학과 — 학과별 소속 정보 교정 후 학과당 트랙 1개로 식별된다.
+# 복수 트랙 학과가 데이터 회귀로 1개만 로드되면 이 집합이 늘어 즉시 실패한다(오탐 가드).
+_SINGLE_DEPARTMENT_IDS = frozenset(
+    [
+        "AI응용학과",
+        "문학문화콘텐츠학과",
+        "미래모빌리티학과",
+        "융합보안학과",
+        "뷰티디자인매니지먼트학과",
+    ]
+)
+
+
+def test_single_departments_match_known_set() -> None:
+    """실제 카탈로그의 단일 학과(학과당 트랙 1개) 집합이 알려진 5개와 정확히 일치한다.
+
+    단일 학과 식별은 학과당 트랙 수 1 이라는 구조 신호에 의존한다. 복수 트랙 학과가
+    데이터 누락으로 1개만 로드되면 단일 학과로 오탐돼 조합에서 통째로 빠지므로,
+    기대 집합을 못박아 회귀를 즉시 잡는다.
+    """
+    single = _single_department_ids(_all_tracks())
+    assert single == _SINGLE_DEPARTMENT_IDS, (
+        f"단일 학과 집합 불일치: 예상치 못한 {single - _SINGLE_DEPARTMENT_IDS}, "
+        f"누락 {_SINGLE_DEPARTMENT_IDS - single}"
+    )
+
+
+def test_single_departments_not_combined_as_partner() -> None:
+    """단일 학과가 컴퓨터공학부 1학년 조합의 파트너로 등장하지 않는다 (criterion 2)."""
+    tracks = _all_tracks()
+    combos = _generate_combos(tracks, user_college_id="IT공과대학", current_tracks=[])
+    appearing = {t for c in combos for t in (c.track_a.track_id, c.track_b.track_id)}
+    assert not (appearing & _SINGLE_DEPARTMENT_IDS), (
+        f"단일 학과가 조합 파트너로 등장: {appearing & _SINGLE_DEPARTMENT_IDS}"
+    )
+
+
+def test_single_department_user_gets_no_combos() -> None:
+    """본인이 단일 학과 소속이면 조합을 생성하지 않는다 (criterion 3)."""
+    tracks = _all_tracks()
+    combos = _generate_combos(
+        tracks,
+        user_college_id="창의융합대학",
+        current_tracks=[],
+        user_department_id="AI응용학과",
+    )
+    assert combos == []
 
 
 def test_track_names_use_authoritative_middle_dot() -> None:

@@ -26,11 +26,15 @@ def _build_node(
     return node, repo
 
 
-def _normalized_profile(college: str = "C1", current_tracks: list[str] | None = None) -> dict:
+def _normalized_profile(
+    college: str = "C1",
+    current_tracks: list[str] | None = None,
+    department: str = "컴퓨터공학부",
+) -> dict:
     return {
         "admission_year": 2025,
         "college": college,
-        "department": "컴퓨터공학부",
+        "department": department,
         "current_tracks": current_tracks or [],
         "interests": ["IT/인터넷"],
         "dev_interests": ["AI"],
@@ -65,6 +69,35 @@ def test_node_skips_when_college_missing(real_synergy_yaml_path) -> None:
         }
     )
     assert result["trace"] == ["track_synergy:skip"]
+
+
+def test_node_returns_empty_combos_for_single_department_user(
+    make_track, real_synergy_yaml_path
+) -> None:
+    """단일 학과 사용자는 조합이 아닌 정상 빈 결과를 받는다 (errors 아님 → API 500 회피).
+
+    조합이 없을 때 errors 로 흘리면 추천 API 가 contract 위반으로 500 매핑한다.
+    단일 학과 사용자는 정상 케이스이므로 빈 조합 + empty trace 로 graceful 종료해야 한다.
+    """
+    single = make_track("AI응용학과", college_id="창의융합대학", department_id="AI응용학과")
+    other = make_track("빅데이터트랙", college_id="IT공과대학", department_id="컴퓨터공학부")
+    node, _ = _build_node(tracks=[single, other], real_synergy_yaml_path=real_synergy_yaml_path)
+
+    result = node(
+        {
+            "recommended_jobs": [
+                {"job_id": "j1", "job_name": "x", "tech_stacks": ["py"], "match_score": 0.7}
+            ],
+            "normalized_profile": _normalized_profile(
+                college="창의융합대학", department="AI응용학과"
+            ),
+        }
+    )
+
+    assert "errors" not in result
+    assert result["primary_combos"] == []
+    assert result["secondary_combos"] == []
+    assert result["trace"] == ["track_synergy:empty"]
 
 
 def test_node_returns_seven_combos_when_data_complete(make_track, real_synergy_yaml_path) -> None:

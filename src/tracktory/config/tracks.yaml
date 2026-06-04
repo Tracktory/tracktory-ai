@@ -2,8 +2,8 @@ tracks:
 - track_id: AI응용학과
   track_name: AI응용학과
   college_id: 창의융합대학
-  department_id: 창의융합대학
-  major_id: 창의융합대학
+  department_id: AI응용학과
+  major_id: AI응용학과
   course_ids:
   - Y030002
   - Y030036
@@ -724,8 +724,8 @@ tracks:
 - track_id: 문학문화콘텐츠학과
   track_name: 문학문화콘텐츠학과
   college_id: 창의융합대학
-  department_id: 창의융합대학
-  major_id: 창의융합대학
+  department_id: 문학문화콘텐츠학과
+  major_id: 문학문화콘텐츠학과
   course_ids:
   - Y020001
   - Y020011
@@ -819,8 +819,8 @@ tracks:
 - track_id: 미래모빌리티학과
   track_name: 미래모빌리티학과
   college_id: 창의융합대학
-  department_id: 창의융합대학
-  major_id: 창의융합대학
+  department_id: 미래모빌리티학과
+  major_id: 미래모빌리티학과
   course_ids:
   - Y050001
   - Y050002
@@ -1690,8 +1690,8 @@ tracks:
 - track_id: 융합보안학과
   track_name: 융합보안학과
   college_id: 창의융합대학
-  department_id: 창의융합대학
-  major_id: 창의융합대학
+  department_id: 융합보안학과
+  major_id: 융합보안학과
   course_ids:
   - Y040001
   - Y040002

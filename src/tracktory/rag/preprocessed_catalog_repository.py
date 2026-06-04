@@ -51,7 +51,7 @@ class PreprocessedCatalogError(Exception):
 class _TrackDoc:
     track_name: str
     college: str
-    department: str
+    department: str | None
     text: str
 
 
@@ -90,7 +90,7 @@ def _load_track_docs(rag_dir: Path) -> list[_TrackDoc]:
         track_name = _required_meta(path, meta, "track_name")
         college = _required_meta(path, meta, "college")
         department_meta = _optional_meta(meta, "department")
-        docs.append(_TrackDoc(track_name, college, department_meta or college, text))
+        docs.append(_TrackDoc(track_name, college, department_meta, text))
     return docs
 
 
@@ -167,12 +167,17 @@ class PreprocessedTrackRepository:
             course_ids = self._extract_course_ids(curriculum)
             if not course_ids:
                 continue
+            # 학부(department) 메타가 없으면 트랙 자신이 곧 독립 학과(트랙 구분이 없는
+            # 단일 학과)다. college 로 대체하면 한 단과대 아래 별개 단일 학과들이 같은
+            # department_id 로 뭉뚱그려져 구조적으로 구분되지 않는다. 트랙명을 학과
+            # 식별자로 써 단일 학과가 학과당 트랙 1개로 식별되게 한다.
+            department_id = doc.department or track_name
             try:
                 tracks.append(
                     Track(
                         college_id=doc.college,
-                        department_id=doc.department,
-                        major_id=doc.department,
+                        department_id=department_id,
+                        major_id=department_id,
                         track_id=track_name,
                         track_name=track_name,
                         course_ids=course_ids,
