@@ -23,7 +23,9 @@ from tracktory.graph.models import (
     CourseFlow,
     Explanation,
     ExplanationSection,
+    JobRationale,
     SemesterSubtitle,
+    TrackRationale,
 )
 from tracktory.graph.nodes.llm_explanation import LLMClient, LLMExplanationNode
 
@@ -601,3 +603,103 @@ def test_substitution_robust_across_personas(job_name: str, track_a: str, track_
     assert f"트랙 조합={track_a} + {track_b}" in rendered
     assert "course_id=c1" in rendered
     assert "단계명=기초" in rendered
+
+
+def test_jobs_context_exposes_job_id_for_each_job() -> None:
+    """추천 직무가 여러 건이면 각 직무의 job_id 가 컨텍스트에 노출돼 항목별 근거를 binding 할 수 있다."""
+    client = MagicMock(spec=LLMClient)
+    client.invoke.return_value = Explanation(text="요약")
+    node = LLMExplanationNode(llm_client=client)
+
+    node(
+        {
+            "recommended_jobs": [
+                _job(job_id="be_dev_001", job_name="백엔드 개발자"),
+                _job(job_id="data_001", job_name="데이터 분석가"),
+            ],
+            "primary_combos": [_ranked_combo()],
+            "secondary_combos": [],
+            "roadmap": _roadmap_dict(),
+        }
+    )
+
+    rendered = _messages_concat(client.invoke.call_args)
+    assert "job_id=be_dev_001" in rendered
+    assert "job_id=data_001" in rendered
+
+
+def test_tracks_context_exposes_combo_key_and_per_track_tags() -> None:
+    """각 조합의 combo_key + 두 트랙의 개별 역량/기술스택이 노출돼 조합/트랙 근거를 grounding 할 수 있다."""
+    client = MagicMock(spec=LLMClient)
+    client.invoke.return_value = Explanation(text="요약")
+    node = LLMExplanationNode(llm_client=client)
+
+    combo = _ranked_combo()
+    combo["combo"]["track_a"]["competencies"] = ["데이터분석"]
+    combo["combo"]["track_a"]["tech_stacks"] = ["Python"]
+    combo["combo"]["track_b"]["competencies"] = ["앱개발"]
+    combo["combo"]["track_b"]["tech_stacks"] = ["Kotlin"]
+
+    node(
+        {
+            "recommended_jobs": [_job()],
+            "primary_combos": [combo],
+            "secondary_combos": [],
+            "roadmap": _roadmap_dict(),
+        }
+    )
+
+    rendered = _messages_concat(client.invoke.call_args)
+    assert "combo_key=t_a::t_b" in rendered
+    # 개별 트랙 근거 grounding 용으로 두 트랙의 역량·기술스택이 분리되어 흐른다.
+    assert "데이터분석" in rendered
+    assert "Python" in rendered
+    assert "앱개발" in rendered
+    assert "Kotlin" in rendered
+
+
+def test_node_passes_through_job_and_track_rationales() -> None:
+    """LLM 이 생성한 항목별 근거가 explanation dict 로 그대로 흘러나온다."""
+    client = MagicMock(spec=LLMClient)
+    client.invoke.return_value = Explanation(
+        text="요약",
+        job_rationales=[
+            JobRationale(job_id="be_dev_001", rationale="백엔드 개발자가 잘 맞는 이유."),
+            JobRationale(job_id="data_001", rationale="데이터 분석가가 잘 맞는 이유."),
+        ],
+        track_rationales=[
+            TrackRationale(
+                combo_key="t_a::t_b",
+                combo_rationale="조합 시너지 근거.",
+                track_a_rationale="1트랙 근거.",
+                track_b_rationale="2트랙 근거.",
+            ),
+        ],
+    )
+    node = LLMExplanationNode(llm_client=client)
+
+    result = node(
+        {
+            "recommended_jobs": [
+                _job(job_id="be_dev_001"),
+                _job(job_id="data_001", job_name="데이터 분석가"),
+            ],
+            "primary_combos": [_ranked_combo()],
+            "secondary_combos": [],
+            "roadmap": _roadmap_dict(),
+        }
+    )
+
+    explanation = result["explanation"]
+    assert len(explanation["job_rationales"]) == 2
+    assert explanation["job_rationales"][0]["job_id"] == "be_dev_001"
+    # 각 직무가 서로 다른 근거 문구를 갖는다.
+    assert (
+        explanation["job_rationales"][0]["rationale"]
+        != explanation["job_rationales"][1]["rationale"]
+    )
+    assert explanation["track_rationales"][0]["combo_key"] == "t_a::t_b"
+    # 조합 전체 근거와 개별 트랙 근거가 구분된다.
+    track = explanation["track_rationales"][0]
+    assert track["combo_rationale"] != track["track_a_rationale"]
+    assert track["track_a_rationale"] != track["track_b_rationale"]

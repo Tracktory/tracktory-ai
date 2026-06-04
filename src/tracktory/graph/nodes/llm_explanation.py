@@ -17,8 +17,9 @@
        흘려 시스템 프롬프트의 추가 입력 안내 한 문장이 부착되도록 한다.
     5. LLM 호출 — ``ChatPromptTemplate.format_messages`` 로 메시지를 만들어
        구조화 출력을 강제하는 ``LLMClient`` 에 단일 invoke. 출력은 영역별
-       단락 외에 학기 카드 헤더용 부제 (``semester_subtitles``) 와 과목 상세
-       모달용 인과 흐름 (``course_flows``) 두 종류를 함께 담는다.
+       요약 단락 외에 직무·트랙 항목별 개별 근거 (``job_rationales`` /
+       ``track_rationales``), 학기 카드 헤더용 부제 (``semester_subtitles``),
+       과목 상세 모달용 인과 흐름 (``course_flows``) 을 함께 담는다.
     6. state 부분 반환 — ``Explanation.model_dump(mode="json")`` 결과 dict 만.
 
 부작용 격리:
@@ -79,9 +80,11 @@ def _roadmap_empty(roadmap: dict[str, Any] | None) -> bool:
 def _serialize_jobs(jobs: list[dict[str, Any]] | None) -> str:
     """직무 후보를 화이트리스트 필드만 추려 사람-읽기 좋은 문자열로 직렬화.
 
-    LLM 환각 표면을 좁히기 위해 ``job_id`` 등 사용자에게 노출되지 않는
-    내부 식별자는 제외하고, 트랙·로드맵 단락의 cross-reference 가 필요한
-    필드만 흘린다.
+    각 직무 단위 개별 근거(``job_rationales``)를 추천 직무 항목에 binding 할 수
+    있도록 ``job_id`` 를 명시한다 (과목 인과 흐름의 ``course_id`` binding 과 같은
+    패턴). 식별자는 binding 키일 뿐 사용자에게 노출되는 이름이 아니므로 환각
+    표면을 넓히지 않는다. 그 외 ``tech_stacks`` / ``competency_tags`` / 유사도는
+    영역 단락과 직무별 근거의 grounding 근거로 함께 흘린다.
     """
     if not jobs:
         return _EMPTY_CONTEXT_MARKER
@@ -94,7 +97,8 @@ def _serialize_jobs(jobs: list[dict[str, Any]] | None) -> str:
         # 기준이지만, 관심사-직무 적합도의 근거 설명에는 순수 검색 유사도가 맞다.
         similarity = job.get("similarity", 0.0)
         lines.append(
-            f"- {job.get('job_name', '(이름 없음)')}"
+            f"- job_id={job.get('job_id', '(식별자 없음)')}"
+            f" / 직무명={job.get('job_name', '(이름 없음)')}"
             f" / 유사도={similarity:.2f}"
             f" / 기술스택=[{tech}]"
             f" / 역량=[{competencies}]"
@@ -102,22 +106,43 @@ def _serialize_jobs(jobs: list[dict[str, Any]] | None) -> str:
     return "\n".join(lines)
 
 
+def _track_tags(track: dict[str, Any]) -> str:
+    """단일 트랙의 역량·기술스택을 개별 트랙 근거 grounding 용으로 직렬화."""
+    competencies = ", ".join(track.get("competencies") or []) or "(데이터 없음)"
+    tech = ", ".join(track.get("tech_stacks") or []) or "(데이터 없음)"
+    return f"역량=[{competencies}] / 기술스택=[{tech}]"
+
+
 def _serialize_combos(
     primary: list[dict[str, Any]] | None,
     secondary: list[dict[str, Any]] | None,
 ) -> str:
-    """주 추천 + 보조 추천을 묶어 슬롯 분류와 함께 직렬화."""
+    """주 추천 + 보조 추천을 묶어 슬롯 분류와 함께 직렬화.
+
+    각 조합 단위 개별 근거(``track_rationales``)를 binding 할 수 있도록
+    ``combo_key`` 를 명시하고, 조합 전체 근거와 구분되는 개별 트랙 근거를
+    grounding 하기 위해 두 트랙 각각의 역량·기술스택을 함께 흘린다.
+    """
     combos = list(primary or []) + list(secondary or [])
     if not combos:
         return _EMPTY_CONTEXT_MARKER
     lines: list[str] = []
     for ranked in combos:
         combo = ranked.get("combo") or {}
-        track_a = (combo.get("track_a") or {}).get("track_name", "(이름 없음)")
-        track_b = (combo.get("track_b") or {}).get("track_name", "(이름 없음)")
+        track_a_obj = combo.get("track_a") or {}
+        track_b_obj = combo.get("track_b") or {}
+        track_a = track_a_obj.get("track_name", "(이름 없음)")
+        track_b = track_b_obj.get("track_name", "(이름 없음)")
+        combo_key = combo.get("combo_key", "(식별자 없음)")
         slot_type = ranked.get("slot_type", "(분류 없음)")
         score = ranked.get("synergy_score", 0.0)
-        lines.append(f"- {track_a} + {track_b} / 슬롯={slot_type} / 시너지={score:.2f}")
+        lines.append(
+            f"- combo_key={combo_key}"
+            f" / 조합={track_a} + {track_b}"
+            f" / 슬롯={slot_type} / 시너지={score:.2f}"
+            f"\n  · 1트랙 {track_a}: {_track_tags(track_a_obj)}"
+            f"\n  · 2트랙 {track_b}: {_track_tags(track_b_obj)}"
+        )
     return "\n".join(lines)
 
 

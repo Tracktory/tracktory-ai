@@ -14,6 +14,8 @@ Pydantic 모델 목록:
 - ``ExplanationSection`` — LLM 자연어 설명의 주제별 단락.
 - ``SemesterSubtitle`` — 학기 카드 헤더용 학기 단위 부제.
 - ``CourseFlow`` — 과목 상세 모달용 과목 단위 인과 흐름.
+- ``JobRationale`` — 직무 한 건 단위 개별 근거.
+- ``TrackRationale`` — 트랙 조합 한 건 단위 개별 근거 (조합 전체 + 트랙별).
 - ``Explanation`` — LLM 자연어 설명 전체.
 - ``SynergyConfig`` — 시너지 외부화 설정 (4 nested config + 단조 제약).
 - ``CompletedCourseBoostConfig`` — 이수 과목 부스팅 강도 정책.
@@ -359,25 +361,73 @@ class CourseFlow(BaseModel):
     flow: str = Field(..., min_length=1)
 
 
+class JobRationale(BaseModel):
+    """추천 직무 한 건의 개별 근거 문구.
+
+    직무 영역 전체 단락(``ExplanationSection`` topic=jobs)은 직무군을 아우르는
+    한 문단이라, 그것만으로는 추천된 직무 3~5 건이 같은 문구를 공유하게 된다.
+    본 모델은 직무 한 건 단위로 "왜 이 직무가 당신에게 맞는지"를 따로 담아,
+    각 직무가 자기 기술스택·역량·유사도에 근거한 서로 다른 근거를 갖게 한다.
+
+    Attributes:
+        job_id: 근거가 매핑되는 직무 식별자. 추천 직무 리스트의 해당 항목에
+            binding 하는 키다.
+        rationale: 해당 직무 단위 근거 문구.
+    """
+
+    job_id: str = Field(..., min_length=1)
+    rationale: str = Field(..., min_length=1)
+
+
+class TrackRationale(BaseModel):
+    """추천 트랙 조합 한 건의 개별 근거 문구 — 조합 전체 + 트랙별로 분리한다.
+
+    트랙 영역 전체 단락만으로는 주/보조 추천 조합이 같은 문구를 공유하므로,
+    조합 한 건 단위로 근거를 담는다. 한 조합 안에서도 두 트랙의 시너지(조합
+    전체)와 각 트랙 자체의 가치는 다른 층위라, 조합 전체 근거와 개별 트랙
+    근거를 별도 필드로 구분한다.
+
+    Attributes:
+        combo_key: 근거가 매핑되는 조합 식별자. 주/보조 추천 조합 리스트의
+            해당 항목에 binding 하는 키다.
+        combo_rationale: 두 트랙을 함께 선택했을 때의 조합 단위 근거 (시너지).
+        track_a_rationale: 1트랙 자체의 개별 근거.
+        track_b_rationale: 2트랙 자체의 개별 근거.
+    """
+
+    combo_key: str = Field(..., min_length=1)
+    combo_rationale: str = Field(..., min_length=1)
+    track_a_rationale: str = Field(..., min_length=1)
+    track_b_rationale: str = Field(..., min_length=1)
+
+
 class Explanation(BaseModel):
     """LLM 자연어 설명 전체.
 
-    영역별 단락 (``sections``) 은 추천 결과 영역별 (직무/트랙/로드맵) 근거를,
+    영역별 단락 (``sections``) 은 추천 결과 영역별 (직무/트랙/로드맵) 의 요약
+    근거를, 항목별 근거 (``job_rationales`` / ``track_rationales``) 는 직무 한 건·
+    트랙 조합 한 건 단위의 개별 근거를 담는다. 영역 단락은 직무군·트랙군을
+    아우르는 한 문단이라 같은 영역의 여러 항목이 동일 문구를 공유하므로, 항목별
+    근거를 분리해 각 항목이 자기 데이터에 근거한 서로 다른 문구를 갖게 한다.
     학기 부제 (``semester_subtitles``) 와 과목 인과 흐름 (``course_flows``) 은
     학습 로드맵 화면의 정보 위계 (학기 카드 헤더 / 과목 상세 모달) 에 직접
-    매핑되는 두 종류의 출력을 담는다. 세 리스트 모두 비어 있어도 valid 하다
-    (전체 요약만 ``text`` 로 채워진 상태, 또는 로드맵이 비어 학기/과목 출력이
-    없는 상태).
+    매핑된다. 리스트 필드는 모두 비어 있어도 valid 하다 (전체 요약만 ``text``
+    로 채워진 상태, 또는 해당 영역이 비어 항목별 출력이 없는 상태).
 
     Attributes:
         text: 전체 요약 본문.
-        sections: 영역별 단락. 비어 있을 수 있다.
+        sections: 영역별 요약 단락. 비어 있을 수 있다.
+        job_rationales: 직무 한 건 단위 개별 근거. 직무 영역이 비면 빈 리스트.
+        track_rationales: 트랙 조합 한 건 단위 개별 근거. 트랙 영역이 비면
+            빈 리스트.
         semester_subtitles: 학기 카드 헤더용 부제. 로드맵이 비면 빈 리스트.
         course_flows: 과목 상세 모달용 인과 흐름. 로드맵이 비면 빈 리스트.
     """
 
     text: str = Field(..., min_length=1)
     sections: list[ExplanationSection] = Field(default_factory=list)
+    job_rationales: list[JobRationale] = Field(default_factory=list)
+    track_rationales: list[TrackRationale] = Field(default_factory=list)
     semester_subtitles: list[SemesterSubtitle] = Field(default_factory=list)
     course_flows: list[CourseFlow] = Field(default_factory=list)
 
