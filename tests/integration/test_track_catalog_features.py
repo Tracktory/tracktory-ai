@@ -31,7 +31,7 @@ _CS_TRACK_IDS = frozenset(
         "빅데이터트랙",
         "모바일소프트웨어트랙",
         "웹공학트랙",
-        "디지털콘텐츠·가상현실트랙",
+        "디지털콘텐츠ㆍ가상현실트랙",
     ]
 )
 
@@ -200,3 +200,32 @@ def test_primary_recommendations_sorted_by_score() -> None:
     primary_scores = [c["synergy_score"] for c in result["primary_combos"]]
     assert primary_scores == sorted(primary_scores, reverse=True)
     assert primary_scores[0] > 0.0, "최상위 주 추천 점수가 0 — 신호 공백 회귀"
+
+
+def test_track_names_use_authoritative_middle_dot() -> None:
+    """카탈로그 트랙명은 가운뎃점(·, U+00B7)이 아니라 원본 학사 표기인 한글 아래아(ㆍ)를 쓴다.
+
+    RAG 본문 헤더는 임베딩 안정성 때문에 가운뎃점으로 치환되지만, 그 헤더에서 역파싱돼
+    카탈로그로 새어 들어오면 백엔드·원본과 이름이 글자 단위로 어긋난다. 이 회귀를 막는다.
+    """
+    for track in _all_tracks():
+        assert "·" not in track.track_id, f"track_id 에 가운뎃점 잔존: {track.track_id!r}"
+        assert "·" not in track.track_name, f"track_name 에 가운뎃점 잔존: {track.track_name!r}"
+
+
+def test_meta_vector_join_populated_for_middle_dot_tracks() -> None:
+    """가운뎃점 트랙도 meta_vector 사이드카와 track_id 가 글자 단위로 일치해 벡터가 주입된다.
+
+    사이드카 키는 권위 표기(ㆍ)인데 카탈로그가 가운뎃점(·)이면 literal 조인이 실패해
+    meta_vector 가 조용히 빈다(메타 다양성 항 degrade). 표기 정합 후 조인이 살아있는지 본다.
+    """
+    sidecar = yaml.safe_load((_CONFIG_DIR / "track_meta_vectors.yaml").read_text(encoding="utf-8"))
+    sidecar_ids = {str(k) for k in sidecar}
+    tracks_by_id = {t.track_id: t for t in _all_tracks()}
+
+    # 사이드카 키 중 아래아(ㆍ)가 든 트랙 = 이번 표기 정합 대상. 카탈로그에 실재하는 것만 본다
+    # (사이드카에는 카탈로그에서 드롭된 트랙도 있을 수 있어 교집합으로 좁힌다).
+    middle_dot_ids = {tid for tid in sidecar_ids if "ㆍ" in tid} & set(tracks_by_id)
+    assert middle_dot_ids, "아래아 트랙이 카탈로그-사이드카 교집합에 없음 — 표기 정합 회귀"
+    for track_id in middle_dot_ids:
+        assert tracks_by_id[track_id].meta_vector, f"meta_vector 미주입(조인 실패): {track_id!r}"

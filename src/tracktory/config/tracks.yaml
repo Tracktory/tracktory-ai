@@ -107,8 +107,8 @@ tracks:
   - AutoCAD
   - Photoshop
   - SketchUp
-- track_id: VMD·전시디자인트랙
-  track_name: VMD·전시디자인트랙
+- track_id: VMDㆍ전시디자인트랙
+  track_name: VMDㆍ전시디자인트랙
   college_id: 디자인대학
   department_id: ICT디자인학부
   major_id: ICT디자인학부
@@ -369,8 +369,8 @@ tracks:
   - 정보 수집 및 분석 능력
   tech_stacks:
   - Big Data
-- track_id: 기업·경제분석트랙
-  track_name: 기업·경제분석트랙
+- track_id: 기업ㆍ경제분석트랙
+  track_name: 기업ㆍ경제분석트랙
   college_id: 미래융합사회과학대학
   department_id: 사회과학부
   major_id: 사회과학부
@@ -554,8 +554,8 @@ tracks:
   - 학술 커뮤니케이션 이해 및 적용 능력
   tech_stacks:
   - SQL
-- track_id: 디지털콘텐츠·가상현실트랙
-  track_name: 디지털콘텐츠·가상현실트랙
+- track_id: 디지털콘텐츠ㆍ가상현실트랙
+  track_name: 디지털콘텐츠ㆍ가상현실트랙
   college_id: IT공과대학
   department_id: 컴퓨터공학부
   major_id: 컴퓨터공학부
@@ -1258,8 +1258,8 @@ tracks:
   tech_stacks:
   - AutoCAD
   - Photoshop
-- track_id: 스마트도시·교통계획트랙
-  track_name: 스마트도시·교통계획트랙
+- track_id: 스마트도시ㆍ교통계획트랙
+  track_name: 스마트도시ㆍ교통계획트랙
   college_id: 미래융합사회과학대학
   department_id: 사회과학부
   major_id: 사회과학부
@@ -1551,8 +1551,8 @@ tracks:
   - RDS
   - REST
   - SSL
-- track_id: 영상·애니메이션디자인트랙
-  track_name: 영상·애니메이션디자인트랙
+- track_id: 영상ㆍ애니메이션디자인트랙
+  track_name: 영상ㆍ애니메이션디자인트랙
   college_id: 디자인대학
   department_id: ICT디자인학부
   major_id: ICT디자인학부
@@ -2147,8 +2147,8 @@ tracks:
   tech_stacks:
   - C
   - GPT
-- track_id: 회계·재무경영트랙
-  track_name: 회계·재무경영트랙
+- track_id: 회계ㆍ재무경영트랙
+  track_name: 회계ㆍ재무경영트랙
   college_id: 미래융합사회과학대학
   department_id: 사회과학부
   major_id: 사회과학부
