@@ -67,10 +67,25 @@ class _ScoredCombo(NamedTuple):
 # ---------------------------------------------------------------------------
 
 
+def _single_department_ids(tracks: list[Track]) -> set[str]:
+    """트랙이 하나뿐인 학과(``department_id``)의 집합.
+
+    한 학과에 트랙이 하나뿐이면 내부 트랙 구분이 없는 단일 학과다. 이런 학과는
+    2트랙 조합의 단위가 아니라 그 자체로 하나의 전공이므로, 다른 트랙의 조합
+    파트너가 되거나 조합 추천의 1트랙이 되어서는 안 된다. 조합 후보를 만들기 전에
+    학과 단위 트랙 수로 단일 학과를 구조적으로 식별해 제외 기준으로 쓴다.
+    """
+    counts: dict[str, int] = {}
+    for track in tracks:
+        counts[track.department_id] = counts.get(track.department_id, 0) + 1
+    return {dept_id for dept_id, count in counts.items() if count == 1}
+
+
 def _generate_combos(
     tracks: list[Track],
     user_college_id: str,
     current_tracks: list[str],
+    user_department_id: str = "",
 ) -> list[TrackCombo]:
     """후보 트랙 조합을 생성한다.
 
@@ -80,20 +95,37 @@ def _generate_combos(
         - 비어있으면 (1학년): 사용자 단과대 소속 트랙을 1트랙 풀로 사용한다
           (조합 신규 추천).
 
+    단일 학과 처리 (학과당 트랙 1개):
+        - 사용자 본인이 단일 학과 소속이면 (``user_department_id`` 가 단일 학과)
+          학년과 무관하게 조합을 생성하지 않는다 (빈 결과). 단일 학과는 그 자체로
+          하나의 전공이라 2트랙 조합의 단위가 아니다.
+        - 단일 학과 트랙은 파트너 풀에서도 제외한다 — 복수 트랙 학과 사용자의
+          조합에 단일 학과가 어색하게 끼지 않게 한다.
+        - 복수 트랙 학과끼리의 조합 동작은 그대로다.
+
     self-pair (``track_a == track_b``) 는 제외하며, 두 트랙 ID 의 정렬된 조합으로
     dedup 한다.
     """
+    single_dept_ids = _single_department_ids(tracks)
+    if user_department_id in single_dept_ids:
+        return []
+
+    combinable = [track for track in tracks if track.department_id not in single_dept_ids]
     by_id = {track.track_id: track for track in tracks}
 
     if current_tracks:
-        primary_pool: list[Track] = [by_id[tid] for tid in current_tracks if tid in by_id]
+        primary_pool: list[Track] = [
+            by_id[tid]
+            for tid in current_tracks
+            if tid in by_id and by_id[tid].department_id not in single_dept_ids
+        ]
     else:
-        primary_pool = [track for track in tracks if track.college_id == user_college_id]
+        primary_pool = [track for track in combinable if track.college_id == user_college_id]
 
     seen: set[str] = set()
     combos: list[TrackCombo] = []
     for primary_track in primary_pool:
-        for partner in tracks:
+        for partner in combinable:
             if primary_track.track_id == partner.track_id:
                 continue
             ids_sorted = sorted([primary_track.track_id, partner.track_id])
@@ -442,17 +474,25 @@ class TrackSynergyNode:
             }
 
         current_tracks = normalized.get("current_tracks") or []
+        department_id = normalized.get("department") or ""
         jobs = [JobCandidate.model_validate(j) for j in recommended_jobs_raw]
 
         # 단계 2: 트랙 전체 로드 (외부 I/O — 진입점 단 1곳)
         tracks = self._repo.list_all()
 
         # 단계 3: 후보 조합 생성
-        combos = _generate_combos(tracks, college_id, current_tracks)
+        combos = _generate_combos(tracks, college_id, current_tracks, department_id)
         if not combos:
+            # 단일 학과 사용자 또는 조합 가능한 트랙이 없는 단과대 — 오류가 아닌
+            # 정상 빈 결과다. errors 로 흘리면 추천 API 가 500 으로 매핑하므로,
+            # 빈 조합을 그대로 반환해 후속 노드가 빈 로드맵·설명으로 graceful 하게
+            # 종료하도록 한다.
             return {
-                "errors": ["track_synergy skipped: no candidate combos generated"],
-                "trace": ["track_synergy:skip"],
+                "primary_combos": [],
+                "secondary_combos": [],
+                "slot3_fallback_triggered": False,
+                "slot3_fallback_level": None,
+                "trace": ["track_synergy:empty"],
             }
 
         # 단계 4: 시너지 점수

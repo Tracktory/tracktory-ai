@@ -280,6 +280,70 @@ def test_recommend_happy_path_returns_four_part_envelope(
     assert elapsed < _FAST_PATH_SECONDS
 
 
+def test_recommend_single_department_user_returns_200_with_empty_combos() -> None:
+    """단일 학과 사용자는 빈 조합으로 200 을 받는다 (조합 부재가 500 이 아님).
+
+    단일 학과는 트랙 조합의 단위가 아니라 그 자체로 하나의 전공이므로 트랙 조합을
+    생성하지 않는다. 이 빈 조합이 그래프 ``errors`` 로 흐르면 라우터가 contract
+    위반으로 500 매핑하던 회귀를 막는다 — 빈 조합은 정상 결과이므로 200 +
+    primary/secondary 빈 리스트 + non-None roadmap/coverage/explanation 으로 끝나야 한다.
+    """
+    clients = _build_clients()
+    # 단일 학과(AI응용학과) + 복수 트랙 학과(복수학부 2 트랙) 카탈로그.
+    clients.track_repository.list_all.return_value = [
+        _track(
+            "AI응용학과",
+            college_id="창의융합대학",
+            department_id="AI응용학과",
+            course_ids=["AI101"],
+            tech_stacks=["py"],
+            competencies=["ai"],
+            meta_seed=1,
+        ),
+        _track(
+            "복수A",
+            college_id="창의융합대학",
+            department_id="복수학부",
+            course_ids=["A101"],
+            tech_stacks=["py"],
+            competencies=["a"],
+            meta_seed=2,
+        ),
+        _track(
+            "복수B",
+            college_id="창의융합대학",
+            department_id="복수학부",
+            course_ids=["B101"],
+            tech_stacks=["sql"],
+            competencies=["b"],
+            meta_seed=3,
+        ),
+    ]
+    _override_clients(clients)
+
+    payload = _valid_payload()
+    payload["college"] = "창의융합대학"
+    payload["department"] = "AI응용학과"
+    payload["current_tracks"] = []
+
+    with TestClient(app) as client:
+        response = client.post(
+            _RECOMMEND_PATH,
+            json=payload,
+            headers={**_AUTH_HEADERS, "X-Request-Id": "single-dept-178"},
+        )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["success"] is True
+    data = body["data"]
+    assert data["primary_combos"] == []
+    assert data["secondary_combos"] == []
+    assert data["roadmap"] is not None
+    assert data["coverage_analysis"] is not None
+    assert data["explanation"] is not None
+
+
 def test_recommend_validation_failure_returns_422_envelope() -> None:
     """필수 필드 누락 시 422 + 표준 에러 envelope 반환."""
     clients = _build_clients()
