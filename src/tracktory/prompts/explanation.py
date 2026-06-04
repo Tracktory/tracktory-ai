@@ -1,12 +1,17 @@
 """LLM 설명 생성 노드의 프롬프트 템플릿.
 
 본 모듈은 추천 결과의 자연어 설명을 생성하는 단일 ``ChatPromptTemplate`` 을
-정의한다. 출력은 세 종류로 분리된다.
+정의한다. 출력은 다섯 종류로 분리된다.
 
-1. 영역별 단락 (``sections``) — 직무 / 트랙 / 로드맵 영역별 근거.
-2. 학기 단위 부제 (``semester_subtitles``) — 학습 로드맵 화면의 학기 카드
+1. 영역별 단락 (``sections``) — 직무 / 트랙 / 로드맵 영역별 요약 근거.
+2. 직무 항목별 근거 (``job_rationales``) — 추천 직무 한 건 단위 근거. 직무
+   영역 단락이 직무군을 아우르는 한 문단이라 여러 직무가 같은 문구를 공유하는
+   문제를 막기 위해, 각 직무가 자기 데이터에 근거한 서로 다른 근거를 갖는다.
+3. 트랙 항목별 근거 (``track_rationales``) — 추천 트랙 조합 한 건 단위 근거.
+   조합 전체 근거(시너지)와 개별 트랙 근거(각 트랙 자체의 가치)를 구분한다.
+4. 학기 단위 부제 (``semester_subtitles``) — 학습 로드맵 화면의 학기 카드
    헤더에 노출되는 한 줄 요약. 정보 위계의 상위 레벨.
-3. 과목 단위 인과 흐름 (``course_flows``) — 과목 상세 모달에 노출되는
+5. 과목 단위 인과 흐름 (``course_flows``) — 과목 상세 모달에 노출되는
    "관심사 → 직무 → 트랙 조합 → 이 과목" 인과 사슬. 정보 위계의 하위 레벨.
 
 프롬프트는 다음 7 가지 변수 슬롯을 받는다.
@@ -25,6 +30,8 @@
 - 출력은 **친근한 존댓말** 톤, 영역별 단락은 **1~2 문장**.
 - 컨텍스트에 명시되지 않은 사실은 생성 금지 — 빈 영역은 해당 출력 항목
   자체를 비워야 하며 ``text`` 전체 요약에서도 인용하지 않는다.
+- 직무·트랙 항목별 근거는 각 항목을 자기 데이터에 근거해 서로 다르게
+  생성하며, 해당 영역 컨텍스트가 비어 있으면 (``데이터 없음``) 빈 리스트로 둔다.
 - 학기 부제·과목 인과 흐름은 학습 로드맵 컨텍스트가 비어 있으면
   (``데이터 없음``) 빈 리스트로 둔다.
 - ``caveat_required="yes"`` 인 경우 ``text`` 전체 요약 끝에 추가 입력
@@ -54,7 +61,26 @@ You must follow these rules.
   competency names that are absent from the context. If a context area has no
   data, do not create a paragraph (``sections``) for that area at all.
 - Area category: ``sections[*].topic`` must be exactly one of jobs / tracks /
-  roadmap. Each area appears at most once.
+  roadmap. Each area appears at most once. These area paragraphs are a
+  high-level summary of each area; per-item rationale goes in the dedicated
+  lists below.
+- Per-job rationale (``job_rationales``): Create one item for each job that
+  appears in the [Jobs context]. Set ``job_id`` to that job's ``job_id``
+  verbatim, and write ``rationale`` (1-2 sentences) explaining why that
+  specific job fits the student, grounded in that job's own ``유사도`` /
+  ``기술스택`` / ``역량``. Each job's rationale must be distinct — do not reuse
+  the same wording across jobs or copy the top job's rationale to the others.
+  If [Jobs context] is ``데이터 없음``, leave this an empty list.
+- Per-track rationale (``track_rationales``): Create one item for each track
+  combination that appears in the [Tracks context]. Set ``combo_key`` to that
+  combination's ``combo_key`` verbatim. Write ``combo_rationale`` (1-2
+  sentences) for the synergy of choosing the two tracks together, and write
+  ``track_a_rationale`` / ``track_b_rationale`` (1 sentence each) for the
+  individual value of the 1트랙 and 2트랙 respectively, grounded in each
+  track's own ``역량`` / ``기술스택``. The combo-level rationale must be
+  distinct from the per-track rationale (synergy vs. each track on its own),
+  and each combination's rationale must differ from the others. If [Tracks
+  context] is ``데이터 없음``, leave this an empty list.
 - Roadmap rationale: When writing the roadmap paragraph, state in one line how
   the recommended courses connect to job competencies or tech stacks, grounded
   in the ``competency_tags`` / ``tech_stacks`` of the jobs context.

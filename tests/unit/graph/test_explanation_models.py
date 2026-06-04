@@ -12,7 +12,9 @@ from tracktory.graph.models import (
     CourseFlow,
     Explanation,
     ExplanationSection,
+    JobRationale,
     SemesterSubtitle,
+    TrackRationale,
 )
 
 
@@ -77,6 +79,96 @@ def test_explanation_defaults_new_outputs_to_empty() -> None:
     explanation = Explanation(text="전체 요약")
     assert explanation.semester_subtitles == []
     assert explanation.course_flows == []
+    assert explanation.job_rationales == []
+    assert explanation.track_rationales == []
+
+
+def test_job_rationale_accepts_valid_payload() -> None:
+    rationale = JobRationale(
+        job_id="be_dev_001", rationale="백엔드 개발자는 당신의 관심사와 잘 맞아요."
+    )
+    assert rationale.job_id == "be_dev_001"
+    assert rationale.rationale.startswith("백엔드")
+
+
+def test_job_rationale_rejects_empty_fields() -> None:
+    with pytest.raises(ValidationError):
+        JobRationale(job_id="", rationale="본문")
+    with pytest.raises(ValidationError):
+        JobRationale(job_id="be_dev_001", rationale="")
+
+
+def test_track_rationale_accepts_valid_payload() -> None:
+    rationale = TrackRationale(
+        combo_key="t_a::t_b",
+        combo_rationale="두 트랙을 함께 들으면 시너지가 큽니다.",
+        track_a_rationale="빅데이터 트랙은 분석 역량을 키워줍니다.",
+        track_b_rationale="모바일 트랙은 앱 개발 역량을 키워줍니다.",
+    )
+    assert rationale.combo_key == "t_a::t_b"
+    # 조합 전체 근거와 개별 트랙 근거가 서로 다른 필드로 구분된다.
+    assert rationale.combo_rationale != rationale.track_a_rationale
+    assert rationale.track_a_rationale != rationale.track_b_rationale
+
+
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        {
+            "combo_key": "",
+            "combo_rationale": "x",
+            "track_a_rationale": "x",
+            "track_b_rationale": "x",
+        },
+        {
+            "combo_key": "k",
+            "combo_rationale": "",
+            "track_a_rationale": "x",
+            "track_b_rationale": "x",
+        },
+        {
+            "combo_key": "k",
+            "combo_rationale": "x",
+            "track_a_rationale": "",
+            "track_b_rationale": "x",
+        },
+        {
+            "combo_key": "k",
+            "combo_rationale": "x",
+            "track_a_rationale": "x",
+            "track_b_rationale": "",
+        },
+    ],
+)
+def test_track_rationale_rejects_empty_fields(kwargs: dict[str, str]) -> None:
+    with pytest.raises(ValidationError):
+        TrackRationale(**kwargs)
+
+
+def test_explanation_roundtrip_with_item_rationales() -> None:
+    """직무·트랙 항목별 근거까지 포함한 round-trip 동등성."""
+    original = Explanation(
+        text="요약",
+        job_rationales=[
+            JobRationale(job_id="be_dev_001", rationale="백엔드 개발자가 1순위인 이유."),
+            JobRationale(job_id="data_001", rationale="데이터 분석가도 잘 맞는 이유."),
+        ],
+        track_rationales=[
+            TrackRationale(
+                combo_key="t_a::t_b",
+                combo_rationale="조합 시너지 근거.",
+                track_a_rationale="1트랙 근거.",
+                track_b_rationale="2트랙 근거.",
+            ),
+        ],
+    )
+    restored = Explanation.model_validate(original.model_dump(mode="json"))
+
+    assert restored == original
+    assert len(restored.job_rationales) == 2
+    assert restored.job_rationales[1].job_id == "data_001"
+    assert len(restored.track_rationales) == 1
+    assert restored.track_rationales[0].combo_key == "t_a::t_b"
 
 
 def test_semester_subtitle_accepts_valid_payload() -> None:
