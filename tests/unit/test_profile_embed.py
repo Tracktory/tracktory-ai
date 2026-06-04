@@ -74,7 +74,7 @@ def test_embed_excludes_completed_courses_from_text() -> None:
 
 
 def test_embed_reflects_all_semantic_fields() -> None:
-    """관심사·흥미·취업 가치·선호 회사 유형·공부해본 분야 값이 모두 문장에 반영된다."""
+    """관심사·흥미·취업 가치·선호 회사 유형·공부해본 분야 값이 모두 질의에 반영된다."""
     node = ProfileEmbedNode()
     profile = _valid_normalized()
     profile["interests"] = ["IT/인터넷"]
@@ -83,8 +83,8 @@ def test_embed_reflects_all_semantic_fields() -> None:
     profile["company_types"] = ["대기업", "스타트업"]
     profile["ncs_studied"] = ["정보기술"]
     text = node({"normalized_profile": profile})["profile_text"]
-    for value in ["IT/인터넷", "AI", "성장성", "워라벨", "대기업", "스타트업", "정보기술"]:
-        assert value in text, f"{value} 가 직렬화 문장에 누락됨"
+    for value in ["IT/인터넷", "성장성", "워라벨", "대기업", "스타트업", "정보기술"]:
+        assert value in text, f"{value} 가 직렬화 질의에 누락됨"
 
 
 def test_embed_skips_empty_optional_clauses() -> None:
@@ -94,25 +94,23 @@ def test_embed_skips_empty_optional_clauses() -> None:
     profile["work_values"] = []
     profile["ncs_studied"] = []
     text = node({"normalized_profile": profile})["profile_text"]
-    assert "가치를 중시하는" not in text
-    assert "공부한 경험이 있는" not in text
-    # 필수 입력 절 + suffix 는 항상 남아 문장이 완결된다.
-    assert text.endswith("학생입니다.")
+    # 비운 절의 값은 질의에 나타나지 않는다.
+    assert "성장성" not in text
+    # 빈 절을 건너뛰어도 dangling 구분자(suffix·trailing ', ')가 남지 않는다.
+    assert not text.endswith(", ")
+    assert "대기업" in text
 
 
 def test_embed_output_matches_snapshot() -> None:
     """결정론적 직렬화 결과를 정확한 문자열로 고정한다 (회귀 방지).
 
-    템플릿 규칙이 의도치 않게 바뀌면 임베딩 공간이 흔들리므로, 정해진 입력에
-    대한 출력 문장을 스냅샷으로 잠근다. 템플릿 변경이 의도적이면 본 스냅샷도
+    템플릿 규칙이 의도치 않게 바뀌면 직무 검색 질의 분포가 흔들리므로, 정해진
+    입력에 대한 출력을 스냅샷으로 잠근다. 템플릿 변경이 의도적이면 본 스냅샷도
     함께 갱신한다. 흥미 분야 확장은 별도 테스트가 담당하므로 여기서는 끈다.
     """
     node = _template_only_node()
     text = node({"normalized_profile": _valid_normalized()})["profile_text"]
-    assert text == (
-        "IT/인터넷 분야에 관심이 많은, AI 개발에 흥미가 있는, "
-        "성장성 가치를 중시하는, 대기업 취업을 선호하는 학생입니다."
-    )
+    assert text == "IT/인터넷, AI, 성장성, 대기업"
 
 
 def test_embed_multivalue_uses_distinct_value_separator() -> None:
@@ -126,35 +124,34 @@ def test_embed_multivalue_uses_distinct_value_separator() -> None:
     profile["dev_interests"] = ["AI", "데이터"]
     profile["work_values"] = ["성장성", "워라벨"]
     text = node({"normalized_profile": profile})["profile_text"]
-    assert text == (
-        "IT/인터넷 분야에 관심이 많은, AI · 데이터 개발에 흥미가 있는, "
-        "성장성 · 워라벨 가치를 중시하는, 대기업 취업을 선호하는 학생입니다."
-    )
+    assert text == "IT/인터넷, AI · 데이터, 성장성 · 워라벨, 대기업"
 
 
 def test_embed_expands_known_dev_interest() -> None:
-    """확장 사전에 정의된 흥미 분야는 직무 어휘 키워드로 치환되어 문장에 반영된다."""
+    """확장 사전에 정의된 흥미 분야는 직무 어휘 키워드로 치환되어 질의에 반영된다."""
     node = ProfileEmbedNode()
     text = node({"normalized_profile": _valid_normalized()})["profile_text"]
     # "AI" 가 직무 검색 어휘(머신러닝 등)를 포함한 키워드로 확장된다.
     assert "머신러닝" in text
-    assert "AI 개발에 흥미가 있는" not in text
+    assert "데이터 분석" in text
 
 
 def test_embed_passes_through_unknown_dev_interest() -> None:
-    """확장 사전에 없는 흥미 분야는 원본 값 그대로 문장에 남는다 (신규 값 graceful)."""
+    """확장 사전에 없는 흥미 분야는 원본 값 그대로 질의에 남는다 (신규 값 graceful)."""
     node = ProfileEmbedNode()
     profile = _valid_normalized()
     profile["dev_interests"] = ["미정의분야"]
     text = node({"normalized_profile": profile})["profile_text"]
-    assert "미정의분야 개발에 흥미가 있는" in text
+    assert "미정의분야" in text
 
 
 def test_missing_keywords_file_disables_expansion() -> None:
     """확장 사전 파일이 없으면 치환 없이 원본 값으로 직렬화한다 (확장은 선택 기능)."""
     node = _template_only_node()
     text = node({"normalized_profile": _valid_normalized()})["profile_text"]
-    assert "AI 개발에 흥미가 있는" in text
+    # 확장이 꺼지면 "AI" 가 바로 노출되고, 확장 키워드(머신러닝)는 나타나지 않는다.
+    assert "AI" in text
+    assert "AI(" not in text
     assert "머신러닝" not in text
 
 
