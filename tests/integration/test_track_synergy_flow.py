@@ -17,8 +17,13 @@ from unittest.mock import MagicMock
 import numpy as np
 import pytest
 
-from tracktory.graph.models import Track
-from tracktory.graph.nodes.track_synergy import TrackRepository, TrackSynergyNode
+from tracktory.graph.models import JobCandidate, SynergyConfig, Track
+from tracktory.graph.nodes.track_synergy import (
+    TrackRepository,
+    TrackSynergyNode,
+    _generate_combos,
+    _synergy_score,
+)
 
 pytestmark = pytest.mark.integration
 
@@ -192,6 +197,80 @@ def test_full_pipeline_mmr_overflow_path() -> None:
     assert all(s["slot_type"] == "mmr" for s in result["secondary_combos"])
 
 
+def test_primary_stays_same_college_when_cross_track_is_job_irrelevant() -> None:
+    """주 추천은 단과대 내부로 닫히고, 직무에 거의 무관한 타 단과대 트랙은 보조로 밀린다.
+
+    타 단과대 트랙(out0)은 직무 토큰 1 개만 공급해, 합집합 분모 시절이라면 완전 분업
+    (comp=1.0)으로 둔갑해 주 추천을 점령했을 후보다. 같은 단과대 우선 선택 + 전체 직무
+    토큰 분모로, 주 추천 두 자리는 모두 사용자 단과대(C1) 내부 조합이어야 하며 out0 은
+    들어오면 안 된다. 그래야 이 조합에서 파생되는 학습 로드맵도 직무 연관 과목으로 채워진다.
+    """
+    in_college = [
+        _track(
+            "in0",
+            college_id="C1",
+            department_id="D1",
+            course_ids=["in_co0"],
+            tech_stacks=["py", "sql", "java"],
+            competencies=["c_in0"],
+            meta_seed=1,
+        ),
+        _track(
+            "in1",
+            college_id="C1",
+            department_id="D1",
+            course_ids=["in_co1"],
+            tech_stacks=["spring boot", "docker"],
+            competencies=["c_in1"],
+            meta_seed=2,
+        ),
+        _track(
+            "in2",
+            college_id="C1",
+            department_id="D2",
+            course_ids=["in_co2"],
+            tech_stacks=["aws"],
+            competencies=["c_in2"],
+            meta_seed=3,
+        ),
+    ]
+    # 타 단과대 트랙 — 직무 토큰 'go' 하나만 공급 (사실상 무관).
+    cross_irrelevant = _track(
+        "out0",
+        college_id="C2",
+        department_id="D9",
+        course_ids=["out_co0"],
+        tech_stacks=["go"],
+        competencies=["c_out0"],
+        meta_seed=100,
+    )
+    node = _build_node([*in_college, cross_irrelevant])
+    state = {
+        "recommended_jobs": [
+            {
+                "job_id": "j1",
+                "job_name": "Backend",
+                "tech_stacks": ["py", "sql", "java", "spring boot", "docker", "aws", "go"],
+                "match_score": 0.8,
+            }
+        ],
+        "normalized_profile": _normalized_profile(college="C1"),
+    }
+    result = node(state)
+
+    primary = result["primary_combos"]
+    assert len(primary) == 2
+    for combo in primary:
+        assert combo["combo"]["track_a"]["college_id"] == "C1"
+        assert combo["combo"]["track_b"]["college_id"] == "C1"
+    primary_track_ids = {
+        tid
+        for combo in primary
+        for tid in (combo["combo"]["track_a"]["track_id"], combo["combo"]["track_b"]["track_id"])
+    }
+    assert "out0" not in primary_track_ids
+
+
 def test_full_pipeline_synthetic_47_tracks() -> None:
     """한성대 47 트랙 흉내 — 단과대 4 / 학부 8 / 트랙 47."""
     tracks: list[Track] = []
@@ -227,3 +306,13 @@ def test_full_pipeline_synthetic_47_tracks() -> None:
     # 예약 슬롯은 최대 1, 나머지는 모두 MMR
     assert cross_count <= 1
     assert cross_count + mmr_count == 5
+
+    # 전체 후보 조합의 시너지 점수가 한 값으로 뭉치지 않고 변별된다 — 순위가 점수 근거로
+    # 정렬됨을 보장한다 (complementarity 포화 시절엔 거의 모든 조합이 동률이라 순위가
+    # combo_key tie-break 로 임의 결정됐다). 상위 k 는 동률 최댓값일 수 있어, 분포는
+    # 출력 7 개가 아니라 전체 후보에서 본다.
+    cfg = SynergyConfig.load_from_yaml(_REAL_SYNERGY_YAML)
+    jobs = [JobCandidate.model_validate(j) for j in _state(college="C0")["recommended_jobs"]]
+    combos = _generate_combos(tracks, "C0", [])
+    distinct_scores = {round(_synergy_score(c, jobs, cfg.weights), 4) for c in combos}
+    assert len(distinct_scores) > 1

@@ -9,7 +9,7 @@
     2. 트랙 전체 로드 (외부 I/O — 진입점 단 1곳).
     3. 후보 조합 생성 — 1트랙 주전공 제약 적용.
     4. 각 조합에 시너지 점수 매기기 — 외부화 가중치, ``[0, 1]`` clip.
-    5. 주 추천 슬롯 1~2 선택 — 시너지 상위 k.
+    5. 주 추천 슬롯 1~2 선택 — 같은 단과대 조합 우선, 시너지 상위 k.
     6. cross-college 슬롯 (학과 경계) + 학부 cross-dept fallback +
        MMR 흘림 fallback. 감사 로그는 단일 위치에만 기록.
     7. MMR 으로 나머지 보조 추천 슬롯 채움.
@@ -118,10 +118,13 @@ def _complementarity(combo: TrackCombo, jobs: list[JobCandidate]) -> float:
     토큰을 공급할수록 높고, 한 트랙이 직무와 무관(기여 0)하거나 둘이 같은 토큰만
     덮으면(중복) 낮다.
 
-    트랙 내재 역량 집합만의 Jaccard 거리는 역량 태그가 대부분 트랙 고유라 거의 모든
-    조합에서 1.0 으로 포화돼 변별력이 없다(무관 조합과 보완 조합을 둘 다 1.0 로 뭉갬).
-    직무 토큰에 anchor 하면 공유 어휘 위에서 비교돼 포화가 풀리고, 무관 조합과 실제
-    보완 조합이 점수로 갈린다.
+    분모는 두 트랙 기여의 합집합이 아니라 **전체 직무 토큰 집합**이다. 합집합을 분모로
+    쓰면 두 기여가 서로소이기만 하면 크기와 무관하게 항상 1.0 이 된다 — 직무 토큰이
+    아무리 많아도 단 1 개를 공급하는 트랙이 6 개를 공급하는 트랙과 짝지으면 그 1 개가
+    완전 분업(1.0)으로 둔갑해, 직무를 거의 못 덮는 무관 트랙이 상위 추천을 점령한다.
+    전체 직무 토큰을 분모로 삼으면 comp 가 "직무의 몇 %를 둘이 겹침 없이 분담하는가"
+    가 되어 크기에 민감해진다. 직무 전체를 둘이 비겹침으로 완전히 나눠 가질 때만
+    1.0 에 도달하고, 일부만 분담하면 그만큼 작아진다.
 
     토큰 비교는 직무 커버율과 같은 정합 키로 통일한다 — 직무·트랙이 같은 기술을 다른
     표기로 적어도(예: "ReactJS" vs "React") 한 토큰으로 묶여야 분업·중복 판정이 표기
@@ -129,8 +132,8 @@ def _complementarity(combo: TrackCombo, jobs: list[JobCandidate]) -> float:
 
     Returns:
         ``[0, 1]``. 직무 토큰이 없거나 한 트랙이라도 직무 기여가 0 이면 0.0(분업의
-        전제는 양쪽 모두의 기여). 둘의 직무 기여가 동일하면 0.0(중복), 서로 다른 직무
-        토큰을 공급할수록 1.0 에 가깝다.
+        전제는 양쪽 모두의 기여). 둘의 직무 기여가 동일하면 0.0(중복). 둘이 직무 토큰을
+        겹침 없이 나눠 공급할수록 커지며, 직무 전체를 완전 분담할 때 1.0.
     """
     job_tokens: set[str] = set()
     for job in jobs:
@@ -146,8 +149,7 @@ def _complementarity(combo: TrackCombo, jobs: list[JobCandidate]) -> float:
     if not contrib_a or not contrib_b:
         return 0.0
 
-    union = contrib_a | contrib_b
-    return len(contrib_a ^ contrib_b) / len(union)
+    return len(contrib_a ^ contrib_b) / len(job_tokens)
 
 
 def _job_coverage(combo: TrackCombo, jobs: list[JobCandidate]) -> float:
@@ -197,12 +199,37 @@ def _synergy_score(
 
 
 def _select_primary(scored: list[_ScoredCombo], k: int) -> list[RankedCombo]:
-    """시너지 상위 k 개를 주 추천으로 선택한다.
+    """주 추천 k 개 — 같은 단과대 조합을 우선하고 시너지 상위로 채운다.
 
-    1트랙 주전공 제약은 ``_generate_combos`` 단계에서 이미 적용되어 있으므로
-    여기서는 단순 top-k. 동점 시 ``combo_key`` 알파벳 순으로 deterministic 결정.
+    주 추천은 사용자 단과대 내부의 직무 적합 조합이어야 한다. 학과 경계를 넘는 이색
+    조합은 보조 추천의 예약 슬롯이 따로 보장하므로, 주 추천까지 cross-college 후보를
+    허용하면 직무와 거의 무관한 타 단과대 트랙이 상위를 점령하고 그로부터 파생되는
+    학습 로드맵까지 무관 과목으로 채워진다. 후보 생성 단계는 1트랙만 사용자 단과대로
+    제약하고 2트랙(partner)은 전 트랙을 허용하므로, 여기서 두 트랙이 같은 단과대인
+    조합으로 한 번 더 좁혀야 주 추천이 단과대 내부로 닫힌다.
+
+    같은 단과대 조합이 k 개에 못 미치면(예: 단일 트랙 단과대) 나머지를 전체 후보의
+    시너지 상위로 backfill 하여 항상 가능한 만큼 채운다. backfill 로 채워진 자리는
+    cross-college 조합일 수 있다 — 같은 단과대 후보가 바닥났을 때는 빈 주 추천보다
+    낫기 때문이며, 이때만 주 추천이 단과대 내부로 닫힌다는 보장이 풀린다. 동점은
+    ``combo_key`` 알파벳 순으로 deterministic 결정.
     """
-    top = sorted(scored, key=lambda cand: (-cand.synergy_score, cand.combo.combo_key))[:k]
+
+    def _rank_key(cand: _ScoredCombo) -> tuple[float, str]:
+        return (-cand.synergy_score, cand.combo.combo_key)
+
+    same_college = [
+        cand for cand in scored if cand.combo.track_a.college_id == cand.combo.track_b.college_id
+    ]
+    ordered = sorted(same_college, key=_rank_key)
+    if len(ordered) < k:
+        chosen_keys = {cand.combo.combo_key for cand in ordered}
+        backfill = sorted(
+            (cand for cand in scored if cand.combo.combo_key not in chosen_keys),
+            key=_rank_key,
+        )
+        ordered = [*ordered, *backfill]
+
     return [
         RankedCombo(
             combo=cand.combo,
@@ -210,7 +237,7 @@ def _select_primary(scored: list[_ScoredCombo], k: int) -> list[RankedCombo]:
             slot_type="primary",
             rank=i + 1,
         )
-        for i, cand in enumerate(top)
+        for i, cand in enumerate(ordered[:k])
     ]
 
 

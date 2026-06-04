@@ -52,6 +52,51 @@ def test_select_primary_breaks_score_ties_deterministically(make_track, make_com
     assert keys_forward == keys_reverse == sorted([combo_ab.combo_key, combo_ac.combo_key])
 
 
+def test_select_primary_excludes_cross_college_when_same_college_available(
+    make_track,
+    make_combo,
+) -> None:
+    """같은 단과대 조합이 있으면 시너지가 더 높은 cross-college 조합도 주 추천에서 제외된다.
+
+    cross-college 이색 조합은 보조 추천의 예약 슬롯이 따로 보장하므로, 점수가 높아도
+    주 추천은 단과대 내부로 닫혀야 한다 (타 단과대 무관 트랙의 상위 점령 방지).
+    """
+    cs_a = make_track("cs_a", college_id="IT")
+    cs_b = make_track("cs_b", college_id="IT")
+    other = make_track("other", college_id="ART")
+
+    same_college = make_combo(cs_a, cs_b)
+    cross = make_combo(cs_a, other)
+    scored = [
+        # cross 조합이 점수상 더 높지만 주 추천엔 들면 안 된다.
+        _ScoredCombo(combo=cross, synergy_score=0.9),
+        _ScoredCombo(combo=same_college, synergy_score=0.5),
+    ]
+    primary = _select_primary(scored, k=1)
+    assert len(primary) == 1
+    assert primary[0].combo.combo_key == same_college.combo_key
+    assert primary[0].combo.track_a.college_id == primary[0].combo.track_b.college_id
+
+
+def test_select_primary_backfills_when_insufficient_same_college(
+    make_track,
+    make_combo,
+) -> None:
+    """같은 단과대 조합이 k 개에 못 미치면 전체 후보 상위로 backfill 한다.
+
+    단일 트랙 단과대처럼 같은 단과대 조합이 없을 수 있으므로, 주 추천이 비지 않도록
+    cross-college 후보로라도 채운다.
+    """
+    a = make_track("a", college_id="C1")
+    b = make_track("b", college_id="C2")
+    only_cross = make_combo(a, b)
+    scored = [_ScoredCombo(combo=only_cross, synergy_score=0.5)]
+
+    primary = _select_primary(scored, k=2)
+    assert len(primary) == 1
+    assert primary[0].combo.combo_key == only_cross.combo_key
+
+
 def test_cross_college_selects_t1_candidate_above_threshold(make_track, make_combo) -> None:
     """T1 cross 후보 (단과대 다른 트랙 포함) 중 임계값 이상 + 시너지 최대 채택."""
     primary_a = make_track("a", college_id="C1")
