@@ -18,6 +18,7 @@ from typing import TYPE_CHECKING, Annotated
 
 from fastapi import Depends
 
+from tracktory.briefing.service import BriefingService
 from tracktory.graph.pipeline import (
     PipelineClients,
     PipelineConfig,
@@ -92,3 +93,32 @@ def get_recommendation_pipeline(
     이후 호출은 캐시된 인스턴스를 재사용한다.
     """
     return get_recommendation_graph(clients, config)
+
+
+@lru_cache(maxsize=1)
+def _build_briefing_service() -> BriefingService:
+    """브리핑 큐레이션 카탈로그를 1 회만 로드한 서비스를 생성한다.
+
+    카탈로그는 정적 YAML 이라 생성자에서 한 번 읽어 두면 매 요청은 파일 I/O
+    없이 메모리 조회만 한다. 추천 파이프라인과 독립적이므로 boundary 묶음과
+    별도 싱글톤으로 둔다.
+
+    Raises:
+        BriefingCatalogError: 카탈로그 YAML 부재/손상 시. ``BriefingService``
+            생성자 계약.
+    """
+    return BriefingService()
+
+
+def get_briefing_service() -> BriefingService:
+    """브리핑 서비스 (싱글톤) 를 반환한다.
+
+    수명주기당 1 회 로드된 동일 인스턴스를 반환한다. 테스트는 본 의존성을
+    ``app.dependency_overrides`` 로 교체해 합성 카탈로그 서비스를 주입한다.
+    """
+    return _build_briefing_service()
+
+
+def reset_briefing_service() -> None:
+    """브리핑 서비스 싱글톤 캐시를 비운다 (lifespan shutdown + 테스트 격리용)."""
+    _build_briefing_service.cache_clear()

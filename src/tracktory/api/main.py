@@ -10,13 +10,15 @@ from fastapi import FastAPI
 from langgraph.checkpoint.sqlite import SqliteSaver
 
 from tracktory.api.dependencies import (
+    get_briefing_service,
     get_pipeline_clients,
     get_pipeline_config,
+    reset_briefing_service,
     reset_pipeline_clients,
 )
 from tracktory.api.exception_handlers import register_exception_handlers
 from tracktory.api.request_id import RequestIdLogFilter, request_id_middleware
-from tracktory.api.routers import chat, recommend
+from tracktory.api.routers import briefing, chat, recommend
 from tracktory.chatbot.factory import CHECKPOINT_DB_PATH, build_default_chatbot_graph
 from tracktory.chatbot.logging_setup import setup_logging
 from tracktory.graph.pipeline import get_recommendation_graph
@@ -51,6 +53,14 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         # boundary 주입 후 compile/config 실패는 첫 요청에서 또 터지므로 stack 남김
         logger.exception("recommendation graph warm-up failed; continuing startup")
 
+    try:
+        # 고정 큐레이션 출력이 서비스의 근간이라, 카탈로그가 비었거나 손상됐으면
+        # 첫 요청이 아니라 startup 에서 드러나도록 미리 로드·검증한다.
+        get_briefing_service()
+        logger.info("briefing catalog warmed up")
+    except Exception:
+        logger.exception("briefing catalog warm-up failed; continuing startup")
+
     CHECKPOINT_DB_PATH.parent.mkdir(parents=True, exist_ok=True)
     with SqliteSaver.from_conn_string(str(CHECKPOINT_DB_PATH)) as saver:
         app.state.chatbot_graph = build_default_chatbot_graph(checkpointer=saver)
@@ -58,6 +68,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
     get_recommendation_graph.cache_clear()  # type: ignore[attr-defined]
     reset_pipeline_clients()
+    reset_briefing_service()
 
 
 app = FastAPI(title="Tracktory AI API", lifespan=lifespan)
@@ -69,3 +80,4 @@ register_exception_handlers(app)
 
 app.include_router(recommend.router)
 app.include_router(chat.router)
+app.include_router(briefing.router)

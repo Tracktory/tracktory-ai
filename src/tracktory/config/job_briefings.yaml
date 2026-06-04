@@ -1,0 +1,149 @@
+# 직무 브리핑 큐레이션 카탈로그 (홈 AI 브리핑 시트)
+#
+# 추천 직무에 연결된 최신 취업 트렌드·필수 역량 카드. 데모는 사전 큐레이션된
+# 고정 출력을 사용하므로(라이브 검색·LLM 호출 없음) 본 정적 파일이 단일 출처다.
+# BriefingService 가 생성자에서 1회 로드한다.
+#
+# 스키마:
+#   briefings:
+#     <job_id>:                       # 직무 카탈로그 표준 코드 (category_to_job_type.yaml 정합)
+#       job_name: <사용자 표시명>      # 카탈로그 표시명과 정합
+#       cards:
+#         - headline: <한 줄 트렌드>
+#           summary: <맥락 요약>
+#           skills: [<필수 역량/기술>, ...]
+#           sources:                   # 카드마다 1개 이상 (사전 검증 가능성)
+#             - { title: <출처명>, url: <검증 URL>, published_at: <YYYY 또는 YYYY-MM> }
+#
+# 운영 원칙:
+#   - job_id 는 추천 직무 후보의 식별자와 같은 표준 코드를 쓴다(별칭 매핑 없이 조인).
+#   - 모든 카드는 검증 가능한 공개 출처를 동반한다. 출처 없는 트렌드는 넣지 않는다.
+#   - 표준 코드가 없는 직무는 추가하지 않는다(카탈로그 밖 식별자 누수 방지).
+
+briefings:
+  BE:
+    job_name: 백엔드 개발자
+    cards:
+      - headline: 클라우드 네이티브·컨테이너 역량이 백엔드 채용의 기본기로 자리 잡았습니다.
+        summary: >-
+          국내외 백엔드 공고가 Kubernetes·Docker 기반 운영 경험과 AWS 등 클라우드
+          숙련을 공통 요건으로 요구하는 흐름이 뚜렷합니다. 단일 서버 CRUD를 넘어
+          분산 환경에서의 배포·관측 가능성(observability)을 다루는 역량이 변별력이 됩니다.
+        skills: [Spring Boot, Kubernetes, Docker, AWS, CI/CD, Redis]
+        sources:
+          - title: Stack Overflow Developer Survey 2024 — Most popular technologies
+            url: https://survey.stackoverflow.co/2024/technology
+            published_at: "2024"
+          - title: GitHub Octoverse 2024
+            url: https://github.blog/news-insights/octoverse/
+            published_at: "2024"
+  FE:
+    job_name: 프론트엔드 개발자
+    cards:
+      - headline: React 생태계와 타입 안정성(TypeScript)이 프론트엔드 채용의 표준이 됐습니다.
+        summary: >-
+          프론트엔드 공고 대다수가 React·Next.js와 TypeScript를 기본 요건으로 명시하며,
+          상태관리·렌더링 성능·접근성까지 다루는 폭이 변별력으로 작용합니다. 단순 마크업을
+          넘어 컴포넌트 설계와 빌드 파이프라인 이해가 요구됩니다.
+        skills: [React, TypeScript, Next.js, JavaScript, CSS]
+        sources:
+          - title: Stack Overflow Developer Survey 2024 — Web frameworks and technologies
+            url: https://survey.stackoverflow.co/2024/technology
+            published_at: "2024"
+          - title: State of JS 2024
+            url: https://2024.stateofjs.com/
+            published_at: "2024"
+  DE:
+    job_name: 데이터 엔지니어
+    cards:
+      - headline: 워크플로 오케스트레이션과 스트리밍 처리가 데이터 엔지니어의 핵심 역량입니다.
+        summary: >-
+          Airflow 기반 파이프라인과 Kafka·Spark 등 대용량 처리 스택이 공통 요건으로
+          요구됩니다. 적재(ETL)뿐 아니라 데이터 신뢰성·비용·지연을 함께 책임지는
+          플랫폼 관점이 강조되는 추세입니다.
+        skills: [Python, SQL, Airflow, Kafka, Spark, AWS]
+        sources:
+          - title: Stack Overflow Developer Survey 2024 — Databases and platforms
+            url: https://survey.stackoverflow.co/2024/technology
+            published_at: "2024"
+  DA:
+    job_name: 데이터 분석가
+    cards:
+      - headline: SQL·시각화 기본기 위에 LLM 활용 분석이 데이터 분석가의 새 변별력이 됐습니다.
+        summary: >-
+          Python·SQL과 BI 도구(Tableau 등) 숙련이 기본 요건이며, 최근에는 LLM을 활용한
+          탐색적 분석과 자동화 경험을 묻는 공고가 늘고 있습니다. 지표 정의부터 의사결정
+          연결까지의 스토리텔링 역량이 함께 요구됩니다.
+        skills: [Python, SQL, Tableau, BigQuery, Pandas]
+        sources:
+          - title: Stack Overflow Developer Survey 2024 — Data tools
+            url: https://survey.stackoverflow.co/2024/technology
+            published_at: "2024"
+  AI:
+    job_name: AI/ML 엔지니어
+    cards:
+      - headline: LLM·RAG 파이프라인 구축 경험이 AI 엔지니어 채용의 최우선 요건으로 떠올랐습니다.
+        summary: >-
+          PyTorch 기반 모델링에 더해, LLM을 제품에 연결하는 RAG·LangChain·벡터 검색
+          경험을 요구하는 공고가 빠르게 늘고 있습니다. 학습뿐 아니라 서빙·평가·비용
+          최적화까지 다루는 MLOps 관점이 강조됩니다.
+        skills: [Python, PyTorch, LLM, RAG, LangChain, Docker]
+        sources:
+          - title: Stack Overflow Developer Survey 2024 — AI tools and sentiment
+            url: https://survey.stackoverflow.co/2024/ai
+            published_at: "2024"
+          - title: GitHub Octoverse 2024 — AI and Python growth
+            url: https://github.blog/news-insights/octoverse/
+            published_at: "2024"
+  DEVOPS:
+    job_name: DevOps/인프라 엔지니어
+    cards:
+      - headline: IaC와 쿠버네티스 운영이 DevOps 채용의 표준 역량으로 굳어졌습니다.
+        summary: >-
+          Terraform 기반 코드형 인프라(IaC), Kubernetes 운영, CI/CD 자동화와
+          Prometheus·Grafana 관측 스택이 공통 요건입니다. 수작업 운영에서 선언적·
+          자동화 운영으로의 전환을 이끌 수 있는 역량이 핵심입니다.
+        skills: [AWS, Kubernetes, Terraform, CI/CD, Linux, Grafana]
+        sources:
+          - title: Stack Overflow Developer Survey 2024 — Other tools
+            url: https://survey.stackoverflow.co/2024/technology
+            published_at: "2024"
+  SEC:
+    job_name: 보안 엔지니어/분석가
+    cards:
+      - headline: 클라우드·애플리케이션 보안과 DevSecOps 통합이 보안 직무의 성장 축입니다.
+        summary: >-
+          전통적 네트워크 보안을 넘어 OWASP 기반 애플리케이션 취약점 진단,
+          클라우드 보안, CI/CD에 보안 검증을 끼워 넣는 DevSecOps 경험을 요구하는
+          공고가 늘고 있습니다. 위협 모델링과 자동화된 점검 역량이 강조됩니다.
+        skills: [Linux, Python, OWASP, SIEM, Burp Suite]
+        sources:
+          - title: OWASP Top 10
+            url: https://owasp.org/www-project-top-ten/
+            published_at: "2021"
+  MOB:
+    job_name: 모바일 개발자 (Android/iOS)
+    cards:
+      - headline: 선언형 UI(Compose·SwiftUI)와 크로스플랫폼 역량이 모바일 채용의 흐름입니다.
+        summary: >-
+          Android는 Kotlin·Jetpack Compose, iOS는 Swift·SwiftUI로 선언형 UI 전환이
+          진행 중이며, React Native·Flutter 등 크로스플랫폼 경험을 함께 요구하는
+          공고도 많습니다. 앱 성능·배포 자동화 이해가 변별력이 됩니다.
+        skills: [Kotlin, Swift, Jetpack Compose, SwiftUI, CI/CD]
+        sources:
+          - title: Stack Overflow Developer Survey 2024 — Languages
+            url: https://survey.stackoverflow.co/2024/technology
+            published_at: "2024"
+  GAME:
+    job_name: 게임 개발자
+    cards:
+      - headline: Unity·Unreal 숙련과 그래픽스·실시간 렌더링 이해가 게임 직무의 핵심입니다.
+        summary: >-
+          상용 엔진(Unity/Unreal) 기반 개발 경험에 더해, C#·C++ 숙련과 셰이더·
+          최적화 등 실시간 렌더링 이해를 요구하는 공고가 많습니다. 최근에는 AR/VR
+          등 실감형 콘텐츠 경험이 가점 요소로 부상하고 있습니다.
+        skills: [Unity, Unreal Engine, C#, C++, HLSL]
+        sources:
+          - title: Unity — Learn and documentation
+            url: https://unity.com/learn
+            published_at: "2024"
