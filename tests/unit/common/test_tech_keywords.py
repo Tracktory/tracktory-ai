@@ -53,3 +53,29 @@ def test_canonical_keys_dedups_and_drops_blank() -> None:
     """키 집합은 표기 차이를 합치고 빈 값을 제외한다."""
     keys = canonical_tech_keys(["React", "reactjs", "SQL", "sql", "", "  "])
     assert keys == {"react", "sql"}
+
+
+def test_canonical_keys_splits_compound_labels() -> None:
+    """복합 표기 직무 라벨이 원자 키로 분해돼 트랙 토큰과 매칭된다.
+
+    분해 없이 ``"AWS / GCP"`` 가 한 키로 남으면 트랙의 ``"AWS"`` 와 교집합이
+    잡히지 않아 직무 커버율이 0 으로 붕괴한다.
+    """
+    keys = canonical_tech_keys(
+        [
+            "AWS / GCP",
+            "Docker + Kubernetes",
+            "dbt (data build tool)",
+            "SQL (+ BigQuery / Snowflake)",
+        ]
+    )
+    assert {"aws", "gcp", "docker", "kubernetes", "dbt", "sql"} <= keys
+
+
+def test_canonical_keys_preserve_separator_in_single_token() -> None:
+    """구분자가 토큰 일부인 단일 기술은 쪼개지지 않는다 (C++, A/B, CI/CD, VR/AR)."""
+    assert canonical_tech_keys(["C++"]) == {"c++"}
+    assert canonical_tech_keys(["C#"]) == {"c#"}
+    assert canonical_tech_keys(["CI/CD"]) == {"ci/cd"}
+    assert canonical_tech_keys(["A/B 테스팅"]) == {"a/b 테스팅"}
+    assert "vr/ar sdk" in canonical_tech_keys(["VR/AR SDK (ARCore, ARKit)"])
