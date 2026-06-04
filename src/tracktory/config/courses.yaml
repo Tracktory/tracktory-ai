@@ -47,7 +47,7 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - 영상·애니메이션디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -61,7 +61,7 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -168,7 +168,7 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 웹공학트랙
   prereq_ids: []
   available_grades:
@@ -428,7 +428,7 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - 회계·재무경영트랙
+  - 회계ㆍ재무경영트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -442,7 +442,7 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - 기업·경제분석트랙
+  - 기업ㆍ경제분석트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -456,7 +456,7 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - 스마트도시·교통계획트랙
+  - 스마트도시ㆍ교통계획트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -542,8 +542,8 @@ courses:
   course_type: 전공선택
   track_ids:
   - 게임그래픽디자인트랙
-  - 디지털콘텐츠·가상현실트랙
-  - 영상·애니메이션디자인트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -561,12 +561,12 @@ courses:
   - 공공행정트랙
   - 국제무역트랙
   - 글로벌비즈니스트랙
-  - 기업·경제분석트랙
+  - 기업ㆍ경제분석트랙
   - 기업경영트랙
   - 법&정책트랙
   - 비즈니스애널리틱스트랙
-  - 스마트도시·교통계획트랙
-  - 회계·재무경영트랙
+  - 스마트도시ㆍ교통계획트랙
+  - 회계ㆍ재무경영트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -596,7 +596,7 @@ courses:
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
-  - 회계·재무경영트랙
+  - 회계ㆍ재무경영트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -639,7 +639,7 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - 스마트도시·교통계획트랙
+  - 스마트도시ㆍ교통계획트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -670,12 +670,12 @@ courses:
   - 공공행정트랙
   - 국제무역트랙
   - 글로벌비즈니스트랙
-  - 기업·경제분석트랙
+  - 기업ㆍ경제분석트랙
   - 기업경영트랙
   - 법&정책트랙
   - 비즈니스애널리틱스트랙
-  - 스마트도시·교통계획트랙
-  - 회계·재무경영트랙
+  - 스마트도시ㆍ교통계획트랙
+  - 회계ㆍ재무경영트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -742,7 +742,7 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - 영상·애니메이션디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -755,7 +755,7 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - 영상·애니메이션디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids:
   - M037001
   available_grades:
@@ -771,7 +771,7 @@ courses:
   track_ids:
   - 미디어디자인트랙
   - 시각디자인트랙
-  - 영상·애니메이션디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -813,7 +813,7 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - 영상·애니메이션디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -826,7 +826,7 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - 영상·애니메이션디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -3389,7 +3389,7 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - 스마트도시·교통계획트랙
+  - 스마트도시ㆍ교통계획트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -3402,7 +3402,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 기업·경제분석트랙
+  - 기업ㆍ경제분석트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -3415,7 +3415,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - 기업·경제분석트랙
+  - 기업ㆍ경제분석트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -3429,7 +3429,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 경제금융투자트랙
-  - 기업·경제분석트랙
+  - 기업ㆍ경제분석트랙
   prereq_ids:
   - R010019
   - CTS0016
@@ -3474,7 +3474,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계·재무경영트랙
+  - 회계ㆍ재무경영트랙
   prereq_ids:
   - CTS0013
   available_grades:
@@ -3490,7 +3490,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계·재무경영트랙
+  - 회계ㆍ재무경영트랙
   prereq_ids:
   - CTS0011
   available_grades:
@@ -3506,7 +3506,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계·재무경영트랙
+  - 회계ㆍ재무경영트랙
   prereq_ids:
   - R010014
   - CTS0011
@@ -3523,7 +3523,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계·재무경영트랙
+  - 회계ㆍ재무경영트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -3538,7 +3538,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계·재무경영트랙
+  - 회계ㆍ재무경영트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -3741,7 +3741,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계·재무경영트랙
+  - 회계ㆍ재무경영트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -3756,7 +3756,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계·재무경영트랙
+  - 회계ㆍ재무경영트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -3771,7 +3771,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계·재무경영트랙
+  - 회계ㆍ재무경영트랙
   prereq_ids:
   - R010056
   - R019003
@@ -3789,7 +3789,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계·재무경영트랙
+  - 회계ㆍ재무경영트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -3804,7 +3804,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계·재무경영트랙
+  - 회계ㆍ재무경영트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -3819,7 +3819,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계·재무경영트랙
+  - 회계ㆍ재무경영트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -3847,7 +3847,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계·재무경영트랙
+  - 회계ㆍ재무경영트랙
   prereq_ids:
   - R010057
   available_grades:
@@ -3863,7 +3863,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계·재무경영트랙
+  - 회계ㆍ재무경영트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -3877,7 +3877,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 경제금융투자트랙
-  - 기업·경제분석트랙
+  - 기업ㆍ경제분석트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -3892,7 +3892,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계·재무경영트랙
+  - 회계ㆍ재무경영트랙
   prereq_ids:
   - CTS0011
   - R010014
@@ -3952,7 +3952,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - 스마트도시·교통계획트랙
+  - 스마트도시ㆍ교통계획트랙
   prereq_ids: []
   available_grades:
   - 4
@@ -3965,7 +3965,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 스마트도시·교통계획트랙
+  - 스마트도시ㆍ교통계획트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -3978,7 +3978,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - 스마트도시·교통계획트랙
+  - 스마트도시ㆍ교통계획트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -3991,7 +3991,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - 스마트도시·교통계획트랙
+  - 스마트도시ㆍ교통계획트랙
   prereq_ids: []
   available_grades:
   - 4
@@ -4005,7 +4005,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 경제금융투자트랙
-  - 기업·경제분석트랙
+  - 기업ㆍ경제분석트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -4018,7 +4018,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - 스마트도시·교통계획트랙
+  - 스마트도시ㆍ교통계획트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -4031,7 +4031,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - 기업·경제분석트랙
+  - 기업ㆍ경제분석트랙
   prereq_ids: []
   available_grades:
   - 4
@@ -4060,7 +4060,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 스마트도시·교통계획트랙
+  - 스마트도시ㆍ교통계획트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -4073,7 +4073,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - 기업·경제분석트랙
+  - 기업ㆍ경제분석트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -4106,7 +4106,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 경제금융투자트랙
-  - 기업·경제분석트랙
+  - 기업ㆍ경제분석트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -4121,7 +4121,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 경제금융투자트랙
-  - 기업·경제분석트랙
+  - 기업ㆍ경제분석트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -4148,7 +4148,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 경제금융투자트랙
-  - 기업·경제분석트랙
+  - 기업ㆍ경제분석트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -4163,7 +4163,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계·재무경영트랙
+  - 회계ㆍ재무경영트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -4180,7 +4180,7 @@ courses:
   track_ids:
   - 기업경영트랙
   - 비즈니스애널리틱스트랙
-  - 회계·재무경영트랙
+  - 회계ㆍ재무경영트랙
   prereq_ids:
   - R010114
   - R01G013
@@ -4546,7 +4546,7 @@ courses:
   stage: industry
   course_type: 전공필수
   track_ids:
-  - 기업·경제분석트랙
+  - 기업ㆍ경제분석트랙
   prereq_ids: []
   available_grades:
   - 4
@@ -4560,7 +4560,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 경제금융투자트랙
-  - 기업·경제분석트랙
+  - 기업ㆍ경제분석트랙
   prereq_ids:
   - CTS0013
   available_grades:
@@ -4575,7 +4575,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 경제금융투자트랙
-  - 기업·경제분석트랙
+  - 기업ㆍ경제분석트랙
   prereq_ids:
   - CTS0013
   available_grades:
@@ -4590,7 +4590,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 경제금융투자트랙
-  - 기업·경제분석트랙
+  - 기업ㆍ경제분석트랙
   prereq_ids:
   - CTS0013
   available_grades:
@@ -4608,7 +4608,7 @@ courses:
   track_ids:
   - 경제금융투자트랙
   - 공공행정트랙
-  - 기업·경제분석트랙
+  - 기업ㆍ경제분석트랙
   prereq_ids:
   - CTS0013
   - R013012
@@ -4624,7 +4624,7 @@ courses:
   course_type: 전공필수
   track_ids:
   - 경제금융투자트랙
-  - 기업·경제분석트랙
+  - 기업ㆍ경제분석트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -4638,7 +4638,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 경제금융투자트랙
-  - 기업·경제분석트랙
+  - 기업ㆍ경제분석트랙
   prereq_ids:
   - CTS0013
   - CTS0016
@@ -4775,7 +4775,7 @@ courses:
   stage: core
   course_type: 전공필수
   track_ids:
-  - 스마트도시·교통계획트랙
+  - 스마트도시ㆍ교통계획트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -4790,7 +4790,7 @@ courses:
   stage: application
   course_type: 전공필수
   track_ids:
-  - 스마트도시·교통계획트랙
+  - 스마트도시ㆍ교통계획트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -4803,7 +4803,7 @@ courses:
   stage: application
   course_type: 전공필수
   track_ids:
-  - 스마트도시·교통계획트랙
+  - 스마트도시ㆍ교통계획트랙
   prereq_ids:
   - R018008
   available_grades:
@@ -4817,7 +4817,7 @@ courses:
   stage: core
   course_type: 전공필수
   track_ids:
-  - 스마트도시·교통계획트랙
+  - 스마트도시ㆍ교통계획트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -4830,7 +4830,7 @@ courses:
   stage: application
   course_type: 전공필수
   track_ids:
-  - 스마트도시·교통계획트랙
+  - 스마트도시ㆍ교통계획트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -4843,7 +4843,7 @@ courses:
   stage: application
   course_type: 전공필수
   track_ids:
-  - 스마트도시·교통계획트랙
+  - 스마트도시ㆍ교통계획트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -4885,7 +4885,7 @@ courses:
   course_type: 전공필수
   track_ids:
   - 기업경영트랙
-  - 회계·재무경영트랙
+  - 회계ㆍ재무경영트랙
   prereq_ids:
   - R010056
   - R010063
@@ -4973,7 +4973,7 @@ courses:
   stage: industry
   course_type: 전공필수
   track_ids:
-  - 회계·재무경영트랙
+  - 회계ㆍ재무경영트랙
   prereq_ids:
   - CTS0011
   - R010014
@@ -4989,7 +4989,7 @@ courses:
   stage: industry
   course_type: 전공필수
   track_ids:
-  - 회계·재무경영트랙
+  - 회계ㆍ재무경영트랙
   prereq_ids:
   - R010013
   - R01B004
@@ -5005,7 +5005,7 @@ courses:
   stage: core
   course_type: 전공필수
   track_ids:
-  - 회계·재무경영트랙
+  - 회계ㆍ재무경영트랙
   prereq_ids:
   - CTS0011
   available_grades:
@@ -5020,7 +5020,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 기업경영트랙
-  - 회계·재무경영트랙
+  - 회계ㆍ재무경영트랙
   prereq_ids:
   - R010013
   available_grades:
@@ -5034,7 +5034,7 @@ courses:
   stage: industry
   course_type: 전공필수
   track_ids:
-  - 회계·재무경영트랙
+  - 회계ㆍ재무경영트랙
   prereq_ids:
   - CTS0011
   available_grades:
@@ -5048,7 +5048,7 @@ courses:
   stage: application
   course_type: 전공필수
   track_ids:
-  - 회계·재무경영트랙
+  - 회계ㆍ재무경영트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -5062,7 +5062,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 비즈니스애널리틱스트랙
-  - 회계·재무경영트랙
+  - 회계ㆍ재무경영트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -5114,7 +5114,7 @@ courses:
   stage: industry
   course_type: 전공필수
   track_ids:
-  - 스마트도시·교통계획트랙
+  - 스마트도시ㆍ교통계획트랙
   prereq_ids: []
   available_grades:
   - 4
@@ -5128,7 +5128,7 @@ courses:
   course_type: 전공필수
   track_ids:
   - 경제금융투자트랙
-  - 기업·경제분석트랙
+  - 기업ㆍ경제분석트랙
   prereq_ids:
   - CTS0013
   - CTS0016
@@ -5144,7 +5144,7 @@ courses:
   course_type: 전공필수
   track_ids:
   - 경제금융투자트랙
-  - 기업·경제분석트랙
+  - 기업ㆍ경제분석트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -5240,7 +5240,7 @@ courses:
   course_type: 전공필수
   track_ids:
   - 비즈니스애널리틱스트랙
-  - 회계·재무경영트랙
+  - 회계ㆍ재무경영트랙
   prereq_ids:
   - R010013
   available_grades:
@@ -5894,7 +5894,7 @@ courses:
   - 게임그래픽디자인트랙
   - 동양화전공
   - 서양화전공
-  - 영상·애니메이션디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -5908,7 +5908,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 게임그래픽디자인트랙
-  - 영상·애니메이션디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -5922,7 +5922,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - UX/UI디자인트랙
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   prereq_ids:
   - CTA0009
   - T020023
@@ -5938,7 +5938,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - UX/UI디자인트랙
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   - 동양화전공
   - 서양화전공
   prereq_ids: []
@@ -5953,7 +5953,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -5966,7 +5966,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -5981,7 +5981,7 @@ courses:
   track_ids:
   - UX/UI디자인트랙
   - 게임그래픽디자인트랙
-  - 영상·애니메이션디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -5995,9 +5995,9 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   - 게임그래픽디자인트랙
-  - 영상·애니메이션디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 1
@@ -6026,11 +6026,11 @@ courses:
   course_type: 전공선택
   track_ids:
   - UX/UI디자인트랙
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   - 게임그래픽디자인트랙
   - 미디어디자인트랙
   - 시각디자인트랙
-  - 영상·애니메이션디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -6047,7 +6047,7 @@ courses:
   - 게임그래픽디자인트랙
   - 미디어디자인트랙
   - 시각디자인트랙
-  - 영상·애니메이션디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -6060,7 +6060,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   - 게임그래픽디자인트랙
   prereq_ids:
   - T020007
@@ -6076,7 +6076,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 게임그래픽디자인트랙
-  - 영상·애니메이션디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -6090,7 +6090,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 미디어디자인트랙
-  - 영상·애니메이션디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -6106,7 +6106,7 @@ courses:
   - 게임그래픽디자인트랙
   - 미디어디자인트랙
   - 시각디자인트랙
-  - 영상·애니메이션디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -6133,7 +6133,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 게임그래픽디자인트랙
-  - 영상·애니메이션디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -6147,7 +6147,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - UX/UI디자인트랙
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -6160,7 +6160,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -6202,7 +6202,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   - 미디어디자인트랙
   - 시각디자인트랙
   prereq_ids: []
@@ -6275,10 +6275,10 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   - 미디어디자인트랙
   - 시각디자인트랙
-  - 영상·애니메이션디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids:
   - T020078
   available_grades:
@@ -6295,7 +6295,7 @@ courses:
   - 게임그래픽디자인트랙
   - 미디어디자인트랙
   - 시각디자인트랙
-  - 영상·애니메이션디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -6309,7 +6309,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 게임그래픽디자인트랙
-  - 영상·애니메이션디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -6322,7 +6322,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -6335,7 +6335,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -6349,7 +6349,7 @@ courses:
   stage: industry
   course_type: 전공필수
   track_ids:
-  - 영상·애니메이션디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 4
@@ -6363,7 +6363,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 게임그래픽디자인트랙
-  - 영상·애니메이션디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -6377,7 +6377,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 게임그래픽디자인트랙
-  - 영상·애니메이션디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids:
   - T020004
   available_grades:
@@ -6391,7 +6391,7 @@ courses:
   stage: industry
   course_type: 전공필수
   track_ids:
-  - 영상·애니메이션디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 4
@@ -6405,7 +6405,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 게임그래픽디자인트랙
-  - 영상·애니메이션디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids:
   - CTA0005
   available_grades:
@@ -6419,9 +6419,9 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   - 게임그래픽디자인트랙
-  - 영상·애니메이션디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -6435,7 +6435,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - 게임그래픽디자인트랙
-  - 영상·애니메이션디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -6450,7 +6450,7 @@ courses:
   course_type: 전공필수
   track_ids:
   - UX/UI디자인트랙
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   prereq_ids: []
   available_grades:
   - 4
@@ -6491,7 +6491,7 @@ courses:
   course_type: 전공필수
   track_ids:
   - UX/UI디자인트랙
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   - 미디어디자인트랙
   - 시각디자인트랙
   prereq_ids: []
@@ -6506,7 +6506,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   prereq_ids:
   - Y050027
   available_grades:
@@ -6520,7 +6520,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   prereq_ids:
   - Y050027
   available_grades:
@@ -6534,7 +6534,7 @@ courses:
   stage: industry
   course_type: 전공필수
   track_ids:
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   prereq_ids: []
   available_grades:
   - 4
@@ -6547,7 +6547,7 @@ courses:
   stage: core
   course_type: 전공필수
   track_ids:
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   prereq_ids:
   - CTA0009
   available_grades:
@@ -6562,7 +6562,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - UX/UI디자인트랙
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   prereq_ids: []
   available_grades:
   - 4
@@ -6575,7 +6575,7 @@ courses:
   stage: core
   course_type: 전공필수
   track_ids:
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -6588,7 +6588,7 @@ courses:
   stage: application
   course_type: 전공필수
   track_ids:
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -6602,7 +6602,7 @@ courses:
   stage: application
   course_type: 전공필수
   track_ids:
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   prereq_ids:
   - T026010
   available_grades:
@@ -6616,7 +6616,7 @@ courses:
   stage: industry
   course_type: 전공필수
   track_ids:
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   prereq_ids:
   - T026009
   available_grades:
@@ -6632,7 +6632,7 @@ courses:
   track_ids:
   - 게임그래픽디자인트랙
   - 시각디자인트랙
-  - 영상·애니메이션디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -6714,7 +6714,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   prereq_ids: []
   available_grades:
   - 4
@@ -6728,7 +6728,7 @@ courses:
   course_type: 전공선택
   track_ids:
   - UX/UI디자인트랙
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -6963,7 +6963,7 @@ courses:
   track_ids:
   - 미디어디자인트랙
   - 시각디자인트랙
-  - 영상·애니메이션디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -6976,10 +6976,10 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   - 미디어디자인트랙
   - 시각디자인트랙
-  - 영상·애니메이션디자인트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 3
@@ -7018,7 +7018,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - VMD·전시디자인트랙
+  - VMDㆍ전시디자인트랙
   - 게임그래픽디자인트랙
   - 미디어디자인트랙
   - 시각디자인트랙
@@ -7458,7 +7458,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7478,7 +7478,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7495,7 +7495,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7512,7 +7512,7 @@ courses:
   stage: foundation
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7533,7 +7533,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7558,7 +7558,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7576,7 +7576,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7592,7 +7592,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7609,7 +7609,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7625,7 +7625,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7643,7 +7643,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7660,7 +7660,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7680,7 +7680,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7698,7 +7698,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7719,7 +7719,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7738,7 +7738,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7755,7 +7755,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7771,7 +7771,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7787,7 +7787,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7803,7 +7803,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7822,7 +7822,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7838,7 +7838,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7859,7 +7859,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7875,7 +7875,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7897,7 +7897,7 @@ courses:
   stage: industry
   course_type: 전공필수
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7916,7 +7916,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7933,7 +7933,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7949,7 +7949,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7965,7 +7965,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7981,7 +7981,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -7997,7 +7997,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -8013,7 +8013,7 @@ courses:
   stage: industry
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -8049,7 +8049,7 @@ courses:
   stage: application
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 빅데이터트랙
   - 웹공학트랙
@@ -8180,7 +8180,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 빅데이터트랙
   prereq_ids: []
   available_grades:
@@ -8221,8 +8221,8 @@ courses:
   stage: core
   course_type: 전공필수
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
-  - 영상·애니메이션디자인트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
+  - 영상ㆍ애니메이션디자인트랙
   prereq_ids: []
   available_grades:
   - 2
@@ -8235,7 +8235,7 @@ courses:
   stage: application
   course_type: 전공필수
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 빅데이터트랙
   prereq_ids: []
   available_grades:
@@ -8249,7 +8249,7 @@ courses:
   stage: application
   course_type: 전공필수
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 모바일소프트웨어트랙
   - 웹공학트랙
   prereq_ids: []
@@ -8264,7 +8264,7 @@ courses:
   stage: industry
   course_type: 전공필수
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   prereq_ids:
   - V020015
   available_grades:
@@ -8280,7 +8280,7 @@ courses:
   stage: industry
   course_type: 전공필수
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   prereq_ids: []
   available_grades:
   - 4
@@ -8293,7 +8293,7 @@ courses:
   stage: application
   course_type: 전공필수
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   prereq_ids:
   - V030052
   available_grades:
@@ -8308,7 +8308,7 @@ courses:
   stage: industry
   course_type: 전공필수
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   prereq_ids:
   - V020015
   available_grades:
@@ -8322,7 +8322,7 @@ courses:
   stage: core
   course_type: 전공선택
   track_ids:
-  - 디지털콘텐츠·가상현실트랙
+  - 디지털콘텐츠ㆍ가상현실트랙
   - 빅데이터트랙
   - 웹공학트랙
   prereq_ids:

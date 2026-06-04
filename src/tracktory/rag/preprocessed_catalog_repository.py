@@ -17,7 +17,7 @@ from pydantic import ValidationError
 
 from tracktory.graph.models import Course, Track
 from tracktory.rag.curriculum_lines import CourseTypeLabel, StageLabel, parse_course_line
-from tracktory.rag.hansung_catalog import match_track_name
+from tracktory.rag.hansung_catalog import canonical_track_name, match_track_name
 from tracktory.rag.preprocessing.extract_rag_metadata import parse_metadata
 
 __all__ = [
@@ -136,9 +136,10 @@ class PreprocessedTrackRepository:
         return self._build_tracks(wanted=None)
 
     def list_track_doc_names(self) -> list[str]:
-        """트랙소개 txt 전체 트랙명. ``list_all`` 은 교육과정·course_id 가 없는 트랙을 조용히
-        드롭하므로, 생성기가 '왜 카탈로그에서 빠졌는지'를 전수 대조·리포팅할 때 모집단으로 쓴다."""
-        return [doc.track_name for doc in _load_track_docs(self._rag_dir)]
+        """트랙소개 txt 전체 트랙명(권위 표기). ``list_all`` 은 교육과정·course_id 가 없는 트랙을
+        조용히 드롭하므로, 생성기가 '왜 카탈로그에서 빠졌는지'를 전수 대조·리포팅할 때
+        모집단으로 쓴다. ``list_all`` 의 track_id 와 같은 정규화 형태라야 차집합 대조가 맞다."""
+        return [canonical_track_name(doc.track_name) for doc in _load_track_docs(self._rag_dir)]
 
     def find_by_track_ids(self, track_ids: list[str]) -> list[Track]:
         wanted = set(track_ids)
@@ -154,9 +155,13 @@ class PreprocessedTrackRepository:
 
         tracks: list[Track] = []
         for doc in _load_track_docs(self._rag_dir):
-            if wanted is not None and doc.track_name not in wanted:
+            # RAG 본문 헤더는 가운뎃점(·)으로 치환돼 있어, 카탈로그가 노출하는 식별자·표시명은
+            # 권위 표기(ㆍ)로 되돌려 백엔드·원본과 일치시킨다. 교육과정 매칭은 가운뎃점류를
+            # 통일하는 match_track_name 이 흡수하므로 표기 복원과 무관하게 짝지어진다.
+            track_name = canonical_track_name(doc.track_name)
+            if wanted is not None and track_name not in wanted:
                 continue
-            curriculum = curriculum_by_name.get(match_track_name(doc.track_name))
+            curriculum = curriculum_by_name.get(match_track_name(track_name))
             if curriculum is None:
                 continue
             course_ids = self._extract_course_ids(curriculum)
@@ -168,8 +173,8 @@ class PreprocessedTrackRepository:
                         college_id=doc.college,
                         department_id=doc.department,
                         major_id=doc.department,
-                        track_id=doc.track_name,
-                        track_name=doc.track_name,
+                        track_id=track_name,
+                        track_name=track_name,
                         course_ids=course_ids,
                         meta_text="",
                         meta_vector=[],
@@ -178,7 +183,7 @@ class PreprocessedTrackRepository:
                     )
                 )
             except ValidationError as exc:
-                logger.warning("Track 검증 실패 스킵(%s): %s", doc.track_name, exc)
+                logger.warning("Track 검증 실패 스킵(%s): %s", track_name, exc)
         return tracks
 
     @staticmethod
