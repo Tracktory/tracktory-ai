@@ -49,7 +49,11 @@ _FAST_PATH_SECONDS: float = 3.0
 # 내부 인증이 추천 엔드포인트에 적용되므로 모든 요청은 토큰 + 사용자 헤더를 동봉한다.
 _RECOMMEND_PATH = "/api/v1/ai/recommend"
 _TEST_TOKEN = "test-internal-token"
-_AUTH_HEADERS = {"X-Internal-Token": _TEST_TOKEN, "X-User-Id": "u-1"}
+_AUTH_HEADERS = {
+    "X-Internal-Token": _TEST_TOKEN,
+    "X-User-Id": "u-1",
+    "X-Request-Id": "req-recommend-test",
+}
 
 
 # ---------------------------------------------------------------------------
@@ -243,14 +247,16 @@ def _override_clients(clients: PipelineClients) -> None:
 
 
 @pytest.mark.parametrize(
-    ("persona", "current_tracks"),
+    ("persona", "current_tracks", "expected_primary_keys"),
     [
-        ("1학년 트랙 미선택", []),
-        ("2학년+ 트랙 선택 완료", ["in0", "in1"]),
+        ("1학년 트랙 미선택", [], None),
+        ("2학년+ 트랙 선택 완료", ["in0", "in1"], ["in0::in1"]),
     ],
 )
 def test_recommend_happy_path_returns_four_part_envelope(
-    persona: str, current_tracks: list[str]
+    persona: str,
+    current_tracks: list[str],
+    expected_primary_keys: list[str] | None,
 ) -> None:
     """유효 입력 + mock boundary 로 200 + 4 부분 묶음 envelope 을 반환한다.
 
@@ -261,17 +267,25 @@ def test_recommend_happy_path_returns_four_part_envelope(
     _override_clients(clients)
 
     payload = _valid_payload(current_tracks=current_tracks)
-    start = time.perf_counter()
     with TestClient(app) as client:
+        start = time.perf_counter()
         response = client.post(_RECOMMEND_PATH, json=payload, headers=_AUTH_HEADERS)
-    elapsed = time.perf_counter() - start
+        elapsed = time.perf_counter() - start
 
     assert response.status_code == 200
     body = response.json()
-    assert body["is_success"] is True
+    assert body["success"] is True
     data = body["data"]
     assert data["jobs"], "직무 후보가 비어 있으면 안 된다"
-    assert len(data["primary_combos"]) == 2
+    if expected_primary_keys is None:
+        assert len(data["primary_combos"]) == 2
+    else:
+        assert [combo["combo"]["combo_key"] for combo in data["primary_combos"]] == (
+            expected_primary_keys
+        )
+        assert len(data["primary_combos"]) == 1
+        assert data["primary_combos"][0]["slot_type"] == "primary"
+        assert data["primary_combos"][0]["rank"] == 1
     assert len(data["secondary_combos"]) == 5
     assert data["roadmap"]["stages"], "로드맵 4 단계가 채워져야 한다"
     assert data["explanation"]["text"] == "추천 결과 종합 설명입니다."
@@ -355,12 +369,11 @@ def test_recommend_validation_failure_returns_422_envelope() -> None:
     with TestClient(app) as client:
         response = client.post(_RECOMMEND_PATH, json=payload, headers=_AUTH_HEADERS)
 
-    # 프로젝트 envelope 표준은 RequestValidationError 를 BAD_REQUEST_ERROR (400)
-    # 로 매핑한다 (exception_handlers.validation_handler). FastAPI 의 기본 422
-    # 가 아닌 400 으로 정규화된 envelope 이 반환되는지 검증.
-    assert response.status_code == 400
+    # 프로젝트 envelope 표준은 RequestValidationError 를 VALIDATION_FAILED (422)
+    # 로 매핑한다 (exception_handlers.validation_handler).
+    assert response.status_code == 422
     body = response.json()
-    assert body["is_success"] is False
+    assert body["success"] is False
 
 
 def test_recommend_graph_internal_errors_map_to_500() -> None:
@@ -382,7 +395,7 @@ def test_recommend_graph_internal_errors_map_to_500() -> None:
 
     assert response.status_code == 500
     body = response.json()
-    assert body["is_success"] is False
+    assert body["success"] is False
 
 
 def test_recommend_boundary_exception_maps_to_500() -> None:
@@ -399,7 +412,7 @@ def test_recommend_boundary_exception_maps_to_500() -> None:
 
     assert response.status_code == 500
     body = response.json()
-    assert body["is_success"] is False
+    assert body["success"] is False
 
 
 def test_recommend_graph_missing_roadmap_maps_to_500() -> None:
@@ -425,7 +438,7 @@ def test_recommend_graph_missing_roadmap_maps_to_500() -> None:
 
     assert response.status_code == 500
     body = response.json()
-    assert body["is_success"] is False
+    assert body["success"] is False
 
 
 def test_recommend_compiles_graph_once_across_requests() -> None:

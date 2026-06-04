@@ -67,7 +67,7 @@ def test_intent_classifier_golden(
 
     llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
     chain = INTENT_CLASSIFIER_PROMPT | llm.with_structured_output(IntentClassification)
-    result: IntentClassification = chain.invoke({"message": message})
+    result: IntentClassification = chain.invoke({"message": message, "history": ""})
 
     print(f"\n[입력] {message}")
     print(f"[출력] intent={result.intent} keywords={result.search_keywords}")

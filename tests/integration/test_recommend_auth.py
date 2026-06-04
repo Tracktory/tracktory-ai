@@ -29,6 +29,7 @@ pytestmark = pytest.mark.integration
 
 _RECOMMEND_PATH = "/api/v1/ai/recommend"
 _TEST_TOKEN = "test-internal-token"
+_REQUEST_ID = "req-recommend-auth-test"
 
 
 def _valid_payload() -> dict[str, Any]:
@@ -67,6 +68,13 @@ class _FakeGraph:
                 ],
                 "semesters": [],
             },
+            "coverage_analysis": {
+                "required_count": 0,
+                "current_covered": 0,
+                "expected_covered": 0,
+                "current_ratio": 0.0,
+                "expected_ratio": 0.0,
+            },
             "explanation": {"text": "설명", "sections": []},
             "errors": [],
         }
@@ -95,11 +103,15 @@ def test_valid_token_and_user_id_returns_200_and_propagates_user(fake_graph: _Fa
         response = client.post(
             _RECOMMEND_PATH,
             json=_valid_payload(),
-            headers={"X-Internal-Token": _TEST_TOKEN, "X-User-Id": "u-42"},
+            headers={
+                "X-Internal-Token": _TEST_TOKEN,
+                "X-User-Id": "u-42",
+                "X-Request-Id": _REQUEST_ID,
+            },
         )
 
     assert response.status_code == 200
-    assert response.json()["is_success"] is True
+    assert response.json()["success"] is True
     assert fake_graph.received_state is not None
     assert fake_graph.received_state["user_id"] == "u-42"
 
@@ -109,11 +121,11 @@ def test_missing_internal_token_returns_403(fake_graph: _FakeGraph) -> None:
         response = client.post(
             _RECOMMEND_PATH,
             json=_valid_payload(),
-            headers={"X-User-Id": "u-42"},
+            headers={"X-User-Id": "u-42", "X-Request-Id": _REQUEST_ID},
         )
 
     assert response.status_code == 403
-    assert response.json()["is_success"] is False
+    assert response.json()["success"] is False
     assert fake_graph.received_state is None
 
 
@@ -122,7 +134,11 @@ def test_wrong_internal_token_returns_403(fake_graph: _FakeGraph) -> None:
         response = client.post(
             _RECOMMEND_PATH,
             json=_valid_payload(),
-            headers={"X-Internal-Token": "wrong-token", "X-User-Id": "u-42"},
+            headers={
+                "X-Internal-Token": "wrong-token",
+                "X-User-Id": "u-42",
+                "X-Request-Id": _REQUEST_ID,
+            },
         )
 
     assert response.status_code == 403
@@ -151,7 +167,11 @@ def test_server_token_unset_rejects_even_with_header(
         response = client.post(
             _RECOMMEND_PATH,
             json=_valid_payload(),
-            headers={"X-Internal-Token": _TEST_TOKEN, "X-User-Id": "u-42"},
+            headers={
+                "X-Internal-Token": _TEST_TOKEN,
+                "X-User-Id": "u-42",
+                "X-Request-Id": _REQUEST_ID,
+            },
         )
 
     assert response.status_code == 403
@@ -164,8 +184,8 @@ def test_missing_user_id_returns_400(fake_graph: _FakeGraph) -> None:
         response = client.post(
             _RECOMMEND_PATH,
             json=_valid_payload(),
-            headers={"X-Internal-Token": _TEST_TOKEN},
+            headers={"X-Internal-Token": _TEST_TOKEN, "X-Request-Id": _REQUEST_ID},
         )
 
-    assert response.status_code == 400
-    assert response.json()["is_success"] is False
+    assert response.status_code == 422
+    assert response.json()["success"] is False
