@@ -7869,64 +7869,6 @@ courses:
   available_semesters:
   - 8
   tech_stacks: []
-- course_id: V020024
-  course_name: SW 통합구현(IPP)
-  credits: 3
-  stage: industry
-  course_type: 전공선택
-  track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
-  - 모바일소프트웨어트랙
-  - 빅데이터트랙
-  - 웹공학트랙
-  prereq_ids:
-  - V020012
-  - V020014
-  - Y030008
-  available_grades:
-  - 4
-  available_semesters:
-  - 7
-  tech_stacks:
-  - CI/CD
-  - HTML
-  - Java
-- course_id: V020026
-  course_name: SW설계 및 테스트(IPP)
-  credits: 3
-  stage: industry
-  course_type: 전공필수
-  track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
-  - 모바일소프트웨어트랙
-  - 빅데이터트랙
-  - 웹공학트랙
-  prereq_ids:
-  - V030069
-  available_grades:
-  - 4
-  available_semesters:
-  - 7
-  tech_stacks:
-  - JUnit
-  - Java
-- course_id: V020027
-  course_name: 데이터베이스 시스템 구현(IPP)
-  credits: 3
-  stage: industry
-  course_type: 전공선택
-  track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
-  - 모바일소프트웨어트랙
-  - 빅데이터트랙
-  - 웹공학트랙
-  prereq_ids:
-  - V020012
-  available_grades:
-  - 4
-  available_semesters:
-  - 8
-  tech_stacks: []
 - course_id: V020028
   course_name: 취창업 세미나
   credits: 3
@@ -8007,29 +7949,6 @@ courses:
   available_semesters:
   - 6
   tech_stacks: []
-- course_id: V020039
-  course_name: 서버구현 및 화면설계(IPP)
-  credits: 3
-  stage: industry
-  course_type: 전공선택
-  track_ids:
-  - 디지털콘텐츠ㆍ가상현실트랙
-  - 모바일소프트웨어트랙
-  - 빅데이터트랙
-  - 웹공학트랙
-  prereq_ids:
-  - V024003
-  - CTE0002
-  - V020007
-  available_grades:
-  - 4
-  available_semesters:
-  - 7
-  tech_stacks:
-  - CSS
-  - Java
-  - PHP
-  - Spring
 - course_id: V021003
   course_name: 모바일&스마트시스템
   credits: 3
