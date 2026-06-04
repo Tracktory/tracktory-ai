@@ -73,14 +73,15 @@ def test_complementarity_partial_when_job_contributions_overlap(
 ) -> None:
     """직무 기여가 일부 겹치면 0 과 1 사이 (부분 분업).
 
-    contrib_a={py, sql}, contrib_b={sql, go} 의 대칭차집합 {py, go}=2,
-    합집합 {py, sql, go}=3 → 2/3.
+    contrib_a={py, sql}, contrib_b={sql, go} 의 대칭차집합 {py, go}=2 를 전체 직무
+    토큰 {py, sql, go, rust}=4 로 나눠 0.5. 분모가 전체 직무 토큰이므로 직무의 절반을
+    겹침 없이 분담한 정도를 반영한다 (직무가 요구하는 rust 는 둘 다 못 덮어 분모에만 남는다).
     """
     a = make_track("a", tech_stacks=["py", "sql"])
     b = make_track("b", tech_stacks=["sql", "go"])
     combo = make_combo(a, b)
     jobs = [make_job(tech_stacks=["py", "sql", "go", "rust"])]
-    assert _complementarity(combo, jobs) == 2 / 3
+    assert _complementarity(combo, jobs) == 0.5
 
 
 def test_complementarity_uses_competency_tags_and_tech_stacks(
@@ -151,6 +152,34 @@ def test_complementarity_canonicalizes_notation_differences(
     combo = make_combo(a, b)
     jobs = [make_job(tech_stacks=["React", "sql"])]
     assert _complementarity(combo, jobs) == 1.0
+
+
+def test_complementarity_not_saturated_by_weak_disjoint_partner(
+    make_track, make_combo, make_job
+) -> None:
+    """직무 토큰이 많은데 한 트랙이 1 개만 공급하면 comp 가 1.0 으로 포화되지 않는다.
+
+    분모가 두 기여의 합집합이면 서로소이기만 해도 1.0 이라, 직무의 1/6 만 공급하는
+    트랙이 완전 분업으로 둔갑해 무관 조합이 상위를 점령한다. 전체 직무 토큰을 분모로
+    삼으면 분담 비율만큼만 점수가 나와, 균형 분업 조합이 약한-서로소 조합보다 높다.
+    """
+    jobs = [make_job(tech_stacks=["py", "sql", "java", "go", "rust", "kotlin"])]
+    strong = make_track("s", tech_stacks=["py", "sql", "java"])
+    weak_disjoint = make_track("w", tech_stacks=["go"])
+    weak_combo = make_combo(strong, weak_disjoint)
+
+    # 직무 토큰 6 개 중 둘이 겹침 없이 분담하는 토큰은 {py, sql, java, go}=4 → 4/6.
+    weak_comp = _complementarity(weak_combo, jobs)
+    assert weak_comp == 4 / 6
+    assert weak_comp < 1.0
+
+    # 직무 전체를 절반씩 완전 분담하면 comp = 1.0 (포화는 분담률이 100% 일 때만).
+    balanced = make_combo(
+        make_track("ba", tech_stacks=["py", "sql", "java"]),
+        make_track("bb", tech_stacks=["go", "rust", "kotlin"]),
+    )
+    assert _complementarity(balanced, jobs) == 1.0
+    assert _complementarity(balanced, jobs) > weak_comp
 
 
 def test_job_coverage_uses_tech_stacks_only(make_track, make_combo, make_job) -> None:
