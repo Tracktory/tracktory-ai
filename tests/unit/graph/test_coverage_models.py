@@ -21,7 +21,7 @@ def test_coverage_analysis_accepts_valid_payload() -> None:
     analysis = CoverageAnalysis(
         anchor_job_id="be",
         anchor_job_name="백엔드 개발자",
-        required_count=4,
+        reachable_required_count=4,
         current_covered=1,
         expected_covered=3,
         current_ratio=0.25,
@@ -32,7 +32,7 @@ def test_coverage_analysis_accepts_valid_payload() -> None:
             JobCoverage(
                 job_id="be",
                 job_name="백엔드 개발자",
-                required_count=4,
+                total_required_count=4,
                 current_covered=1,
                 expected_covered=3,
                 current_ratio=0.25,
@@ -70,7 +70,7 @@ def test_coverage_analysis_accepts_valid_payload() -> None:
 def test_coverage_analysis_defaults_lists_empty() -> None:
     """리스트 필드는 기본값으로 비어 있어 목표 토큰 부재 시 graceful 종료가 가능하다."""
     analysis = CoverageAnalysis(
-        required_count=0,
+        reachable_required_count=0,
         current_covered=0,
         expected_covered=0,
         current_ratio=0.0,
@@ -91,7 +91,7 @@ def test_coverage_analysis_rejects_ratio_out_of_unit_interval(ratio: float) -> N
     """비율 필드는 [0, 1] 정의역을 벗어나면 거부한다."""
     with pytest.raises(ValidationError):
         CoverageAnalysis(
-            required_count=4,
+            reachable_required_count=4,
             current_covered=1,
             expected_covered=3,
             current_ratio=ratio,
@@ -104,7 +104,7 @@ def test_job_coverage_rejects_negative_counts() -> None:
         JobCoverage(
             job_id="be",
             job_name="백엔드 개발자",
-            required_count=-1,
+            total_required_count=-1,
             current_covered=0,
             expected_covered=0,
             current_ratio=0.0,

@@ -135,7 +135,7 @@ def _select_anchor(jobs: list[JobCandidate], anchor_job_id: str | None) -> JobCa
 def _empty_analysis() -> CoverageAnalysis:
     """목표 토큰 부재 시의 graceful 빈 분석. 비율 0.0, 리스트 빈 채로 종료한다."""
     return CoverageAnalysis(
-        required_count=0,
+        reachable_required_count=0,
         current_covered=0,
         expected_covered=0,
         current_ratio=0.0,
@@ -234,10 +234,10 @@ def compute_coverage(
     Returns:
         ``CoverageAnalysis``. ``anchor_job_id`` / ``anchor_job_name`` 으로 기준
         직무를 함께 싣는다 (커버리지 모달의 "○○ 직무 기준" 라벨용). 비율 필드는
-        [0, 1]. ``required_count`` 는 도달 가능 목표 토큰 수이며, 분모가 도달
-        가능 토큰뿐이라 ``expected_ratio`` 는 ``required_count > 0`` 일 때 1.0
+        [0, 1]. ``reachable_required_count`` 는 도달 가능 목표 토큰 수이며, 분모가 도달
+        가능 토큰뿐이라 ``expected_ratio`` 는 ``reachable_required_count > 0`` 일 때 1.0
         (전체 로드맵 이수 시 도달 가능 역량 100% 충족). 기준 직무는 있으나 도달
-        가능 토큰이 하나도 없으면 ``required_count == 0`` + 비율 0.0 이되
+        가능 토큰이 하나도 없으면 ``reachable_required_count == 0`` + 비율 0.0 이되
         ``anchor_job_id`` 와 ``gap_tokens`` (전부 도달 불가)는 채워 반환한다.
         추천 직무 자체가 없거나 기준 직무가 토큰을 전혀 안 가지면 ``anchor_job_id
         == ""`` 의 빈 분석으로 종료한다. ``next_actions_ratio`` 는 노출한 다음
@@ -321,7 +321,7 @@ def compute_coverage(
     return CoverageAnalysis(
         anchor_job_id=anchor.job_id,
         anchor_job_name=anchor.job_name,
-        required_count=required_count,
+        reachable_required_count=required_count,
         current_covered=len(current_keys),
         expected_covered=len(expected_keys),
         current_ratio=_ratio(len(current_keys), required_count),
@@ -349,7 +349,7 @@ def _job_coverage(
     return JobCoverage(
         job_id=job.job_id,
         job_name=job.job_name,
-        required_count=required,
+        total_required_count=required,
         current_covered=current,
         expected_covered=expected,
         current_ratio=(current / required if required else 0.0),
@@ -441,7 +441,7 @@ class CoverageAnalysisNode:
             self._course_tech_index,
             anchor_job_id=state.get("anchor_job_id"),
         )
-        if analysis.required_count > 0:
+        if analysis.reachable_required_count > 0:
             trace = "coverage_analysis:ok"
         elif analysis.anchor_job_id:
             # 기준 직무는 있으나 요구 토큰을 가르치는 과목이 없어 도달 가능 분모 0.
