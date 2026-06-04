@@ -24,6 +24,7 @@ class RecommendRequest(BaseModel):
     company_types: list[CompanyType] = Field(..., min_length=1)
     ncs_studied: list[str] = Field(default_factory=list)
     completed_courses: list[str] = Field(default_factory=list)
+    anchor_job_id: str | None = Field(default=None)
 
     @field_validator("current_tracks")
     @classmethod

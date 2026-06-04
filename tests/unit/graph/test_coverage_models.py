@@ -19,6 +19,8 @@ from tracktory.graph.models import (
 
 def test_coverage_analysis_accepts_valid_payload() -> None:
     analysis = CoverageAnalysis(
+        anchor_job_id="be",
+        anchor_job_name="백엔드 개발자",
         required_count=4,
         current_covered=1,
         expected_covered=3,
@@ -58,6 +60,8 @@ def test_coverage_analysis_accepts_valid_payload() -> None:
     )
 
     assert analysis.current_ratio == pytest.approx(0.25)
+    assert analysis.anchor_job_id == "be"
+    assert analysis.anchor_job_name == "백엔드 개발자"
     assert analysis.jobs[0].missing_tokens == ["Docker"]
     assert analysis.next_actions[0].course_id == "c1"
     assert analysis.next_actions_ratio == pytest.approx(0.5)
@@ -72,6 +76,8 @@ def test_coverage_analysis_defaults_lists_empty() -> None:
         current_ratio=0.0,
         expected_ratio=0.0,
     )
+    assert analysis.anchor_job_id == ""
+    assert analysis.anchor_job_name == ""
     assert analysis.jobs == []
     assert analysis.course_contributions == []
     assert analysis.next_actions == []

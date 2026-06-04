@@ -462,18 +462,34 @@ class NextActionSuggestion(BaseModel):
 
 
 class CoverageAnalysis(BaseModel):
-    """추천 직무 요구 역량 대비 현재 → 예상 충족도 분석 전체.
+    """단일 기준 직무(anchor) 요구 역량 대비 현재 → 예상 충족도 분석 전체.
 
     추천 결과(직무·트랙·로드맵)를 일회성 결과가 아닌 채워가는 지도로 만들기
-    위해, 추천 직무가 요구하는 기술·역량 토큰을 목표로 삼아 학생의 현재 충족도와
-    추천 로드맵을 모두 이수했을 때의 예상 충족도를 산출한다.
+    위해, **하나의 기준 직무**가 요구하는 기술·역량 토큰을 목표로 삼아 학생의
+    현재 충족도와 추천 로드맵을 모두 이수했을 때의 예상 충족도를 산출한다.
+
+    기준 직무를 하나로 고정하는 이유:
+        추천 직무가 여럿일 때 충족도를 합집합·평균으로 섞으면 "무엇의 몇 %인지"
+        가 모호해진다. 게이지·잔여 과목 기여도(``course_contributions``)·다음
+        액션(``next_actions``)·gap 토큰을 모두 같은 기준 직무에 정렬해, 사용자가
+        "어떤 직무를 목표로 한 충족도인지" 를 분명히 알 수 있게 한다. 단 분야별
+        분석(``jobs``)은 직무 간 비교 카드라 anchor 와 무관하게 전 추천 직무를 담는다.
+
+    기준 직무 선택:
+        기본값은 매칭도 1순위 직무이며, 호출자가 ``anchor_job_id`` 로 다른
+        추천 직무를 지정하면 그 직무로 다시 산출한다. ``anchor_job_id`` /
+        ``anchor_job_name`` 으로 어느 직무를 기준으로 했는지 함께 싣는다
+        (커버리지 모달의 "○○ 직무 기준" 라벨).
 
     비율 필드는 모두 [0, 1] 이며 사용자 화면에서 백분율로 렌더링한다. 목표 토큰이
-    하나도 없으면(추천 직무 부재 또는 직무 토큰 미보유) 모든 비율은 0.0, 리스트는
-    비어 graceful 종료한다.
+    하나도 없으면(추천 직무 부재 또는 기준 직무 토큰 미보유) 모든 비율은 0.0,
+    리스트는 비고 ``anchor_job_id`` 는 빈 문자열로 graceful 종료한다.
 
     Attributes:
-        required_count: 전체 목표 토큰 수 (추천 직무 토큰 합집합, 표기 정합 후 중복 제거).
+        anchor_job_id: 충족도 산출의 기준이 된 직무 식별자. 목표 토큰 부재 시
+            빈 문자열(``anchor_job_id == "" ⟺ required_count == 0``).
+        anchor_job_name: 기준 직무명 (사용자 표시용 "○○ 직무 기준" 라벨).
+        required_count: 기준 직무 목표 토큰 수 (표기 정합 후 중복 제거).
         current_covered: 현재(이수 과목) 덮는 목표 토큰 수.
         expected_covered: 추천 로드맵 이수 후 덮게 되는 목표 토큰 수.
         current_ratio: ``current_covered / required_count`` ([0, 1]). 분모 0 이면 0.0.
@@ -484,12 +500,16 @@ class CoverageAnalysis(BaseModel):
         next_actions_ratio: ``next_actions_covered / required_count`` ([0, 1]). 분모 0 이면 0.0.
             "다음 N개 과목 이수 시 도달 충족도" 표기의 근거. 과목별 ``contribution_ratio``
             의 합과 달리 토큰 중복을 합집합으로 제거해 over-claim 을 막는다.
-        jobs: 분야(추천 직무)별 현재/예상 충족도.
-        course_contributions: 잔여(추천) 과목별 충족도 기여도.
+        jobs: 분야별 분석 — 전 추천 직무의 per-job 현재/예상 충족도 (직무 비교 카드용,
+            anchor 와 무관). 각 직무를 자기 토큰 기준으로 평가하며 현재 충족률
+            내림차순으로 정렬한다. 목표 토큰 부재 시 빈 리스트.
+        course_contributions: 잔여(추천) 과목별 기준 직무 충족도 기여도.
         next_actions: 추천 기반 다음 액션 (기여도 상위 과목).
-        gap_tokens: 추천 로드맵 이수 후에도 못 덮는 전체 목표 토큰 (사용자 표시 표기).
+        gap_tokens: 추천 로드맵 이수 후에도 못 덮는 기준 직무 목표 토큰 (사용자 표시 표기).
     """
 
+    anchor_job_id: str = Field(default="")
+    anchor_job_name: str = Field(default="")
     required_count: int = Field(..., ge=0)
     current_covered: int = Field(..., ge=0)
     expected_covered: int = Field(..., ge=0)

@@ -38,6 +38,7 @@ async def recommend(
         {
             "user_id": user_id,
             "raw_input": request.model_dump(),
+            "anchor_job_id": request.anchor_job_id,
         }
     )
 
