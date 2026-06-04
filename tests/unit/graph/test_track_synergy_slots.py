@@ -28,6 +28,30 @@ def test_select_primary_returns_top_k_by_synergy(make_track, make_combo) -> None
     assert [r.rank for r in primary] == [1, 2]
 
 
+def test_select_primary_breaks_score_ties_deterministically(make_track, make_combo) -> None:
+    """동점 시 combo_key 알파벳 순으로 결정적 정렬 — 같은 입력에 항상 같은 순위.
+
+    점수가 같은 조합은 시너지 모델상 등가라 점수로 더 가를 수 없다. 임의(비결정)
+    정렬 대신 combo_key 로 결정적 resolution 을 보장해, 동일 입력이 매 호출 같은
+    주 추천을 내도록 고정한다 (점수 동률에 의한 임의 정렬 제거).
+    """
+    a = make_track("a")
+    b = make_track("b")
+    c = make_track("c")
+    combo_ab = make_combo(a, b)
+    combo_ac = make_combo(a, c)
+    # 입력 순서를 뒤집어도 결과 순위가 같아야 한다 (비결정성 배제).
+    forward = [
+        _ScoredCombo(combo=combo_ab, synergy_score=0.5),
+        _ScoredCombo(combo=combo_ac, synergy_score=0.5),
+    ]
+    reverse = list(reversed(forward))
+
+    keys_forward = [r.combo.combo_key for r in _select_primary(forward, k=2)]
+    keys_reverse = [r.combo.combo_key for r in _select_primary(reverse, k=2)]
+    assert keys_forward == keys_reverse == sorted([combo_ab.combo_key, combo_ac.combo_key])
+
+
 def test_cross_college_selects_t1_candidate_above_threshold(make_track, make_combo) -> None:
     """T1 cross 후보 (단과대 다른 트랙 포함) 중 임계값 이상 + 시너지 최대 채택."""
     primary_a = make_track("a", college_id="C1")

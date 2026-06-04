@@ -39,6 +39,37 @@ tracks:
   - Y030030
   - Y030033
   - Y030034
+  competencies:
+  - AI 기반 융합 기술 전문가
+  - 소프트웨어 활용 능력
+  - 지능형 IoT 시스템 개발 전문가
+  tech_stacks:
+  - Android
+  - Bootstrap
+  - C
+  - C#
+  - C++
+  - CSS
+  - Computer Vision
+  - Deep Learning
+  - Git
+  - GitHub
+  - HTML
+  - Hugging Face
+  - Java
+  - JavaScript
+  - Jupyter
+  - Kotlin
+  - LLM
+  - Lua
+  - Machine Learning
+  - NLP
+  - OpenCV
+  - Python
+  - RAG
+  - RDS
+  - TensorFlow
+  - Unity
 - track_id: UX/UI디자인트랙
   track_name: UX/UI디자인트랙
   college_id: 디자인대학
@@ -66,6 +97,16 @@ tracks:
   - T02A009
   - T023009
   - T02A010
+  competencies:
+  - UX/UI 디자인
+  - 문제해결능력
+  - 3D 모델링 및 시각화 능력
+  - AI 도구 활용 능력
+  - 디자인 상품화 능력
+  tech_stacks:
+  - AutoCAD
+  - Photoshop
+  - SketchUp
 - track_id: VMD·전시디자인트랙
   track_name: VMD·전시디자인트랙
   college_id: 디자인대학
@@ -102,6 +143,20 @@ tracks:
   - T028014
   - T025002
   - T026002
+  competencies:
+  - AI 도구 활용 능력
+  - VMD 디자인 컨셉 기획 및 실행 능력
+  - 공간 디자인 능력
+  - 문제해결능력
+  - 프리젠테이션 능력
+  tech_stacks:
+  - 3ds Max
+  - Figma
+  - GPT
+  - Lua
+  - Photoshop
+  - SketchUp
+  - Spring
 - track_id: 게임그래픽디자인트랙
   track_name: 게임그래픽디자인트랙
   college_id: 디자인대학
@@ -139,6 +194,25 @@ tracks:
   - T02C018
   - T027015
   - T027018
+  competencies:
+  - 3D 그래픽 모델링 및 텍스쳐링
+  - AI를 활용한 게임 그래픽 디자인
+  - Unity 기반 XR 개발 환경 구축 및 애니메이션 제작
+  - 가상현실 애니메이션 콘텐츠 기획 및 구현
+  - 게임 캐릭터 디자인 및 설정
+  - 게임그래픽 디자인의 개요와 역사 설명
+  - 게임그래픽 작가 설명
+  - 게임그래픽 표현 도구 연습 및 작업 수행
+  - 게임의 발전과 종류 설명
+  - 인터랙티브 콘텐츠 기획 능력
+  tech_stacks:
+  - 3ds Max
+  - C
+  - Node.js
+  - REST
+  - Stable Diffusion
+  - Unity
+  - Unreal Engine
 - track_id: 경제금융투자트랙
   track_name: 경제금융투자트랙
   college_id: 미래융합사회과학대학
@@ -166,6 +240,18 @@ tracks:
   - R013014
   - R01F004
   - R013015
+  competencies:
+  - 경제정책의 이론적 기초 습득
+  - 경제학 이론의 기초 이해
+  - 국제금융시장 이해
+  - 금융 및 투자 이론의 적용
+  - 데이터 분석 능력
+  - 시장 균형 분석 능력
+  - 정부의 재정정책 이해
+  - 최적화 이론 적용
+  tech_stacks:
+  - Machine Learning
+  - SAS
 - track_id: 공공행정트랙
   track_name: 공공행정트랙
   college_id: 미래융합사회과학대학
@@ -198,6 +284,16 @@ tracks:
   - R010054
   - R010119
   - R01C012
+  competencies:
+  - 조직관리 역량
+  - 종합적 사고 능력
+  - 행정적 분석 능력
+  - 행정학적 사고 능력
+  tech_stacks:
+  - Big Data
+  - Express
+  - R
+  - RStudio
 - track_id: 국제무역트랙
   track_name: 국제무역트랙
   college_id: 미래융합사회과학대학
@@ -225,6 +321,19 @@ tracks:
   - R010029
   - R010075
   - R011009
+  competencies:
+  - 국제무역 관련 법규 이해
+  - 국제무역 및 국제금융의 기초이론 이해
+  - 데이터 분석 능력
+  - 무역 시뮬레이션 및 종합설계 능력
+  - 무역계약의 성립과 이행 이해
+  - 무역실무 지식 습득
+  - 무역영어 능력 향상
+  - 해외시장 통상환경 분석
+  tech_stacks:
+  - C
+  - Express
+  - R
 - track_id: 글로벌비즈니스트랙
   track_name: 글로벌비즈니스트랙
   college_id: 미래융합사회과학대학
@@ -252,6 +361,14 @@ tracks:
   - R010104
   - R010029
   - R010112
+  competencies:
+  - 국제 마케팅 전략 수립 능력
+  - 글로벌 비즈니스 마인드
+  - 문제해결능력
+  - 재무적 의사결정 능력
+  - 정보 수집 및 분석 능력
+  tech_stacks:
+  - Big Data
 - track_id: 기업·경제분석트랙
   track_name: 기업·경제분석트랙
   college_id: 미래융합사회과학대학
@@ -280,6 +397,17 @@ tracks:
   - R010092
   - R013015
   - R013006
+  competencies:
+  - 게임 이론 적용
+  - 경제 현상 분석
+  - 경제정책 현안 분석
+  - 머신러닝 활용 능력
+  - 시장 균형 이해
+  - 정부의 역할 이해
+  - 최적화 이론 적용
+  tech_stacks:
+  - Machine Learning
+  - R
 - track_id: 기업경영트랙
   track_name: 기업경영트랙
   college_id: 미래융합사회과학대학
@@ -319,6 +447,23 @@ tracks:
   - R019011
   - R019012
   - R010117
+  competencies:
+  - 경영 관리활동 이해
+  - 경영의 기본적 개념 이해
+  - 경영전략 수립 능력
+  - 기업 윤리적 이슈 이해
+  - 기업 활동과 형태 이해
+  - 데이터 기반 의사결정 이해
+  - 데이터 분석 능력
+  - 소매전략의 역할 이해
+  - 재무결정 기본개념 이해
+  - 재무관리 기본개념 이해
+  - 조직 구성원 행동 이해
+  - 투자결정 기본이론 이해
+  tech_stacks:
+  - Lua
+  - Python
+  - R
 - track_id: 동양화전공
   track_name: 동양화전공
   college_id: 크리에이티브인문예술대학
@@ -359,6 +504,17 @@ tracks:
   - P020096
   - P021012
   - P022008
+  competencies:
+  - 동양화 재료의 특성 이해 및 활용
+  - 작품 기획 및 전시 실무 경험
+  - 개인적 창의력 및 표현력 개발
+  - 전통 기법을 통한 현대적 표현
+  - 전통 미술의 현대적 재해석
+  - AI 활용한 창작 및 아이디어 구상
+  tech_stacks:
+  - AI 도구
+  - Auto CAD
+  - Photoshop
 - track_id: 디지털인문정보학트랙
   track_name: 디지털인문정보학트랙
   college_id: 크리에이티브인문예술대학
@@ -390,6 +546,14 @@ tracks:
   - P010156
   - P018010
   - P018019
+  competencies:
+  - 디지털 기술을 인문학에 접목하여 콘텐츠 기획 및 발행 능력
+  - 문화자원 아카이빙 능력
+  - 이용자 인터페이스 설계 능력
+  - 정보 조직 및 검색 능력
+  - 학술 커뮤니케이션 이해 및 적용 능력
+  tech_stacks:
+  - SQL
 - track_id: 디지털콘텐츠·가상현실트랙
   track_name: 디지털콘텐츠·가상현실트랙
   college_id: IT공과대학
@@ -440,6 +604,39 @@ tracks:
   - V020036
   - V020037
   - V023010
+  competencies:
+  - C 언어 프로그래밍 능력
+  - 가상현실 애니메이션 콘텐츠 제작 능력
+  - 객체지향 프로그래밍 능력
+  - 웹 콘텐츠 제작 능력
+  - 자료구조 이해 및 활용 능력
+  - 컴퓨터 구조 이해
+  - 프로그래밍 언어의 이해
+  tech_stacks:
+  - Android
+  - Big Data
+  - C
+  - C#
+  - C++
+  - CI/CD
+  - CSS
+  - Dart
+  - GPT
+  - HTML
+  - JUnit
+  - Java
+  - JavaScript
+  - Kotlin
+  - Linux
+  - NLP
+  - OWASP
+  - PHP
+  - Perl
+  - Python
+  - R
+  - SQL
+  - Spring
+  - Unity
 - track_id: 모바일소프트웨어트랙
   track_name: 모바일소프트웨어트랙
   college_id: IT공과대학
@@ -489,6 +686,49 @@ tracks:
   - V020036
   - V020037
   - V021009
+  competencies:
+  - 객체지향 프로그래밍 능력
+  - 데이터 분석 능력
+  - 소프트웨어 활용 능력
+  - 자료구조 이해 및 활용 능력
+  - 프로그래밍 언어 활용 능력
+  tech_stacks:
+  - Android
+  - Apache
+  - Big Data
+  - Bootstrap
+  - C
+  - C#
+  - C++
+  - CI/CD
+  - CSS
+  - Dart
+  - Deep Learning
+  - Express
+  - GPT
+  - HTML
+  - JUnit
+  - Java
+  - JavaScript
+  - Jupyter
+  - Keras
+  - Kotlin
+  - Linux
+  - Machine Learning
+  - Maven
+  - MySQL
+  - NLP
+  - OWASP
+  - PHP
+  - Perl
+  - Python
+  - R
+  - REST
+  - SQL
+  - Spring
+  - Swift
+  - SwiftUI
+  - iOS
 - track_id: 문학문화콘텐츠학과
   track_name: 문학문화콘텐츠학과
   college_id: 창의융합대학
@@ -526,6 +766,15 @@ tracks:
   - Y020026
   - P010181
   - Y020033
+  competencies:
+  - 고전 문학의 콘텐츠화 전략 수립
+  - 디지털 콘텐츠 기획 및 제작 능력
+  - 문화콘텐츠 기획 및 실행 전략 수립
+  - 문화콘텐츠 트렌드 분석 능력
+  - 문화콘텐츠의 개념과 산업 이해
+  - 스토리텔링 기법 이해 및 창작 능력
+  tech_stacks:
+  - GPT
 - track_id: 미디어디자인트랙
   track_name: 미디어디자인트랙
   college_id: 디자인대학
@@ -562,6 +811,19 @@ tracks:
   - T02C018
   - T02B017
   - T02B019
+  competencies:
+  - UX/UI 디자인
+  - 디자인 기획 및 개발
+  - 디지털 촬영 기술
+  - 모션 그래픽 디자인
+  - 사용자 경험 디자인
+  - 영상 디자인
+  - 인포그래픽 디자인
+  tech_stacks:
+  - After Effects
+  - C
+  - GPT
+  - Photoshop
 - track_id: 미래모빌리티학과
   track_name: 미래모빌리티학과
   college_id: 창의융합대학
@@ -600,6 +862,35 @@ tracks:
   - Y050017
   - Y050029
   - Y050030
+  competencies:
+  - AI 및 머신러닝 모델 구현
+  - 모빌리티 시스템의 전기전자 회로 설계
+  - 모빌리티 시스템의 제어기 설계
+  - 모빌리티 전기 구동 시스템 모델링 및 시뮬레이션
+  - 모빌리티 프로그래밍 및 제어 기술 습득
+  - 미래 모빌리티 기술 이해
+  - 자율주행 기술 및 규제 환경 이해
+  - 자율주행 시스템 설계 및 개발
+  tech_stacks:
+  - C
+  - CUDA
+  - C프로그래밍
+  - Deep Learning
+  - EasyEDA
+  - Hugging Face
+  - Linux
+  - MATLAB/Simulink
+  - Machine Learning
+  - NVIDIA Jetson
+  - Node.js
+  - NumPy
+  - Pandas
+  - PyTorch
+  - Python
+  - R
+  - ROS 2
+  - Spring
+  - Ubuntu
 - track_id: 발레전공
   track_name: 발레전공
   college_id: 크리에이티브인문예술대학
@@ -642,6 +933,17 @@ tracks:
   - P020046
   - P020106
   - P020107
+  competencies:
+  - 발레 동작원리에 대한 이해
+  - 신체 해부학적 이해
+  - 무대 예술의 조명 및 장치 이해
+  - 무용 교육 프로그램 개발
+  - 무용 교육의 철학적, 심리학적 기초 이해
+  - 무용 레퍼토리 분석 및 표현
+  - 무용 컨디셔닝 및 부상 예방
+  tech_stacks:
+  - C
+  - GPT
 - track_id: 법&정책트랙
   track_name: 법&정책트랙
   college_id: 미래융합사회과학대학
@@ -672,6 +974,16 @@ tracks:
   - R010124
   - R016013
   - R010054
+  competencies:
+  - 문제해결능력
+  - 정책과정 이해 및 활용 능력
+  - 사회문제 진단 및 정책대안 설계
+  - 리더십 역량
+  - 법체계 및 입법과정 이해
+  tech_stacks:
+  - Big Data
+  - Express
+  - R
 - track_id: 뷰티디자인매니지먼트학과
   track_name: 뷰티디자인매니지먼트학과
   college_id: 디자인대학
@@ -712,6 +1024,16 @@ tracks:
   - T030119
   - T030144
   - T030145
+  competencies:
+  - 기초 메이크업 기술 습득
+  - 네일 아트 디자인 기술 습득
+  - 뷰티 콘텐츠 제작 능력
+  - 뷰티디자인 사고 육성
+  - 아로마 테라피 기술 습득
+  - 피부 관리 및 에스테틱 기술 습득
+  - 헤어 스타일링 기술 습득
+  - 화장품 성분 및 제형 이해
+  tech_stacks: []
 - track_id: 비즈니스애널리틱스트랙
   track_name: 비즈니스애널리틱스트랙
   college_id: 미래융합사회과학대학
@@ -747,6 +1069,15 @@ tracks:
   - R01G014
   - R010064
   - R01G015
+  competencies:
+  - 경영 데이터 관리 및 분석 능력
+  - 데이터 분석 능력
+  - 비즈니스 의사결정 지원 능력
+  - 소프트웨어 활용 능력
+  - 통계적 분석 기법 활용 능력
+  tech_stacks:
+  - Big Data
+  - R
 - track_id: 빅데이터트랙
   track_name: 빅데이터트랙
   college_id: IT공과대학
@@ -796,6 +1127,41 @@ tracks:
   - V020036
   - V020037
   - V022009
+  competencies:
+  - 데이터 분석 능력
+  - 데이터베이스 설계 및 활용 능력
+  - 소프트웨어 활용 능력
+  - 프로그래밍 언어 활용 능력
+  - AI 및 클라우드 기술 활용 능력
+  tech_stacks:
+  - Android
+  - Big Data
+  - C
+  - C#
+  - C++
+  - CI/CD
+  - CSS
+  - Dart
+  - Deep Learning
+  - Excel
+  - Express
+  - GPT
+  - HTML
+  - JUnit
+  - Java
+  - Jupyter
+  - Keras
+  - Kotlin
+  - Linux
+  - Machine Learning
+  - NLP
+  - OWASP
+  - PHP
+  - Perl
+  - Python
+  - R
+  - SQL
+  - Spring
 - track_id: 산업공학트랙
   track_name: 산업공학트랙
   college_id: IT공과대학
@@ -826,6 +1192,20 @@ tracks:
   - V074011
   - V070067
   - V070078
+  competencies:
+  - 경영시스템 관리 및 혁신 전문가
+  - 산업시스템 최적화 전문가
+  - 인간중심의 안전경영관리전문가
+  tech_stacks:
+  - C
+  - Data Warehouse
+  - MS SQL Server 2014
+  - MS-SQL
+  - Machine Learning
+  - Python
+  - R
+  - SAP S/4HANA
+  - SQL
 - track_id: 서양화전공
   track_name: 서양화전공
   college_id: 크리에이티브인문예술대학
@@ -867,6 +1247,17 @@ tracks:
   - P021012
   - P022008
   - P022010
+  competencies:
+  - 재료 사용법 습득
+  - 회화 기법 활용
+  - 작품 발표 능력
+  - 전통 기법 응용
+  - 비평 및 피드백 능력
+  - 창의적 사고
+  - AI 활용 능력
+  tech_stacks:
+  - AutoCAD
+  - Photoshop
 - track_id: 스마트도시·교통계획트랙
   track_name: 스마트도시·교통계획트랙
   college_id: 미래융합사회과학대학
@@ -891,6 +1282,20 @@ tracks:
   - R010079
   - R010083
   - R01E001
+  competencies:
+  - GIS 활용 능력
+  - 교통시설 계획 및 설계 이해
+  - 다문화사회와 다문화도시 개념 설명
+  - 도시계획 체계 이해
+  - 스마트도시 개념 적용
+  - 지속가능한 도시개발 분석
+  tech_stacks:
+  - Big Data
+  - GPT
+  - QGIS
+  - Spark
+  - 드론/무인자동차
+  - 로보틱스/분산발전
 - track_id: 시각디자인트랙
   track_name: 시각디자인트랙
   college_id: 디자인대학
@@ -925,6 +1330,18 @@ tracks:
   - T02C018
   - T02C016
   - T02C017
+  competencies:
+  - UX/UI 디자인
+  - 디지털 촬영 기술
+  - 모션 디자인 기술
+  - 브랜드 기획 능력
+  - 시각적 표현 능력
+  - 정보 디자인 능력
+  tech_stacks:
+  - After Effects
+  - C
+  - Express
+  - GPT
 - track_id: 시스템반도체트랙
   track_name: 시스템반도체트랙
   college_id: IT공과대학
@@ -955,6 +1372,22 @@ tracks:
   - V030068
   - V030037
   - V030065
+  competencies:
+  - CMOS 디지털집적회로 분석 및 설계
+  - FPGA 설계 및 검증
+  - 디지털 및 논리 회로 기초 이해
+  - 디지털 신호 처리 기술 적용
+  - 반도체 기초 개념 습득
+  - 반도체소자 및 공정 이해
+  - 시스템 반도체의 전체 구조 이해
+  - 제어 시스템 모델링 및 설계
+  - 회로 이론 기초 이해
+  tech_stacks:
+  - C
+  - Python
+  - Scala
+  - Verilog HDL
+  - Xilinx Vivado
 - track_id: 역사문화큐레이션트랙
   track_name: 역사문화큐레이션트랙
   college_id: 크리에이티브인문예술대학
@@ -980,6 +1413,18 @@ tracks:
   - P019007
   - P010186
   - P019006
+  competencies:
+  - 역사문화에 대한 이해를 바탕으로 큐레이팅 능력
+  - 역사학, 고고학, 미술사학, 박물관학 등의 융합적인 이해
+  - 역사학과 역사철학에 대한 기초적인 이해력
+  - 20세기 유럽 역사 전반의 전개 양상 설명 능력
+  - 역사문화 자료를 활용한 결과물 제작 능력
+  - 역사적 사건의 다양한 기록과 관점 비교 능력
+  - 일본의 사무라이 문화와 역사 설명 능력
+  - 일제강점기 한인의 사회문화적 삶 설명 능력
+  - 중국의 유물과 유적을 통한 역사적 흐름 설명 능력
+  - 중국인의 생활문화 이해 및 스토리텔링 능력
+  tech_stacks: []
 - track_id: 역사콘텐츠트랙
   track_name: 역사콘텐츠트랙
   college_id: 크리에이티브인문예술대학
@@ -1007,6 +1452,13 @@ tracks:
   - P01A007
   - P010186
   - P01A009
+  competencies:
+  - 역사문화 관련 행사 추진 및 콘텐츠 제작 능력 함양
+  - 역사문화 사실에 대한 이해력과 판단력 증진
+  - 역사문화 소재를 활용한 기획 능력 배양
+  - 역사문화 관련 홈페이지와 인프라 구축 및 관리 능력 함양
+  tech_stacks:
+  - PPT
 - track_id: 영미문화콘텐츠트랙
   track_name: 영미문화콘텐츠트랙
   college_id: 크리에이티브인문예술대학
@@ -1034,6 +1486,21 @@ tracks:
   - P01B006
   - P010129
   - P010188
+  competencies:
+  - 문화콘텐츠 기획 및 제작 역량
+  - 실용영어 구사 능력
+  - 영미문화 관련 비판적 사고 능력
+  - 영미문화 콘텐츠 분석 및 비평 역량
+  - 영어 데이터 활용 능력
+  tech_stacks:
+  - C
+  - EKS
+  - Express
+  - Lua
+  - Perl
+  - RDS
+  - REST
+  - Swift
 - track_id: 영미언어정보트랙
   track_name: 영미언어정보트랙
   college_id: 크리에이티브인문예술대학
@@ -1063,6 +1530,27 @@ tracks:
   - P010129
   - P010147
   - P012020
+  competencies:
+  - 데이터 분석 능력
+  - 영어 단어의 구성 원리 이해 및 분석 능력
+  - 영어 문법 구조 이해 및 활용 능력
+  - 영어 문장 구조 분석 능력
+  - 영어 문장 해석 능력
+  - 영어 발음 교육 능력
+  - 영어 의사소통 능력 향상
+  - 영어 작문 능력
+  tech_stacks:
+  - AntConc
+  - C
+  - EKS
+  - Express
+  - GPT
+  - Lua
+  - Perl
+  - R
+  - RDS
+  - REST
+  - SSL
 - track_id: 영상·애니메이션디자인트랙
   track_name: 영상·애니메이션디자인트랙
   college_id: 디자인대학
@@ -1100,6 +1588,24 @@ tracks:
   - T022010
   - T022008
   - T022002
+  competencies:
+  - AI 기반 영상·이미지 제작 능력
+  - 가상현실 애니메이션 콘텐츠 제작 능력
+  - 디지털 애니메이션 동작 표현 능력
+  - 디지털 영상 합성 능력
+  - 레이아웃 디자인 능력
+  - 만화 및 웹툰 제작 능력
+  - 영상 및 애니메이션 제작 프로세스 이해
+  - 인터랙티브 콘텐츠 기획 능력
+  - 패키지 디자인 능력
+  tech_stacks:
+  - Adobe XD
+  - After Effects
+  - Node.js
+  - Nuke
+  - Photoshop
+  - Stable Diffusion
+  - Unity
 - track_id: 웹공학트랙
   track_name: 웹공학트랙
   college_id: IT공과대학
@@ -1150,6 +1656,53 @@ tracks:
   - V020036
   - V020037
   - V024009
+  competencies:
+  - HTML5, CSS3, JavaScript 활용 능력
+  - 객체지향 프로그래밍 능력
+  - 문제 해결 능력 향상
+  - 소프트웨어 활용 능력
+  - 웹 프로그램 작성 능력
+  - 자료구조 이해 및 활용 능력
+  - 프로그래밍 기초 능력 습득
+  - 프로그래밍 도구 및 환경 사용 능력
+  - 프로그래밍 언어 활용 능력
+  tech_stacks:
+  - Android
+  - Apache
+  - Big Data
+  - Bootstrap
+  - C
+  - C#
+  - C++
+  - CI/CD
+  - CSS
+  - Dart
+  - Deep Learning
+  - GPT
+  - HTML
+  - Hibernate
+  - JPA
+  - JUnit
+  - Java
+  - JavaScript
+  - Jupyter
+  - Keras
+  - Kotlin
+  - Linux
+  - Machine Learning
+  - Maven
+  - MySQL
+  - NLP
+  - OWASP
+  - PHP
+  - Perl
+  - Python
+  - R
+  - REST
+  - SQL
+  - Spring
+  - Spring Boot
+  - Spring MVC
 - track_id: 융합보안학과
   track_name: 융합보안학과
   college_id: 창의융합대학
@@ -1188,6 +1741,25 @@ tracks:
   - Y040030
   - Y040031
   - Y040032
+  competencies:
+  - 네트워크 보안 위협 분석
+  - 데이터 통신 이해
+  - 암호 알고리즘 이해 및 구현
+  - 웹 프로그래밍 능력
+  - 인공지능 보안 위협 분석
+  - 정보보안의 중요성 이해
+  - 프로젝트 관리 및 팀워크
+  tech_stacks:
+  - AES
+  - C
+  - CSS
+  - HTML
+  - Java
+  - JavaScript
+  - Less
+  - RSA
+  - Scala
+  - TLS
 - track_id: 응용산업데이터공학트랙
   track_name: 응용산업데이터공학트랙
   college_id: IT공과대학
@@ -1213,6 +1785,24 @@ tracks:
   - V070070
   - V070071
   - V070078
+  competencies:
+  - Python 프로그래밍 능력
+  - 데이터 분석 능력
+  - 데이터 시각화 능력
+  - 데이터베이스 설계 및 활용 능력
+  - 문제 해결 및 의사결정 능력
+  - 비즈니스 애널리틱스 활용 능력
+  - 창의적 문제 발굴 및 해결 능력
+  tech_stacks:
+  - Data Warehouse
+  - MS SQL Server 2014
+  - MS-SQL
+  - Machine Learning
+  - Power BI
+  - Python
+  - R
+  - SQL
+  - Tableau
 - track_id: 전자트랙
   track_name: 전자트랙
   college_id: IT공과대학
@@ -1243,6 +1833,19 @@ tracks:
   - V030046
   - V030027
   - V030037
+  competencies:
+  - 디지털 신호 처리 기술 적용
+  - 소프트웨어 활용 능력
+  - 신호 및 시스템 해석 및 설계
+  - 자료구조 이해 및 활용 능력
+  - 전자공학 구성 요소 및 설계 기초 설명
+  tech_stacks:
+  - C
+  - C 언어
+  - DSP 이론 및 C 프로그램 실습
+  - MATLAB
+  - Python
+  - Scala
 - track_id: 지식정보문화트랙
   track_name: 지식정보문화트랙
   college_id: 크리에이티브인문예술대학
@@ -1276,6 +1879,19 @@ tracks:
   - P017011
   - P017022
   - P017023
+  competencies:
+  - 데이터베이스 설계 및 활용 능력
+  - 디지털 환경에서의 정보 요구 이해
+  - 문헌정보학 이론 적용 능력
+  - 문화자원 아카이빙 능력
+  - 정보 리터러시
+  - 정보 분석 및 활용 능력
+  - 정보 설계 및 인터페이스 이해
+  - 지식정보서비스의 핵심 기능 이해
+  tech_stacks:
+  - AI 활용
+  - PBL 수업단계
+  - SQL
 - track_id: 패션디자인트랙
   track_name: 패션디자인트랙
   college_id: 디자인대학
@@ -1302,6 +1918,21 @@ tracks:
   - T012009
   - T012011
   - T010021
+  competencies:
+  - 소프트웨어 활용 능력
+  - 의복 제작 과정 이해 능력
+  - 인체 비례 및 형태 이해 능력
+  - 패션 드로잉 기법 습득 능력
+  - 패션 마케팅 전략 수립 능력
+  - 패션 스토어 기획 및 운영 능력
+  - 패션디자인 요소 분석 능력
+  - 패션디자인 원리 이해 및 적용 능력
+  - 한복 제작 및 분석 능력
+  - 현대 패션 이슈 및 트렌드 예측 능력
+  tech_stacks:
+  - Hive
+  - Illustrator
+  - Photoshop
 - track_id: 패션마케팅트랙
   track_name: 패션마케팅트랙
   college_id: 디자인대학
@@ -1329,6 +1960,18 @@ tracks:
   - T010033
   - T011011
   - T011010
+  competencies:
+  - AI 기반 콘텐츠 제작 능력
+  - 소비자 행동 분석
+  - 패션 리더십 이해
+  - 패션비지니스의 구조와 특징 이해
+  - 패션상품 기획 및 개발 능력
+  - 패션시장조사 실행 및 평가 능력
+  tech_stacks:
+  - Big Data
+  - GPT
+  - Kling
+  - Midjourney
 - track_id: 패션크리에이티브디렉션트랙
   track_name: 패션크리에이티브디렉션트랙
   college_id: 디자인대학
@@ -1357,6 +2000,21 @@ tracks:
   - T013010
   - T013012
   - T013009
+  competencies:
+  - AI시대에 패션기업을 성공적으로 운영할 수 있는 리더십 특성을 이해한다
+  - 글로벌 환경에서 문화적 특성과 현황을 파악할 수 있다
+  - 의복구성을 위한 단계별 Process를 이해할 수 있다
+  - 패션 포트폴리오를 개발할 수 있다
+  - 패션디자인 프로젝트를 수행할 수 있다
+  - 패션디자인에 적용할 수 있다
+  - 패션디자인의 기초적 기능을 다룰 수 있다
+  - 패션산업의 소재 전략을 이해한다
+  - 패션상품의 특성과 브랜드 전략을 수립할 수 있다
+  - 패션콘텐츠 디자인을 제안할 수 있다
+  tech_stacks:
+  - GPT
+  - Illustrator
+  - Photoshop
 - track_id: 한국무용전공
   track_name: 한국무용전공
   college_id: 크리에이티브인문예술대학
@@ -1398,6 +2056,15 @@ tracks:
   - P020046
   - P020106
   - P020107
+  competencies:
+  - 무용 교육 프로그램 개발
+  - 무용 레퍼토리 작품에 대한 조사와 분석 능력
+  - 무용 작품의 구조적, 미학적 분석 능력
+  - 신체 정렬, 근력, 유연성, 균형감각을 이해하고 적용하는 능력
+  - 한국무용의 기본 몸자세와 호흡을 이해하고 적용할 수 있는 능력
+  tech_stacks:
+  - C
+  - GPT
 - track_id: 한국어교육트랙
   track_name: 한국어교육트랙
   college_id: 크리에이티브인문예술대학
@@ -1422,6 +2089,15 @@ tracks:
   - P013014
   - P010116
   - P010125
+  competencies:
+  - 제2언어 습득 이론 이해
+  - 한국어 교육 자료 개발 능력
+  - 한국어 교육과정 개발 및 운영 이해
+  - 한국어 발음 교육 설계 능력
+  - 한국어 의미 분석 능력
+  - 한국어 평가 설계 능력
+  - 한국어 표현 교육 설계 능력
+  tech_stacks: []
 - track_id: 현대무용전공
   track_name: 현대무용전공
   college_id: 크리에이티브인문예술대학
@@ -1462,6 +2138,15 @@ tracks:
   - P020046
   - P020106
   - P020107
+  competencies:
+  - 무대 공연 및 예술행정 이해
+  - 무용 교육 및 교수법 이해
+  - 무용 레퍼토리 분석 및 표현
+  - 신체 균형 및 관리 능력
+  - 현대무용 테크닉 습득 및 응용 능력
+  tech_stacks:
+  - C
+  - GPT
 - track_id: 회계·재무경영트랙
   track_name: 회계·재무경영트랙
   college_id: 미래융합사회과학대학
@@ -1497,3 +2182,19 @@ tracks:
   - R01B002
   - R01B007
   - R01G015
+  competencies:
+  - 부가가치세법 이해 및 세무처리
+  - 세무회계 기본 개념 이해
+  - 소득세법 이해 및 세무처리
+  - 위험관리 전략 이해
+  - 재무결정 개념 이해
+  - 재무관리 기본개념 이해
+  - 재무제표 작성 및 활용 능력
+  - 투자 전략 이해
+  - 투자결정 이론 이해
+  - 파생금융상품 가격 결정 이해
+  - 회계의 기본 원리 이해
+  tech_stacks:
+  - C
+  - Datamining
+  - K-IFRS 회계원리
