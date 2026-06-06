@@ -38,6 +38,9 @@ docs/*
 !docs/architecture/**
 !docs/design/
 !docs/design/**
+!docs/assets/
+!docs/assets/readme/
+!docs/assets/readme/**
 
 # Claude Code — local-only context (CLAUDE.md and .claude/settings.json are tracked)
 CLAUDE.local.md

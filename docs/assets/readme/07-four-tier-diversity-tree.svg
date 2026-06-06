@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 700" role="img" aria-label="4-tier 다양성 트리">
+  <defs>
+    <marker id="ah-blue" markerWidth="11" markerHeight="11" refX="8.5" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L10,5 L0,10 Z" fill="#0066cc"/></marker>
+    <marker id="ah-orange" markerWidth="10" markerHeight="10" refX="8" refY="4.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L9,4.5 L0,9 Z" fill="#ff8c00"/></marker>
+    <marker id="ah-purple" markerWidth="11" markerHeight="11" refX="8.5" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L10,5 L0,10 Z" fill="#6b46c1"/></marker>
+    <marker id="ah-green" markerWidth="11" markerHeight="11" refX="8.5" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L10,5 L0,10 Z" fill="#28a745"/></marker>
+    <marker id="ah-red" markerWidth="11" markerHeight="11" refX="8.5" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L10,5 L0,10 Z" fill="#dc143c"/></marker>
+    <style>
+      svg { background: transparent; --c-online-f:#d8f0de; --c-online-s:#28a745; --c-offline-f:#e6f2ff; --c-offline-s:#2b7cd3; --c-shared-f:#fff4d6; --c-shared-s:#e0a200; --c-user-f:#ffd0d8; --c-user-s:#dc143c; --c-decision-f:#ece1ff; --c-decision-s:#6b46c1; --c-fallback-f:#ffe5b4; --c-fallback-s:#ff8c00; --c-data-f:#e0efff; --c-data-s:#0066cc; --c-llm-f:#e6d9ff; --c-llm-s:#7c3aed; --c-neutral-f:#eef1f5; --c-neutral-s:#7a8aa0; }
+      text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; fill:#1a1916; font-size:14px; }
+      .box{stroke-width:2}.online{fill:var(--c-online-f);stroke:var(--c-online-s)}.offline{fill:var(--c-offline-f);stroke:var(--c-offline-s)}.shared{fill:var(--c-shared-f);stroke:var(--c-shared-s)}.user{fill:var(--c-user-f);stroke:var(--c-user-s)}.decision{fill:var(--c-decision-f);stroke:var(--c-decision-s)}.fallback{fill:var(--c-fallback-f);stroke:var(--c-fallback-s);stroke-dasharray:6 3}.data{fill:var(--c-data-f);stroke:var(--c-data-s)}.llm{fill:var(--c-llm-f);stroke:var(--c-llm-s)}.neutral{fill:var(--c-neutral-f);stroke:var(--c-neutral-s)}
+      .z-green{fill:#eff9f1;stroke:#9bd3a8;stroke-width:1.5}.z-blue{fill:#eff6ff;stroke:#a9cdf0;stroke-width:1.5}.z-yellow{fill:#fff9ec;stroke:#ecd28a;stroke-width:1.5}.z-red{fill:#fff1f2;stroke:#f0b3ba;stroke-width:1.5}.z-grey{fill:#f6f7f9;stroke:#cfd6e0;stroke-width:1.5;stroke-dasharray:7 4}
+      .zlab{font-weight:600;fill:#42506a;font-size:14px}.t-title{font-weight:600}.t-code{font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace}.t-sm{font-size:12px;fill:#5a6b80}.t-xs{font-size:11px;fill:#6a7b90}
+      .flow{fill:none;stroke:#0066cc;stroke-width:2.4}.flow.fb{stroke:#ff8c00;stroke-width:2;stroke-dasharray:6 3}.flow.data{stroke:#0066cc;stroke-width:1.5;stroke-dasharray:5 3}.flow.route{stroke:#6b46c1;stroke-width:2.2}
+      .flow-lbl{font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-size:12px;fill:#0a4a8a;font-weight:500}.flow-lbl.r{fill:#6b46c1}.flow-lbl.o{fill:#c2700a}.flow-lbl.bg{paint-order:stroke;stroke:#fcfcf8;stroke-width:5px;stroke-linejoin:round}
+    </style>
+  </defs>
+        <!-- legend -->
+        <polygon class="box shared" points="38,40 58,52 38,64 18,52"/>
+        <text class="t-xs" x="70" y="56">다양성 판정 질문</text>
+        <rect class="box online" x="320" y="42" width="22" height="20" rx="4"/>
+        <text class="t-xs" x="352" y="56">다양성 등급 (먼 ↔ 가까운)</text>
+
+        <!-- D1 -->
+        <polygon class="box shared" points="190,96 300,150 190,204 80,150"/>
+        <text x="190" y="146" text-anchor="middle" font-size="13">단과대</text>
+        <text x="190" y="164" text-anchor="middle" font-size="13">같은가?</text>
+        <!-- D1 no -> R1 -->
+        <path class="flow" d="M300,150 L420,150" stroke="#dc143c" marker-end="url(#ah-red)"/>
+        <text class="flow-lbl bg" x="360" y="142" text-anchor="middle" fill="#b01a30">아니오</text>
+        <rect class="box online" x="420" y="116" width="220" height="68" rx="10"/>
+        <text class="t-title" x="530" y="146" text-anchor="middle" font-size="13">다른 단과대 · 먼 다양성</text>
+        <text class="t-sm" x="530" y="166" text-anchor="middle">가장 이색 (cross-college)</text>
+        <!-- D1 yes -> D2 -->
+        <path class="flow" d="M190,204 L190,266" marker-end="url(#ah-blue)"/>
+        <text class="flow-lbl bg" x="206" y="240">예</text>
+
+        <!-- D2 -->
+        <polygon class="box shared" points="190,266 300,320 190,374 80,320"/>
+        <text x="190" y="316" text-anchor="middle" font-size="13">학부</text>
+        <text x="190" y="334" text-anchor="middle" font-size="13">같은가?</text>
+        <path class="flow" d="M300,320 L420,320" stroke="#dc143c" marker-end="url(#ah-red)"/>
+        <text class="flow-lbl bg" x="360" y="312" text-anchor="middle" fill="#b01a30">아니오</text>
+        <rect class="box online" x="420" y="286" width="220" height="68" rx="10"/>
+        <text class="t-title" x="530" y="316" text-anchor="middle" font-size="13">다른 학부 · 중간 다양성</text>
+        <text class="t-sm" x="530" y="336" text-anchor="middle">같은 단과대 안</text>
+        <path class="flow" d="M190,374 L190,436" marker-end="url(#ah-blue)"/>
+        <text class="flow-lbl bg" x="206" y="410">예</text>
+
+        <!-- D3 -->
+        <polygon class="box shared" points="190,436 300,490 190,544 80,490"/>
+        <text x="190" y="486" text-anchor="middle" font-size="13">트랙</text>
+        <text x="190" y="504" text-anchor="middle" font-size="13">같은가?</text>
+        <path class="flow" d="M300,490 L420,490" stroke="#dc143c" marker-end="url(#ah-red)"/>
+        <text class="flow-lbl bg" x="360" y="482" text-anchor="middle" fill="#b01a30">아니오</text>
+        <rect class="box online" x="420" y="456" width="220" height="68" rx="10"/>
+        <text class="t-title" x="530" y="486" text-anchor="middle" font-size="13">다른 트랙 · 가까운</text>
+        <text class="t-sm" x="530" y="506" text-anchor="middle">같은 학부 안</text>
+        <path class="flow" d="M190,544 L190,600" marker-end="url(#ah-blue)"/>
+        <text class="flow-lbl bg" x="206" y="578">예</text>
+        <rect class="box online" x="60" y="600" width="280" height="70" rx="10"/>
+        <text class="t-title" x="200" y="630" text-anchor="middle" font-size="13">같은 트랙 + 과목 overlap</text>
+        <text class="t-sm" x="200" y="650" text-anchor="middle">가장 가까움 (다양성 최저)</text>
+      </svg>

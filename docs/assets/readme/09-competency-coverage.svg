@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 320" role="img" aria-label="역량 커버리지">
+  <defs>
+    <marker id="ah-blue" markerWidth="11" markerHeight="11" refX="8.5" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L10,5 L0,10 Z" fill="#0066cc"/></marker>
+    <marker id="ah-orange" markerWidth="10" markerHeight="10" refX="8" refY="4.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L9,4.5 L0,9 Z" fill="#ff8c00"/></marker>
+    <marker id="ah-purple" markerWidth="11" markerHeight="11" refX="8.5" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L10,5 L0,10 Z" fill="#6b46c1"/></marker>
+    <marker id="ah-green" markerWidth="11" markerHeight="11" refX="8.5" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L10,5 L0,10 Z" fill="#28a745"/></marker>
+    <marker id="ah-red" markerWidth="11" markerHeight="11" refX="8.5" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L10,5 L0,10 Z" fill="#dc143c"/></marker>
+    <style>
+      svg { background: transparent; --c-online-f:#d8f0de; --c-online-s:#28a745; --c-offline-f:#e6f2ff; --c-offline-s:#2b7cd3; --c-shared-f:#fff4d6; --c-shared-s:#e0a200; --c-user-f:#ffd0d8; --c-user-s:#dc143c; --c-decision-f:#ece1ff; --c-decision-s:#6b46c1; --c-fallback-f:#ffe5b4; --c-fallback-s:#ff8c00; --c-data-f:#e0efff; --c-data-s:#0066cc; --c-llm-f:#e6d9ff; --c-llm-s:#7c3aed; --c-neutral-f:#eef1f5; --c-neutral-s:#7a8aa0; }
+      text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; fill:#1a1916; font-size:14px; }
+      .box{stroke-width:2}.online{fill:var(--c-online-f);stroke:var(--c-online-s)}.offline{fill:var(--c-offline-f);stroke:var(--c-offline-s)}.shared{fill:var(--c-shared-f);stroke:var(--c-shared-s)}.user{fill:var(--c-user-f);stroke:var(--c-user-s)}.decision{fill:var(--c-decision-f);stroke:var(--c-decision-s)}.fallback{fill:var(--c-fallback-f);stroke:var(--c-fallback-s);stroke-dasharray:6 3}.data{fill:var(--c-data-f);stroke:var(--c-data-s)}.llm{fill:var(--c-llm-f);stroke:var(--c-llm-s)}.neutral{fill:var(--c-neutral-f);stroke:var(--c-neutral-s)}
+      .z-green{fill:#eff9f1;stroke:#9bd3a8;stroke-width:1.5}.z-blue{fill:#eff6ff;stroke:#a9cdf0;stroke-width:1.5}.z-yellow{fill:#fff9ec;stroke:#ecd28a;stroke-width:1.5}.z-red{fill:#fff1f2;stroke:#f0b3ba;stroke-width:1.5}.z-grey{fill:#f6f7f9;stroke:#cfd6e0;stroke-width:1.5;stroke-dasharray:7 4}
+      .zlab{font-weight:600;fill:#42506a;font-size:14px}.t-title{font-weight:600}.t-code{font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace}.t-sm{font-size:12px;fill:#5a6b80}.t-xs{font-size:11px;fill:#6a7b90}
+      .flow{fill:none;stroke:#0066cc;stroke-width:2.4}.flow.fb{stroke:#ff8c00;stroke-width:2;stroke-dasharray:6 3}.flow.data{stroke:#0066cc;stroke-width:1.5;stroke-dasharray:5 3}.flow.route{stroke:#6b46c1;stroke-width:2.2}
+      .flow-lbl{font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-size:12px;fill:#0a4a8a;font-weight:500}.flow-lbl.r{fill:#6b46c1}.flow-lbl.o{fill:#c2700a}.flow-lbl.bg{paint-order:stroke;stroke:#fcfcf8;stroke-width:5px;stroke-linejoin:round}
+    </style>
+  </defs>
+        <text class="zlab" x="60" y="46" font-size="14">기준 직무 — 백엔드 개발자 <tspan class="t-sm">(default = 매칭 1순위, 토글로 변경)</tspan></text>
+        <!-- token chips -->
+        <g font-size="13" class="t-code">
+          <rect class="box online" x="60"  y="74" width="150" height="44" rx="9"/><text x="135" y="101" text-anchor="middle">Java ✓</text>
+          <rect class="box online" x="222" y="74" width="150" height="44" rx="9"/><text x="297" y="101" text-anchor="middle">MySQL ✓</text>
+          <rect class="box offline" x="384" y="74" width="170" height="44" rx="9"/><text x="469" y="101" text-anchor="middle">Spring Boot +</text>
+          <rect class="box offline" x="566" y="74" width="150" height="44" rx="9"/><text x="641" y="101" text-anchor="middle">Docker +</text>
+          <rect class="box neutral" x="728" y="74" width="150" height="44" rx="9"/><text x="803" y="101" text-anchor="middle">Redis ✕</text>
+        </g>
+        <!-- bar -->
+        <rect x="60" y="160" width="1060" height="50" rx="8" fill="#eef1f5" stroke="#cfd6e0"/>
+        <rect x="60" y="160" width="424" height="50" rx="8" fill="var(--c-online-f)" stroke="var(--c-online-s)" stroke-width="2"/>
+        <rect x="484" y="160" width="424" height="50" fill="var(--c-offline-f)" stroke="var(--c-offline-s)" stroke-width="2"/>
+        <rect x="908" y="160" width="212" height="50" rx="8" fill="var(--c-neutral-f)" stroke="var(--c-neutral-s)" stroke-width="2"/>
+        <text x="272" y="191" text-anchor="middle" font-size="13" class="t-title">현재 이수 40%</text>
+        <text x="696" y="191" text-anchor="middle" font-size="13" class="t-title">+ 추천 로드맵 → 80%</text>
+        <text x="1014" y="191" text-anchor="middle" font-size="13" class="t-title">부족 20%</text>
+        <!-- markers -->
+        <text class="t-code t-sm" x="484" y="232" text-anchor="middle">현재 40%</text>
+        <text class="t-code t-sm" x="908" y="232" text-anchor="middle">예상 80%</text>
+        <text class="t-xs" x="60" y="280">분모 = 도달 가능한 직무 역량 토큰 (트랙·과목으로 닿을 수 있는 것) · 부족 역량 = <tspan class="t-code">["Redis"]</tspan></text>
+        <text class="t-xs" x="60" y="300">직무 매칭 %(나와 얼마나 맞나) 와 역량 커버리지 %(요구 역량을 얼마나 채웠나) 는 다른 축 — 같은 직무여도 공존</text>
+      </svg>
