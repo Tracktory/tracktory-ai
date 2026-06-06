@@ -273,6 +273,35 @@ def _select_primary(scored: list[_ScoredCombo], k: int) -> list[RankedCombo]:
     ]
 
 
+def _select_current_track_primary(
+    scored: list[_ScoredCombo],
+    current_tracks: list[str],
+) -> list[RankedCombo] | None:
+    """현재 선택한 2트랙 조합을 주 추천으로 고정한다.
+
+    2학년+ 사용자는 이미 선택한 두 트랙 조합의 검증·보완을 기대하므로,
+    시너지 재랭킹이 다른 조합으로 primary 를 대체하면 안 된다. 두 트랙이
+    후보군에 모두 존재할 때만 해당 조합을 rank=1 primary 로 반환하고,
+    후보가 없으면 호출자가 기존 추천 흐름으로 fallback 한다.
+    """
+    if len(current_tracks) != 2:
+        return None
+
+    selected_key = "::".join(sorted(current_tracks))
+    selected = next((cand for cand in scored if cand.combo.combo_key == selected_key), None)
+    if selected is None:
+        return None
+
+    return [
+        RankedCombo(
+            combo=selected.combo,
+            synergy_score=selected.synergy_score,
+            slot_type="primary",
+            rank=1,
+        )
+    ]
+
+
 def _is_cross_college(combo: TrackCombo, primary: list[RankedCombo]) -> bool:
     """combo 의 두 트랙 중 최소 한 개의 단과대가 primary 에 없는 경우 True."""
     primary_colleges = {
@@ -463,6 +492,18 @@ def _mmr_select(
     return chosen
 
 
+def _renumber_secondary(
+    secondary: list[RankedCombo],
+    *,
+    start_rank: int,
+) -> list[RankedCombo]:
+    """secondary 슬롯 rank 를 primary 뒤에 연속 배치한다."""
+    return [
+        combo.model_copy(update={"rank": start_rank + index})
+        for index, combo in enumerate(secondary)
+    ]
+
+
 # ---------------------------------------------------------------------------
 # 노드 진입점
 # ---------------------------------------------------------------------------
@@ -532,7 +573,9 @@ class TrackSynergyNode:
         ]
 
         # 단계 5: 주 추천 슬롯
-        primary = _select_primary(scored, self._config.slots.primary_count)
+        primary = _select_current_track_primary(scored, current_tracks) or _select_primary(
+            scored, self._config.slots.primary_count
+        )
 
         # 단계 6: cross-college 슬롯 + fallback
         slot3, fallback_level = _select_cross_college_slot(
@@ -570,6 +613,7 @@ class TrackSynergyNode:
                 start_rank=3,
             )
             secondary = mmr_slots
+        secondary = _renumber_secondary(secondary, start_rank=len(primary) + 1)
 
         # 단계 8: state 부분 반환
         trace_tokens = ["track_synergy:ok"]

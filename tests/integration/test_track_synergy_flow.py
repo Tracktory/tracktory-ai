@@ -233,6 +233,15 @@ def test_primary_stays_same_college_when_cross_track_is_job_irrelevant() -> None
             competencies=["c_in2"],
             meta_seed=3,
         ),
+        _track(
+            "in3",
+            college_id="C1",
+            department_id="D2",
+            course_ids=["in_co3"],
+            tech_stacks=["aws"],
+            competencies=["c_in3"],
+            meta_seed=4,
+        ),
     ]
     # 타 단과대 트랙 — 직무 토큰 'go' 하나만 공급 (사실상 무관).
     cross_irrelevant = _track(

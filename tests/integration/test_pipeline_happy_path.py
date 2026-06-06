@@ -249,14 +249,16 @@ def _valid_onboarding_payload(
 
 
 @pytest.mark.parametrize(
-    ("persona", "current_tracks"),
+    ("persona", "current_tracks", "expected_primary_keys"),
     [
-        ("1학년 트랙 미선택", []),
-        ("2학년+ 트랙 선택 완료", ["in0", "in1"]),
+        ("1학년 트랙 미선택", [], None),
+        ("2학년+ 트랙 선택 완료", ["in0", "in1"], ["in0::in1"]),
     ],
 )
 def test_recommendation_graph_happy_path_runs_seven_nodes_in_order(
-    persona: str, current_tracks: list[str]
+    persona: str,
+    current_tracks: list[str],
+    expected_primary_keys: list[str] | None,
 ) -> None:
     """유효 입력으로 그래프를 invoke 하면 7 노드가 순차 실행되어 모든 산출 키가 채워진다.
 
@@ -280,7 +282,15 @@ def test_recommendation_graph_happy_path_runs_seven_nodes_in_order(
     assert result.get("normalized_profile") is not None
     assert result.get("profile_text")
     assert result.get("recommended_jobs")
-    assert len(result["primary_combos"]) == 2
+    if expected_primary_keys is None:
+        assert len(result["primary_combos"]) == 2
+    else:
+        assert [combo["combo"]["combo_key"] for combo in result["primary_combos"]] == (
+            expected_primary_keys
+        )
+        assert len(result["primary_combos"]) == 1
+        assert result["primary_combos"][0]["slot_type"] == "primary"
+        assert result["primary_combos"][0]["rank"] == 1
     assert len(result["secondary_combos"]) == 5
     assert result["roadmap"]["stages"]
     assert result["explanation"]["text"] == "추천 결과 종합 설명입니다."

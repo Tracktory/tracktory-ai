@@ -149,6 +149,85 @@ def test_node_returns_seven_combos_when_data_complete(make_track, real_synergy_y
     repo.list_all.assert_called_once()
 
 
+def test_node_fixes_selected_tracks_as_single_primary_for_upperclass(
+    make_track,
+    real_synergy_yaml_path,
+) -> None:
+    """2학년+ 현재 선택 조합은 재랭킹 결과와 무관하게 primary 1개로 고정된다."""
+    selected_a = make_track(
+        "selected_a",
+        college_id="C1",
+        department_id="D1",
+        course_ids=["shared"],
+        tech_stacks=["legacy"],
+        competencies=["legacy"],
+        meta_seed=1,
+    )
+    selected_b = make_track(
+        "selected_b",
+        college_id="C1",
+        department_id="D1",
+        course_ids=["shared"],
+        tech_stacks=["legacy"],
+        competencies=["legacy"],
+        meta_seed=2,
+    )
+    stronger = make_track(
+        "stronger",
+        college_id="C1",
+        department_id="D1",
+        course_ids=["stronger"],
+        tech_stacks=["py", "sql"],
+        competencies=["backend"],
+        meta_seed=3,
+    )
+    out_college = [
+        make_track(
+            f"out{i}",
+            college_id="C2",
+            department_id="D2",
+            course_ids=[f"out_co{i}"],
+            tech_stacks=["py", "sql"],
+            competencies=[f"out_c{i}"],
+            meta_seed=100 + i,
+        )
+        for i in range(4)
+    ]
+    node, _ = _build_node(
+        tracks=[selected_a, selected_b, stronger, *out_college],
+        real_synergy_yaml_path=real_synergy_yaml_path,
+    )
+
+    result = node(
+        {
+            "recommended_jobs": [
+                {
+                    "job_id": "j1",
+                    "job_name": "Backend",
+                    "tech_stacks": ["py", "sql"],
+                    "competency_tags": ["backend"],
+                    "match_score": 0.7,
+                }
+            ],
+            "normalized_profile": _normalized_profile(
+                college="C1",
+                current_tracks=["selected_a", "selected_b"],
+            ),
+        }
+    )
+
+    primary_keys = [combo["combo"]["combo_key"] for combo in result["primary_combos"]]
+    secondary_keys = [combo["combo"]["combo_key"] for combo in result["secondary_combos"]]
+    assert primary_keys == ["selected_a::selected_b"]
+    assert len(result["primary_combos"]) == 1
+    assert result["primary_combos"][0]["slot_type"] == "primary"
+    assert result["primary_combos"][0]["rank"] == 1
+    assert len(result["secondary_combos"]) == 5
+    assert "selected_a::selected_b" not in secondary_keys
+    assert {"selected_a::stronger", "selected_b::stronger"} & set(secondary_keys)
+    assert [combo["rank"] for combo in result["secondary_combos"]] == [2, 3, 4, 5, 6]
+
+
 def test_node_logger_info_called_once_on_t2_fallback(
     make_track, real_synergy_yaml_path, caplog
 ) -> None:
